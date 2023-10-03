@@ -1,0 +1,16 @@
+overwrite: true
+schema: 'http://localhost:4000'
+documents: 'src/**/*.graphql.ts'
+config:
+  sort: false
+  namingConvention:
+    enumValues: upper-case#upperCase
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+  ./graphql.schema.json:
+    plugins:
+      - 'introspection'
