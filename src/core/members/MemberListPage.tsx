@@ -7,6 +7,7 @@ import { FaMoneyBill } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { MemberListItemFragment, useMembersQuery } from '../../generated/graphql';
 import { PaymentCreateModal } from '../payments/components';
+import { useDisplayGraphQLErrors } from '../../hooks';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -33,6 +34,8 @@ const MemberListPage: React.FC = () => {
       pageSize: pagination.pageSize,
     },
   });
+
+  useDisplayGraphQLErrors([queryError]);
 
   const members = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -72,7 +75,17 @@ const MemberListPage: React.FC = () => {
 
   return (
     <>
-      <Table dataSource={members} columns={columns} rowKey="id" />
+      <Table
+        dataSource={members}
+        columns={columns}
+        rowKey="id"
+        loading={queryLoading}
+        pagination={{
+          total,
+          pageSize: pagination.pageSize,
+          current: pagination.pageIndex + 1,
+        }}
+      />
       {memberId && <PaymentCreateModal memberId={memberId} onCancel={() => setMemberId(undefined)} />}
     </>
   );

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FaMoneyBill, FaUserFriends } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { MemberListPage } from '../core/members';
+import { PaymentListPage } from '../core/payments';
 
 const AuthenticatedLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -53,6 +54,9 @@ const AuthenticatedLayout: React.FC = () => {
         <Routes>
           <Route path="members" element={<Outlet />}>
             <Route index element={<MemberListPage />} />
+          </Route>
+          <Route path="payments" element={<Outlet />}>
+            <Route index element={<PaymentListPage />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/members" replace />} />
