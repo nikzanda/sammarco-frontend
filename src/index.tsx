@@ -2,15 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { ApolloProvider } from '@apollo/client';
+import { Alert } from 'antd';
+import itIT from 'antd/es/locale/it_IT';
+import { setDefaultOptions } from 'date-fns';
+import it from 'date-fns/locale/it';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import apolloClient from './apollo';
+import { ThemeProvider } from './contexts';
+import './i18n';
+
+setDefaultOptions({ locale: it });
+
+itIT.Calendar!.lang.locale = 'it';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-      <App />
+      <ThemeProvider>
+        <Alert.ErrorBoundary>
+          <App />
+        </Alert.ErrorBoundary>
+      </ThemeProvider>
     </ApolloProvider>
   </React.StrictMode>
 );

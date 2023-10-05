@@ -1,6 +1,7 @@
 import React from 'react';
-import { Form, InputNumber, Modal, Radio, Select } from 'antd';
+import { App, Form, InputNumber, Modal, Radio, Select } from 'antd';
 import { set } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   FeeTypeEnum,
   PaymentTypeEnum,
@@ -8,6 +9,7 @@ import {
   usePaymentCreateMutation,
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
+import { useDisplayGraphQLErrors } from '../../../hooks';
 
 type Props = {
   memberId: string;
@@ -23,6 +25,8 @@ const initialValues = {
 
 const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
   const [form] = Form.useForm();
+  const { t } = useTranslation();
+  const { message } = App.useApp();
 
   // TODO: fare un componente
   const {
@@ -50,7 +54,14 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
     return result;
   }, []);
 
-  const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation();
+  const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
+    onCompleted: () => {
+      message.success(t('messages.success'));
+      onCancel();
+    },
+  });
+
+  useDisplayGraphQLErrors([mutationError]);
 
   const handleSubmit = (values: any) => {
     createPayment({
@@ -82,10 +93,6 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         autoComplete="off"
         onFinish={handleSubmit}
       >
-        {/* <Row gutter={24}>
-        <Col></Col>
-      </Row> */}
-
         <Form.Item
           label="fee"
           name="feeId"

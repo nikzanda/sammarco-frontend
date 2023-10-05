@@ -4,6 +4,7 @@ import { Button, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import Icon from '@ant-design/icons';
 import { FaMoneyBill } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import { MemberListItemFragment, useMembersQuery } from '../../generated/graphql';
 import { PaymentCreateModal } from '../payments/components';
 
@@ -11,6 +12,8 @@ const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
 const MemberListPage: React.FC = () => {
+  const { t } = useTranslation();
+
   const [memberId, setMemberId] = React.useState<string>();
 
   const [pagination, setPagination] = useLocalStorageState(`${LOCAL_STORAGE_PATH}pagination`, {
@@ -48,7 +51,7 @@ const MemberListPage: React.FC = () => {
   const columns = React.useMemo(() => {
     const result: ColumnsType<MemberListItemFragment> = [
       {
-        title: 'name',
+        title: t('name'),
         key: 'name',
         render: (value, member) => (
           <>
@@ -65,7 +68,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, []);
+  }, [t]);
 
   return (
     <>

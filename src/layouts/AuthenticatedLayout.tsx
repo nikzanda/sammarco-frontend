@@ -1,14 +1,32 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Layout, Menu, MenuProps } from 'antd';
+import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { FaMoneyBill, FaUserFriends } from 'react-icons/fa';
+import Icon from '@ant-design/icons';
 import { MemberListPage } from '../core/members';
 
-// eslint-disable-next-line arrow-body-style
 const AuthenticatedLayout: React.FC = () => {
-  // const navigate = useNavigate()
-  // const {
-  //   token: { colorBgContainer },
-  // } = theme.useToken();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const menuItems = React.useMemo(() => {
+    const result: MenuProps['items'] = [
+      {
+        label: t('members'),
+        key: 'members',
+        icon: <Icon component={FaUserFriends} />,
+        onClick: () => navigate('/members'),
+      },
+      {
+        label: t('payments'),
+        key: 'payments',
+        icon: <Icon component={FaMoneyBill} />,
+        onClick: () => navigate('/payments'),
+      },
+    ];
+    return result;
+  }, [navigate, t]);
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -26,20 +44,12 @@ const AuthenticatedLayout: React.FC = () => {
         <Menu
           theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={new Array(3).fill(null).map((_, index) => ({
-            key: String(index + 1),
-            label: `nav ${index + 1}`,
-          }))}
+          defaultSelectedKeys={['members']}
+          items={menuItems}
+          style={{ width: '100%' }}
         />
       </Layout.Header>
-      <Layout.Content style={{ padding: '0 50px' }}>
-        {/* <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb> */}
-        {/* <div style={{ padding: 24, minHeight: 380, background: colorBgContainer }}>Content</div> */}
+      <Layout.Content style={{ padding: '15px 15px 15px 15px' }}>
         <Routes>
           <Route path="members" element={<Outlet />}>
             <Route index element={<MemberListPage />} />
