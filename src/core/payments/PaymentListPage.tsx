@@ -1,10 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType } from 'antd';
 import { format, set } from 'date-fns';
+import { FaPrint } from 'react-icons/fa';
+import Icon from '@ant-design/icons';
 import { PaymentListItemFragment, usePaymentsQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
+import PDF from './pdfs/receipt-pdf';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -46,6 +49,10 @@ const PaymentListPage: React.FC = () => {
     return 0;
   }, [queryData, queryError, queryLoading]);
 
+  const handlePrint = (paymentId: string) => {
+    PDF.print(paymentId);
+  };
+
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
       {
@@ -69,15 +76,21 @@ const PaymentListPage: React.FC = () => {
         title: t('month'),
         key: 'month',
         dataIndex: 'month',
-        render: (month) => {
-          if (!month) {
+        render: (rawMonth) => {
+          if (!rawMonth) {
             return undefined;
           }
 
-          const [year, m] = month.split('-');
+          const [year, month] = rawMonth.split('-');
 
-          return format(set(Date.now(), { year, month: m }), 'MMMM yyyy');
+          const str = format(set(Date.now(), { year, month }), 'MMMM yyyy');
+          return str.charAt(0).toUpperCase() + str.slice(1);
         },
+      },
+      {
+        key: 'actions',
+        dataIndex: 'id',
+        render: (id) => <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={() => handlePrint(id)} />,
       },
     ];
     return result;

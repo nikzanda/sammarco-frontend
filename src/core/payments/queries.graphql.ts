@@ -49,6 +49,24 @@ export const PAYMENT_QUERY = gql`
   ${PAYMENT_DETAIL_FRAGMENT}
 `;
 
+export const PAYMENT_PDF_QUERY = gql`
+  query PaymentPdf($id: ID!) {
+    payment(id: $id) {
+      counter
+      date
+      amount
+      member {
+        name
+        surname
+        taxCode
+      }
+      fee {
+        name
+      }
+    }
+  }
+`;
+
 export const PAYMENT_CREATE_MUTATION = gql`
   mutation PaymentCreate($input: PaymentCreateInput!) {
     paymentCreate(input: $input) {
