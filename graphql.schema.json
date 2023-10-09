@@ -727,7 +727,7 @@
             "deprecationReason": null
           },
           {
-            "name": "signedAt",
+            "name": "enrolledAt",
             "description": null,
             "args": [],
             "type": {
@@ -1333,7 +1333,7 @@
             "deprecationReason": null
           },
           {
-            "name": "signedAt",
+            "name": "enrolledAt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -1485,7 +1485,7 @@
             "deprecationReason": null
           },
           {
-            "name": "signedAt",
+            "name": "enrolledAt",
             "description": null,
             "type": {
               "kind": "SCALAR",

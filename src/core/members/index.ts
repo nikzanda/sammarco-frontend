@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as MemberListPage } from './MemberListPage';
+export { default as MemberCreatePage } from './MemberCreatePage';

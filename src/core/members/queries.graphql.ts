@@ -28,3 +28,25 @@ export const MEMBERS_QUERY = gql`
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}
 `;
+
+export const MEMBER_CREATE_MUTATION = gql`
+  mutation MemberCreate($input: MemberCreateInput!) {
+    memberCreate(input: $input) {
+      member {
+        ...MemberDetail
+      }
+    }
+  }
+  ${MEMBER_DETAIL_FRAGMENT}
+`;
+
+export const MEMBER_UPDATE_MUTATION = gql`
+  mutation MemberUpdate($input: MemberUpdateInput!) {
+    memberUpdate(input: $input) {
+      member {
+        ...MemberDetail
+      }
+    }
+  }
+  ${MEMBER_DETAIL_FRAGMENT}
+`;

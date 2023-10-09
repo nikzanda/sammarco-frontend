@@ -5,6 +5,7 @@ import { ColumnsType } from 'antd/es/table';
 import Icon from '@ant-design/icons';
 import { FaMoneyBill } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { MemberListItemFragment, useMembersQuery } from '../../generated/graphql';
 import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
@@ -14,6 +15,7 @@ const LOCAL_STORAGE_PATH = 'filter/member/';
 
 const MemberListPage: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [memberId, setMemberId] = React.useState<string>();
 
@@ -75,6 +77,9 @@ const MemberListPage: React.FC = () => {
 
   return (
     <>
+      <Button type="primary" onClick={() => navigate('/members/new')}>
+        {t('member.new')}
+      </Button>
       <Table
         dataSource={members}
         columns={columns}
