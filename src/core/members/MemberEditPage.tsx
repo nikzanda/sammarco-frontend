@@ -6,7 +6,7 @@ import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { MemberForm } from './components';
+import { MemberForm, MemberPayments } from './components';
 
 const MemberEditPage: React.FC = () => {
   const { id } = useParams();
@@ -122,6 +122,11 @@ const MemberEditPage: React.FC = () => {
                   <MemberForm />
                 </Form>
               ),
+            },
+            {
+              label: t('payments'),
+              key: 'payments',
+              children: <MemberPayments member={member} />,
             },
           ]}
         />
