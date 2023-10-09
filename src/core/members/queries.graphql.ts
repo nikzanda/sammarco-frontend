@@ -3,14 +3,17 @@ import { gql } from '@apollo/client';
 export const MEMBER_LIST_ITEM_FRAGMENT = gql`
   fragment MemberListItem on Member {
     id
-    name
-    surname
+    fullName
   }
 `;
 
 export const MEMBER_DETAIL_FRAGMENT = gql`
   fragment MemberDetail on Member {
     ...MemberListItem
+    name
+    surname
+    taxCode
+    enrolledAt
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}
 `;
@@ -27,6 +30,15 @@ export const MEMBERS_QUERY = gql`
     }
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}
+`;
+
+export const MEMBER_QUERY = gql`
+  query Member($id: ID!) {
+    member(id: $id) {
+      ...MemberDetail
+    }
+  }
+  ${MEMBER_DETAIL_FRAGMENT}
 `;
 
 export const MEMBER_CREATE_MUTATION = gql`

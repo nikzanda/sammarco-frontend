@@ -6,8 +6,7 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     counter
     member {
       id
-      name
-      surname
+      fullName
     }
     fee {
       id

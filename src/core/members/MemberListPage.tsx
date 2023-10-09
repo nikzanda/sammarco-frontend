@@ -3,7 +3,7 @@ import useLocalStorageState from 'use-local-storage-state';
 import { Button, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import Icon from '@ant-design/icons';
-import { FaMoneyBill } from 'react-icons/fa';
+import { FaMoneyBill, FaPen } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { MemberListItemFragment, useMembersQuery } from '../../generated/graphql';
@@ -56,24 +56,21 @@ const MemberListPage: React.FC = () => {
   const columns = React.useMemo(() => {
     const result: ColumnsType<MemberListItemFragment> = [
       {
-        title: t('name'),
-        key: 'name',
-        render: (value, member) => (
-          <>
-            {member.name} {member.surname}
-          </>
-        ),
+        title: t('fullName'),
+        key: 'fullName',
+        dataIndex: 'fullName',
       },
       {
         key: 'actions',
         dataIndex: 'id',
-        render: (id) => (
-          <Button shape="circle" icon={<Icon component={FaMoneyBill} />} onClick={() => setMemberId(id)} />
-        ),
+        render: (id) => [
+          <Button shape="circle" icon={<Icon component={FaMoneyBill} />} onClick={() => setMemberId(id)} />,
+          <Button shape="circle" icon={<Icon component={FaPen} />} onClick={() => navigate(`/members/${id}`)} />,
+        ],
       },
     ];
     return result;
-  }, [t]);
+  }, [navigate, t]);
 
   return (
     <>

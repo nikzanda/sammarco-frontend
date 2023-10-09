@@ -4,7 +4,7 @@ import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaMoneyBill, FaUserFriends } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
-import { MemberCreatePage, MemberListPage } from '../core/members';
+import { MemberCreatePage, MemberEditPage, MemberListPage } from '../core/members';
 import { PaymentListPage } from '../core/payments';
 
 const AuthenticatedLayout: React.FC = () => {
@@ -55,6 +55,7 @@ const AuthenticatedLayout: React.FC = () => {
           <Route path="members" element={<Outlet />}>
             <Route index element={<MemberListPage />} />
             <Route path="new" element={<MemberCreatePage />} />
+            <Route path=":id" element={<MemberEditPage />} />
           </Route>
           <Route path="payments" element={<Outlet />}>
             <Route index element={<PaymentListPage />} />

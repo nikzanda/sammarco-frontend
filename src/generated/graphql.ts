@@ -99,6 +99,7 @@ export type Member = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   surname: Scalars['String']['output'];
+  fullName: Scalars['String']['output'];
   taxCode: Scalars['String']['output'];
   birthday: Scalars['Float']['output'];
   enrolledAt?: Maybe<Scalars['Float']['output']>;
@@ -343,9 +344,9 @@ export type FeeSearcherQueryVariables = Exact<{
 
 export type FeeSearcherQuery = { __typename?: 'Query', fee: { __typename?: 'Fee', id: string, name: string, amount: number, type?: FeeTypeEnum | null } };
 
-export type MemberListItemFragment = { __typename?: 'Member', id: string, name: string, surname: string };
+export type MemberListItemFragment = { __typename?: 'Member', id: string, fullName: string };
 
-export type MemberDetailFragment = { __typename?: 'Member', id: string, name: string, surname: string };
+export type MemberDetailFragment = { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string };
 
 export type MembersQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
@@ -354,25 +355,32 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'MemberPagination', data: Array<{ __typename?: 'Member', id: string, name: string, surname: string }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'MemberPagination', data: Array<{ __typename?: 'Member', id: string, fullName: string }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+
+export type MemberQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type MemberQuery = { __typename?: 'Query', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string } };
 
 export type MemberCreateMutationVariables = Exact<{
   input: MemberCreateInput;
 }>;
 
 
-export type MemberCreateMutation = { __typename?: 'Mutation', memberCreate: { __typename?: 'MemberCreatePayload', member: { __typename?: 'Member', id: string, name: string, surname: string } } };
+export type MemberCreateMutation = { __typename?: 'Mutation', memberCreate: { __typename?: 'MemberCreatePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string } } };
 
 export type MemberUpdateMutationVariables = Exact<{
   input: MemberUpdateInput;
 }>;
 
 
-export type MemberUpdateMutation = { __typename?: 'Mutation', memberUpdate: { __typename?: 'MemberUpdatePayload', member: { __typename?: 'Member', id: string, name: string, surname: string } } };
+export type MemberUpdateMutation = { __typename?: 'Mutation', memberUpdate: { __typename?: 'MemberUpdatePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string } } };
 
-export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, name: string, surname: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
+export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
 
-export type PaymentDetailFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, name: string, surname: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
+export type PaymentDetailFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
 
 export type PaymentsQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
@@ -381,14 +389,14 @@ export type PaymentsQueryVariables = Exact<{
 }>;
 
 
-export type PaymentsQuery = { __typename?: 'Query', payments: { __typename?: 'PaymentPagination', data: Array<{ __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, name: string, surname: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+export type PaymentsQuery = { __typename?: 'Query', payments: { __typename?: 'PaymentPagination', data: Array<{ __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
 
 export type PaymentQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type PaymentQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, name: string, surname: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } };
+export type PaymentQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } };
 
 export type PaymentPdfQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -402,7 +410,7 @@ export type PaymentCreateMutationVariables = Exact<{
 }>;
 
 
-export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate: { __typename?: 'PaymentCreatePayload', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, name: string, surname: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } } };
+export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate: { __typename?: 'PaymentCreatePayload', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } } };
 
 export const FeeListItemFragmentDoc = gql`
     fragment FeeListItem on Fee {
@@ -421,13 +429,16 @@ export const FeeDetailFragmentDoc = gql`
 export const MemberListItemFragmentDoc = gql`
     fragment MemberListItem on Member {
   id
-  name
-  surname
+  fullName
 }
     `;
 export const MemberDetailFragmentDoc = gql`
     fragment MemberDetail on Member {
   ...MemberListItem
+  name
+  surname
+  taxCode
+  enrolledAt
 }
     ${MemberListItemFragmentDoc}`;
 export const PaymentListItemFragmentDoc = gql`
@@ -436,8 +447,7 @@ export const PaymentListItemFragmentDoc = gql`
   counter
   member {
     id
-    name
-    surname
+    fullName
   }
   fee {
     id
@@ -573,6 +583,41 @@ export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
 export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
 export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
+export const MemberDocument = gql`
+    query Member($id: ID!) {
+  member(id: $id) {
+    ...MemberDetail
+  }
+}
+    ${MemberDetailFragmentDoc}`;
+
+/**
+ * __useMemberQuery__
+ *
+ * To run a query within a React component, call `useMemberQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemberQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMemberQuery(baseOptions: Apollo.QueryHookOptions<MemberQuery, MemberQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
+      }
+export function useMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MemberQuery, MemberQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
+        }
+export type MemberQueryHookResult = ReturnType<typeof useMemberQuery>;
+export type MemberLazyQueryHookResult = ReturnType<typeof useMemberLazyQuery>;
+export type MemberQueryResult = Apollo.QueryResult<MemberQuery, MemberQueryVariables>;
 export const MemberCreateDocument = gql`
     mutation MemberCreate($input: MemberCreateInput!) {
   memberCreate(input: $input) {

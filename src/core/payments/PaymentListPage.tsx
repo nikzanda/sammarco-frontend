@@ -59,11 +59,7 @@ const PaymentListPage: React.FC = () => {
         title: t('member'),
         key: 'member',
         dataIndex: 'member',
-        render: (member) => (
-          <>
-            {member.name} {member.surname}
-          </>
-        ),
+        render: (member) => member.fullName,
       },
       {
         title: t('amount'),
