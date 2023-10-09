@@ -1,10 +1,10 @@
 import React from 'react';
-import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
-import { useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
+import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberForm } from './components';
 
@@ -24,15 +24,22 @@ const MemberEditPage: React.FC = () => {
     },
   });
 
-  const [updateMember, { loading: mutationLoading, error: mutationError }] = useMemberUpdateMutation({
-    refetchQueries: ['Members'],
+  const [updateMember, { loading: updateLoading, error: updateError }] = useMemberUpdateMutation({
+    refetchQueries: ['Members', 'Member'],
     onCompleted: () => {
       message.success('updated');
+    },
+  });
+
+  const [deleteMember, { loading: deleteLoading, error: deleteError }] = useMemberDeleteMutation({
+    refetchQueries: ['Members'],
+    onCompleted: () => {
+      message.success('deleted');
       navigate(-1);
     },
   });
 
-  useDisplayGraphQLErrors([queryError, mutationError]);
+  useDisplayGraphQLErrors([queryError, updateError, deleteError]);
 
   const member = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -47,6 +54,16 @@ const MemberEditPage: React.FC = () => {
     }
     return member.fullName;
   }, [member]);
+
+  const handleDelete = () => {
+    deleteMember({
+      variables: {
+        input: {
+          id: id!,
+        },
+      },
+    });
+  };
 
   const handleFinish = (values: any) => {
     updateMember({
@@ -69,10 +86,18 @@ const MemberEditPage: React.FC = () => {
           <Typography.Title level={3}>{title}</Typography.Title>
         </Col>
         <Col span={2}>
-          <Button type="primary" danger>
-            {t('delete')}
-          </Button>
-          <Button type="primary" htmlType="submit" form="form" loading={mutationLoading}>
+          {member?.canDelete && (
+            <Popconfirm
+              title={t('sicuro di voler eliminare?.....')}
+              description={t('elimina iscritto...')}
+              onConfirm={handleDelete}
+            >
+              <Button type="primary" danger loading={deleteLoading}>
+                {t('delete')}
+              </Button>
+            </Popconfirm>
+          )}
+          <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
             {t('update')}
           </Button>
         </Col>

@@ -35,12 +35,7 @@ const MemberCreatePage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <Row justify="space-between">
         <Col span={2}>
-          <Button
-            shape="circle"
-            size="middle"
-            icon={<Icon component={FaAngleLeft} />}
-            onClick={() => navigate('/customers')}
-          />
+          <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
         </Col>
         <Col span={20}>
           <Typography.Title level={3}>{t('member.new')}</Typography.Title>

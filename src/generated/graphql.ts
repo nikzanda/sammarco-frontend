@@ -104,6 +104,7 @@ export type Member = {
   birthday: Scalars['Float']['output'];
   enrolledAt?: Maybe<Scalars['Float']['output']>;
   payments: Array<Payment>;
+  canDelete: Scalars['Boolean']['output'];
   createdAt: Scalars['Float']['output'];
   updatedAt: Scalars['Float']['output'];
 };
@@ -346,7 +347,7 @@ export type FeeSearcherQuery = { __typename?: 'Query', fee: { __typename?: 'Fee'
 
 export type MemberListItemFragment = { __typename?: 'Member', id: string, fullName: string };
 
-export type MemberDetailFragment = { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string };
+export type MemberDetailFragment = { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, canDelete: boolean, id: string, fullName: string };
 
 export type MembersQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
@@ -362,21 +363,28 @@ export type MemberQueryVariables = Exact<{
 }>;
 
 
-export type MemberQuery = { __typename?: 'Query', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string } };
+export type MemberQuery = { __typename?: 'Query', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, canDelete: boolean, id: string, fullName: string } };
 
 export type MemberCreateMutationVariables = Exact<{
   input: MemberCreateInput;
 }>;
 
 
-export type MemberCreateMutation = { __typename?: 'Mutation', memberCreate: { __typename?: 'MemberCreatePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string } } };
+export type MemberCreateMutation = { __typename?: 'Mutation', memberCreate: { __typename?: 'MemberCreatePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, canDelete: boolean, id: string, fullName: string } } };
 
 export type MemberUpdateMutationVariables = Exact<{
   input: MemberUpdateInput;
 }>;
 
 
-export type MemberUpdateMutation = { __typename?: 'Mutation', memberUpdate: { __typename?: 'MemberUpdatePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, id: string, fullName: string } } };
+export type MemberUpdateMutation = { __typename?: 'Mutation', memberUpdate: { __typename?: 'MemberUpdatePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, canDelete: boolean, id: string, fullName: string } } };
+
+export type MemberDeleteMutationVariables = Exact<{
+  input: MemberDeleteInput;
+}>;
+
+
+export type MemberDeleteMutation = { __typename?: 'Mutation', memberDelete: { __typename?: 'MemberDeletePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, canDelete: boolean, id: string, fullName: string } } };
 
 export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
 
@@ -439,6 +447,7 @@ export const MemberDetailFragmentDoc = gql`
   surname
   taxCode
   enrolledAt
+  canDelete
 }
     ${MemberListItemFragmentDoc}`;
 export const PaymentListItemFragmentDoc = gql`
@@ -688,6 +697,41 @@ export function useMemberUpdateMutation(baseOptions?: Apollo.MutationHookOptions
 export type MemberUpdateMutationHookResult = ReturnType<typeof useMemberUpdateMutation>;
 export type MemberUpdateMutationResult = Apollo.MutationResult<MemberUpdateMutation>;
 export type MemberUpdateMutationOptions = Apollo.BaseMutationOptions<MemberUpdateMutation, MemberUpdateMutationVariables>;
+export const MemberDeleteDocument = gql`
+    mutation MemberDelete($input: MemberDeleteInput!) {
+  memberDelete(input: $input) {
+    member {
+      ...MemberDetail
+    }
+  }
+}
+    ${MemberDetailFragmentDoc}`;
+export type MemberDeleteMutationFn = Apollo.MutationFunction<MemberDeleteMutation, MemberDeleteMutationVariables>;
+
+/**
+ * __useMemberDeleteMutation__
+ *
+ * To run a mutation, you first call `useMemberDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMemberDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [memberDeleteMutation, { data, loading, error }] = useMemberDeleteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMemberDeleteMutation(baseOptions?: Apollo.MutationHookOptions<MemberDeleteMutation, MemberDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MemberDeleteMutation, MemberDeleteMutationVariables>(MemberDeleteDocument, options);
+      }
+export type MemberDeleteMutationHookResult = ReturnType<typeof useMemberDeleteMutation>;
+export type MemberDeleteMutationResult = Apollo.MutationResult<MemberDeleteMutation>;
+export type MemberDeleteMutationOptions = Apollo.BaseMutationOptions<MemberDeleteMutation, MemberDeleteMutationVariables>;
 export const PaymentsDocument = gql`
     query Payments($pageIndex: Int!, $pageSize: Int!, $filter: PaymentFilter) {
   payments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {

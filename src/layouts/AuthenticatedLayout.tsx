@@ -45,7 +45,7 @@ const AuthenticatedLayout: React.FC = () => {
         <Menu
           theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['members']}
+          defaultSelectedKeys={['members']} // TODO: fix qui quando refresh pagina
           items={menuItems}
           style={{ width: '100%' }}
         />

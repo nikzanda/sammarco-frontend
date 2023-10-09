@@ -14,6 +14,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     surname
     taxCode
     enrolledAt
+    canDelete
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}
 `;
@@ -55,6 +56,17 @@ export const MEMBER_CREATE_MUTATION = gql`
 export const MEMBER_UPDATE_MUTATION = gql`
   mutation MemberUpdate($input: MemberUpdateInput!) {
     memberUpdate(input: $input) {
+      member {
+        ...MemberDetail
+      }
+    }
+  }
+  ${MEMBER_DETAIL_FRAGMENT}
+`;
+
+export const MEMBER_DELETE_MUTATION = gql`
+  mutation MemberDelete($input: MemberDeleteInput!) {
+    memberDelete(input: $input) {
       member {
         ...MemberDetail
       }
