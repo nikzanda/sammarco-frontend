@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Menu, MenuProps } from 'antd';
-import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaMoneyBill, FaUserFriends } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -9,18 +9,19 @@ import { PaymentListPage } from '../core/payments';
 
 const AuthenticatedLayout: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const menuItems = React.useMemo(() => {
     const result: MenuProps['items'] = [
       {
-        label: t('members'),
+        label: t('members.name'),
         key: 'members',
         icon: <Icon component={FaUserFriends} />,
         onClick: () => navigate('/members'),
       },
       {
-        label: t('payments'),
+        label: t('payments.name'),
         key: 'payments',
         icon: <Icon component={FaMoneyBill} />,
         onClick: () => navigate('/payments'),
@@ -28,6 +29,15 @@ const AuthenticatedLayout: React.FC = () => {
     ];
     return result;
   }, [navigate, t]);
+
+  const selectedKey = React.useMemo(() => {
+    const item = menuItems.find(({ key }: any) => location.pathname.includes(key));
+    if (item) {
+      return [item.key as string];
+    }
+
+    return [];
+  }, [location.pathname, menuItems]);
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -42,13 +52,7 @@ const AuthenticatedLayout: React.FC = () => {
         }}
       >
         <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['members']} // TODO: fix qui quando refresh pagina
-          items={menuItems}
-          style={{ width: '100%' }}
-        />
+        <Menu theme="dark" mode="horizontal" selectedKeys={selectedKey} items={menuItems} style={{ width: '100%' }} />
       </Layout.Header>
       <Layout.Content style={{ padding: '15px 15px 15px 15px' }}>
         <Routes>

@@ -11,7 +11,6 @@ module.exports = {
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
-    // project: './tsconfig.json'
   },
   plugins: ['react'],
   settings: {
@@ -23,7 +22,6 @@ module.exports = {
   },
   rules: {
     'no-debugger': 'warn',
-    // '@typescript-eslint/no-unused-vars': ['warn'],
     'react/function-component-definition': [
       2,
       {
@@ -43,7 +41,7 @@ module.exports = {
       },
     ],
     'no-shadow': 'off',
-    // 'no-plusplus': 'off',
+    'no-plusplus': 'off',
     'react/jsx-props-no-spreading': 'off',
   },
 };

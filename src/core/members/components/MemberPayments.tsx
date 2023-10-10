@@ -91,7 +91,13 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
 
   return (
     <>
-      {queryError && <Result />}
+      {queryError && (
+        <Result
+          status="500"
+          title="500"
+          subTitle="Sorry, something went wrong." // TODO: refetch
+        />
+      )}
 
       <Table
         dataSource={payments}

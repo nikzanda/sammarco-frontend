@@ -1,1 +1,71 @@
-{}
+{
+  "members": {
+    "name": "Iscritti",
+    "new": "Nuovo iscritto",
+    "delete": {
+      "confirm": "Sei sicuro di voler eliminare l'iscritto?",
+      "description": "Elimina {{fullName}}"
+    },
+    "table": {
+      "fullName": "Nome"
+    },
+    "tab": {
+      "details": "Dettagli",
+      "payments": "Pagamenti"
+    },
+    "form": {
+      "name": "Nome",
+      "surname": "Cognome",
+      "taxCode": "Codice fiscale",
+      "enrolledAt": "Iscritto il"
+    }
+  },
+  "payments": {
+    "name": "Pagamenti",
+    "new": "Nuovo pagamento",
+    "table": {
+      "member": "Iscritto",
+      "amount": "Importo",
+      "month": "Mese"
+    },
+    "form": {
+      "fee": "Quota",
+      "amount": "Importo",
+      "month": "Mese",
+      "years": "Anno",
+      "date": "Pagato il",
+      "paymentType": "Tipo pagamento"
+    }
+  },
+  "buttons": {
+    "delete": {
+      "label": "Elimina"
+    },
+    "save": {
+      "label": "Salva"
+    },
+    "edit": {
+      "label": "Modifica",
+      "tooltip": "Modifica"
+    },
+    "fee": {
+      "label": "pagamento",
+      "tooltip": "Inserisci pagamento"
+    },
+    "resetFilter": {
+      "label": "Reset filtro"
+    }
+  },
+  "validations": {
+    "required": "Campo obbligatorio"
+  },
+  "errors": {
+    "something-went-wrong": "Ops, qualcosa è andato storto."
+  },
+  "commons": {
+    "searchPlaceholder": "Cerca...",
+    "table": {
+      "pagination": "Pagina {{start}} di {{end}}, {{total}}"
+    }
+  }
+}

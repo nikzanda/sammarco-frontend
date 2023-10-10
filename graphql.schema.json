@@ -1994,6 +1994,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "NAME",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SURNAME",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CREATED_AT",
             "description": null,
             "isDeprecated": false,

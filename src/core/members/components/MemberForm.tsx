@@ -10,7 +10,7 @@ const MemberForm: React.FC = () => {
     <Row gutter={24}>
       <Col xs={24} md={12}>
         <Form.Item
-          label={t('member.form.name')}
+          label={t('members.form.name')}
           name="name"
           rules={[{ required: true, message: t('validations.required')! }]}
         >
@@ -20,7 +20,7 @@ const MemberForm: React.FC = () => {
 
       <Col xs={24} md={12}>
         <Form.Item
-          label={t('member.form.surname')}
+          label={t('members.form.surname')}
           name="surname"
           rules={[{ required: true, message: t('validations.required')! }]}
         >
@@ -30,7 +30,7 @@ const MemberForm: React.FC = () => {
 
       <Col xs={24} md={12}>
         <Form.Item
-          label={t('member.form.taxCode')}
+          label={t('members.form.taxCode')}
           name="taxCode"
           // TODO: validare codice univoco
           rules={[
@@ -57,7 +57,7 @@ const MemberForm: React.FC = () => {
 
       <Col xs={24} md={12}>
         <Form.Item
-          label={t('member.form.enrolledAt')}
+          label={t('members.form.enrolledAt')}
           name="enrolledAt"
           getValueProps={(v: number) => {
             if (v) {

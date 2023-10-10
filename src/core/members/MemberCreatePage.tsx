@@ -38,11 +38,11 @@ const MemberCreatePage: React.FC = () => {
           <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
         </Col>
         <Col span={20}>
-          <Typography.Title level={3}>{t('member.new')}</Typography.Title>
+          <Typography.Title level={3}>{t('members.new')}</Typography.Title>
         </Col>
         <Col span={2}>
-          <Button type="primary" htmlType="submit" form="form" loading={loading}>
-            {t('create')}
+          <Button type="primary" htmlType="submit" form="form" size="large" loading={loading}>
+            {t('buttons.save.label')}
           </Button>
         </Col>
       </Row>

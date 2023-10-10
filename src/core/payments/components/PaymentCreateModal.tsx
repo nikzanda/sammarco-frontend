@@ -28,7 +28,6 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  // TODO: fare un componente
   const {
     data: feesData,
     loading: feesLoading,
@@ -76,7 +75,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
 
   return (
     <Modal
-      title="pagamento"
+      title={t('payments.new')}
       open
       okButtonProps={{
         htmlType: 'submit',
@@ -94,9 +93,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         onFinish={handleSubmit}
       >
         <Form.Item
-          label="fee"
+          label={t('payments.form.fee')}
           name="feeId"
-          rules={[{ required: true, message: 'validations.required' }]} // TODO: translate
+          rules={[{ required: true, message: 'validations.required' }]}
         >
           <Select
             options={fees.map((fee) => ({ label: fee.name, value: fee.id }))}
@@ -126,9 +125,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
             if ([FeeTypeEnum.FULL_MONTH, FeeTypeEnum.PARTIAL_MONTH].includes(fee.type)) {
               return (
                 <Form.Item
-                  label="month"
+                  label={t('payments.form.month')}
                   name="month"
-                  rules={[{ required: true, message: 'validations.required' }]} // TODO: translate
+                  rules={[{ required: true, message: 'validations.required' }]}
                   getValueProps={(v: string) => {
                     if (v) {
                       const [year, month] = v.split('-');
@@ -151,9 +150,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
             if ([FeeTypeEnum.ENROLLMENT_A, FeeTypeEnum.ENROLLMENT_B, FeeTypeEnum.ENROLLMENT_C].includes(fee.type)) {
               return (
                 <Form.Item
-                  label="years"
+                  label={t('payments.form.years')}
                   name="years"
-                  rules={[{ required: true, message: 'validations.required' }]} // TODO: translate
+                  rules={[{ required: true, message: 'validations.required' }]}
                   getValueProps={(v: [number, number]) => {
                     if (v) {
                       const [yearFrom, yearTo] = v;
@@ -185,9 +184,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
 
             return (
               <Form.Item
-                label="amount"
+                label={t('payments.form.amount')}
                 name="amount"
-                rules={[{ required: true, message: 'validations.required' }]} // TODO: translate
+                rules={[{ required: true, message: 'validations.required' }]}
               >
                 <InputNumber
                   min={0}
@@ -204,9 +203,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         </Form.Item>
 
         <Form.Item
-          label="date"
+          label={t('payments.form.date')}
           name="date"
-          rules={[{ required: true, message: 'validations.required' }]} // TODO: translate
+          rules={[{ required: true, message: 'validations.required' }]}
           getValueProps={(v: number) => {
             if (v) {
               return { value: new Date(v) };
@@ -224,9 +223,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         </Form.Item>
 
         <Form.Item
-          label="paymentType"
+          label={t('payments.form.paymentType')}
           name="type"
-          rules={[{ required: true, message: 'validations.required' }]} // TODO: translate
+          rules={[{ required: true, message: 'validations.required' }]}
         >
           <Radio.Group options={paymentTypeOptions} />
         </Form.Item>

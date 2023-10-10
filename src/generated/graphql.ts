@@ -258,6 +258,8 @@ export enum PaymentTypeEnum {
 }
 
 export enum MemberSortEnum {
+  NAME = 'NAME',
+  SURNAME = 'SURNAME',
   CREATED_AT = 'CREATED_AT'
 }
 

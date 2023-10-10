@@ -56,20 +56,20 @@ const PaymentListPage: React.FC = () => {
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
       {
-        title: t('member'),
+        title: t('payments.table.member'),
         key: 'member',
         dataIndex: 'member',
         render: (member) => member.fullName,
       },
       {
-        title: t('amount'),
+        title: t('payments.table.amount'),
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
         render: (amount) => <>{amount} €</>,
       },
       {
-        title: t('month'),
+        title: t('payments.table.month'),
         key: 'month',
         dataIndex: 'month',
         render: (rawMonth) => {
@@ -86,6 +86,7 @@ const PaymentListPage: React.FC = () => {
       {
         key: 'actions',
         dataIndex: 'id',
+        align: 'right',
         render: (id) => <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={() => handlePrint(id)} />,
       },
     ];

@@ -88,17 +88,17 @@ const MemberEditPage: React.FC = () => {
         <Col span={2}>
           {member?.canDelete && (
             <Popconfirm
-              title={t('sicuro di voler eliminare?.....')}
-              description={t('elimina iscritto...')}
+              title={t('members.delete.confirm')}
+              description={t('members.delete.description', { fullName: member.fullName })}
               onConfirm={handleDelete}
             >
               <Button type="primary" danger loading={deleteLoading}>
-                {t('delete')}
+                {t('buttons.delete.label')}
               </Button>
             </Popconfirm>
           )}
           <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
-            {t('update')}
+            {t('buttons.save.label')}
           </Button>
         </Col>
       </Row>
@@ -108,14 +108,14 @@ const MemberEditPage: React.FC = () => {
         <Result
           status="500"
           title="500"
-          subTitle="Sorry, something went wrong." // TODO: refetch
+          subTitle={t('errors.something-went-wrong')} // TODO: refetch
         />
       )}
       {member && (
         <Tabs
           items={[
             {
-              label: t('details'),
+              label: t('members.tab.details'),
               key: 'details',
               children: (
                 <Form id="form" initialValues={member} layout="vertical" autoComplete="off" onFinish={handleFinish}>
@@ -124,7 +124,7 @@ const MemberEditPage: React.FC = () => {
               ),
             },
             {
-              label: t('payments'),
+              label: t('members.tab.payments'),
               key: 'payments',
               children: <MemberPayments member={member} />,
             },
