@@ -2,11 +2,12 @@ import React from 'react';
 import { Layout, Menu, MenuProps } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaMoneyBill, FaUserFriends } from 'react-icons/fa';
+import { FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon from '@ant-design/icons';
 import { MemberCreatePage, MemberEditPage, MemberListPage } from '../core/members';
 import { CourseCreatePage, CourseEditPage, CourseListPage } from '../core/courses';
+import { FeeListPage, FeeCreatePage, FeeEditPage } from '../core/fees';
 import { PaymentListPage } from '../core/payments';
 
 const AuthenticatedLayout: React.FC = () => {
@@ -27,6 +28,12 @@ const AuthenticatedLayout: React.FC = () => {
         key: 'courses',
         icon: <Icon component={GiKimono} />,
         onClick: () => navigate('/courses'),
+      },
+      {
+        label: t('fees.name'),
+        key: 'fees',
+        icon: <Icon component={FaReceipt} />,
+        onClick: () => navigate('/fees'),
       },
       {
         label: t('payments.name'),
@@ -74,6 +81,12 @@ const AuthenticatedLayout: React.FC = () => {
             <Route index element={<CourseListPage />} />
             <Route path="new" element={<CourseCreatePage />} />
             <Route path=":id" element={<CourseEditPage />} />
+          </Route>
+
+          <Route path="fees" element={<Outlet />}>
+            <Route index element={<FeeListPage />} />
+            <Route path="new" element={<FeeCreatePage />} />
+            <Route path=":id" element={<FeeEditPage />} />
           </Route>
 
           <Route path="payments" element={<Outlet />}>

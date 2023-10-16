@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Table, TableColumnsType } from 'antd';
+import { Button, Flex, Space, Table, TableColumnsType, Typography } from 'antd';
 import { format, set } from 'date-fns';
 import { FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -94,17 +94,32 @@ const PaymentListPage: React.FC = () => {
   }, [t]);
 
   return (
-    <Table
-      dataSource={payments}
-      columns={columns}
-      rowKey="id"
-      loading={queryLoading}
-      pagination={{
-        total,
-        pageSize: pagination.pageSize,
-        current: pagination.pageIndex + 1,
-      }}
-    />
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Flex justify="space-between" align="center">
+        <Typography.Title level={2}>{t('payments.name')}</Typography.Title>
+      </Flex>
+
+      {/* <Flex justify='space-between' align='center'></Flex> */}
+
+      <Table
+        dataSource={payments}
+        columns={columns}
+        rowKey="id"
+        loading={queryLoading}
+        pagination={{
+          total,
+          pageSize: pagination.pageSize,
+          current: pagination.pageIndex + 1,
+          showSizeChanger: true,
+          pageSizeOptions: [10, 20, 50, 100],
+          showTotal: (total) => {
+            const start = pagination.pageIndex * pagination.pageSize + 1;
+            const end = start + (payments.length < pagination.pageSize ? payments.length : pagination.pageSize) - 1;
+            return t('commons.table.pagination', { start, end, total });
+          },
+        }}
+      />
+    </Space>
   );
 };
 

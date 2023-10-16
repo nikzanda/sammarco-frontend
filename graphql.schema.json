@@ -1144,6 +1144,18 @@
             "deprecationReason": null
           },
           {
+            "name": "course",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Course",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "amount",
             "description": null,
             "args": [],
@@ -2036,7 +2048,7 @@
         "description": null,
         "fields": [
           {
-            "name": "paymentCategory",
+            "name": "fee",
             "description": null,
             "args": [],
             "type": {
@@ -2090,7 +2102,7 @@
         "description": null,
         "fields": [
           {
-            "name": "paymentCategory",
+            "name": "fee",
             "description": null,
             "args": [],
             "type": {
@@ -2148,6 +2160,22 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "courseId",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -2160,7 +2188,7 @@
         "description": null,
         "fields": [
           {
-            "name": "paymentCategory",
+            "name": "fee",
             "description": null,
             "args": [],
             "type": {
@@ -2608,11 +2636,47 @@
             "deprecationReason": null
           },
           {
+            "name": "courseId",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "enabled",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sortBy",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "FeeSortEnum",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sortDirection",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "SortDirectionEnum",
               "ofType": null
             },
             "defaultValue": null,
@@ -2847,6 +2911,29 @@
           },
           {
             "name": "ENROLLMENT_C",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "FeeSortEnum",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "NAME",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CREATED_AT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

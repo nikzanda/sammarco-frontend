@@ -3,25 +3,20 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Flex, Input, Space, Table, TableProps, Typography } from 'antd';
+import { Button, Flex, Input, Space, Table, TableProps, Typography, theme } from 'antd';
 import Icon from '@ant-design/icons';
-import { FaPlus, FaBan } from 'react-icons/fa';
-import {
-  CourseFilter,
-  CourseListItemFragment,
-  CourseSortEnum,
-  SortDirectionEnum,
-  useCoursesQuery,
-} from '../../generated/graphql';
+import { FaPlus, FaBan, FaCheck, FaTimes } from 'react-icons/fa';
+import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/course/';
 
-const CourseListPage: React.FC = () => {
+const FeeListPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { token } = theme.useToken();
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -38,7 +33,7 @@ const CourseListPage: React.FC = () => {
       defaultValue: {},
     }
   );
-  const [sortInfo, setSortInfo] = useLocalStorageState<SorterResult<CourseListItemFragment>>(
+  const [sortInfo, setSortInfo] = useLocalStorageState<SorterResult<FeeListItemFragment>>(
     `${LOCAL_STORAGE_PATH}sortInfo`,
     { defaultValue: { order: 'descend' } }
   );
@@ -49,17 +44,16 @@ const CourseListPage: React.FC = () => {
 
     switch (sortInfo.columnKey) {
       case 'name':
-        sortBy = CourseSortEnum.NAME;
+        sortBy = FeeSortEnum.NAME;
         break;
       default:
-        sortBy = CourseSortEnum.CREATED_AT;
+        sortBy = FeeSortEnum.CREATED_AT;
     }
     if (sortBy) {
       sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
     }
 
-    const result: CourseFilter = {
-      search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
+    const result: FeeFilter = {
       name: filterInfo.name?.length ? (filterInfo.name[0] as string).trim() : undefined,
       sortBy,
       sortDirection,
@@ -71,7 +65,7 @@ const CourseListPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useCoursesQuery({
+  } = useFeesQuery({
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
@@ -81,39 +75,64 @@ const CourseListPage: React.FC = () => {
 
   useDisplayGraphQLErrors([queryError]);
 
-  const courses = React.useMemo(() => {
+  const fees = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
-      return queryData.courses.data;
+      return queryData.fees.data;
     }
     return [];
   }, [queryData, queryError, queryLoading]);
 
   const total = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
-      return queryData.courses.pageInfo.total;
+      return queryData.fees.pageInfo.total;
     }
     return 0;
   }, [queryData, queryError, queryLoading]);
 
   const columns = React.useMemo(() => {
-    const result: ColumnsType<CourseListItemFragment> = [
+    const result: ColumnsType<FeeListItemFragment> = [
       {
-        title: t('courses.table.name'),
+        title: t('fees.table.name'),
         key: 'name',
         dataIndex: 'name',
         sorter: true,
       },
       {
+        title: t('fees.table.course'),
+        key: 'course',
+        dataIndex: 'course',
+        render: (course: FeeListItemFragment['course']) => course && course.name,
+      },
+      {
+        title: t('fees.table.amount'),
+        key: 'amount',
+        dataIndex: 'amount',
+        align: 'right',
+        render: (amount) => <>{amount} €</>,
+      },
+      {
+        title: t('fees.table.enabled'),
+        key: 'enabled',
+        dataIndex: 'enabled',
+        align: 'center',
+        render: (enabled) =>
+          enabled ? (
+            <Icon component={FaCheck} style={{ color: token.colorSuccess }} />
+          ) : (
+            <Icon component={FaTimes} style={{ color: token.colorError }} />
+          ),
+      },
+      {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
-        render: (id) => <ActionButtons buttons={['edit']} onEdit={() => navigate(`/courses/${id}`)} />,
+        render: (id) => <ActionButtons buttons={['edit']} onEdit={() => navigate(`/fees/${id}`)} />,
       },
     ];
     return result;
-  }, [navigate, t]);
+  }, [navigate, t, token.colorError, token.colorSuccess]);
 
-  const handleTableChange: TableProps<CourseListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
+  const handleTableChange: TableProps<FeeListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
       setSearchText('');
       setFilterInfo(filters);
@@ -122,7 +141,7 @@ const CourseListPage: React.FC = () => {
         ...(searchText && { search: [searchText] }),
       });
     }
-    setSortInfo(sorter as SorterResult<CourseListItemFragment>);
+    setSortInfo(sorter as SorterResult<FeeListItemFragment>);
     setPagination({
       pageIndex: newPagination.current! - 1,
       pageSize: newPagination.pageSize!,
@@ -132,9 +151,9 @@ const CourseListPage: React.FC = () => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <Flex justify="space-between" align="center">
-        <Typography.Title level={2}>{t('courses.name')}</Typography.Title>
-        <Button type="primary" size="large" icon={<Icon component={FaPlus} />} onClick={() => navigate('/courses/new')}>
-          {t('courses.new')}
+        <Typography.Title level={2}>{t('fees.name')}</Typography.Title>
+        <Button type="primary" size="large" icon={<Icon component={FaPlus} />} onClick={() => navigate('/fees/new')}>
+          {t('fees.new')}
         </Button>
       </Flex>
 
@@ -167,7 +186,7 @@ const CourseListPage: React.FC = () => {
         </Button>
       </Flex>
       <Table
-        dataSource={courses}
+        dataSource={fees}
         columns={columns}
         rowKey="id"
         loading={queryLoading}
@@ -180,7 +199,7 @@ const CourseListPage: React.FC = () => {
           pageSizeOptions: [10, 20, 50, 100],
           showTotal: (total) => {
             const start = pagination.pageIndex * pagination.pageSize + 1;
-            const end = start + (courses.length < pagination.pageSize ? courses.length : pagination.pageSize) - 1;
+            const end = start + (fees.length < pagination.pageSize ? fees.length : pagination.pageSize) - 1;
             return t('commons.table.pagination', { start, end, total });
           },
         }}
@@ -189,4 +208,4 @@ const CourseListPage: React.FC = () => {
   );
 };
 
-export default CourseListPage;
+export default FeeListPage;

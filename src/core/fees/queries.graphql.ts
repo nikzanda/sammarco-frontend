@@ -5,6 +5,10 @@ export const FEE_LIST_ITEM_FRAGMENT = gql`
     id
     name
     type
+    course {
+      id
+      name
+    }
     amount
     enabled
   }
@@ -39,4 +43,60 @@ export const FEE_SEARCH_QUERY = gql`
       type
     }
   }
+`;
+
+export const FEES_QUERY = gql`
+  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {
+    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
+      data {
+        ...FeeListItem
+      }
+      pageInfo {
+        total
+      }
+    }
+  }
+  ${FEE_LIST_ITEM_FRAGMENT}
+`;
+
+export const FEE_QUERY = gql`
+  query Fee($id: ID!) {
+    fee(id: $id) {
+      ...FeeDetail
+    }
+  }
+  ${FEE_DETAIL_FRAGMENT}
+`;
+
+export const FEE_CREATE_MUTATION = gql`
+  mutation FeeCreate($input: FeeCreateInput!) {
+    feeCreate(input: $input) {
+      fee {
+        ...FeeDetail
+      }
+    }
+  }
+  ${FEE_DETAIL_FRAGMENT}
+`;
+
+export const FEE_UPDATE_MUTATION = gql`
+  mutation FeeUpdate($input: FeeUpdateInput!) {
+    feeUpdate(input: $input) {
+      fee {
+        ...FeeDetail
+      }
+    }
+  }
+  ${FEE_DETAIL_FRAGMENT}
+`;
+
+export const FEE_DELETE_MUTATION = gql`
+  mutation FeeDelete($input: FeeDeleteInput!) {
+    feeDelete(input: $input) {
+      fee {
+        ...FeeDetail
+      }
+    }
+  }
+  ${FEE_DETAIL_FRAGMENT}
 `;

@@ -104,12 +104,14 @@ const MemberListPage: React.FC = () => {
         title: t('members.table.fullName'),
         key: 'fullName',
         dataIndex: 'fullName',
+        sorter: true,
       },
       {
         title: t('members.table.courses'),
         key: 'courses',
         dataIndex: 'courses',
         render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
+        // TODO: filtro
       },
       {
         key: 'actions',

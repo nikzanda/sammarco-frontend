@@ -42,6 +42,19 @@
       "printName": "Nome corso per la ricevuta"
     }
   },
+  "fees": {
+    "name": "Quote",
+    "new": "Nuova quota",
+    "created": "Nuova quota creata",
+    "edited": "Quota aggiornata",
+    "deleted": "Quota eliminata",
+    "table": {
+      "name": "Quota",
+      "course": "Corso",
+      "amount": "Importo",
+      "enabled": "Attivo"
+    }
+  },
   "payments": {
     "name": "Pagamenti",
     "new": "Nuovo pagamento",
