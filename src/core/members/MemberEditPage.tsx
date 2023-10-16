@@ -27,14 +27,14 @@ const MemberEditPage: React.FC = () => {
   const [updateMember, { loading: updateLoading, error: updateError }] = useMemberUpdateMutation({
     refetchQueries: ['Members', 'Member'],
     onCompleted: () => {
-      message.success('members.edited');
+      message.success(t('members.edited'));
     },
   });
 
   const [deleteMember, { loading: deleteLoading, error: deleteError }] = useMemberDeleteMutation({
     refetchQueries: ['Members'],
     onCompleted: () => {
-      message.success('members.deleted');
+      message.success(t('members.deleted'));
       navigate(-1);
     },
   });
@@ -53,6 +53,17 @@ const MemberEditPage: React.FC = () => {
       return <Spin />;
     }
     return member.fullName;
+  }, [member]);
+
+  const initialValues = React.useMemo(() => {
+    if (member) {
+      const result = {
+        ...member,
+        courseIds: member.courses.map(({ id: courseId }) => courseId),
+      };
+      return result;
+    }
+    return undefined;
   }, [member]);
 
   const handleDelete = () => {
@@ -118,7 +129,13 @@ const MemberEditPage: React.FC = () => {
               label: t('members.tab.details'),
               key: 'details',
               children: (
-                <Form id="form" initialValues={member} layout="vertical" autoComplete="off" onFinish={handleFinish}>
+                <Form
+                  id="form"
+                  initialValues={initialValues}
+                  layout="vertical"
+                  autoComplete="off"
+                  onFinish={handleFinish}
+                >
                   <MemberForm />
                 </Form>
               ),

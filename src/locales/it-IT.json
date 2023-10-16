@@ -10,7 +10,8 @@
       "description": "Elimina {{fullName}}"
     },
     "table": {
-      "fullName": "Nome"
+      "fullName": "Nome",
+      "courses": "Corsi"
     },
     "tab": {
       "details": "Dettagli",
@@ -20,7 +21,8 @@
       "name": "Nome",
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
-      "enrolledAt": "Iscritto il"
+      "enrolledAt": "Iscritto il",
+      "courses": "Corsi"
     }
   },
   "courses": {
@@ -80,7 +82,8 @@
     }
   },
   "validations": {
-    "required": "Campo obbligatorio"
+    "required": "Campo obbligatorio",
+    "invalid-tax-code": "Codice fiscale non valido"
   },
   "errors": {
     "something-went-wrong": "Ops, qualcosa è andato storto."

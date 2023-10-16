@@ -106,6 +106,12 @@ const MemberListPage: React.FC = () => {
         dataIndex: 'fullName',
       },
       {
+        title: t('members.table.courses'),
+        key: 'courses',
+        dataIndex: 'courses',
+        render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
+      },
+      {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',

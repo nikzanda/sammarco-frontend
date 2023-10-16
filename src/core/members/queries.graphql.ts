@@ -4,6 +4,10 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
   fragment MemberListItem on Member {
     id
     fullName
+    courses {
+      id
+      name
+    }
   }
 `;
 
@@ -15,6 +19,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     taxCode
     enrolledAt
     canDelete
+    shiftIds
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}
 `;

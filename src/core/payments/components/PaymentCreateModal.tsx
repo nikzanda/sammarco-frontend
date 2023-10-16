@@ -60,7 +60,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
     },
   });
 
-  useDisplayGraphQLErrors([mutationError]);
+  useDisplayGraphQLErrors([mutationError, feesError]);
 
   const handleSubmit = (values: any) => {
     createPayment({
@@ -95,7 +95,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         <Form.Item
           label={t('payments.form.fee')}
           name="feeId"
-          rules={[{ required: true, message: 'validations.required' }]}
+          rules={[{ required: true, message: t('validations.required') }]}
         >
           <Select
             options={fees.map((fee) => ({ label: fee.name, value: fee.id }))}
@@ -127,7 +127,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
                 <Form.Item
                   label={t('payments.form.month')}
                   name="month"
-                  rules={[{ required: true, message: 'validations.required' }]}
+                  rules={[{ required: true, message: t('validations.required') }]}
                   getValueProps={(v: string) => {
                     if (v) {
                       const [year, month] = v.split('-');
@@ -152,7 +152,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
                 <Form.Item
                   label={t('payments.form.years')}
                   name="years"
-                  rules={[{ required: true, message: 'validations.required' }]}
+                  rules={[{ required: true, message: t('validations.required') }]}
                   getValueProps={(v: [number, number]) => {
                     if (v) {
                       const [yearFrom, yearTo] = v;
@@ -186,7 +186,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
               <Form.Item
                 label={t('payments.form.amount')}
                 name="amount"
-                rules={[{ required: true, message: 'validations.required' }]}
+                rules={[{ required: true, message: t('validations.required') }]}
               >
                 <InputNumber
                   min={0}
@@ -205,7 +205,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         <Form.Item
           label={t('payments.form.date')}
           name="date"
-          rules={[{ required: true, message: 'validations.required' }]}
+          rules={[{ required: true, message: t('validations.required') }]}
           getValueProps={(v: number) => {
             if (v) {
               return { value: new Date(v) };
@@ -225,7 +225,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
         <Form.Item
           label={t('payments.form.paymentType')}
           name="type"
-          rules={[{ required: true, message: 'validations.required' }]}
+          rules={[{ required: true, message: t('validations.required') }]}
         >
           <Radio.Group options={paymentTypeOptions} />
         </Form.Item>
