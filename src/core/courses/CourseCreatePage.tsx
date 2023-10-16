@@ -1,22 +1,22 @@
 import React from 'react';
-import Icon from '@ant-design/icons';
 import { App, Button, Col, Form, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FaAngleLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { MemberForm } from './components';
-import { useMemberCreateMutation } from '../../generated/graphql';
+import Icon from '@ant-design/icons';
+import { FaAngleLeft } from 'react-icons/fa';
+import { useCourseCreateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
+import { CourseForm } from './components';
 
-const MemberCreatePage: React.FC = () => {
+const CourseCreatePage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { message } = App.useApp();
 
-  const [createMember, { loading, error }] = useMemberCreateMutation({
-    refetchQueries: ['Members'],
+  const [createCourse, { loading, error }] = useCourseCreateMutation({
+    refetchQueries: ['Courses'],
     onCompleted: () => {
-      message.success(t('members.created'));
+      message.success(t('courses.created'));
       navigate(-1);
     },
   });
@@ -24,7 +24,7 @@ const MemberCreatePage: React.FC = () => {
   useDisplayGraphQLErrors([error]);
 
   const handleFinish = (values: any) => {
-    createMember({
+    createCourse({
       variables: {
         input: values,
       },
@@ -38,7 +38,7 @@ const MemberCreatePage: React.FC = () => {
           <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
         </Col>
         <Col span={20}>
-          <Typography.Title level={3}>{t('members.new')}</Typography.Title>
+          <Typography.Title level={3}>{t('courses.new')}</Typography.Title>
         </Col>
         <Col span={2}>
           <Button type="primary" htmlType="submit" form="form" size="large" loading={loading}>
@@ -48,10 +48,10 @@ const MemberCreatePage: React.FC = () => {
       </Row>
 
       <Form id="form" layout="vertical" autoComplete="off" onFinish={handleFinish}>
-        <MemberForm />
+        <CourseForm />
       </Form>
     </Space>
   );
 };
 
-export default MemberCreatePage;
+export default CourseCreatePage;

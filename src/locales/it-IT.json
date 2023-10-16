@@ -2,6 +2,9 @@
   "members": {
     "name": "Iscritti",
     "new": "Nuovo iscritto",
+    "created": "Nuovo iscritto creato",
+    "edited": "Iscritto aggiornato",
+    "deleted": "Iscritto eliminato",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare l'iscritto?",
       "description": "Elimina {{fullName}}"
@@ -20,9 +23,29 @@
       "enrolledAt": "Iscritto il"
     }
   },
+  "courses": {
+    "name": "Corsi",
+    "new": "Nuovo corso",
+    "created": "Nuovo corso creato",
+    "edited": "Corso aggiornato",
+    "deleted": "Corso eliminato",
+    "table": {
+      "name": "Corso"
+    },
+    "tab": {
+      "details": "Dettagli"
+    },
+    "form": {
+      "name": "Nome",
+      "printName": "Nome corso per la ricevuta"
+    }
+  },
   "payments": {
     "name": "Pagamenti",
     "new": "Nuovo pagamento",
+    "created": "Nuovo pagamento creato",
+    "edited": "Pagamento aggiornato",
+    "deleted": "Pagamento eliminato",
     "table": {
       "member": "Iscritto",
       "amount": "Importo",

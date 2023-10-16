@@ -1,14 +1,14 @@
+import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import React from 'react';
-import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
-import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
+import { useCourseDeleteMutation, useCourseQuery, useCourseUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { MemberForm, MemberPayments } from './components';
+import { CourseForm } from './components';
 
-const MemberEditPage: React.FC = () => {
+const CourseEditPage: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -18,45 +18,45 @@ const MemberEditPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useMemberQuery({
+  } = useCourseQuery({
     variables: {
       id: id!,
     },
   });
 
-  const [updateMember, { loading: updateLoading, error: updateError }] = useMemberUpdateMutation({
-    refetchQueries: ['Members', 'Member'],
+  const [updateCourse, { loading: updateLoading, error: updateError }] = useCourseUpdateMutation({
+    refetchQueries: ['Courses', 'Course'],
     onCompleted: () => {
-      message.success('members.edited');
+      message.success(t('courses.edited'));
     },
   });
 
-  const [deleteMember, { loading: deleteLoading, error: deleteError }] = useMemberDeleteMutation({
-    refetchQueries: ['Members'],
+  const [deleteCourse, { loading: deleteLoading, error: deleteError }] = useCourseDeleteMutation({
+    refetchQueries: ['Courses'],
     onCompleted: () => {
-      message.success('members.deleted');
+      message.success('courses.deleted');
       navigate(-1);
     },
   });
 
   useDisplayGraphQLErrors([queryError, updateError, deleteError]);
 
-  const member = React.useMemo(() => {
+  const course = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
-      return queryData.member;
+      return queryData.course;
     }
     return undefined;
   }, [queryData, queryError, queryLoading]);
 
   const title = React.useMemo(() => {
-    if (!member) {
+    if (!course) {
       return <Spin />;
     }
-    return member.fullName;
-  }, [member]);
+    return course.name;
+  }, [course]);
 
   const handleDelete = () => {
-    deleteMember({
+    deleteCourse({
       variables: {
         input: {
           id: id!,
@@ -66,7 +66,7 @@ const MemberEditPage: React.FC = () => {
   };
 
   const handleFinish = (values: any) => {
-    updateMember({
+    updateCourse({
       variables: {
         input: {
           id: id!,
@@ -86,17 +86,18 @@ const MemberEditPage: React.FC = () => {
           <Typography.Title level={3}>{title}</Typography.Title>
         </Col>
         <Col span={2}>
-          {member?.canDelete && (
+          {/* TODO: elimina corso */}
+          {/* {course?.canDelete && (
             <Popconfirm
-              title={t('members.delete.confirm')}
-              description={t('members.delete.description', { fullName: member.fullName })}
+              title={t('courses.delete.confirm')}
+              description={t('courses.delete.description', { fullName: course.fullName })}
               onConfirm={handleDelete}
             >
               <Button type="primary" danger loading={deleteLoading}>
                 {t('buttons.delete.label')}
               </Button>
             </Popconfirm>
-          )}
+          )} */}
           <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
             {t('buttons.save.label')}
           </Button>
@@ -111,23 +112,23 @@ const MemberEditPage: React.FC = () => {
           subTitle={t('errors.something-went-wrong')} // TODO: refetch
         />
       )}
-      {member && (
+      {course && (
         <Tabs
           items={[
             {
-              label: t('members.tab.details'),
+              label: t('courses.tab.details'),
               key: 'details',
               children: (
-                <Form id="form" initialValues={member} layout="vertical" autoComplete="off" onFinish={handleFinish}>
-                  <MemberForm />
+                <Form id="form" initialValues={course} layout="vertical" autoComplete="off" onFinish={handleFinish}>
+                  <CourseForm />
                 </Form>
               ),
             },
-            {
-              label: t('members.tab.payments'),
-              key: 'payments',
-              children: <MemberPayments member={member} />,
-            },
+            // {
+            //   label: t('courses.tab.payments'),
+            //   key: 'payments',
+            //   children: <coursePayments course={course} />,
+            // },
           ]}
         />
       )}
@@ -135,4 +136,4 @@ const MemberEditPage: React.FC = () => {
   );
 };
 
-export default MemberEditPage;
+export default CourseEditPage;
