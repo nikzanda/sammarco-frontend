@@ -15,6 +15,7 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     }
     amount
     month
+    years
   }
 `;
 

@@ -79,8 +79,9 @@
     "deleted": "Pagamento eliminato",
     "table": {
       "member": "Iscritto",
+      "fee": "Quota",
       "amount": "Importo",
-      "month": "Mese"
+      "details": "Dettagli"
     },
     "form": {
       "fee": "Quota",

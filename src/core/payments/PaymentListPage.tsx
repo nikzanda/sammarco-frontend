@@ -62,6 +62,12 @@ const PaymentListPage: React.FC = () => {
         render: (member) => member.fullName,
       },
       {
+        title: t('payments.table.fee'),
+        key: 'fee',
+        dataIndex: 'fee',
+        render: (fee) => fee.name,
+      },
+      {
         title: t('payments.table.amount'),
         key: 'amount',
         dataIndex: 'amount',
@@ -69,18 +75,21 @@ const PaymentListPage: React.FC = () => {
         render: (amount) => <>{amount} €</>,
       },
       {
-        title: t('payments.table.month'),
-        key: 'month',
-        dataIndex: 'month',
-        render: (rawMonth) => {
-          if (!rawMonth) {
-            return undefined;
+        title: t('payments.table.details'),
+        key: 'details',
+        render: (_, { month: rawMonth, years }) => {
+          if (rawMonth) {
+            const [year, month] = rawMonth.split('-').map((value) => parseInt(value, 10));
+
+            const str = format(set(Date.now(), { year, month }), 'MMMM yyyy');
+            return str.charAt(0).toUpperCase() + str.slice(1);
           }
 
-          const [year, month] = rawMonth.split('-');
+          if (years) {
+            return years.join(' - ');
+          }
 
-          const str = format(set(Date.now(), { year, month }), 'MMMM yyyy');
-          return str.charAt(0).toUpperCase() + str.slice(1);
+          return undefined;
         },
       },
       {

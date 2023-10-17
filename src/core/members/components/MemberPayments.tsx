@@ -59,25 +59,34 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
       {
-        title: t('amount'),
+        title: t('payments.table.fee'),
+        key: 'fee',
+        dataIndex: 'fee',
+        render: (fee) => fee.name,
+      },
+      {
+        title: t('payments.table.amount'),
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
         render: (amount) => <>{amount} €</>,
       },
       {
-        title: t('month'),
-        key: 'month',
-        dataIndex: 'month',
-        render: (rawMonth) => {
-          if (!rawMonth) {
-            return undefined;
+        title: t('payments.table.details'),
+        key: 'details',
+        render: (_, { month: rawMonth, years }) => {
+          if (rawMonth) {
+            const [year, month] = rawMonth.split('-').map((value) => parseInt(value, 10));
+
+            const str = format(set(Date.now(), { year, month }), 'MMMM yyyy');
+            return str.charAt(0).toUpperCase() + str.slice(1);
           }
 
-          const [year, month] = rawMonth.split('-');
+          if (years) {
+            return years.join(' - ');
+          }
 
-          const str = format(set(Date.now(), { year, month }), 'MMMM yyyy');
-          return str.charAt(0).toUpperCase() + str.slice(1);
+          return undefined;
         },
       },
       {
