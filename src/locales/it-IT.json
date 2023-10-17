@@ -77,6 +77,10 @@
     "created": "Nuovo pagamento creato",
     "edited": "Pagamento aggiornato",
     "deleted": "Pagamento eliminato",
+    "type": {
+      "CASH": "Contanti",
+      "BANK_TRANSFER": "Bonifico bancario"
+    },
     "table": {
       "member": "Iscritto",
       "fee": "Quota",

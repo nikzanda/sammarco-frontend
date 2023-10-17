@@ -14,7 +14,7 @@ const MemberCreatePage: React.FC = () => {
   const { message } = App.useApp();
 
   const [createMember, { loading, error }] = useMemberCreateMutation({
-    refetchQueries: ['Members'],
+    refetchQueries: ['Members', 'MembersSearcher'],
     onCompleted: () => {
       message.success(t('members.created'));
       navigate(-1);

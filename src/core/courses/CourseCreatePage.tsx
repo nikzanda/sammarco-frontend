@@ -14,7 +14,7 @@ const CourseCreatePage: React.FC = () => {
   const { message } = App.useApp();
 
   const [createCourse, { loading, error }] = useCourseCreateMutation({
-    refetchQueries: ['Courses'],
+    refetchQueries: ['Courses', 'CoursesSearcher'],
     onCompleted: () => {
       message.success(t('courses.created'));
       navigate(-1);

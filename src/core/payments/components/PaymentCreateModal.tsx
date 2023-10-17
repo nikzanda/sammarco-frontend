@@ -47,13 +47,14 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
 
   const paymentTypeOptions = React.useMemo(() => {
     const result = Object.keys(PaymentTypeEnum).map((paymentType) => ({
-      label: paymentType,
+      label: t(`payments.type.${paymentType}`),
       value: paymentType,
     }));
     return result;
-  }, []);
+  }, [t]);
 
   const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
+    refetchQueries: ['Payments'],
     onCompleted: () => {
       message.success(t('members.payments.created'));
       onCancel();

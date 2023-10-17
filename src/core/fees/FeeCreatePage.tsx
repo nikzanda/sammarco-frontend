@@ -14,7 +14,7 @@ const FeeCreatePage: React.FC = () => {
   const { message } = App.useApp();
 
   const [createFee, { loading, error }] = useFeeCreateMutation({
-    refetchQueries: ['Fees'],
+    refetchQueries: ['Fees', 'FeesSearcher'],
     onCompleted: () => {
       message.success(t('fees.created'));
       navigate(-1);
