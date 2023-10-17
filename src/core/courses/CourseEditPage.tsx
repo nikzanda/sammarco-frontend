@@ -78,16 +78,17 @@ const CourseEditPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Row>
-        <Col span={2}>
+      <Row justify="space-between" align="middle">
+        <Col xs={1} md={2}>
           <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
         </Col>
-        <Col span={20}>
+        <Col xs={12} md={20}>
           <Typography.Title level={3}>{title}</Typography.Title>
         </Col>
-        <Col span={2}>
-          {/* TODO: elimina corso */}
-          {/* {course?.canDelete && (
+        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end' }}>
+          <Space>
+            {/* TODO: elimina corso */}
+            {/* {course?.canDelete && (
             <Popconfirm
               title={t('courses.delete.confirm')}
               description={t('courses.delete.description', { fullName: course.fullName })}
@@ -98,9 +99,10 @@ const CourseEditPage: React.FC = () => {
               </Button>
             </Popconfirm>
           )} */}
-          <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
-            {t('buttons.save.label')}
-          </Button>
+            <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
+              {t('buttons.save.label')}
+            </Button>
+          </Space>
         </Col>
       </Row>
 
