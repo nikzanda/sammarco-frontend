@@ -69,7 +69,7 @@ const AuthenticatedLayout: React.FC = () => {
         <div className="demo-logo" />
         <Menu theme="dark" mode="horizontal" selectedKeys={selectedKey} items={menuItems} style={{ width: '100%' }} />
       </Layout.Header>
-      <Layout.Content style={{ padding: '15px 15px 15px 15px' }}>
+      <Layout.Content style={{ padding: '0 15px 15px 15px' }}>
         <Routes>
           <Route path="members" element={<Outlet />}>
             <Route index element={<MemberListPage />} />

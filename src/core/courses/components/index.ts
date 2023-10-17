@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as CourseForm } from './CourseForm';
+export { default as CourseSearcher } from './CourseSearcher';

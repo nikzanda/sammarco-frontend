@@ -55,7 +55,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
 
   const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
     onCompleted: () => {
-      message.success(t('messages.success'));
+      message.success(t('members.payments.created'));
       onCancel();
     },
   });

@@ -23,6 +23,9 @@
       "taxCode": "Codice fiscale",
       "enrolledAt": "Iscritto il",
       "courses": "Corsi"
+    },
+    "payments": {
+      "created": "Nuovo pagamento inserito"
     }
   },
   "courses": {
@@ -48,8 +51,21 @@
     "created": "Nuova quota creata",
     "edited": "Quota aggiornata",
     "deleted": "Quota eliminata",
+    "delete": {
+      "confirm": "Sei sicuro di voler eliminare la quota?",
+      "description": "Elimina {{name}}"
+    },
     "table": {
       "name": "Quota",
+      "course": "Corso",
+      "amount": "Importo",
+      "enabled": "Attivo"
+    },
+    "tab": {
+      "details": "Dettagli"
+    },
+    "form": {
+      "name": "Nome",
       "course": "Corso",
       "amount": "Importo",
       "enabled": "Attivo"

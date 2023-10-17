@@ -17,6 +17,7 @@ export const FEE_LIST_ITEM_FRAGMENT = gql`
 export const FEE_DETAIL_FRAGMENT = gql`
   fragment FeeDetail on Fee {
     ...FeeListItem
+    canDelete
   }
   ${FEE_LIST_ITEM_FRAGMENT}
 `;

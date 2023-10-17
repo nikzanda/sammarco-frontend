@@ -138,7 +138,7 @@ const FeeListPage: React.FC = () => {
       setFilterInfo(filters);
     } else {
       setFilterInfo({
-        ...(searchText && { search: [searchText] }),
+        ...(searchText && { name: [searchText] }),
       });
     }
     setSortInfo(sorter as SorterResult<FeeListItemFragment>);
@@ -168,7 +168,7 @@ const FeeListPage: React.FC = () => {
           onSearch={(value) => {
             setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
             setFilterInfo({
-              search: [value],
+              name: [value],
             });
           }}
         />
