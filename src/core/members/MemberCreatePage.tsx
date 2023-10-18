@@ -12,6 +12,7 @@ const MemberCreatePage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { message } = App.useApp();
+  const [form] = Form.useForm();
 
   const [createMember, { loading, error }] = useMemberCreateMutation({
     refetchQueries: ['Members', 'MembersSearcher'],
@@ -47,8 +48,8 @@ const MemberCreatePage: React.FC = () => {
         </Col>
       </Row>
 
-      <Form id="form" layout="vertical" autoComplete="off" onFinish={handleFinish}>
-        <MemberForm />
+      <Form id="form" form={form} layout="vertical" autoComplete="off" onFinish={handleFinish}>
+        <MemberForm form={form} />
       </Form>
     </Space>
   );

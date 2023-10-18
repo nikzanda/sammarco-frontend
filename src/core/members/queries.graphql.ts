@@ -18,6 +18,12 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     surname
     taxCode
     enrolledAt
+    parent {
+      name
+      surname
+      taxCode
+    }
+    address
     canDelete
     shiftIds
   }

@@ -13,6 +13,7 @@ const MemberEditPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { message } = App.useApp();
+  const [form] = Form.useForm();
 
   const {
     data: queryData,
@@ -133,12 +134,13 @@ const MemberEditPage: React.FC = () => {
               children: (
                 <Form
                   id="form"
+                  form={form}
                   initialValues={initialValues}
                   layout="vertical"
                   autoComplete="off"
                   onFinish={handleFinish}
                 >
-                  <MemberForm />
+                  <MemberForm form={form} />
                 </Form>
               ),
             },

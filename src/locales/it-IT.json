@@ -22,6 +22,12 @@
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
       "enrolledAt": "Iscritto il",
+      "parent": {
+        "name": "Nome genitore",
+        "surname": "Cognome genitore",
+        "taxCode": "Codice fiscale genitore"
+      },
+      "address": "Indirizzo",
       "courses": "Corsi"
     },
     "payments": {
