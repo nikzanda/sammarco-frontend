@@ -1,10 +1,9 @@
-import { Col, Form, FormInstance, Input, Row, Select } from 'antd';
+import { Col, Form, FormInstance, Input, Row } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DatePicker } from '../../../components';
-import { useCoursesSearcherQuery } from '../../../generated/graphql';
-import { useDisplayGraphQLErrors } from '../../../hooks';
 import { isTaxCodeValid, isMinor as isMinorFn } from '../helpers';
+import { CoursePicker } from '../../courses/components';
 
 type Props = {
   form: FormInstance<any>;
@@ -14,31 +13,12 @@ const MemberForm: React.FC<Props> = ({ form }) => {
   const { t } = useTranslation();
   const taxCode = Form.useWatch('taxCode', form);
 
-  const {
-    data: coursesData,
-    loading: coursesLoading,
-    error: coursesError,
-  } = useCoursesSearcherQuery({
-    variables: {
-      filter: {},
-    },
-  });
-
-  const courses = React.useMemo(() => {
-    if (!coursesLoading && !coursesError && coursesData) {
-      return coursesData.courses.data;
-    }
-    return [];
-  }, [coursesData, coursesError, coursesLoading]);
-
   const isMinor = React.useMemo(() => {
     if (taxCode && isTaxCodeValid(taxCode)) {
       return isMinorFn(taxCode);
     }
     return false;
   }, [taxCode]);
-
-  useDisplayGraphQLErrors([coursesError]);
 
   return (
     <Row gutter={24}>
@@ -79,7 +59,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
             },
           ]}
         >
-          <Input />
+          <Input minLength={16} maxLength={16} />
         </Form.Item>
       </Col>
 
@@ -142,7 +122,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
                 },
               ]}
             >
-              <Input />
+              <Input minLength={16} maxLength={16} />
             </Form.Item>
           </Col>
         </>
@@ -160,12 +140,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
           name="courseIds"
           rules={[{ required: true, message: t('validations.required') }]}
         >
-          <Select
-            mode="multiple"
-            options={courses.map((course) => ({ label: course.name, value: course.id }))}
-            loading={coursesLoading}
-            allowClear={false}
-          />
+          <CoursePicker />
         </Form.Item>
       </Col>
     </Row>

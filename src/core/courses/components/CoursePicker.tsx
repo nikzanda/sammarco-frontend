@@ -1,7 +1,7 @@
-import { Select, SelectProps } from 'antd';
 import React from 'react';
+import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { CourseSearcherQuery, useCourseSearcherQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
+import { CoursesSearcherQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
@@ -13,14 +13,14 @@ const defaultProps = {
 };
 
 type Props = {
-  value?: string;
+  value?: string[];
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
-  onChange?: (value: string, course: CourseSearcherQuery['course']) => void;
+  onChange?: (value: string[], courses: CoursesSearcherQuery['courses']['data']) => void;
   onClear?: SelectProps['onClear'];
 };
 
-const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
+const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
   const {
     data: coursesData,
     loading: coursesLoading,
@@ -33,17 +33,19 @@ const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange
   });
 
   const {
-    data: courseData,
-    loading: courseLoading,
-    error: courseError,
-  } = useCourseSearcherQuery({
+    data: valuesData,
+    loading: valuesLoading,
+    error: valuesError,
+  } = useCoursesSearcherQuery({
     variables: {
-      id: value!,
+      filter: {
+        ids: value!,
+      },
     },
     skip: !value,
   });
 
-  useDisplayGraphQLErrors([coursesError, courseError]);
+  useDisplayGraphQLErrors([coursesError, valuesError]);
 
   const courses = React.useMemo(() => {
     if (!coursesLoading && !coursesError && coursesData) {
@@ -52,26 +54,31 @@ const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange
     return [];
   }, [coursesData, coursesError, coursesLoading]);
 
-  const course = React.useMemo(() => {
-    if (!courseLoading && !courseError && courseData) {
-      return courseData.course;
+  const values = React.useMemo(() => {
+    if (!valuesLoading && !valuesError && valuesData) {
+      return valuesData.courses.data;
     }
     return undefined;
-  }, [courseData, courseError, courseLoading]);
+  }, [valuesData, valuesError, valuesLoading]);
 
   const options = React.useMemo(() => {
     const result = courses.map((course) => ({
       label: course.name,
       value: course.id,
     }));
-    if (course && !courses.some(({ id }) => id === course.id)) {
-      result.unshift({
-        label: course.name,
-        value: course.id,
-      });
+    if (values) {
+      const courseIds = courses.map(({ id }) => id);
+      result.unshift(
+        ...values
+          .filter(({ id }) => !courseIds.includes(id))
+          .map((course) => ({
+            label: course.name,
+            value: course.id,
+          }))
+      );
     }
     return result;
-  }, [course, courses]);
+  }, [courses, values]);
 
   const handleSearch = useDebouncedCallback((search: string) => {
     coursesRefetch({
@@ -81,13 +88,14 @@ const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange
     });
   }, 500);
 
-  const handleChange = (value: string) => {
-    const selectedCourse = courses.find(({ id }) => id === value);
-    onChange!(value, selectedCourse!);
+  const handleChange = (values: string[]) => {
+    const selectedCourses = courses.filter(({ id }) => values.includes(id));
+    onChange!(values, selectedCourses);
   };
 
   return (
     <Select
+      mode="multiple"
       value={value}
       options={options}
       allowClear={allowClear}
@@ -96,12 +104,12 @@ const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange
       onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
-      loading={coursesLoading || courseLoading}
+      loading={coursesLoading || valuesLoading}
       showSearch
     />
   );
 };
 
-CourseSearcher.defaultProps = defaultProps;
+CoursePicker.defaultProps = defaultProps;
 
-export default CourseSearcher;
+export default CoursePicker;
