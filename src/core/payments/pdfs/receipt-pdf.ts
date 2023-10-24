@@ -10,10 +10,18 @@ import apolloClient from '../../../apollo';
 import { PaymentPdfQuery } from '../../../generated/graphql';
 import { PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
+import { toQuantity } from '../../../utils/utils';
 
 const { t } = i18n;
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+const defaultColor = '#4e6256';
+
+const tableLayout = {
+  hLineColor: () => defaultColor,
+  vLineColor: () => defaultColor,
+};
 
 class PDF {
   payment: PaymentPdfQuery['payment'];
@@ -46,6 +54,11 @@ class PDF {
       content: this.generateContent(),
       // pageSize: 'A6',
       // pageOrientation: 'landscape',
+      styles: {
+        label: {
+          color: defaultColor,
+        },
+      },
     };
   }
 
@@ -78,18 +91,18 @@ class PDF {
                   marginBottom: 5,
                   columns: [
                     {
-                      text: t('Receipt No.'),
-                      color: '#aaaaab',
+                      text: t('payments.pdf.receiptNo'),
                       bold: true,
                       width: '*',
-                      fontSize: 12,
+                      fontSize: 17,
                       alignment: 'right',
+                      style: 'label',
                     },
                     {
                       text: this.payment.counter,
                       bold: true,
-                      color: '#333333',
-                      fontSize: 12,
+                      fontSize: 14,
+                      marginTop: 2,
                       alignment: 'right',
                     },
                   ],
@@ -98,17 +111,16 @@ class PDF {
                   marginBottom: 5,
                   columns: [
                     {
-                      text: t('Date Issued'),
-                      color: '#aaaaab',
+                      text: t('payments.pdf.dateIssued'),
                       bold: true,
                       width: '*',
                       fontSize: 12,
                       alignment: 'right',
+                      style: 'label',
                     },
                     {
                       text: format(this.payment.date, 'dd/MM/yyyy'),
                       bold: true,
-                      color: '#333333',
                       fontSize: 12,
                       alignment: 'right',
                     },
@@ -117,17 +129,16 @@ class PDF {
                 {
                   columns: [
                     {
-                      text: t('importo di €'),
-                      color: '#aaaaab',
+                      text: t('payments.pdf.amount'),
                       bold: true,
                       width: '*',
                       fontSize: 12,
                       alignment: 'right',
+                      style: 'label',
                     },
                     {
-                      text: this.payment.amount,
+                      text: toQuantity(this.payment.amount),
                       bold: true,
-                      color: '#333333',
                       fontSize: 12,
                       alignment: 'right',
                     },
@@ -138,6 +149,7 @@ class PDF {
           ],
         ],
       },
+      layout: tableLayout,
     };
   }
 
@@ -149,7 +161,7 @@ class PDF {
           [
             {
               border: [false, false, false, false],
-              text: 'Ricevuti da',
+              text: t('payments.pdf.receivedBy'),
             },
             {
               border: [false, false, false, true],
@@ -158,6 +170,7 @@ class PDF {
           ],
         ],
       },
+      layout: tableLayout,
     };
   }
 
@@ -171,8 +184,8 @@ class PDF {
               border: [false, false, false, false],
               fontSize: 20,
               bold: true,
-              // alignment: 'right',
               text: '€',
+              style: 'label',
             },
             {
               border: [false, false, false, false],
@@ -191,22 +204,38 @@ class PDF {
                       x2: 475,
                       y2: (index + 1) * 2,
                       lineWidth: 1,
-                      lineColor: 'blue',
+                      lineColor: defaultColor,
                     })),
                 },
                 {
                   text: `${cardinalConverter(this.payment.amount).toUpperCase()}/00`,
-                  margin: [0, -15],
+                  fontSize: 15,
+                  bold: true,
+                  margin: [0, -17],
                 },
               ],
             },
           ],
+          [
+            {
+              colSpan: 2,
+              alignment: 'center',
+              border: [false, false, false, false],
+              italics: true,
+              fontSize: 7,
+              text: `(${t('payments.pdf.inLetters')})`,
+              style: 'label',
+            },
+          ],
         ],
       },
+      layout: tableLayout,
     };
   }
 
   private getReason(): Content {
+    // TODO: fee payment text
+
     return {
       table: {
         widths: ['10%', '90%'],
@@ -214,7 +243,8 @@ class PDF {
           [
             {
               border: [false, false, false, false],
-              text: 'Per',
+              text: t('payments.pdf.for'),
+              style: 'label',
             },
             {
               border: [false, false, false, true],
@@ -223,6 +253,7 @@ class PDF {
           ],
         ],
       },
+      layout: tableLayout,
     };
   }
 
@@ -243,10 +274,12 @@ class PDF {
                     {
                       alignment: 'center',
                       text: '\nMARCA\nDA\nBOLLO\n',
+                      style: 'label',
                     },
                   ],
                 ],
               },
+              layout: tableLayout,
             },
             {
               border: [false, false, false, false],
@@ -256,7 +289,8 @@ class PDF {
                   [
                     {
                       border: [false, false, false, false],
-                      text: 'Firma',
+                      text: t('payments.pdf.signature'),
+                      style: 'label',
                     },
                     {
                       border: [false, false, false, true],
@@ -265,10 +299,12 @@ class PDF {
                   ],
                 ],
               },
+              layout: tableLayout,
             },
           ],
         ],
       },
+      layout: tableLayout,
     };
   }
 }

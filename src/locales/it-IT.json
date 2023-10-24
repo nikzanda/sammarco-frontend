@@ -100,6 +100,15 @@
       "years": "Anno",
       "date": "Pagato il",
       "paymentType": "Tipo pagamento"
+    },
+    "pdf": {
+      "receiptNo": "RICEVUTA n.",
+      "dateIssued": "Data",
+      "amount": "Importo di €",
+      "receivedBy": "Ricevuti da",
+      "for": "Per",
+      "signature": "Firma",
+      "inLetters": "IN LETTERE"
     }
   },
   "buttons": {

@@ -59,9 +59,15 @@ export const PAYMENT_PDF_QUERY = gql`
         name
         surname
         taxCode
+        parent {
+          name
+          surname
+          taxCode
+        }
       }
       fee {
         name
+        type
       }
     }
   }
