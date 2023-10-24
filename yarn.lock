@@ -7516,10 +7516,10 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-italian-numbers@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/italian-numbers/-/italian-numbers-0.0.1.tgz#5382659db05b051495bfdd4beadbe9735cfd55ec"
-  integrity sha512-kLiraol5KizH6l25iVKuGxjl7OD1dk21ZWE84GDZ4ty89wyEz1IRB6DjaNBef2abfrSxXAp6F4J4906KyvrNgQ==
+italian-numbers@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/italian-numbers/-/italian-numbers-1.0.1.tgz#3e309df11c850c5af41c12cf34da7382b2aee045"
+  integrity sha512-+SGpo1e60tqev2wxNmeV0vpg3zlD7VExqQN5pn+iZssnVqjTo8/XU4h5dqD4Y6I0VqpBCOsflmeYEdEkGlycYg==
 
 iterator.prototype@^1.1.2:
   version "1.1.2"
