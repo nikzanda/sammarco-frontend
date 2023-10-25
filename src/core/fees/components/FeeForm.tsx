@@ -31,7 +31,7 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
         <Form.Item
           label={t('fees.form.course')}
           name="courseId"
-          rules={[{ required: true, message: t('validations.required')! }]}
+          rules={[{ required: !fee || !fee.type, message: t('validations.required')! }]}
         >
           <CourseSearcher disabled={!!fee} />
         </Form.Item>
@@ -44,6 +44,16 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
           rules={[{ required: true, message: t('validations.required')! }]}
         >
           <InputNumber min={0} step={1} precision={2} decimalSeparator="," addonAfter="€" style={{ width: '100%' }} />
+        </Form.Item>
+      </Col>
+
+      <Col xs={24} md={12}>
+        <Form.Item
+          label={t('fees.form.reason')}
+          name="reason"
+          rules={[{ required: true, message: t('validations.required')! }]}
+        >
+          <Input.TextArea />
         </Form.Item>
       </Col>
 

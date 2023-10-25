@@ -155,6 +155,7 @@ export type Fee = {
   type?: Maybe<FeeTypeEnum>;
   course?: Maybe<Course>;
   amount: Scalars['Float']['output'];
+  reason: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
   canDelete: Scalars['Boolean']['output'];
   createdAt: Scalars['Float']['output'];
@@ -257,6 +258,7 @@ export type FeeUpdateInput = {
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   amount?: InputMaybe<Scalars['Float']['input']>;
+  reason?: InputMaybe<Scalars['String']['input']>;
   enabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -278,6 +280,7 @@ export type FeeCreateInput = {
   name: Scalars['String']['input'];
   amount: Scalars['Float']['input'];
   courseId: Scalars['ID']['input'];
+  reason: Scalars['String']['input'];
 };
 
 export type FeeCreatePayload = {
@@ -528,95 +531,6 @@ export type CourseDeleteMutationVariables = Exact<{
 
 export type CourseDeleteMutation = { __typename?: 'Mutation', courseDelete: { __typename?: 'CourseDeletePayload', course: { __typename?: 'Course', printName?: string | null, id: string, name: string, shifts: Array<{ __typename?: 'Shift', id: string, from: number, to: number }> } } };
 
-export type FeeListItemFragment = { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null };
-
-export type FeeDetailFragment = { __typename?: 'Fee', canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null };
-
-export type FeesSearcherQueryVariables = Exact<{
-  filter?: InputMaybe<FeeFilter>;
-}>;
-
-
-export type FeesSearcherQuery = { __typename?: 'Query', fees: { __typename?: 'FeePagination', data: Array<{ __typename?: 'Fee', id: string, name: string, amount: number, type?: FeeTypeEnum | null }> } };
-
-export type FeeSearcherQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type FeeSearcherQuery = { __typename?: 'Query', fee: { __typename?: 'Fee', id: string, name: string, amount: number, type?: FeeTypeEnum | null } };
-
-export type FeesQueryVariables = Exact<{
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<FeeFilter>;
-}>;
-
-
-export type FeesQuery = { __typename?: 'Query', fees: { __typename?: 'FeePagination', data: Array<{ __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
-
-export type FeeQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type FeeQuery = { __typename?: 'Query', fee: { __typename?: 'Fee', canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } };
-
-export type FeeCreateMutationVariables = Exact<{
-  input: FeeCreateInput;
-}>;
-
-
-export type FeeCreateMutation = { __typename?: 'Mutation', feeCreate: { __typename?: 'FeeCreatePayload', fee: { __typename?: 'Fee', canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } } };
-
-export type FeeUpdateMutationVariables = Exact<{
-  input: FeeUpdateInput;
-}>;
-
-
-export type FeeUpdateMutation = { __typename?: 'Mutation', feeUpdate: { __typename?: 'FeeUpdatePayload', fee: { __typename?: 'Fee', canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } } };
-
-export type FeeDeleteMutationVariables = Exact<{
-  input: FeeDeleteInput;
-}>;
-
-
-export type FeeDeleteMutation = { __typename?: 'Mutation', feeDelete: { __typename?: 'FeeDeletePayload', fee: { __typename?: 'Fee', canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } } };
-
-export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
-
-export type PaymentDetailFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
-
-export type PaymentsQueryVariables = Exact<{
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<PaymentFilter>;
-}>;
-
-
-export type PaymentsQuery = { __typename?: 'Query', payments: { __typename?: 'PaymentPagination', data: Array<{ __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
-
-export type PaymentQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type PaymentQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } };
-
-export type PaymentPdfQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type PaymentPdfQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', counter: number, date: number, amount: number, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null }, fee: { __typename?: 'Fee', name: string, type?: FeeTypeEnum | null } } };
-
-export type PaymentCreateMutationVariables = Exact<{
-  input: PaymentCreateInput;
-}>;
-
-
-export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate: { __typename?: 'PaymentCreatePayload', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } } };
-
 export type MemberListItemFragment = { __typename?: 'Member', id: string, fullName: string, courses: Array<{ __typename?: 'Course', id: string, name: string }> };
 
 export type MemberDetailFragment = { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, address?: string | null, canDelete: boolean, shiftIds: Array<string>, id: string, fullName: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null, courses: Array<{ __typename?: 'Course', id: string, name: string }> };
@@ -658,6 +572,95 @@ export type MemberDeleteMutationVariables = Exact<{
 
 export type MemberDeleteMutation = { __typename?: 'Mutation', memberDelete: { __typename?: 'MemberDeletePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, enrolledAt?: number | null, address?: string | null, canDelete: boolean, shiftIds: Array<string>, id: string, fullName: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null, courses: Array<{ __typename?: 'Course', id: string, name: string }> } } };
 
+export type FeeListItemFragment = { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null };
+
+export type FeeDetailFragment = { __typename?: 'Fee', reason: string, canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null };
+
+export type FeesSearcherQueryVariables = Exact<{
+  filter?: InputMaybe<FeeFilter>;
+}>;
+
+
+export type FeesSearcherQuery = { __typename?: 'Query', fees: { __typename?: 'FeePagination', data: Array<{ __typename?: 'Fee', id: string, name: string, amount: number, type?: FeeTypeEnum | null }> } };
+
+export type FeeSearcherQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type FeeSearcherQuery = { __typename?: 'Query', fee: { __typename?: 'Fee', id: string, name: string, amount: number, type?: FeeTypeEnum | null } };
+
+export type FeesQueryVariables = Exact<{
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<FeeFilter>;
+}>;
+
+
+export type FeesQuery = { __typename?: 'Query', fees: { __typename?: 'FeePagination', data: Array<{ __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+
+export type FeeQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type FeeQuery = { __typename?: 'Query', fee: { __typename?: 'Fee', reason: string, canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } };
+
+export type FeeCreateMutationVariables = Exact<{
+  input: FeeCreateInput;
+}>;
+
+
+export type FeeCreateMutation = { __typename?: 'Mutation', feeCreate: { __typename?: 'FeeCreatePayload', fee: { __typename?: 'Fee', reason: string, canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } } };
+
+export type FeeUpdateMutationVariables = Exact<{
+  input: FeeUpdateInput;
+}>;
+
+
+export type FeeUpdateMutation = { __typename?: 'Mutation', feeUpdate: { __typename?: 'FeeUpdatePayload', fee: { __typename?: 'Fee', reason: string, canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } } };
+
+export type FeeDeleteMutationVariables = Exact<{
+  input: FeeDeleteInput;
+}>;
+
+
+export type FeeDeleteMutation = { __typename?: 'Mutation', feeDelete: { __typename?: 'FeeDeletePayload', fee: { __typename?: 'Fee', reason: string, canDelete: boolean, id: string, name: string, type?: FeeTypeEnum | null, amount: number, enabled: boolean, course?: { __typename?: 'Course', id: string, name: string } | null } } };
+
+export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
+
+export type PaymentDetailFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } };
+
+export type PaymentsQueryVariables = Exact<{
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<PaymentFilter>;
+}>;
+
+
+export type PaymentsQuery = { __typename?: 'Query', payments: { __typename?: 'PaymentPagination', data: Array<{ __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+
+export type PaymentQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type PaymentQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } };
+
+export type PaymentPdfQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type PaymentPdfQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', counter: number, date: number, amount: number, years?: Array<number> | null, month?: string | null, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null }, fee: { __typename?: 'Fee', name: string, type?: FeeTypeEnum | null, reason: string } } };
+
+export type PaymentCreateMutationVariables = Exact<{
+  input: PaymentCreateInput;
+}>;
+
+
+export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate: { __typename?: 'PaymentCreatePayload', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, type?: FeeTypeEnum | null } } } };
+
 export const CourseListItemFragmentDoc = gql`
     fragment CourseListItem on Course {
   id
@@ -675,48 +678,6 @@ export const CourseDetailFragmentDoc = gql`
   }
 }
     ${CourseListItemFragmentDoc}`;
-export const FeeListItemFragmentDoc = gql`
-    fragment FeeListItem on Fee {
-  id
-  name
-  type
-  course {
-    id
-    name
-  }
-  amount
-  enabled
-}
-    `;
-export const FeeDetailFragmentDoc = gql`
-    fragment FeeDetail on Fee {
-  ...FeeListItem
-  canDelete
-}
-    ${FeeListItemFragmentDoc}`;
-export const PaymentListItemFragmentDoc = gql`
-    fragment PaymentListItem on Payment {
-  id
-  counter
-  member {
-    id
-    fullName
-  }
-  fee {
-    id
-    name
-    type
-  }
-  amount
-  month
-  years
-}
-    `;
-export const PaymentDetailFragmentDoc = gql`
-    fragment PaymentDetail on Payment {
-  ...PaymentListItem
-}
-    ${PaymentListItemFragmentDoc}`;
 export const MemberListItemFragmentDoc = gql`
     fragment MemberListItem on Member {
   id
@@ -744,6 +705,49 @@ export const MemberDetailFragmentDoc = gql`
   shiftIds
 }
     ${MemberListItemFragmentDoc}`;
+export const FeeListItemFragmentDoc = gql`
+    fragment FeeListItem on Fee {
+  id
+  name
+  type
+  course {
+    id
+    name
+  }
+  amount
+  enabled
+}
+    `;
+export const FeeDetailFragmentDoc = gql`
+    fragment FeeDetail on Fee {
+  ...FeeListItem
+  reason
+  canDelete
+}
+    ${FeeListItemFragmentDoc}`;
+export const PaymentListItemFragmentDoc = gql`
+    fragment PaymentListItem on Payment {
+  id
+  counter
+  member {
+    id
+    fullName
+  }
+  fee {
+    id
+    name
+    type
+  }
+  amount
+  month
+  years
+}
+    `;
+export const PaymentDetailFragmentDoc = gql`
+    fragment PaymentDetail on Payment {
+  ...PaymentListItem
+}
+    ${PaymentListItemFragmentDoc}`;
 export const CoursesSearcherDocument = gql`
     query CoursesSearcher($filter: CourseFilter) {
   courses(pageIndex: 0, pageSize: 20, filter: $filter) {
@@ -1000,6 +1004,188 @@ export function useCourseDeleteMutation(baseOptions?: Apollo.MutationHookOptions
 export type CourseDeleteMutationHookResult = ReturnType<typeof useCourseDeleteMutation>;
 export type CourseDeleteMutationResult = Apollo.MutationResult<CourseDeleteMutation>;
 export type CourseDeleteMutationOptions = Apollo.BaseMutationOptions<CourseDeleteMutation, CourseDeleteMutationVariables>;
+export const MembersDocument = gql`
+    query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter) {
+  members(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
+    data {
+      ...MemberListItem
+    }
+    pageInfo {
+      total
+    }
+  }
+}
+    ${MemberListItemFragmentDoc}`;
+
+/**
+ * __useMembersQuery__
+ *
+ * To run a query within a React component, call `useMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMembersQuery({
+ *   variables: {
+ *      pageIndex: // value for 'pageIndex'
+ *      pageSize: // value for 'pageSize'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useMembersQuery(baseOptions: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
+      }
+export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MembersQuery, MembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
+        }
+export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
+export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
+export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
+export const MemberDocument = gql`
+    query Member($id: ID!) {
+  member(id: $id) {
+    ...MemberDetail
+  }
+}
+    ${MemberDetailFragmentDoc}`;
+
+/**
+ * __useMemberQuery__
+ *
+ * To run a query within a React component, call `useMemberQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemberQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMemberQuery(baseOptions: Apollo.QueryHookOptions<MemberQuery, MemberQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
+      }
+export function useMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MemberQuery, MemberQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
+        }
+export type MemberQueryHookResult = ReturnType<typeof useMemberQuery>;
+export type MemberLazyQueryHookResult = ReturnType<typeof useMemberLazyQuery>;
+export type MemberQueryResult = Apollo.QueryResult<MemberQuery, MemberQueryVariables>;
+export const MemberCreateDocument = gql`
+    mutation MemberCreate($input: MemberCreateInput!) {
+  memberCreate(input: $input) {
+    member {
+      ...MemberDetail
+    }
+  }
+}
+    ${MemberDetailFragmentDoc}`;
+export type MemberCreateMutationFn = Apollo.MutationFunction<MemberCreateMutation, MemberCreateMutationVariables>;
+
+/**
+ * __useMemberCreateMutation__
+ *
+ * To run a mutation, you first call `useMemberCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMemberCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [memberCreateMutation, { data, loading, error }] = useMemberCreateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMemberCreateMutation(baseOptions?: Apollo.MutationHookOptions<MemberCreateMutation, MemberCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MemberCreateMutation, MemberCreateMutationVariables>(MemberCreateDocument, options);
+      }
+export type MemberCreateMutationHookResult = ReturnType<typeof useMemberCreateMutation>;
+export type MemberCreateMutationResult = Apollo.MutationResult<MemberCreateMutation>;
+export type MemberCreateMutationOptions = Apollo.BaseMutationOptions<MemberCreateMutation, MemberCreateMutationVariables>;
+export const MemberUpdateDocument = gql`
+    mutation MemberUpdate($input: MemberUpdateInput!) {
+  memberUpdate(input: $input) {
+    member {
+      ...MemberDetail
+    }
+  }
+}
+    ${MemberDetailFragmentDoc}`;
+export type MemberUpdateMutationFn = Apollo.MutationFunction<MemberUpdateMutation, MemberUpdateMutationVariables>;
+
+/**
+ * __useMemberUpdateMutation__
+ *
+ * To run a mutation, you first call `useMemberUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMemberUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [memberUpdateMutation, { data, loading, error }] = useMemberUpdateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMemberUpdateMutation(baseOptions?: Apollo.MutationHookOptions<MemberUpdateMutation, MemberUpdateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MemberUpdateMutation, MemberUpdateMutationVariables>(MemberUpdateDocument, options);
+      }
+export type MemberUpdateMutationHookResult = ReturnType<typeof useMemberUpdateMutation>;
+export type MemberUpdateMutationResult = Apollo.MutationResult<MemberUpdateMutation>;
+export type MemberUpdateMutationOptions = Apollo.BaseMutationOptions<MemberUpdateMutation, MemberUpdateMutationVariables>;
+export const MemberDeleteDocument = gql`
+    mutation MemberDelete($input: MemberDeleteInput!) {
+  memberDelete(input: $input) {
+    member {
+      ...MemberDetail
+    }
+  }
+}
+    ${MemberDetailFragmentDoc}`;
+export type MemberDeleteMutationFn = Apollo.MutationFunction<MemberDeleteMutation, MemberDeleteMutationVariables>;
+
+/**
+ * __useMemberDeleteMutation__
+ *
+ * To run a mutation, you first call `useMemberDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMemberDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [memberDeleteMutation, { data, loading, error }] = useMemberDeleteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMemberDeleteMutation(baseOptions?: Apollo.MutationHookOptions<MemberDeleteMutation, MemberDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MemberDeleteMutation, MemberDeleteMutationVariables>(MemberDeleteDocument, options);
+      }
+export type MemberDeleteMutationHookResult = ReturnType<typeof useMemberDeleteMutation>;
+export type MemberDeleteMutationResult = Apollo.MutationResult<MemberDeleteMutation>;
+export type MemberDeleteMutationOptions = Apollo.BaseMutationOptions<MemberDeleteMutation, MemberDeleteMutationVariables>;
 export const FeesSearcherDocument = gql`
     query FeesSearcher($filter: FeeFilter) {
   fees(pageIndex: 0, pageSize: 20, filter: $filter) {
@@ -1343,6 +1529,8 @@ export const PaymentPdfDocument = gql`
     counter
     date
     amount
+    years
+    month
     member {
       name
       surname
@@ -1356,6 +1544,7 @@ export const PaymentPdfDocument = gql`
     fee {
       name
       type
+      reason
     }
   }
 }
@@ -1423,185 +1612,3 @@ export function usePaymentCreateMutation(baseOptions?: Apollo.MutationHookOption
 export type PaymentCreateMutationHookResult = ReturnType<typeof usePaymentCreateMutation>;
 export type PaymentCreateMutationResult = Apollo.MutationResult<PaymentCreateMutation>;
 export type PaymentCreateMutationOptions = Apollo.BaseMutationOptions<PaymentCreateMutation, PaymentCreateMutationVariables>;
-export const MembersDocument = gql`
-    query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter) {
-  members(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
-    data {
-      ...MemberListItem
-    }
-    pageInfo {
-      total
-    }
-  }
-}
-    ${MemberListItemFragmentDoc}`;
-
-/**
- * __useMembersQuery__
- *
- * To run a query within a React component, call `useMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMembersQuery({
- *   variables: {
- *      pageIndex: // value for 'pageIndex'
- *      pageSize: // value for 'pageSize'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useMembersQuery(baseOptions: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
-      }
-export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MembersQuery, MembersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
-        }
-export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
-export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
-export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
-export const MemberDocument = gql`
-    query Member($id: ID!) {
-  member(id: $id) {
-    ...MemberDetail
-  }
-}
-    ${MemberDetailFragmentDoc}`;
-
-/**
- * __useMemberQuery__
- *
- * To run a query within a React component, call `useMemberQuery` and pass it any options that fit your needs.
- * When your component renders, `useMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMemberQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useMemberQuery(baseOptions: Apollo.QueryHookOptions<MemberQuery, MemberQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
-      }
-export function useMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MemberQuery, MemberQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
-        }
-export type MemberQueryHookResult = ReturnType<typeof useMemberQuery>;
-export type MemberLazyQueryHookResult = ReturnType<typeof useMemberLazyQuery>;
-export type MemberQueryResult = Apollo.QueryResult<MemberQuery, MemberQueryVariables>;
-export const MemberCreateDocument = gql`
-    mutation MemberCreate($input: MemberCreateInput!) {
-  memberCreate(input: $input) {
-    member {
-      ...MemberDetail
-    }
-  }
-}
-    ${MemberDetailFragmentDoc}`;
-export type MemberCreateMutationFn = Apollo.MutationFunction<MemberCreateMutation, MemberCreateMutationVariables>;
-
-/**
- * __useMemberCreateMutation__
- *
- * To run a mutation, you first call `useMemberCreateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMemberCreateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [memberCreateMutation, { data, loading, error }] = useMemberCreateMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useMemberCreateMutation(baseOptions?: Apollo.MutationHookOptions<MemberCreateMutation, MemberCreateMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MemberCreateMutation, MemberCreateMutationVariables>(MemberCreateDocument, options);
-      }
-export type MemberCreateMutationHookResult = ReturnType<typeof useMemberCreateMutation>;
-export type MemberCreateMutationResult = Apollo.MutationResult<MemberCreateMutation>;
-export type MemberCreateMutationOptions = Apollo.BaseMutationOptions<MemberCreateMutation, MemberCreateMutationVariables>;
-export const MemberUpdateDocument = gql`
-    mutation MemberUpdate($input: MemberUpdateInput!) {
-  memberUpdate(input: $input) {
-    member {
-      ...MemberDetail
-    }
-  }
-}
-    ${MemberDetailFragmentDoc}`;
-export type MemberUpdateMutationFn = Apollo.MutationFunction<MemberUpdateMutation, MemberUpdateMutationVariables>;
-
-/**
- * __useMemberUpdateMutation__
- *
- * To run a mutation, you first call `useMemberUpdateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMemberUpdateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [memberUpdateMutation, { data, loading, error }] = useMemberUpdateMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useMemberUpdateMutation(baseOptions?: Apollo.MutationHookOptions<MemberUpdateMutation, MemberUpdateMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MemberUpdateMutation, MemberUpdateMutationVariables>(MemberUpdateDocument, options);
-      }
-export type MemberUpdateMutationHookResult = ReturnType<typeof useMemberUpdateMutation>;
-export type MemberUpdateMutationResult = Apollo.MutationResult<MemberUpdateMutation>;
-export type MemberUpdateMutationOptions = Apollo.BaseMutationOptions<MemberUpdateMutation, MemberUpdateMutationVariables>;
-export const MemberDeleteDocument = gql`
-    mutation MemberDelete($input: MemberDeleteInput!) {
-  memberDelete(input: $input) {
-    member {
-      ...MemberDetail
-    }
-  }
-}
-    ${MemberDetailFragmentDoc}`;
-export type MemberDeleteMutationFn = Apollo.MutationFunction<MemberDeleteMutation, MemberDeleteMutationVariables>;
-
-/**
- * __useMemberDeleteMutation__
- *
- * To run a mutation, you first call `useMemberDeleteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMemberDeleteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [memberDeleteMutation, { data, loading, error }] = useMemberDeleteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useMemberDeleteMutation(baseOptions?: Apollo.MutationHookOptions<MemberDeleteMutation, MemberDeleteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MemberDeleteMutation, MemberDeleteMutationVariables>(MemberDeleteDocument, options);
-      }
-export type MemberDeleteMutationHookResult = ReturnType<typeof useMemberDeleteMutation>;
-export type MemberDeleteMutationResult = Apollo.MutationResult<MemberDeleteMutation>;
-export type MemberDeleteMutationOptions = Apollo.BaseMutationOptions<MemberDeleteMutation, MemberDeleteMutationVariables>;

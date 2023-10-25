@@ -55,6 +55,8 @@ export const PAYMENT_PDF_QUERY = gql`
       counter
       date
       amount
+      years
+      month
       member {
         name
         surname
@@ -68,6 +70,7 @@ export const PAYMENT_PDF_QUERY = gql`
       fee {
         name
         type
+        reason
       }
     }
   }

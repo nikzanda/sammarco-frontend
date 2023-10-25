@@ -74,7 +74,8 @@
       "name": "Nome",
       "course": "Corso",
       "amount": "Importo",
-      "enabled": "Attivo"
+      "enabled": "Attivo",
+      "reason": "Causale"
     }
   },
   "payments": {

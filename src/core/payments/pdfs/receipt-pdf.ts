@@ -236,7 +236,11 @@ class PDF {
   }
 
   private getReason(): Content {
-    // TODO: fee payment text
+    let { reason: reasonText } = this.payment.fee;
+
+    if (this.payment.month) {
+      reasonText = reasonText.replaceAll('[MESE]', format(new Date(this.payment.month), 'MMMM yyyy'));
+    }
 
     return {
       table: {
@@ -250,7 +254,7 @@ class PDF {
             },
             {
               border: [false, false, true, true],
-              text: 'quota sociale e ass int a e contributo per mese settembre',
+              text: reasonText.toUpperCase(),
             },
           ],
         ],
