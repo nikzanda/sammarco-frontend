@@ -16,7 +16,7 @@ const { t } = i18n;
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const defaultColor = '#4e6256';
+const defaultColor = '#116B92';
 
 const tableLayout = {
   hLineColor: () => defaultColor,
@@ -73,7 +73,7 @@ class PDF {
         body: [
           [
             {
-              border: [false, true, false, true],
+              border: [true, true, true, true],
               alignment: 'center',
               bold: true,
               text: [
@@ -85,7 +85,7 @@ class PDF {
               ],
             },
             {
-              border: [false, true, false, true],
+              border: [false, true, true, true],
               stack: [
                 {
                   marginBottom: 5,
@@ -156,15 +156,16 @@ class PDF {
   private getMemberInfo(): Content {
     return {
       table: {
-        widths: ['15%', '85%'],
+        widths: ['12%', '88%'],
         body: [
           [
             {
-              border: [false, false, false, false],
+              border: [true, false, false, false],
               text: t('payments.pdf.receivedBy'),
+              style: 'label',
             },
             {
-              border: [false, false, false, true],
+              border: [false, false, true, true],
               text: `${this.payment.member.name} ${this.payment.member.surname}`.toUpperCase(),
             },
           ],
@@ -181,14 +182,15 @@ class PDF {
         body: [
           [
             {
-              border: [false, false, false, false],
+              border: [true, false, false, false],
               fontSize: 20,
               bold: true,
               text: '€',
               style: 'label',
+              alignment: 'center',
             },
             {
-              border: [false, false, false, false],
+              border: [false, false, true, false],
               stack: [
                 {
                   canvas: Array(10)
@@ -220,7 +222,7 @@ class PDF {
             {
               colSpan: 2,
               alignment: 'center',
-              border: [false, false, false, false],
+              border: [true, false, true, false],
               italics: true,
               fontSize: 7,
               text: `(${t('payments.pdf.inLetters')})`,
@@ -238,16 +240,16 @@ class PDF {
 
     return {
       table: {
-        widths: ['10%', '90%'],
+        widths: ['5%', '95%'],
         body: [
           [
             {
-              border: [false, false, false, false],
+              border: [true, false, false, false],
               text: t('payments.pdf.for'),
               style: 'label',
             },
             {
-              border: [false, false, false, true],
+              border: [false, false, true, true],
               text: 'quota sociale e ass int a e contributo per mese settembre',
             },
           ],
@@ -264,7 +266,7 @@ class PDF {
         body: [
           [
             {
-              border: [false, false, false, false],
+              border: [true, false, false, true],
               marginLeft: 50,
               table: {
                 widths: [125],
@@ -273,7 +275,9 @@ class PDF {
                   [
                     {
                       alignment: 'center',
-                      text: '\nMARCA\nDA\nBOLLO\n',
+                      fontSize: 10,
+                      marginTop: 22,
+                      text: 'MARCA\nDA\nBOLLO',
                       style: 'label',
                     },
                   ],
@@ -282,7 +286,7 @@ class PDF {
               layout: tableLayout,
             },
             {
-              border: [false, false, false, false],
+              border: [false, false, true, true],
               table: {
                 widths: ['15%', '85%'],
                 body: [
