@@ -18,12 +18,6 @@ const CourseForm: React.FC = () => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
-        <Form.Item label={t('courses.form.printName')} name="printName">
-          <Input />
-        </Form.Item>
-      </Col>
-
       {/* TODO: input shifts */}
     </Row>
   );

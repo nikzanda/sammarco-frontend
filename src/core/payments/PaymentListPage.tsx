@@ -81,7 +81,7 @@ const PaymentListPage: React.FC = () => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value) => parseInt(value, 10));
 
-            const str = format(set(Date.now(), { year, month }), 'MMMM yyyy');
+            const str = format(set(Date.now(), { year, month: month - 1 }), 'MMMM yyyy');
             return str.charAt(0).toUpperCase() + str.slice(1);
           }
 

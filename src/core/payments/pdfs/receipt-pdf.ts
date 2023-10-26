@@ -236,12 +236,6 @@ class PDF {
   }
 
   private getReason(): Content {
-    let { reason: reasonText } = this.payment.fee;
-
-    if (this.payment.month) {
-      reasonText = reasonText.replaceAll('[MESE]', format(new Date(this.payment.month), 'MMMM yyyy'));
-    }
-
     return {
       table: {
         widths: ['5%', '95%'],
@@ -254,7 +248,7 @@ class PDF {
             },
             {
               border: [false, false, true, true],
-              text: reasonText.toUpperCase(),
+              text: this.payment.reason.toUpperCase(),
             },
           ],
         ],

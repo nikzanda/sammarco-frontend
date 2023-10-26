@@ -85,7 +85,7 @@ const CourseEditPage: React.FC = () => {
         <Col xs={12} md={20}>
           <Typography.Title level={3}>{title}</Typography.Title>
         </Col>
-        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end' }}>
+        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
           <Space>
             {/* TODO: elimina corso */}
             {/* {course?.canDelete && (

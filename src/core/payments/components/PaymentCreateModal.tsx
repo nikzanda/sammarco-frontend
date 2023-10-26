@@ -1,10 +1,10 @@
-import React from 'react';
-import { App, Form, InputNumber, Modal, Radio, Select } from 'antd';
-import { set } from 'date-fns';
+import React, { useRef } from 'react';
+import { App, Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
+import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
-  FeeTypeEnum,
   PaymentTypeEnum,
+  RecurrenceEnum,
   useFeesSearcherQuery,
   usePaymentCreateMutation,
 } from '../../../generated/graphql';
@@ -13,6 +13,7 @@ import { useDisplayGraphQLErrors } from '../../../hooks';
 
 type Props = {
   memberId: string;
+  courseIds: string[];
   onCancel: () => void;
 };
 
@@ -23,10 +24,12 @@ const initialValues = {
   type: PaymentTypeEnum.CASH,
 };
 
-const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
+const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
   const [form] = Form.useForm();
   const { t } = useTranslation();
   const { message } = App.useApp();
+
+  const paymentReason = useRef<string>();
 
   const {
     data: feesData,
@@ -34,7 +37,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
     error: feesError,
   } = useFeesSearcherQuery({
     variables: {
-      filter: {},
+      filter: {
+        courseIds,
+      },
     },
   });
 
@@ -98,6 +103,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
           name="feeId"
           rules={[{ required: true, message: t('validations.required') }]}
         >
+          {/* TODO: fee searcher */}
           <Select
             options={fees.map((fee) => ({ label: fee.name, value: fee.id }))}
             loading={feesLoading}
@@ -106,6 +112,12 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
               const fee = fees.find(({ id }) => id === value);
               if (fee) {
                 form.setFieldValue('amount', fee.amount);
+
+                let { reason } = fee;
+                paymentReason.current = reason;
+                reason = reason.replaceAll('[MESE]', format(Date.now(), 'MMMM yyyy'));
+                // TODO: reason.replaceAll years
+                form.setFieldValue('reason', reason);
               }
             }}
           />
@@ -119,11 +131,11 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
             }
 
             const fee = fees.find(({ id }) => id === feeId);
-            if (!fee || !fee.type) {
+            if (!fee) {
               return undefined;
             }
 
-            if ([FeeTypeEnum.FULL_MONTH, FeeTypeEnum.PARTIAL_MONTH].includes(fee.type)) {
+            if (fee.recurrence && [RecurrenceEnum.MONTHLY].includes(fee.recurrence)) {
               return (
                 <Form.Item
                   label={t('payments.form.month')}
@@ -143,12 +155,24 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
                     return null;
                   }}
                 >
-                  <DatePicker picker="month" allowClear={false} style={{ width: '100%' }} />
+                  <DatePicker
+                    picker="month"
+                    allowClear={false}
+                    style={{ width: '100%' }}
+                    onChange={(date) => {
+                      if (date) {
+                        let reason = paymentReason.current!;
+                        reason = reason.replaceAll('[MESE]', format(date, 'MMMM yyyy'));
+                        // TODO: reason.replaceAll years
+                        form.setFieldValue('reason', reason);
+                      }
+                    }}
+                  />
                 </Form.Item>
               );
             }
 
-            if ([FeeTypeEnum.ENROLLMENT_A, FeeTypeEnum.ENROLLMENT_B, FeeTypeEnum.ENROLLMENT_C].includes(fee.type)) {
+            if (fee.recurrence && [RecurrenceEnum.ANNUAL].includes(fee.recurrence)) {
               return (
                 <Form.Item
                   label={t('payments.form.years')}
@@ -221,6 +245,22 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, onCancel }) => {
           }}
         >
           <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+        </Form.Item>
+
+        <Form.Item noStyle dependencies={['feeId']}>
+          {({ getFieldValue }) => {
+            const feeId = getFieldValue('feeId');
+
+            return (
+              <Form.Item
+                label={t('payments.form.reason')}
+                name="reason"
+                rules={[{ required: true, message: t('validations.required') }]}
+              >
+                <Input.TextArea disabled={!feeId} />
+              </Form.Item>
+            );
+          }}
         </Form.Item>
 
         <Form.Item

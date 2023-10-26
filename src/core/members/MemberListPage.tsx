@@ -25,7 +25,7 @@ const MemberListPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [memberId, setMemberId] = React.useState<string>();
+  const [memberInfo, setMemberInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -117,11 +117,16 @@ const MemberListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
-        render: (id) => (
+        render: (id: string, { courses }) => (
           <ActionButtons
             buttons={['edit', 'fee']}
             onEdit={() => navigate(`/members/${id}`)}
-            onFee={() => setMemberId(id)}
+            onFee={() =>
+              setMemberInfo({
+                memberId: id,
+                courseIds: courses.map((course) => course.id),
+              })
+            }
           />
         ),
       },
@@ -201,7 +206,13 @@ const MemberListPage: React.FC = () => {
           },
         }}
       />
-      {memberId && <PaymentCreateModal memberId={memberId} onCancel={() => setMemberId(undefined)} />}
+      {memberInfo && (
+        <PaymentCreateModal
+          memberId={memberInfo.memberId}
+          courseIds={memberInfo.courseIds}
+          onCancel={() => setMemberInfo(undefined)}
+        />
+      )}
     </Space>
   );
 };

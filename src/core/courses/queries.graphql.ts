@@ -10,7 +10,6 @@ export const COURSE_LIST_ITEM_FRAGMENT = gql`
 export const COURSE_DETAIL_FRAGMENT = gql`
   fragment CourseDetail on Course {
     ...CourseListItem
-    printName
     shifts {
       id
       from

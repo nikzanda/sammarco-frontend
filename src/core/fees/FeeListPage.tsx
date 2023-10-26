@@ -126,7 +126,19 @@ const FeeListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
-        render: (id) => <ActionButtons buttons={['edit']} onEdit={() => navigate(`/fees/${id}`)} />,
+        render: (id) => (
+          <ActionButtons
+            buttons={['edit', 'clone']}
+            onEdit={() => navigate(`/fees/${id}`)}
+            onClone={() =>
+              navigate('/fees/new', {
+                state: {
+                  feeId: id,
+                },
+              })
+            }
+          />
+        ),
       },
     ];
     return result;

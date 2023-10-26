@@ -4,7 +4,6 @@ export const FEE_LIST_ITEM_FRAGMENT = gql`
   fragment FeeListItem on Fee {
     id
     name
-    type
     course {
       id
       name
@@ -17,6 +16,7 @@ export const FEE_LIST_ITEM_FRAGMENT = gql`
 export const FEE_DETAIL_FRAGMENT = gql`
   fragment FeeDetail on Fee {
     ...FeeListItem
+    recurrence
     reason
     canDelete
   }
@@ -30,7 +30,8 @@ export const FEES_SEARCH_QUERY = gql`
         id
         name
         amount
-        type
+        recurrence
+        reason
       }
     }
   }
@@ -42,7 +43,8 @@ export const FEE_SEARCH_QUERY = gql`
       id
       name
       amount
-      type
+      recurrence
+      reason
     }
   }
 `;

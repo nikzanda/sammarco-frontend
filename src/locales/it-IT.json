@@ -61,6 +61,10 @@
       "confirm": "Sei sicuro di voler eliminare la quota?",
       "description": "Elimina {{name}}"
     },
+    "recurrence": {
+      "MONTHLY": "Mensile",
+      "ANNUAL": "Annuale"
+    },
     "table": {
       "name": "Quota",
       "course": "Corso",
@@ -74,6 +78,7 @@
       "name": "Nome",
       "course": "Corso",
       "amount": "Importo",
+      "recurrence": "Ricorrenza",
       "enabled": "Attivo",
       "reason": "Causale"
     }
@@ -100,6 +105,7 @@
       "month": "Mese",
       "years": "Anno",
       "date": "Pagato il",
+      "reason": "Causale",
       "paymentType": "Tipo pagamento"
     },
     "pdf": {
@@ -122,6 +128,10 @@
     "edit": {
       "label": "Modifica",
       "tooltip": "Modifica"
+    },
+    "clone": {
+      "label": "Clona",
+      "tooltip": "Clona"
     },
     "fee": {
       "label": "pagamento",

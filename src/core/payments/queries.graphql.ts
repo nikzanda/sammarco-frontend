@@ -11,7 +11,6 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     fee {
       id
       name
-      type
     }
     amount
     month
@@ -57,6 +56,7 @@ export const PAYMENT_PDF_QUERY = gql`
       amount
       years
       month
+      reason
       member {
         name
         surname
@@ -66,11 +66,6 @@ export const PAYMENT_PDF_QUERY = gql`
           surname
           taxCode
         }
-      }
-      fee {
-        name
-        type
-        reason
       }
     }
   }
