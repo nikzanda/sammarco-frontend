@@ -7,10 +7,10 @@ import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
 import { cardinalConverter } from 'italian-numbers';
 import apolloClient from '../../../apollo';
-import { PaymentPdfQuery } from '../../../generated/graphql';
+import { FeeDetailFragment, PaymentPdfQuery, RecurrenceEnum } from '../../../generated/graphql';
 import { PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
-import { toQuantity } from '../../../utils/utils';
+import { dateToYearMonth, toQuantity } from '../../../utils/utils';
 
 const { t } = i18n;
 
@@ -43,6 +43,40 @@ class PDF {
     }
 
     const pdfDef = new PDF(data.payment).generatePDF();
+    const pdfGenerated = pdfMake.createPdf(pdfDef);
+
+    pdfGenerated.open();
+  }
+
+  public static printFacSimile(fee: FeeDetailFragment) {
+    const today = new Date();
+
+    const payment: PaymentPdfQuery['payment'] = {
+      counter: Math.floor(Math.random() * 501),
+      date: today.getTime(),
+      amount: fee.amount,
+      ...(fee.recurrence === RecurrenceEnum.ANNUAL && {
+        years: [
+          today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear(),
+          today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
+        ],
+      }),
+      ...(fee.recurrence === RecurrenceEnum.MONTHLY && { month: dateToYearMonth(today) }),
+      reason: fee.reason.replaceAll('[MESE]', format(today, 'MMMM yyyy')), // TODO: replaceAll [ANNI]
+      member: {
+        name: 'Nome',
+        surname: 'Cognome',
+        taxCode: 'AAAAAA90A01A000A',
+        parent: {
+          name: 'Nome',
+          surname: 'Cognome',
+          taxCode: 'AAAAAA90A01A000A',
+        },
+      },
+    };
+
+    const pdfDef = new PDF(payment).generatePDF();
+    pdfDef.watermark = 'fac-simile';
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 
     pdfGenerated.open();
@@ -285,6 +319,7 @@ class PDF {
             },
             {
               border: [false, false, true, true],
+              marginTop: 60,
               table: {
                 widths: ['15%', '85%'],
                 body: [

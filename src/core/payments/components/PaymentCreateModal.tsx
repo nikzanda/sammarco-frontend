@@ -10,6 +10,7 @@ import {
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
+import { dateToYearMonth } from '../../../utils/utils';
 
 type Props = {
   memberId: string;
@@ -150,7 +151,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                   }}
                   getValueFromEvent={(v: Date) => {
                     if (v) {
-                      return [v.getFullYear(), (v.getMonth() + 1).toString().padStart(2, '0')].join('-');
+                      return dateToYearMonth(v);
                     }
                     return null;
                   }}

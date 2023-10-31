@@ -139,6 +139,12 @@
     },
     "resetFilter": {
       "label": "Reset filtro"
+    },
+    "print": {
+      "label": "Stampa"
+    },
+    "printFacSimile": {
+      "label": "Stampa fac-simile"
     }
   },
   "validations": {
@@ -151,7 +157,7 @@
   "commons": {
     "searchPlaceholder": "Cerca...",
     "table": {
-      "pagination": "Pagina {{start}} di {{end}}, {{total}}"
+      "pagination": "{{start}}-{{end}} di {{total}}"
     }
   }
 }

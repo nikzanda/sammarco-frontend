@@ -7,6 +7,7 @@ import { FaPrint } from 'react-icons/fa';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { MemberDetailFragment, PaymentListItemFragment, usePaymentsQuery } from '../../../generated/graphql';
 import PDF from '../../payments/pdfs/receipt-pdf';
+import { toCurrency } from '../../../utils/utils';
 
 const PAGE_SIZE = 10;
 
@@ -69,7 +70,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
-        render: (amount) => <>{amount} €</>,
+        render: (amount) => toCurrency(amount),
       },
       {
         title: t('payments.table.details'),

@@ -8,6 +8,7 @@ import Icon from '@ant-design/icons';
 import { PaymentListItemFragment, usePaymentsQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
+import { toCurrency } from '../../utils/utils';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -72,7 +73,7 @@ const PaymentListPage: React.FC = () => {
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
-        render: (amount) => <>{amount} €</>,
+        render: (amount) => toCurrency(amount),
       },
       {
         title: t('payments.table.details'),

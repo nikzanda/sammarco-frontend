@@ -9,6 +9,7 @@ import { FaPlus, FaBan, FaCheck, FaTimes } from 'react-icons/fa';
 import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
+import { toCurrency } from '../../utils/utils';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/course/';
@@ -108,7 +109,7 @@ const FeeListPage: React.FC = () => {
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
-        render: (amount) => <>{amount} €</>,
+        render: (amount) => toCurrency(amount),
       },
       {
         title: t('fees.table.enabled'),

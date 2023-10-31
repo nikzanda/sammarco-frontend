@@ -7,6 +7,7 @@ import Icon from '@ant-design/icons';
 import { useFeeDeleteMutation, useFeeQuery, useFeeUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { FeeForm } from './components';
+import PDF from '../payments/pdfs/receipt-pdf';
 
 const FeeEditPage: React.FC = () => {
   const { id } = useParams();
@@ -76,6 +77,10 @@ const FeeEditPage: React.FC = () => {
     });
   };
 
+  const handlePrint = () => {
+    PDF.printFacSimile(fee!);
+  };
+
   const handleFinish = (values: any) => {
     const { courseId, ...input } = values;
 
@@ -106,12 +111,15 @@ const FeeEditPage: React.FC = () => {
               description={t('fees.delete.description', { name: fee.name })}
               onConfirm={handleDelete}
             >
-              <Button type="primary" danger loading={deleteLoading}>
+              <Button type="primary" size="large" danger loading={deleteLoading}>
                 {t('buttons.delete.label')}
               </Button>
             </Popconfirm>
           )}
-          <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
+          <Button size="large" onClick={handlePrint}>
+            {t('buttons.printFacSimile.label')}
+          </Button>
+          <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
             {t('buttons.save.label')}
           </Button>
         </Col>

@@ -99,7 +99,7 @@ const CourseEditPage: React.FC = () => {
               </Button>
             </Popconfirm>
           )} */}
-            <Button type="primary" htmlType="submit" form="form" loading={updateLoading}>
+            <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
               {t('buttons.save.label')}
             </Button>
           </Space>
