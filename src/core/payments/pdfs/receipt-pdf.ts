@@ -7,8 +7,8 @@ import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
 import { cardinalConverter } from 'italian-numbers';
 import apolloClient from '../../../apollo';
-import { FeeDetailFragment, PaymentPdfQuery, RecurrenceEnum } from '../../../generated/graphql';
-import { PAYMENT_PDF_QUERY } from '../queries.graphql';
+import { FeeDetailFragment, PaymentPdfFragment, RecurrenceEnum } from '../../../generated/graphql';
+import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
 
@@ -24,9 +24,9 @@ const tableLayout = {
 };
 
 class PDF {
-  payment: PaymentPdfQuery['payment'];
+  payment: PaymentPdfFragment;
 
-  constructor(payment: PaymentPdfQuery['payment']) {
+  constructor(payment: PaymentPdfFragment) {
     this.payment = payment;
   }
 
@@ -51,7 +51,7 @@ class PDF {
   public static printFacSimile(fee: FeeDetailFragment) {
     const today = new Date();
 
-    const payment: PaymentPdfQuery['payment'] = {
+    const payment: PaymentPdfFragment = {
       counter: Math.floor(Math.random() * 501),
       date: today.getTime(),
       amount: fee.amount,
@@ -82,12 +82,54 @@ class PDF {
     pdfGenerated.open();
   }
 
+  public static async printMultiple(paymentIds: string[]) {
+    const { data, error } = await apolloClient.query({
+      query: PAYMENTS_PDF_QUERY,
+      variables: {
+        filter: {
+          ids: paymentIds,
+        },
+      },
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const {
+      payments: { data: payments },
+    } = data;
+
+    const pdfDef = PDF.generatePDFMultiple(payments);
+    const pdfGenerated = pdfMake.createPdf(pdfDef);
+
+    pdfGenerated.open();
+  }
+
   private generatePDF(): TDocumentDefinitions {
     return {
       info: { title: 'receipt.pdf' },
       content: this.generateContent(),
-      // pageSize: 'A6',
-      // pageOrientation: 'landscape',
+      styles: {
+        label: {
+          color: defaultColor,
+        },
+      },
+    };
+  }
+
+  private static generatePDFMultiple(payments: PaymentPdfFragment[]): TDocumentDefinitions {
+    const content = payments.map((payment: PaymentPdfFragment, index) => {
+      const result = new PDF(payment).generateContent();
+      if (index < payments.length - 1) {
+        return [result, '\n'];
+      }
+      return result;
+    });
+
+    return {
+      info: { title: 'receipts.pdf' },
+      content,
       styles: {
         label: {
           color: defaultColor,

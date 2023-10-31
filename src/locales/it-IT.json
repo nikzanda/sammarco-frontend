@@ -94,6 +94,7 @@
       "BANK_TRANSFER": "Bonifico bancario"
     },
     "table": {
+      "counter": "N.",
       "member": "Iscritto",
       "fee": "Quota",
       "amount": "Importo",
@@ -158,6 +159,7 @@
     "searchPlaceholder": "Cerca...",
     "table": {
       "pagination": "{{start}}-{{end}} di {{total}}"
-    }
+    },
+    "selected": "{{selected}} di {{total}} selezionati"
   }
 }

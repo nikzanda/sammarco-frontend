@@ -25,6 +25,27 @@ export const PAYMENT_DETAIL_FRAGMENT = gql`
   ${PAYMENT_LIST_ITEM_FRAGMENT}
 `;
 
+export const PAYMENT_PDF_FRAGMENT = gql`
+  fragment PaymentPdf on Payment {
+    counter
+    date
+    amount
+    years
+    month
+    reason
+    member {
+      name
+      surname
+      taxCode
+      parent {
+        name
+        surname
+        taxCode
+      }
+    }
+  }
+`;
+
 export const PAYMENTS_QUERY = gql`
   query Payments($pageIndex: Int!, $pageSize: Int!, $filter: PaymentFilter) {
     payments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
@@ -48,27 +69,24 @@ export const PAYMENT_QUERY = gql`
   ${PAYMENT_DETAIL_FRAGMENT}
 `;
 
-export const PAYMENT_PDF_QUERY = gql`
-  query PaymentPdf($id: ID!) {
-    payment(id: $id) {
-      counter
-      date
-      amount
-      years
-      month
-      reason
-      member {
-        name
-        surname
-        taxCode
-        parent {
-          name
-          surname
-          taxCode
-        }
+export const PAYMENTS_PDF_QUERY = gql`
+  query PaymentsPdf($filter: PaymentFilter!) {
+    payments(pageIndex: 0, pageSize: 0, filter: $filter) {
+      data {
+        ...PaymentPdf
       }
     }
   }
+  ${PAYMENT_PDF_FRAGMENT}
+`;
+
+export const PAYMENT_PDF_QUERY = gql`
+  query PaymentPdf($id: ID!) {
+    payment(id: $id) {
+      ...PaymentPdf
+    }
+  }
+  ${PAYMENT_PDF_FRAGMENT}
 `;
 
 export const PAYMENT_CREATE_MUTATION = gql`
