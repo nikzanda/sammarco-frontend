@@ -6,6 +6,7 @@ import { format, set } from 'date-fns';
 import { FaBan, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import { useNavigate } from 'react-router-dom';
 import {
   PaymentFilter,
   PaymentListItemFragment,
@@ -16,11 +17,13 @@ import {
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { toCurrency } from '../../utils/utils';
+import { ActionButtons } from '../../commons';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
 const PaymentListPage: React.FC = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -160,11 +163,17 @@ const PaymentListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
-        render: (id) => <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={() => handlePrint(id)} />,
+        render: (id) => (
+          <ActionButtons
+            buttons={['edit', 'print']}
+            onEdit={() => navigate(`/payments/${id}`)}
+            onPrint={() => handlePrint(id)}
+          />
+        ),
       },
     ];
     return result;
-  }, [t]);
+  }, [navigate, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

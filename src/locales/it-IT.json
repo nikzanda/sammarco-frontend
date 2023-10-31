@@ -89,6 +89,10 @@
     "created": "Nuovo pagamento creato",
     "edited": "Pagamento aggiornato",
     "deleted": "Pagamento eliminato",
+    "delete": {
+      "confirm": "Sei sicuro di voler eliminare il pagamento?",
+      "description": "Elimina pagamento"
+    },
     "type": {
       "CASH": "Contanti",
       "BANK_TRANSFER": "Bonifico bancario"
@@ -98,6 +102,9 @@
       "member": "Iscritto",
       "fee": "Quota",
       "amount": "Importo",
+      "details": "Dettagli"
+    },
+    "tab": {
       "details": "Dettagli"
     },
     "form": {

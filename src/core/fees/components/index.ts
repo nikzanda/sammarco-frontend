@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as FeeForm } from './FeeForm';
+export { default as FeeSearcher } from './FeeSearcher';

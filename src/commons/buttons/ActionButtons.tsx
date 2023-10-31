@@ -2,9 +2,9 @@ import Icon from '@ant-design/icons';
 import { Button, Space, Tooltip } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaClone, FaMoneyBill, FaPen } from 'react-icons/fa';
+import { FaClone, FaMoneyBill, FaPen, FaPrint } from 'react-icons/fa';
 
-export type ActionButton = 'edit' | 'clone' | 'fee';
+export type ActionButton = 'edit' | 'clone' | 'print' | 'fee';
 export interface ActionButtonObject {
   button: ActionButton;
   disabled?: boolean;
@@ -14,6 +14,7 @@ export type ActionButtonsType = (ActionButton | ActionButtonObject)[];
 const defaultProps = {
   onEdit: () => {},
   onClone: () => {},
+  onPrint: () => {},
   onFee: () => {},
 };
 
@@ -21,10 +22,11 @@ type Props = {
   buttons: ActionButtonsType;
   onEdit?: () => void;
   onClone?: () => void;
+  onPrint?: () => void;
   onFee?: () => void;
 };
 
-const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onFee }) => {
+const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onFee }) => {
   const { t } = useTranslation();
 
   const objectButtons = React.useMemo(
@@ -62,6 +64,13 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onFee }) => 
             </Tooltip>
           );
 
+        case 'print':
+          return (
+            <Tooltip title={t('buttons.print.tooltip')}>
+              <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={onPrint} disabled={disabled} />
+            </Tooltip>
+          );
+
         case 'fee':
           return (
             <Tooltip title={t('buttons.fee.tooltip')}>
@@ -73,7 +82,7 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onFee }) => 
           throw new Error('not implemented buttom');
       }
     },
-    [getDisabled, onClone, onEdit, onFee, t]
+    [getDisabled, onClone, onEdit, onFee, onPrint, t]
   );
 
   return (

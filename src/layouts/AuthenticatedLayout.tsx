@@ -8,7 +8,7 @@ import Icon from '@ant-design/icons';
 import { MemberCreatePage, MemberEditPage, MemberListPage } from '../core/members';
 import { CourseCreatePage, CourseEditPage, CourseListPage } from '../core/courses';
 import { FeeListPage, FeeCreatePage, FeeEditPage } from '../core/fees';
-import { PaymentListPage } from '../core/payments';
+import { PaymentEditPage, PaymentListPage } from '../core/payments';
 
 const AuthenticatedLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -91,6 +91,7 @@ const AuthenticatedLayout: React.FC = () => {
 
           <Route path="payments" element={<Outlet />}>
             <Route index element={<PaymentListPage />} />
+            <Route path=":id" element={<PaymentEditPage />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/members" replace />} />

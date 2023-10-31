@@ -21,6 +21,16 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
 export const PAYMENT_DETAIL_FRAGMENT = gql`
   fragment PaymentDetail on Payment {
     ...PaymentListItem
+    fee {
+      id
+      name
+      amount
+      recurrence
+      reason
+    }
+    date
+    reason
+    type
   }
   ${PAYMENT_LIST_ITEM_FRAGMENT}
 `;
@@ -92,6 +102,28 @@ export const PAYMENT_PDF_QUERY = gql`
 export const PAYMENT_CREATE_MUTATION = gql`
   mutation PaymentCreate($input: PaymentCreateInput!) {
     paymentCreate(input: $input) {
+      payment {
+        ...PaymentDetail
+      }
+    }
+  }
+  ${PAYMENT_DETAIL_FRAGMENT}
+`;
+
+export const PAYMENT_UPDATE_MUTATION = gql`
+  mutation PaymentUpdate($input: PaymentUpdateInput!) {
+    paymentUpdate(input: $input) {
+      payment {
+        ...PaymentDetail
+      }
+    }
+  }
+  ${PAYMENT_DETAIL_FRAGMENT}
+`;
+
+export const PAYMENT_DELETE_MUTATION = gql`
+  mutation PaymentDelete($input: PaymentDeleteInput!) {
+    paymentDelete(input: $input) {
       payment {
         ...PaymentDetail
       }

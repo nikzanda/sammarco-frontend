@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as PaymentListPage } from './PaymentListPage';
+export { default as PaymentEditPage } from './PaymentEditPage';

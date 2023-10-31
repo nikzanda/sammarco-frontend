@@ -649,7 +649,7 @@ export type MemberDeleteMutation = { __typename?: 'Mutation', memberDelete: { __
 
 export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string } };
 
-export type PaymentDetailFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string } };
+export type PaymentDetailFragment = { __typename?: 'Payment', date: number, reason: string, type: PaymentTypeEnum, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string }, member: { __typename?: 'Member', id: string, fullName: string } };
 
 export type PaymentPdfFragment = { __typename?: 'Payment', counter: number, date: number, amount: number, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, birthday: number, address?: string | null, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } };
 
@@ -667,7 +667,7 @@ export type PaymentQueryVariables = Exact<{
 }>;
 
 
-export type PaymentQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string } } };
+export type PaymentQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', date: number, reason: string, type: PaymentTypeEnum, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string }, member: { __typename?: 'Member', id: string, fullName: string } } };
 
 export type PaymentsPdfQueryVariables = Exact<{
   filter: PaymentFilter;
@@ -688,7 +688,21 @@ export type PaymentCreateMutationVariables = Exact<{
 }>;
 
 
-export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate: { __typename?: 'PaymentCreatePayload', payment: { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string } } } };
+export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate: { __typename?: 'PaymentCreatePayload', payment: { __typename?: 'Payment', date: number, reason: string, type: PaymentTypeEnum, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string }, member: { __typename?: 'Member', id: string, fullName: string } } } };
+
+export type PaymentUpdateMutationVariables = Exact<{
+  input: PaymentUpdateInput;
+}>;
+
+
+export type PaymentUpdateMutation = { __typename?: 'Mutation', paymentUpdate: { __typename?: 'PaymentUpdatePayload', payment: { __typename?: 'Payment', date: number, reason: string, type: PaymentTypeEnum, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string }, member: { __typename?: 'Member', id: string, fullName: string } } } };
+
+export type PaymentDeleteMutationVariables = Exact<{
+  input: PaymentDeleteInput;
+}>;
+
+
+export type PaymentDeleteMutation = { __typename?: 'Mutation', paymentDelete: { __typename?: 'PaymentDeletePayload', payment: { __typename?: 'Payment', date: number, reason: string, type: PaymentTypeEnum, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string }, member: { __typename?: 'Member', id: string, fullName: string } } } };
 
 export const CourseListItemFragmentDoc = gql`
     fragment CourseListItem on Course {
@@ -773,6 +787,16 @@ export const PaymentListItemFragmentDoc = gql`
 export const PaymentDetailFragmentDoc = gql`
     fragment PaymentDetail on Payment {
   ...PaymentListItem
+  fee {
+    id
+    name
+    amount
+    recurrence
+    reason
+  }
+  date
+  reason
+  type
 }
     ${PaymentListItemFragmentDoc}`;
 export const PaymentPdfFragmentDoc = gql`
@@ -1679,3 +1703,73 @@ export function usePaymentCreateMutation(baseOptions?: Apollo.MutationHookOption
 export type PaymentCreateMutationHookResult = ReturnType<typeof usePaymentCreateMutation>;
 export type PaymentCreateMutationResult = Apollo.MutationResult<PaymentCreateMutation>;
 export type PaymentCreateMutationOptions = Apollo.BaseMutationOptions<PaymentCreateMutation, PaymentCreateMutationVariables>;
+export const PaymentUpdateDocument = gql`
+    mutation PaymentUpdate($input: PaymentUpdateInput!) {
+  paymentUpdate(input: $input) {
+    payment {
+      ...PaymentDetail
+    }
+  }
+}
+    ${PaymentDetailFragmentDoc}`;
+export type PaymentUpdateMutationFn = Apollo.MutationFunction<PaymentUpdateMutation, PaymentUpdateMutationVariables>;
+
+/**
+ * __usePaymentUpdateMutation__
+ *
+ * To run a mutation, you first call `usePaymentUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePaymentUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [paymentUpdateMutation, { data, loading, error }] = usePaymentUpdateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePaymentUpdateMutation(baseOptions?: Apollo.MutationHookOptions<PaymentUpdateMutation, PaymentUpdateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PaymentUpdateMutation, PaymentUpdateMutationVariables>(PaymentUpdateDocument, options);
+      }
+export type PaymentUpdateMutationHookResult = ReturnType<typeof usePaymentUpdateMutation>;
+export type PaymentUpdateMutationResult = Apollo.MutationResult<PaymentUpdateMutation>;
+export type PaymentUpdateMutationOptions = Apollo.BaseMutationOptions<PaymentUpdateMutation, PaymentUpdateMutationVariables>;
+export const PaymentDeleteDocument = gql`
+    mutation PaymentDelete($input: PaymentDeleteInput!) {
+  paymentDelete(input: $input) {
+    payment {
+      ...PaymentDetail
+    }
+  }
+}
+    ${PaymentDetailFragmentDoc}`;
+export type PaymentDeleteMutationFn = Apollo.MutationFunction<PaymentDeleteMutation, PaymentDeleteMutationVariables>;
+
+/**
+ * __usePaymentDeleteMutation__
+ *
+ * To run a mutation, you first call `usePaymentDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePaymentDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [paymentDeleteMutation, { data, loading, error }] = usePaymentDeleteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePaymentDeleteMutation(baseOptions?: Apollo.MutationHookOptions<PaymentDeleteMutation, PaymentDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PaymentDeleteMutation, PaymentDeleteMutationVariables>(PaymentDeleteDocument, options);
+      }
+export type PaymentDeleteMutationHookResult = ReturnType<typeof usePaymentDeleteMutation>;
+export type PaymentDeleteMutationResult = Apollo.MutationResult<PaymentDeleteMutation>;
+export type PaymentDeleteMutationOptions = Apollo.BaseMutationOptions<PaymentDeleteMutation, PaymentDeleteMutationVariables>;

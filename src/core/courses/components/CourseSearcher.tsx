@@ -1,11 +1,17 @@
 import { Select, SelectProps } from 'antd';
 import React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { CourseSearcherQuery, useCourseSearcherQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
+import {
+  CourseFilter,
+  CourseSearcherQuery,
+  useCourseSearcherQuery,
+  useCoursesSearcherQuery,
+} from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
   value: undefined,
+  queryFilters: {},
   disabled: false,
   allowClear: true,
   onChange: () => {},
@@ -14,13 +20,14 @@ const defaultProps = {
 
 type Props = {
   value?: string;
+  queryFilters?: CourseFilter;
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
   onChange?: (value: string, course: CourseSearcherQuery['course']) => void;
   onClear?: SelectProps['onClear'];
 };
 
-const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
+const CourseSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowClear, onChange, onClear }) => {
   const {
     data: coursesData,
     loading: coursesLoading,
@@ -28,7 +35,7 @@ const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange
     refetch: coursesRefetch,
   } = useCoursesSearcherQuery({
     variables: {
-      filter: {},
+      filter: queryFilters,
     },
   });
 
@@ -77,6 +84,7 @@ const CourseSearcher: React.FC<Props> = ({ value, disabled, allowClear, onChange
     coursesRefetch({
       filter: {
         search,
+        ...queryFilters,
       },
     });
   }, 500);
