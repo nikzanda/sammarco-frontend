@@ -26,7 +26,7 @@ const MemberEditPage: React.FC = () => {
   });
 
   const [updateMember, { loading: updateLoading, error: updateError }] = useMemberUpdateMutation({
-    refetchQueries: ['Members', 'Member'],
+    refetchQueries: ['Members', 'Member', 'Payments', 'PaymentPdf', 'PaymentsPdf'],
     onCompleted: () => {
       message.success(t('members.edited'));
     },

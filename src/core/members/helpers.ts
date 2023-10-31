@@ -27,6 +27,16 @@ export const calculateBirthday = (taxCode: string) => {
 
 export const isMinor = (taxCode: string) => {
   const birthday = calculateBirthday(taxCode);
-  const result = new Date().getFullYear() - birthday.getFullYear() < 18;
+  const today = new Date();
+
+  birthday.setFullYear(birthday.getFullYear() + 18);
+
+  const result = today < birthday;
+  return result;
+};
+
+export const getSex = (taxCode: string): 'male' | 'female' => {
+  const sexChar = parseInt(taxCode.charAt(9), 10);
+  const result = sexChar >= 4 ? 'female' : 'male';
   return result;
 };

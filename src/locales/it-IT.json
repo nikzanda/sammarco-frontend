@@ -114,6 +114,12 @@
       "dateIssued": "Data",
       "amount": "Importo di €",
       "receivedBy": "Ricevuti da",
+      "student": "Praticante",
+      "born": {
+        "him": "Nato il",
+        "her": "Nata il"
+      },
+      "address": "Indirizzo",
       "for": "Per",
       "signature": "Firma",
       "inLetters": "IN LETTERE"

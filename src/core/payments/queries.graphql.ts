@@ -30,13 +30,13 @@ export const PAYMENT_PDF_FRAGMENT = gql`
     counter
     date
     amount
-    years
-    month
     reason
     member {
       name
       surname
       taxCode
+      birthday
+      address
       parent {
         name
         surname

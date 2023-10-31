@@ -651,7 +651,7 @@ export type PaymentListItemFragment = { __typename?: 'Payment', id: string, coun
 
 export type PaymentDetailFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string } };
 
-export type PaymentPdfFragment = { __typename?: 'Payment', counter: number, date: number, amount: number, years?: Array<number> | null, month?: string | null, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } };
+export type PaymentPdfFragment = { __typename?: 'Payment', counter: number, date: number, amount: number, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, birthday: number, address?: string | null, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } };
 
 export type PaymentsQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
@@ -674,14 +674,14 @@ export type PaymentsPdfQueryVariables = Exact<{
 }>;
 
 
-export type PaymentsPdfQuery = { __typename?: 'Query', payments: { __typename?: 'PaymentPagination', data: Array<{ __typename?: 'Payment', counter: number, date: number, amount: number, years?: Array<number> | null, month?: string | null, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } }> } };
+export type PaymentsPdfQuery = { __typename?: 'Query', payments: { __typename?: 'PaymentPagination', data: Array<{ __typename?: 'Payment', counter: number, date: number, amount: number, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, birthday: number, address?: string | null, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } }> } };
 
 export type PaymentPdfQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type PaymentPdfQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', counter: number, date: number, amount: number, years?: Array<number> | null, month?: string | null, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } } };
+export type PaymentPdfQuery = { __typename?: 'Query', payment: { __typename?: 'Payment', counter: number, date: number, amount: number, reason: string, member: { __typename?: 'Member', name: string, surname: string, taxCode: string, birthday: number, address?: string | null, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null } } };
 
 export type PaymentCreateMutationVariables = Exact<{
   input: PaymentCreateInput;
@@ -780,13 +780,13 @@ export const PaymentPdfFragmentDoc = gql`
   counter
   date
   amount
-  years
-  month
   reason
   member {
     name
     surname
     taxCode
+    birthday
+    address
     parent {
       name
       surname

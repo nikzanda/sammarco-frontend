@@ -11,6 +11,7 @@ import { FeeDetailFragment, PaymentPdfFragment, RecurrenceEnum } from '../../../
 import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
+import { getSex, isMinor } from '../../members/helpers';
 
 const { t } = i18n;
 
@@ -67,6 +68,7 @@ class PDF {
         name: 'Nome',
         surname: 'Cognome',
         taxCode: 'AAAAAA90A01A000A',
+        birthday: new Date(1990, 0, 1).getTime(),
         parent: {
           name: 'Nome',
           surname: 'Cognome',
@@ -120,7 +122,20 @@ class PDF {
 
   private static generatePDFMultiple(payments: PaymentPdfFragment[]): TDocumentDefinitions {
     const content = payments.map((payment: PaymentPdfFragment, index) => {
-      const result = new PDF(payment).generateContent();
+      const result: Content = {
+        table: {
+          widths: ['*'],
+          dontBreakRows: true,
+          body: [
+            [
+              {
+                border: [false, false, false, false],
+                stack: new PDF(payment).generateContent(),
+              },
+            ],
+          ],
+        },
+      };
       if (index < payments.length - 1) {
         return [result, '\n'];
       }
@@ -130,6 +145,7 @@ class PDF {
     return {
       info: { title: 'receipts.pdf' },
       content,
+      pageMargins: [35, 35, 35, 35],
       styles: {
         label: {
           color: defaultColor,
@@ -144,6 +160,7 @@ class PDF {
 
   private getHeader(): Content {
     return {
+      layout: tableLayout,
       table: {
         widths: ['60%', '40%'],
         body: [
@@ -225,14 +242,89 @@ class PDF {
           ],
         ],
       },
-      layout: tableLayout,
     };
   }
 
   private getMemberInfo(): Content {
+    const { member } = this.payment;
+
+    if (isMinor(this.payment.member.taxCode)) {
+      const {
+        member: { parent },
+      } = this.payment;
+
+      return {
+        stack: [
+          {
+            layout: tableLayout,
+            table: {
+              widths: ['13%', '37%', '13%', '37%'],
+              body: [
+                [
+                  {
+                    border: [true, false, false, true],
+                    text: t('payments.pdf.receivedBy'),
+                    style: 'label',
+                  },
+                  {
+                    border: [false, false, false, true],
+                    text: `${parent!.name} ${parent!.surname}`.toUpperCase(),
+                  },
+                  {
+                    border: [false, false, false, true],
+                    alignment: 'right',
+                    text: 'C.F.',
+                    style: 'label',
+                  },
+                  {
+                    border: [false, false, true, true],
+                    text: parent!.taxCode,
+                  },
+                ],
+                [
+                  {
+                    border: [true, false, false, false],
+                    text: t('payments.pdf.student'),
+                    style: 'label',
+                  },
+                  {
+                    border: [false, false, false, true],
+                    text: `${member.name} ${member.surname}`.toUpperCase(),
+                  },
+                  {
+                    border: [false, false, false, false],
+                    text: t(`payments.pdf.born.${getSex(member.taxCode) === 'male' ? 'him' : 'her'}`),
+                    alignment: 'right',
+                    style: 'label',
+                  },
+                  {
+                    border: [false, false, true, true],
+                    text: format(member.birthday, 'dd/MM/yyyy'),
+                  },
+                ],
+                [
+                  {
+                    border: [true, false, false, true],
+                    text: t('payments.pdf.address'),
+                    style: 'label',
+                  },
+                  {
+                    border: [false, false, true, true],
+                    colSpan: 3,
+                    text: member.address,
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      };
+    }
+
     return {
+      layout: tableLayout,
       table: {
-        widths: ['12%', '88%'],
+        widths: ['12%', '60%', '28%'],
         body: [
           [
             {
@@ -241,18 +333,22 @@ class PDF {
               style: 'label',
             },
             {
+              border: [false, false, false, true],
+              text: `${member.name} ${member.surname}`.toUpperCase(),
+            },
+            {
               border: [false, false, true, true],
-              text: `${this.payment.member.name} ${this.payment.member.surname}`.toUpperCase(),
+              text: member.taxCode,
             },
           ],
         ],
       },
-      layout: tableLayout,
     };
   }
 
   private getAmount(): Content {
     return {
+      layout: tableLayout,
       table: {
         widths: ['5%', '95%'],
         body: [
@@ -307,12 +403,12 @@ class PDF {
           ],
         ],
       },
-      layout: tableLayout,
     };
   }
 
   private getReason(): Content {
     return {
+      layout: tableLayout,
       table: {
         widths: ['5%', '95%'],
         body: [
@@ -329,12 +425,12 @@ class PDF {
           ],
         ],
       },
-      layout: tableLayout,
     };
   }
 
   private getTaxStampAndSignature(): Content {
     return {
+      layout: tableLayout,
       table: {
         widths: ['50%', '50%'],
         body: [
@@ -342,6 +438,7 @@ class PDF {
             {
               border: [true, false, false, true],
               marginLeft: 50,
+              layout: tableLayout,
               table: {
                 widths: [125],
                 heights: [82],
@@ -357,11 +454,11 @@ class PDF {
                   ],
                 ],
               },
-              layout: tableLayout,
             },
             {
               border: [false, false, true, true],
               marginTop: 60,
+              layout: tableLayout,
               table: {
                 widths: ['15%', '85%'],
                 body: [
@@ -378,12 +475,10 @@ class PDF {
                   ],
                 ],
               },
-              layout: tableLayout,
             },
           ],
         ],
       },
-      layout: tableLayout,
     };
   }
 }
