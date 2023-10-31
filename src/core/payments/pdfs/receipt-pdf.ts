@@ -27,6 +27,16 @@ const tableLayout = {
 class PDF {
   payment: PaymentPdfFragment;
 
+  private static styles: TDocumentDefinitions['styles'] = {
+    label: {
+      color: defaultColor,
+    },
+    backgroundLabel: {
+      background: defaultColor,
+      color: 'white',
+    },
+  };
+
   constructor(payment: PaymentPdfFragment) {
     this.payment = payment;
   }
@@ -112,11 +122,7 @@ class PDF {
     return {
       info: { title: 'receipt.pdf' },
       content: this.generateContent(),
-      styles: {
-        label: {
-          color: defaultColor,
-        },
-      },
+      styles: PDF.styles,
     };
   }
 
@@ -146,11 +152,7 @@ class PDF {
       info: { title: 'receipts.pdf' },
       content,
       pageMargins: [35, 35, 35, 35],
-      styles: {
-        label: {
-          color: defaultColor,
-        },
-      },
+      styles: PDF.styles,
     };
   }
 
@@ -264,7 +266,7 @@ class PDF {
                   {
                     border: [true, false, false, true],
                     text: t('payments.pdf.receivedBy'),
-                    style: 'label',
+                    style: 'backgroundLabel',
                   },
                   {
                     border: [false, false, false, true],
@@ -273,7 +275,7 @@ class PDF {
                   {
                     border: [false, false, false, true],
                     alignment: 'right',
-                    text: 'C.F.',
+                    text: t('payments.pdf.taxCode'),
                     style: 'label',
                   },
                   {
@@ -285,7 +287,7 @@ class PDF {
                   {
                     border: [true, false, false, false],
                     text: t('payments.pdf.student'),
-                    style: 'label',
+                    style: 'backgroundLabel',
                   },
                   {
                     border: [false, false, false, true],
@@ -324,17 +326,23 @@ class PDF {
     return {
       layout: tableLayout,
       table: {
-        widths: ['12%', '60%', '28%'],
+        widths: ['13%', '37%', '13%', '37%'],
         body: [
           [
             {
               border: [true, false, false, false],
               text: t('payments.pdf.receivedBy'),
-              style: 'label',
+              style: 'backgroundLabel',
             },
             {
               border: [false, false, false, true],
               text: `${member.name} ${member.surname}`.toUpperCase(),
+            },
+            {
+              border: [false, false, false, true],
+              alignment: 'right',
+              text: t('payments.pdf.taxCode'),
+              style: 'label',
             },
             {
               border: [false, false, true, true],

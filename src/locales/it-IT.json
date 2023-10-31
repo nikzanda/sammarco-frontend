@@ -114,6 +114,7 @@
       "dateIssued": "Data",
       "amount": "Importo di €",
       "receivedBy": "Ricevuti da",
+      "taxCode": "C.F.",
       "student": "Praticante",
       "born": {
         "him": "Nato il",
