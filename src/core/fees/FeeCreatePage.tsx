@@ -24,7 +24,7 @@ const FeeCreatePage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([mutationError, queryError]);
+  useDisplayGraphQLErrors(mutationError, queryError);
 
   React.useEffect(() => {
     if (location.state) {

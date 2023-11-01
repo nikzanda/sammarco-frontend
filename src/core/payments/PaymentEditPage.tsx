@@ -35,7 +35,7 @@ const PaymentEditPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([updateError]);
+  useDisplayGraphQLErrors(updateError);
 
   const payment = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

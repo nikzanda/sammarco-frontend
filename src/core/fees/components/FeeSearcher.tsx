@@ -45,7 +45,7 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowClea
     skip: !value,
   });
 
-  useDisplayGraphQLErrors([feesError, feeError]);
+  useDisplayGraphQLErrors(feesError, feeError);
 
   const fees = React.useMemo(() => {
     if (!feesLoading && !feesError && feesData) {

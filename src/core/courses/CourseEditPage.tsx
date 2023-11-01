@@ -40,7 +40,7 @@ const CourseEditPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError, updateError, deleteError]);
+  useDisplayGraphQLErrors(queryError, updateError, deleteError);
 
   const course = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

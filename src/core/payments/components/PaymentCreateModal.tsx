@@ -67,7 +67,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
-  useDisplayGraphQLErrors([mutationError, feesError]);
+  useDisplayGraphQLErrors(mutationError, feesError);
 
   const handleSubmit = (values: any) => {
     createPayment({

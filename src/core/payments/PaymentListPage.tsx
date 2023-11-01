@@ -88,7 +88,7 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError]);
+  useDisplayGraphQLErrors(queryError);
 
   const payments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

@@ -41,7 +41,7 @@ const MemberEditPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError, updateError, deleteError]);
+  useDisplayGraphQLErrors(queryError, updateError, deleteError);
 
   const member = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

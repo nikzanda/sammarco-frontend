@@ -79,7 +79,7 @@ const CourseListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError]);
+  useDisplayGraphQLErrors(queryError);
 
   const courses = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

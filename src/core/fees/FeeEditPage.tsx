@@ -41,7 +41,7 @@ const FeeEditPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError, updateError, deleteError]);
+  useDisplayGraphQLErrors(queryError, updateError, deleteError);
 
   const fee = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

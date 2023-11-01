@@ -21,7 +21,7 @@ const CourseCreatePage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([error]);
+  useDisplayGraphQLErrors(error);
 
   const handleFinish = (values: any) => {
     createCourse({

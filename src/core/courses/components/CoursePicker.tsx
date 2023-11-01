@@ -45,7 +45,7 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
     skip: !value,
   });
 
-  useDisplayGraphQLErrors([coursesError, valuesError]);
+  useDisplayGraphQLErrors(coursesError, valuesError);
 
   const courses = React.useMemo(() => {
     if (!coursesLoading && !coursesError && coursesData) {

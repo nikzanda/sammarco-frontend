@@ -50,7 +50,7 @@ const CourseSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowC
     skip: !value,
   });
 
-  useDisplayGraphQLErrors([coursesError, courseError]);
+  useDisplayGraphQLErrors(coursesError, courseError);
 
   const courses = React.useMemo(() => {
     if (!coursesLoading && !coursesError && coursesData) {

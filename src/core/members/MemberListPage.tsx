@@ -82,7 +82,7 @@ const MemberListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError]);
+  useDisplayGraphQLErrors(queryError);
 
   const members = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

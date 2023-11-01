@@ -3,8 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { App } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-// TODO: ...errors
-const useDisplayGraphQLErrors = (errors: (ApolloError | undefined)[]) => {
+const useDisplayGraphQLErrors = (...errors: (ApolloError | undefined)[]) => {
   const { message } = App.useApp();
   const { t } = useTranslation();
 

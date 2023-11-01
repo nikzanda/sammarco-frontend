@@ -74,7 +74,7 @@ const FeeListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError]);
+  useDisplayGraphQLErrors(queryError);
 
   const fees = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

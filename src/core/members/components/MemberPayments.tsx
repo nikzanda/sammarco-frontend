@@ -37,7 +37,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     },
   });
 
-  useDisplayGraphQLErrors([queryError]);
+  useDisplayGraphQLErrors(queryError);
 
   const payments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {

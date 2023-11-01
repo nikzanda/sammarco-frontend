@@ -22,7 +22,7 @@ const MemberCreatePage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors([error]);
+  useDisplayGraphQLErrors(error);
 
   const handleFinish = (values: any) => {
     createMember({
