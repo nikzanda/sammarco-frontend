@@ -7,6 +7,7 @@ import { FaAngleLeft } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberForm, MemberPayments } from './components';
+import { Updates } from '../../commons';
 
 const MemberEditPage: React.FC = () => {
   const { id } = useParams();
@@ -132,16 +133,20 @@ const MemberEditPage: React.FC = () => {
               label: t('members.tab.details'),
               key: 'details',
               children: (
-                <Form
-                  id="form"
-                  form={form}
-                  initialValues={initialValues}
-                  layout="vertical"
-                  autoComplete="off"
-                  onFinish={handleFinish}
-                >
-                  <MemberForm form={form} />
-                </Form>
+                <>
+                  <Form
+                    id="form"
+                    form={form}
+                    initialValues={initialValues}
+                    layout="vertical"
+                    autoComplete="off"
+                    onFinish={handleFinish}
+                  >
+                    <MemberForm form={form} />
+                  </Form>
+
+                  <Updates updates={member} />
+                </>
               ),
             },
             {

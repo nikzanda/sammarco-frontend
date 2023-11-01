@@ -31,6 +31,8 @@ export const PAYMENT_DETAIL_FRAGMENT = gql`
     date
     reason
     type
+    createdAt
+    updatedAt
   }
   ${PAYMENT_LIST_ITEM_FRAGMENT}
 `;

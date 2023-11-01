@@ -15,6 +15,8 @@ export const COURSE_DETAIL_FRAGMENT = gql`
       from
       to
     }
+    createdAt
+    updatedAt
   }
   ${COURSE_LIST_ITEM_FRAGMENT}
 `;

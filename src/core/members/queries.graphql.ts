@@ -26,6 +26,8 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     address
     canDelete
     shiftIds
+    createdAt
+    updatedAt
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}
 `;

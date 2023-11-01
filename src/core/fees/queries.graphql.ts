@@ -18,6 +18,8 @@ export const FEE_DETAIL_FRAGMENT = gql`
     ...FeeListItem
     recurrence
     reason
+    createdAt
+    updatedAt
     canDelete
   }
   ${FEE_LIST_ITEM_FRAGMENT}

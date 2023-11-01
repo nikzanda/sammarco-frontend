@@ -8,6 +8,7 @@ import { useFeeDeleteMutation, useFeeQuery, useFeeUpdateMutation } from '../../g
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { FeeForm } from './components';
 import PDF from '../payments/pdfs/receipt-pdf';
+import { Updates } from '../../commons';
 
 const FeeEditPage: React.FC = () => {
   const { id } = useParams();
@@ -140,15 +141,19 @@ const FeeEditPage: React.FC = () => {
               label: t('fees.tab.details'),
               key: 'details',
               children: (
-                <Form
-                  id="form"
-                  initialValues={initialValues}
-                  layout="vertical"
-                  autoComplete="off"
-                  onFinish={handleFinish}
-                >
-                  <FeeForm fee={fee} />
-                </Form>
+                <>
+                  <Form
+                    id="form"
+                    initialValues={initialValues}
+                    layout="vertical"
+                    autoComplete="off"
+                    onFinish={handleFinish}
+                  >
+                    <FeeForm fee={fee} />
+                  </Form>
+
+                  <Updates updates={fee} />
+                </>
               ),
             },
           ]}

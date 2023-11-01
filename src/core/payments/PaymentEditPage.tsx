@@ -9,6 +9,7 @@ import { usePaymentQuery, usePaymentUpdateMutation } from '../../generated/graph
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { PaymentForm } from './components';
 import PDF from './pdfs/receipt-pdf';
+import { Updates } from '../../commons';
 
 const PaymentEditPage: React.FC = () => {
   const { id } = useParams();
@@ -130,16 +131,20 @@ const PaymentEditPage: React.FC = () => {
               label: t('payments.tab.details'),
               key: 'details',
               children: (
-                <Form
-                  id="form"
-                  form={form}
-                  initialValues={initialValues}
-                  layout="vertical"
-                  autoComplete="off"
-                  onFinish={handleFinish}
-                >
-                  <PaymentForm form={form} payment={payment} />
-                </Form>
+                <>
+                  <Form
+                    id="form"
+                    form={form}
+                    initialValues={initialValues}
+                    layout="vertical"
+                    autoComplete="off"
+                    onFinish={handleFinish}
+                  >
+                    <PaymentForm form={form} payment={payment} />
+                  </Form>
+
+                  <Updates updates={payment} />
+                </>
               ),
             },
           ]}

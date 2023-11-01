@@ -7,6 +7,7 @@ import { FaAngleLeft } from 'react-icons/fa';
 import { useCourseDeleteMutation, useCourseQuery, useCourseUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
+import { Updates } from '../../commons';
 
 const CourseEditPage: React.FC = () => {
   const { id } = useParams();
@@ -121,9 +122,13 @@ const CourseEditPage: React.FC = () => {
               label: t('courses.tab.details'),
               key: 'details',
               children: (
-                <Form id="form" initialValues={course} layout="vertical" autoComplete="off" onFinish={handleFinish}>
-                  <CourseForm />
-                </Form>
+                <>
+                  <Form id="form" initialValues={course} layout="vertical" autoComplete="off" onFinish={handleFinish}>
+                    <CourseForm />
+                  </Form>
+
+                  <Updates updates={course} />
+                </>
               ),
             },
             // {

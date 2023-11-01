@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as ActionButtons } from './buttons/ActionButtons';
+export { default as Updates } from './details/Updates';
