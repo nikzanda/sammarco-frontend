@@ -1,13 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { AuthenticatedLayout } from './layouts';
+import { AuthenticatedLayout, UnauthenticatedLayout } from './layouts';
 import './App.css';
+import { AuthenticationContext } from './contexts';
 
-// eslint-disable-next-line arrow-body-style
 const App: React.FC = () => {
+  const { currentUser, loading } = React.useContext(AuthenticationContext);
+
   return (
     <Router>
-      <AuthenticatedLayout />
+      {!loading && !currentUser && <UnauthenticatedLayout />}
+      {currentUser && <AuthenticatedLayout />}
     </Router>
   );
 };

@@ -19,6 +19,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  me: User;
   members: MemberPagination;
   member: Member;
   courses: CoursePagination;
@@ -75,6 +76,16 @@ export type QueryFeesArgs = {
 
 export type QueryFeeArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID']['output'];
+  username: Scalars['String']['output'];
+  displayName: Scalars['String']['output'];
+  email?: Maybe<Email>;
+  createdAt: Scalars['Float']['output'];
+  updatedAt: Scalars['Float']['output'];
 };
 
 export type Shift = {
@@ -164,6 +175,15 @@ export type Fee = {
   updatedAt: Scalars['Float']['output'];
 };
 
+export type Email = {
+  __typename?: 'Email';
+  host: Scalars['String']['output'];
+  port: Scalars['Int']['output'];
+  useTLS: Scalars['Boolean']['output'];
+  ignoreTLS: Scalars['Boolean']['output'];
+  email: Scalars['String']['output'];
+};
+
 export type CoursePagination = {
   __typename?: 'CoursePagination';
   data: Array<Course>;
@@ -178,6 +198,16 @@ export type Course = {
   shifts: Array<Shift>;
   createdAt: Scalars['Float']['output'];
   updatedAt: Scalars['Float']['output'];
+};
+
+export type LoginInput = {
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type LoginPayload = {
+  __typename?: 'LoginPayload';
+  token: Scalars['String']['output'];
 };
 
 export type PaymentUpdateInput = {
@@ -423,6 +453,7 @@ export enum CourseSortEnum {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  login: LoginPayload;
   paymentUpdate: PaymentUpdatePayload;
   paymentDelete: PaymentDeletePayload;
   paymentCreate: PaymentCreatePayload;
@@ -435,6 +466,11 @@ export type Mutation = {
   courseUpdate: CourseUpdatePayload;
   courseDelete: CourseDeletePayload;
   courseCreate: CourseCreatePayload;
+};
+
+
+export type MutationLoginArgs = {
+  input: LoginInput;
 };
 
 
@@ -704,6 +740,18 @@ export type PaymentDeleteMutationVariables = Exact<{
 
 
 export type PaymentDeleteMutation = { __typename?: 'Mutation', paymentDelete: { __typename?: 'PaymentDeletePayload', payment: { __typename?: 'Payment', date: number, reason: string, type: PaymentTypeEnum, createdAt: number, updatedAt: number, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string }, member: { __typename?: 'Member', id: string, fullName: string } } } };
+
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', token: string } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string } };
 
 export const CourseListItemFragmentDoc = gql`
     fragment CourseListItem on Course {
@@ -1782,3 +1830,71 @@ export function usePaymentDeleteMutation(baseOptions?: Apollo.MutationHookOption
 export type PaymentDeleteMutationHookResult = ReturnType<typeof usePaymentDeleteMutation>;
 export type PaymentDeleteMutationResult = Apollo.MutationResult<PaymentDeleteMutation>;
 export type PaymentDeleteMutationOptions = Apollo.BaseMutationOptions<PaymentDeleteMutation, PaymentDeleteMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    token
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;

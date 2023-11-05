@@ -1,7 +1,26 @@
 import { ApolloClient, ApolloLink, InMemoryCache, createHttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { setContext } from '@apollo/client/link/context';
 import { OperationDefinitionNode } from 'graphql';
 import { onError } from '@apollo/client/link/error';
+
+const authLink = setContext((_, { headers }) => {
+  const token = window.localStorage.getItem('token');
+  const authHeaders: {
+    authorization: string | undefined;
+  } = {
+    authorization: undefined,
+  };
+  if (token) {
+    authHeaders.authorization = `Bearer ${token}`;
+  }
+  return {
+    headers: {
+      ...headers,
+      ...authHeaders,
+    },
+  };
+});
 
 const cleanTypeName = new ApolloLink((operation, forward) => {
   // ATTENZIONE: https://github.com/apollographql/apollo-feature-requests/issues/6#issuecomment-462071544
@@ -17,26 +36,21 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
 });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
-  // if (networkError && networkError.statusCode === 401) {
-  //   window.localStorage.removeItem('token');
-  //   window.location.replace('/');
-  // }
-  // else if (graphQLErrors) {
-  //   // eslint-disable-next-line no-console
-  //   graphQLErrors.map(({ message, locations, path }) => console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`));
-  // }
-  // eslint-disable-next-line no-console
-  console.error(networkError);
+  if (networkError) {
+    // eslint-disable-next-line no-console
+    console.error('networkError:', networkError);
+  }
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      // eslint-disable-next-line no-console
+      console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+    );
+  }
 });
 
 const httpLink = createHttpLink({ uri: process.env.REACT_APP_GRAPHQLURI });
 
-const httpCompositeLink = ApolloLink.from([
-  cleanTypeName,
-  errorLink,
-  // authLink, TODO: authenticate
-  httpLink,
-]);
+const httpCompositeLink = ApolloLink.from([cleanTypeName, errorLink, authLink, httpLink]);
 
 const apolloClient = new ApolloClient({
   link: httpCompositeLink,

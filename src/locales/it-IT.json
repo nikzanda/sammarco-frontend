@@ -1,4 +1,11 @@
 {
+  "authentication": {
+    "login": "Accedi",
+    "form": {
+      "username": "Username",
+      "password": "Password"
+    }
+  },
   "members": {
     "name": "Iscritti",
     "new": "Nuovo iscritto",

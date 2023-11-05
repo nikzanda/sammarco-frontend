@@ -9,7 +9,7 @@ import it from 'date-fns/locale/it';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import apolloClient from './apollo';
-import { ThemeProvider } from './contexts';
+import { AuthenticationProvider, ThemeProvider } from './contexts';
 import './i18n';
 
 setDefaultOptions({ locale: it });
@@ -22,7 +22,9 @@ root.render(
     <ApolloProvider client={apolloClient}>
       <ThemeProvider>
         <Alert.ErrorBoundary>
-          <App />
+          <AuthenticationProvider>
+            <App />
+          </AuthenticationProvider>
         </Alert.ErrorBoundary>
       </ThemeProvider>
     </ApolloProvider>
