@@ -17,6 +17,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     name
     surname
     taxCode
+    email
     enrolledAt
     parent {
       name

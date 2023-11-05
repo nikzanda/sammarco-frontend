@@ -1,6 +1,7 @@
 {
   "authentication": {
     "login": "Accedi",
+    "logout": "Esci",
     "form": {
       "username": "Username",
       "password": "Password"
@@ -28,6 +29,7 @@
       "name": "Nome",
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
+      "email": "Email",
       "enrolledAt": "Iscritto il",
       "parent": {
         "name": "Nome genitore",
@@ -95,6 +97,8 @@
     "new": "Nuovo pagamento",
     "created": "Nuovo pagamento creato",
     "edited": "Pagamento aggiornato",
+    "sent": "Ricevuta inviata",
+    "printError": "Errore imprevisto durante la stampa della ricevuta",
     "deleted": "Pagamento eliminato",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare il pagamento?",
@@ -140,6 +144,29 @@
       "inLetters": "IN LETTERE"
     }
   },
+  "settings": {
+    "name": "Impostazioni",
+    "tab": {
+      "emailSettings": "Impostazioni email"
+    },
+    "emailSettings": {
+      "verify": {
+        "label": "Verifica",
+        "tooltip": "Assicurati di aver salvato prima di verificare"
+      },
+      "verified": "Email verificata"
+    },
+    "form": {
+      "emailSettings": {
+        "host": "Host",
+        "port": "Porta",
+        "secure": "Usa TLS",
+        "ignoreTLS": "Ignora TLS",
+        "email": "Email",
+        "password": "Password"
+      }
+    }
+  },
   "buttons": {
     "delete": {
       "label": "Elimina"
@@ -167,6 +194,14 @@
     },
     "printFacSimile": {
       "label": "Stampa fac-simile"
+    },
+    "send": {
+      "label": "Invia",
+      "tooltip": "Invia mail",
+      "confirm": {
+        "title": "Attenzione",
+        "description": "Sei sicuro di voler inviare la mail contenente la ricevuta?"
+      }
     }
   },
   "validations": {
@@ -185,6 +220,7 @@
     "details": {
       "createdAt": "Creato il",
       "updatedAt": "Aggiornato il"
-    }
+    },
+    "save": "Salva"
   }
 }

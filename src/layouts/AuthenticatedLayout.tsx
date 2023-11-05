@@ -1,16 +1,19 @@
 import React from 'react';
-import { Layout, Menu, MenuProps } from 'antd';
+import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
+import { FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
-import Icon from '@ant-design/icons';
+import Icon, { LogoutOutlined } from '@ant-design/icons';
 import { MemberCreatePage, MemberEditPage, MemberListPage } from '../core/members';
 import { CourseCreatePage, CourseEditPage, CourseListPage } from '../core/courses';
 import { FeeListPage, FeeCreatePage, FeeEditPage } from '../core/fees';
 import { PaymentEditPage, PaymentListPage } from '../core/payments';
+import { AuthenticationContext } from '../contexts';
+import { SettingsPage } from '../settings';
 
 const AuthenticatedLayout: React.FC = () => {
+  const { logout } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -45,6 +48,35 @@ const AuthenticatedLayout: React.FC = () => {
     return result;
   }, [navigate, t]);
 
+  const dropdownMenu = React.useMemo(() => {
+    const result: DropdownProps['menu'] = {
+      items: [
+        {
+          label: t('settings.name'),
+          key: 'settings',
+          icon: <Icon component={FaCog} />,
+        },
+        {
+          label: t('authentication.logout'),
+          key: 'logout',
+          icon: <LogoutOutlined />,
+        },
+      ],
+      onClick: ({ key }) => {
+        switch (key) {
+          case 'settings':
+            navigate('/settings');
+            break;
+
+          case 'logout':
+            logout!();
+            break;
+        }
+      },
+    };
+    return result;
+  }, [logout, navigate, t]);
+
   const selectedKey = React.useMemo(() => {
     const item = menuItems.find(({ key }: any) => location.pathname.includes(key));
     if (item) {
@@ -66,8 +98,10 @@ const AuthenticatedLayout: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <div className="demo-logo" />
         <Menu theme="dark" mode="horizontal" selectedKeys={selectedKey} items={menuItems} style={{ width: '100%' }} />
+        <Dropdown menu={dropdownMenu} placement="bottomRight" trigger={['click']}>
+          <Button shape="circle" size="large" icon={<Icon component={FaCog} />} ghost />
+        </Dropdown>
       </Layout.Header>
       <Layout.Content style={{ padding: '0 15px 15px 15px' }}>
         <Routes>
@@ -92,6 +126,10 @@ const AuthenticatedLayout: React.FC = () => {
           <Route path="payments" element={<Outlet />}>
             <Route index element={<PaymentListPage />} />
             <Route path=":id" element={<PaymentEditPage />} />
+          </Route>
+
+          <Route path="settings" element={<Outlet />}>
+            <Route index element={<SettingsPage />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/members" replace />} />

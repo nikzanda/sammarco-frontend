@@ -123,6 +123,14 @@ export const PAYMENT_UPDATE_MUTATION = gql`
   ${PAYMENT_DETAIL_FRAGMENT}
 `;
 
+export const PAYMENT_SEND_MUTATION = gql`
+  mutation PaymentSend($input: PaymentSendInput!) {
+    paymentSend(input: $input) {
+      sent
+    }
+  }
+`;
+
 export const PAYMENT_DELETE_MUTATION = gql`
   mutation PaymentDelete($input: PaymentDeleteInput!) {
     paymentDelete(input: $input) {

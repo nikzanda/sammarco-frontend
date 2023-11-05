@@ -41,7 +41,7 @@ class PDF {
     this.payment = payment;
   }
 
-  public static async print(paymentId: string) {
+  public static async print(paymentId: string, action: 'open' | 'data-url' = 'open'): Promise<string | undefined> {
     const { data, error } = await apolloClient.query({
       query: PAYMENT_PDF_QUERY,
       variables: {
@@ -56,7 +56,19 @@ class PDF {
     const pdfDef = new PDF(data.payment).generatePDF();
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 
-    pdfGenerated.open();
+    switch (action) {
+      case 'data-url':
+        return new Promise((resolve) => {
+          pdfGenerated.getDataUrl((result) => {
+            resolve(result);
+          });
+        });
+
+      default:
+        pdfGenerated.open();
+    }
+
+    return undefined;
   }
 
   public static printFacSimile(fee: FeeDetailFragment) {

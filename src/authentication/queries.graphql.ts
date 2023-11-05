@@ -13,6 +13,13 @@ export const ME_QUERY = gql`
     me {
       id
       username
+      emailSettings {
+        host
+        port
+        secure
+        ignoreTLS
+        email
+      }
     }
   }
 `;

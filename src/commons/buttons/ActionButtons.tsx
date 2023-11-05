@@ -1,10 +1,10 @@
 import Icon from '@ant-design/icons';
-import { Button, Space, Tooltip } from 'antd';
+import { Button, Popconfirm, Space, Tooltip } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaClone, FaMoneyBill, FaPen, FaPrint } from 'react-icons/fa';
+import { FaClone, FaMoneyBill, FaPaperPlane, FaPen, FaPrint } from 'react-icons/fa';
 
-export type ActionButton = 'edit' | 'clone' | 'print' | 'fee';
+export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee';
 export interface ActionButtonObject {
   button: ActionButton;
   disabled?: boolean;
@@ -15,6 +15,7 @@ const defaultProps = {
   onEdit: () => {},
   onClone: () => {},
   onPrint: () => {},
+  onSend: () => {},
   onFee: () => {},
 };
 
@@ -23,10 +24,11 @@ type Props = {
   onEdit?: () => void;
   onClone?: () => void;
   onPrint?: () => void;
+  onSend?: () => void;
   onFee?: () => void;
 };
 
-const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onFee }) => {
+const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onSend, onFee }) => {
   const { t } = useTranslation();
 
   const objectButtons = React.useMemo(
@@ -71,6 +73,20 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onF
             </Tooltip>
           );
 
+        case 'send':
+          return (
+            <Tooltip title={t('buttons.send.tooltip')}>
+              <Popconfirm
+                title={t('buttons.send.confirm.title')}
+                description={t('buttons.send.confirm.description')}
+                onConfirm={onSend}
+                disabled={disabled}
+              >
+                <Button shape="circle" icon={<Icon component={FaPaperPlane} />} disabled={disabled} />
+              </Popconfirm>
+            </Tooltip>
+          );
+
         case 'fee':
           return (
             <Tooltip title={t('buttons.fee.tooltip')}>
@@ -82,7 +98,7 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onF
           throw new Error('not implemented buttom');
       }
     },
-    [getDisabled, onClone, onEdit, onFee, onPrint, t]
+    [getDisabled, onClone, onEdit, onFee, onPrint, onSend, t]
   );
 
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Flex, Input, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
+import { App, Button, Flex, Input, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
 import { format, set } from 'date-fns';
 import { FaBan, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -12,6 +12,7 @@ import {
   PaymentListItemFragment,
   PaymentSortEnum,
   SortDirectionEnum,
+  usePaymentSendMutation,
   usePaymentsQuery,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
@@ -25,6 +26,7 @@ const LOCAL_STORAGE_PATH = 'filter/member/';
 const PaymentListPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { message } = App.useApp();
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
@@ -88,7 +90,14 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError);
+  const [sendEmail, { loading: sendLoading, error: sendError }] = usePaymentSendMutation({
+    refetchQueries: ['Payments', 'Payment'],
+    onCompleted: () => {
+      message.success(t('payments.sent'));
+    },
+  });
+
+  useDisplayGraphQLErrors(queryError, sendError);
 
   const payments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -111,6 +120,26 @@ const PaymentListPage: React.FC = () => {
   const handlePrintMultiple = () => {
     PDF.printMultiple(selectedIds);
   };
+
+  const handleSend = React.useCallback(
+    async (paymentId: string) => {
+      const attachmentUri = await PDF.print(paymentId, 'data-url');
+      if (!attachmentUri) {
+        message.error(t('payments.printError'));
+        return;
+      }
+
+      sendEmail({
+        variables: {
+          input: {
+            id: paymentId,
+            attachmentUri,
+          },
+        },
+      });
+    },
+    [message, sendEmail, t]
+  );
 
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
@@ -165,15 +194,16 @@ const PaymentListPage: React.FC = () => {
         align: 'right',
         render: (id) => (
           <ActionButtons
-            buttons={['edit', 'print']}
+            buttons={['edit', 'print', { button: 'send', disabled: sendLoading }]}
             onEdit={() => navigate(`/payments/${id}`)}
             onPrint={() => handlePrint(id)}
+            onSend={() => handleSend(id)}
           />
         ),
       },
     ];
     return result;
-  }, [navigate, t]);
+  }, [handleSend, navigate, sendLoading, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
