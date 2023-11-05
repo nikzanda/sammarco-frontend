@@ -14,6 +14,8 @@ export const ME_QUERY = gql`
       id
       username
       emailSettings {
+        subject
+        body
         host
         port
         secure

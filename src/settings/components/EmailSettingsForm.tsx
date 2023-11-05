@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Input, InputNumber, Switch, Tooltip, Button, Form, App } from 'antd';
+import { Row, Col, Input, InputNumber, Switch, Tooltip, Button, Form, App, Divider } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useVerifyEmailSettingsMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
@@ -26,6 +26,24 @@ const EmailSettingsForm: React.FC = () => {
 
   return (
     <>
+      <Divider plain>{t('settings.emailSettings.text')}</Divider>
+
+      <Row gutter={24}>
+        <Col xs={24} md={12}>
+          <Form.Item label={t('settings.form.emailSettings.subject')} name={['emailSettings', 'subject']}>
+            <Input />
+          </Form.Item>
+        </Col>
+
+        <Col span={24}>
+          <Form.Item label={t('settings.form.emailSettings.body')} name={['emailSettings', 'body']}>
+            <Input.TextArea rows={6} />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Divider plain>{t('settings.emailSettings.credentials')}</Divider>
+
       <Row gutter={24}>
         <Col xs={24} md={12}>
           <Form.Item label={t('settings.form.emailSettings.host')} name={['emailSettings', 'host']}>

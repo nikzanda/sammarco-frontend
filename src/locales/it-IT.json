@@ -151,6 +151,8 @@
       "emailSettings": "Impostazioni email"
     },
     "emailSettings": {
+      "text": "Testo email",
+      "credentials": "Credenziali",
       "verify": {
         "label": "Verifica",
         "tooltip": "Assicurati di aver salvato prima di verificare"
@@ -159,6 +161,8 @@
     },
     "form": {
       "emailSettings": {
+        "subject": "Oggetto",
+        "body": "Contenuto",
         "host": "Host",
         "port": "Porta",
         "secure": "Usa TLS",
