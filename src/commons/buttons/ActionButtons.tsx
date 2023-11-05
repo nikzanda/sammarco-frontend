@@ -1,5 +1,5 @@
 import Icon from '@ant-design/icons';
-import { Button, Popconfirm, Space, Tooltip } from 'antd';
+import { Badge, Button, Popconfirm, Space, Tooltip } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaClone, FaMoneyBill, FaPaperPlane, FaPen, FaPrint } from 'react-icons/fa';
@@ -8,6 +8,8 @@ export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee';
 export interface ActionButtonObject {
   button: ActionButton;
   disabled?: boolean;
+  printed?: boolean;
+  sent?: boolean;
 }
 export type ActionButtonsType = (ActionButton | ActionButtonObject)[];
 
@@ -47,9 +49,33 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
     [objectButtons]
   );
 
+  const getPrinted = React.useCallback(
+    (actionButton: ActionButton, defaultPrinted = undefined) => {
+      const button = objectButtons.find(({ button }) => button === actionButton);
+      if (button && button.printed != null) {
+        return button.printed;
+      }
+      return defaultPrinted;
+    },
+    [objectButtons]
+  );
+
+  const getSent = React.useCallback(
+    (actionButton: ActionButton, defaultSent = undefined) => {
+      const button = objectButtons.find(({ button }) => button === actionButton);
+      if (button && button.sent != null) {
+        return button.sent;
+      }
+      return defaultSent;
+    },
+    [objectButtons]
+  );
+
   const renderButton = React.useCallback(
     (button: ActionButton) => {
       const disabled = getDisabled(button);
+      const printed = getPrinted(button);
+      const sent = getSent(button);
 
       switch (button) {
         case 'edit':
@@ -69,7 +95,9 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
         case 'print':
           return (
             <Tooltip title={t('buttons.print.tooltip')}>
-              <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={onPrint} disabled={disabled} />
+              <Badge dot={typeof printed === 'boolean'} color={printed ? 'green' : 'red'}>
+                <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={onPrint} disabled={disabled} />
+              </Badge>
             </Tooltip>
           );
 
@@ -82,7 +110,9 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
                 onConfirm={onSend}
                 disabled={disabled}
               >
-                <Button shape="circle" icon={<Icon component={FaPaperPlane} />} disabled={disabled} />
+                <Badge dot={typeof sent === 'boolean'} color={sent ? 'green' : 'red'}>
+                  <Button shape="circle" icon={<Icon component={FaPaperPlane} />} disabled={disabled} />
+                </Badge>
               </Popconfirm>
             </Tooltip>
           );
@@ -98,7 +128,7 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
           throw new Error('not implemented buttom');
       }
     },
-    [getDisabled, onClone, onEdit, onFee, onPrint, onSend, t]
+    [getDisabled, getPrinted, getSent, onClone, onEdit, onFee, onPrint, onSend, t]
   );
 
   return (

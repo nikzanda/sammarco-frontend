@@ -25,7 +25,7 @@ const SettingsPage: React.FC = () => {
   const [updateUser, { loading, error }] = useUserUpdateMutation({
     refetchQueries: ['Me'],
     onCompleted: () => {
-      message.success(t('saved'));
+      message.success(t('settings.saved'));
     },
   });
 

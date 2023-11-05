@@ -146,6 +146,7 @@
   },
   "settings": {
     "name": "Impostazioni",
+    "saved": "Impostazioni aggiornate correttamente",
     "tab": {
       "emailSettings": "Impostazioni email"
     },
@@ -190,7 +191,8 @@
       "label": "Reset filtro"
     },
     "print": {
-      "label": "Stampa"
+      "label": "Stampa",
+      "tooltip": "Stampa"
     },
     "printFacSimile": {
       "label": "Stampa fac-simile"

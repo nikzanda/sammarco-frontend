@@ -15,6 +15,8 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     amount
     month
     years
+    printed
+    sent
   }
 `;
 
@@ -117,6 +119,19 @@ export const PAYMENT_UPDATE_MUTATION = gql`
     paymentUpdate(input: $input) {
       payment {
         ...PaymentDetail
+      }
+    }
+  }
+  ${PAYMENT_DETAIL_FRAGMENT}
+`;
+
+export const PAYMENT_UPDATE_MULTIPLE_MUTATION = gql`
+  mutation PaymentUpdateMultiple($input: PaymentUpdateMultipleInput!) {
+    paymentUpdateMultiple(input: $input) {
+      payments {
+        id
+        printed
+        sent
       }
     }
   }
