@@ -30,6 +30,7 @@ const PaymentListPage: React.FC = () => {
   const { message } = App.useApp();
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+  const [sendingIds, setSendingIds] = React.useState<string[]>([]);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -95,7 +96,7 @@ const PaymentListPage: React.FC = () => {
     refetchQueries: ['Payments', 'Payment'],
   });
 
-  const [sendEmail, { loading: sendLoading, error: sendError }] = usePaymentSendMutation({
+  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
     refetchQueries: ['Payments', 'Payment'],
     onCompleted: () => {
       message.success(t('payments.sent'));
@@ -153,6 +154,8 @@ const PaymentListPage: React.FC = () => {
         return;
       }
 
+      setSendingIds([...sendingIds, paymentId]);
+
       sendEmail({
         variables: {
           input: {
@@ -160,9 +163,11 @@ const PaymentListPage: React.FC = () => {
             attachmentUri,
           },
         },
+      }).finally(() => {
+        setSendingIds([...sendingIds]);
       });
     },
-    [message, sendEmail, t]
+    [message, sendEmail, sendingIds, t]
   );
 
   const columns = React.useMemo(() => {
@@ -218,7 +223,11 @@ const PaymentListPage: React.FC = () => {
         align: 'right',
         render: (id, { printed, sent }) => (
           <ActionButtons
-            buttons={['edit', { button: 'print', printed }, { button: 'send', sent, disabled: sendLoading }]}
+            buttons={[
+              'edit',
+              { button: 'print', printed },
+              { button: 'send', sent, disabled: sendingIds.includes(id) },
+            ]}
             onEdit={() => navigate(`/payments/${id}`)}
             onPrint={() => handlePrint(id)}
             onSend={() => handleSend(id)}
@@ -227,7 +236,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [handlePrint, handleSend, navigate, sendLoading, t]);
+  }, [handlePrint, handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
