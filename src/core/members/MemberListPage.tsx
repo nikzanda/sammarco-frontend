@@ -1,12 +1,13 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Flex, Input, Space, Table, Typography } from 'antd';
+import { Badge, Button, Flex, Input, Space, Table, Tooltip, Typography } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { FaBan, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import { format } from 'date-fns';
 import {
   MemberFilter,
   MemberListItemFragment,
@@ -105,6 +106,24 @@ const MemberListPage: React.FC = () => {
         key: 'fullName',
         dataIndex: 'fullName',
         sorter: true,
+        render: (fullName, { currentMonthPayment, currentEnrollmentPayment }) => {
+          const badge = <Badge dot color="red" />;
+          return (
+            <>
+              {fullName}{' '}
+              {!currentMonthPayment && (
+                <Tooltip
+                  title={t('members.table.currentMonthNotPaid', { month: format(Date.now(), 'MMMM').toUpperCase() })}
+                >
+                  {badge}
+                </Tooltip>
+              )}{' '}
+              {!currentEnrollmentPayment && (
+                <Tooltip title={t('members.table.currentEnrollmentNotPaid')}>{badge}</Tooltip>
+              )}
+            </>
+          );
+        },
       },
       {
         title: t('members.table.courses'),

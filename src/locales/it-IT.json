@@ -19,7 +19,9 @@
     },
     "table": {
       "fullName": "Nome",
-      "courses": "Corsi"
+      "courses": "Corsi",
+      "currentMonthNotPaid": "Mese di {{month}} non pagato.",
+      "currentEnrollmentNotPaid": "Iscrizione non pagata."
     },
     "tab": {
       "details": "Dettagli",
