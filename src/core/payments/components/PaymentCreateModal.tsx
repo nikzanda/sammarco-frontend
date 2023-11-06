@@ -1,16 +1,19 @@
 import React, { useRef } from 'react';
-import { App, Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
+import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Select, Spin } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
   PaymentTypeEnum,
   RecurrenceEnum,
   useFeesSearcherQuery,
+  useMemberSearcherLazyQuery,
   usePaymentCreateMutation,
+  usePaymentSendMutation,
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { dateToYearMonth } from '../../../utils/utils';
+import PDF from '../pdfs/receipt-pdf';
 
 type Props = {
   memberId: string;
@@ -23,6 +26,7 @@ const initialValues = {
   month: [new Date().getFullYear(), (new Date().getMonth() + 1).toString().padStart(2, '0')].join('-'),
   years: [new Date().getFullYear(), new Date().getFullYear() + 1],
   type: PaymentTypeEnum.CASH,
+  sendEmail: true,
 };
 
 const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
@@ -31,6 +35,8 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   const { message } = App.useApp();
 
   const paymentReason = useRef<string>();
+
+  const [getMember, { data: memberData, loading: memberLoading, error: memberError }] = useMemberSearcherLazyQuery();
 
   const {
     data: feesData,
@@ -44,12 +50,29 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
+  React.useEffect(() => {
+    if (memberId) {
+      getMember({
+        variables: {
+          id: memberId,
+        },
+      });
+    }
+  }, [getMember, memberId]);
+
   const fees = React.useMemo(() => {
     if (!feesLoading && !feesError && feesData) {
       return feesData.fees.data;
     }
     return [];
   }, [feesData, feesError, feesLoading]);
+
+  const member = React.useMemo(() => {
+    if (!memberLoading && !memberError && memberData) {
+      return memberData.member;
+    }
+    return undefined;
+  }, [memberData, memberError, memberLoading]);
 
   const paymentTypeOptions = React.useMemo(() => {
     const result = Object.keys(PaymentTypeEnum).map((paymentType) => ({
@@ -67,17 +90,46 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
-  useDisplayGraphQLErrors(mutationError, feesError);
+  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
+    refetchQueries: ['Payments'],
+    onCompleted: () => {
+      message.success(t('payments.sent'));
+    },
+  });
+
+  useDisplayGraphQLErrors(mutationError, feesError, memberError, sendError);
 
   const handleSubmit = (values: any) => {
+    const { sendEmail: sendEmailFlag, ...input } = values;
+
     createPayment({
       variables: {
         input: {
           memberId,
-          ...values,
+          ...input,
         },
       },
-    });
+    })
+      .then(async ({ data }) => {
+        if (data && sendEmailFlag) {
+          const { id: paymentId } = data.paymentCreate.payment;
+          const attachmentUri = await PDF.print(paymentId, 'data-url');
+          if (!attachmentUri) {
+            message.error(t('payments.printError'));
+            return;
+          }
+
+          sendEmail({
+            variables: {
+              input: {
+                id: paymentId,
+                attachmentUri,
+              },
+            },
+          });
+        }
+      })
+      .catch(() => {});
   };
 
   return (
@@ -271,6 +323,12 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         >
           <Radio.Group options={paymentTypeOptions} />
         </Form.Item>
+
+        <Spin spinning={memberLoading}>
+          <Form.Item label={t('payments.form.sendEmail')} name="sendEmail" valuePropName="checked">
+            <Checkbox disabled={!member?.email} />
+          </Form.Item>
+        </Spin>
       </Form>
     </Modal>
   );

@@ -33,6 +33,28 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
   ${MEMBER_LIST_ITEM_FRAGMENT}
 `;
 
+export const MEMBERS_SEARCH_QUERY = gql`
+  query MembersSearcher($filter: MemberFilter!) {
+    members(pageIndex: 0, pageSize: 20, filter: $filter) {
+      data {
+        id
+        fullName
+        email
+      }
+    }
+  }
+`;
+
+export const MEMBER_SEARCH_QUERY = gql`
+  query MemberSearcher($id: ID!) {
+    member(id: $id) {
+      id
+      fullName
+      email
+    }
+  }
+`;
+
 export const MEMBERS_QUERY = gql`
   query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter) {
     members(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {

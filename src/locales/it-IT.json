@@ -125,7 +125,8 @@
       "years": "Anno",
       "date": "Pagato il",
       "reason": "Causale",
-      "paymentType": "Tipo pagamento"
+      "paymentType": "Tipo pagamento",
+      "sendEmail": "Invia ricevuta via email"
     },
     "pdf": {
       "receiptNo": "RICEVUTA n.",
