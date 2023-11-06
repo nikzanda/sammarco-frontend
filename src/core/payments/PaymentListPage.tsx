@@ -121,28 +121,34 @@ const PaymentListPage: React.FC = () => {
 
   const handlePrint = React.useCallback(
     (paymentId: string) => {
+      if (payments.some(({ id, printed }) => id === paymentId && !printed)) {
+        updateMultiple({
+          variables: {
+            input: {
+              ids: [paymentId],
+              printed: true,
+            },
+          },
+        });
+      }
+      PDF.print(paymentId);
+    },
+    [payments, updateMultiple]
+  );
+
+  const handlePrintMultiple = () => {
+    const ids = payments.filter(({ id, printed }) => selectedIds.includes(id) && !printed).map(({ id }) => id);
+
+    if (ids.length > 0) {
       updateMultiple({
         variables: {
           input: {
-            ids: [paymentId],
+            ids,
             printed: true,
           },
         },
       });
-      PDF.print(paymentId);
-    },
-    [updateMultiple]
-  );
-
-  const handlePrintMultiple = () => {
-    updateMultiple({
-      variables: {
-        input: {
-          ids: selectedIds,
-          printed: true,
-        },
-      },
-    });
+    }
     PDF.printMultiple(selectedIds);
   };
 
