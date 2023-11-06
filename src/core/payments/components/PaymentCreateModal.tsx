@@ -111,7 +111,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
       },
     })
       .then(async ({ data }) => {
-        if (data && sendEmailFlag) {
+        if (data && sendEmailFlag && member?.email) {
           const { id: paymentId } = data.paymentCreate.payment;
           const attachmentUri = await PDF.print(paymentId, 'data-url');
           if (!attachmentUri) {
