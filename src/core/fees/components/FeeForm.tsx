@@ -61,10 +61,10 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
         </Form.Item>
       </Col>
 
-      {/* TODO: placeholder */}
       <Col xs={24} md={12}>
         <Form.Item
-          label={t('fees.form.reason')}
+          label={t('fees.form.reason.label')}
+          help={t('fees.form.reason.help')}
           name="reason"
           rules={[{ required: true, message: t('validations.required')! }]}
         >

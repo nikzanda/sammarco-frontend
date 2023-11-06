@@ -166,10 +166,16 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
               if (fee) {
                 form.setFieldValue('amount', fee.amount);
 
+                const today = new Date();
+                const years = [
+                  today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear(),
+                  today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
+                ];
+
                 let { reason } = fee;
                 paymentReason.current = reason;
                 reason = reason.replaceAll('[MESE]', format(Date.now(), 'MMMM yyyy'));
-                // TODO: reason.replaceAll years
+                reason = reason.replaceAll('[ANNO]', years.join(' - '));
                 form.setFieldValue('reason', reason);
               }
             }}
@@ -214,9 +220,14 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                     style={{ width: '100%' }}
                     onChange={(date) => {
                       if (date) {
+                        const years = [
+                          date.getMonth() < 8 ? date.getFullYear() - 1 : date.getFullYear(),
+                          date.getMonth() < 8 ? date.getFullYear() : date.getFullYear() + 1,
+                        ];
+
                         let reason = paymentReason.current!;
                         reason = reason.replaceAll('[MESE]', format(date, 'MMMM yyyy'));
-                        // TODO: reason.replaceAll years
+                        reason = reason.replaceAll('[ANNO]', years.join(' - '));
                         form.setFieldValue('reason', reason);
                       }
                     }}

@@ -89,7 +89,10 @@
       "amount": "Importo",
       "recurrence": "Ricorrenza",
       "enabled": "Attivo",
-      "reason": "Causale"
+      "reason": {
+        "label": "Causale",
+        "help": "Utilizza i placeholder [MESE] e/o [ANNO] per sostituire rispettivamente mese del pagamento e/o anno d'iscrizione."
+      }
     }
   },
   "payments": {
@@ -162,8 +165,14 @@
     },
     "form": {
       "emailSettings": {
-        "subject": "Oggetto",
-        "body": "Contenuto",
+        "subject": {
+          "label": "Oggetto",
+          "help": "Utilizza i placeholder [MESE] e/o [ANNO] per sostituire rispettivamente mese del pagamento e/o anno d'iscrizione."
+        },
+        "body": {
+          "label": "Contenuto",
+          "help": "Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome dell'iscritto"
+        },
         "host": "Host",
         "port": "Porta",
         "secure": "Usa TLS",

@@ -73,19 +73,20 @@ class PDF {
 
   public static printFacSimile(fee: FeeDetailFragment) {
     const today = new Date();
+    const years = [
+      today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear(),
+      today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
+    ];
 
     const payment: PaymentPdfFragment = {
       counter: Math.floor(Math.random() * 501),
       date: today.getTime(),
       amount: fee.amount,
       ...(fee.recurrence === RecurrenceEnum.ANNUAL && {
-        years: [
-          today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear(),
-          today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
-        ],
+        years,
       }),
       ...(fee.recurrence === RecurrenceEnum.MONTHLY && { month: dateToYearMonth(today) }),
-      reason: fee.reason.replaceAll('[MESE]', format(today, 'MMMM yyyy')), // TODO: replaceAll [ANNI]
+      reason: fee.reason.replaceAll('[MESE]', format(today, 'MMMM yyyy')).replaceAll('[ANNO]', years.join(' - ')),
       member: {
         name: 'Nome',
         surname: 'Cognome',

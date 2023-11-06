@@ -30,13 +30,21 @@ const EmailSettingsForm: React.FC = () => {
 
       <Row gutter={24}>
         <Col xs={24} md={12}>
-          <Form.Item label={t('settings.form.emailSettings.subject')} name={['emailSettings', 'subject']}>
+          <Form.Item
+            label={t('settings.form.emailSettings.subject.label')}
+            help={t('settings.form.emailSettings.subject.help')}
+            name={['emailSettings', 'subject']}
+          >
             <Input />
           </Form.Item>
         </Col>
 
         <Col span={24}>
-          <Form.Item label={t('settings.form.emailSettings.body')} name={['emailSettings', 'body']}>
+          <Form.Item
+            label={t('settings.form.emailSettings.body.label')}
+            help={t('settings.form.emailSettings.body.help')}
+            name={['emailSettings', 'body']}
+          >
             <Input.TextArea rows={6} />
           </Form.Item>
         </Col>

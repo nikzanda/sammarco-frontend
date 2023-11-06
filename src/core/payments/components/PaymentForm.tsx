@@ -42,15 +42,21 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
           <FeeSearcher
             // queryFilters={{ courseIds: [] }}
             allowClear={false}
-            onChange={(value, selectedFee) => {
+            onChange={(_value, selectedFee) => {
               if (selectedFee) {
                 setFee(selectedFee);
                 form.setFieldValue('amount', selectedFee.amount);
 
+                const today = new Date();
+                const years = [
+                  today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear(),
+                  today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
+                ];
+
                 let { reason } = selectedFee;
                 paymentReason.current = reason;
                 reason = reason.replaceAll('[MESE]', format(Date.now(), 'MMMM yyyy'));
-                // TODO: reason.replaceAll years
+                reason = reason.replaceAll('[ANNO]', years.join(' - '));
                 form.setFieldValue('reason', reason);
               }
             }}
@@ -93,9 +99,14 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
                     style={{ width: '100%' }}
                     onChange={(date) => {
                       if (date) {
+                        const years = [
+                          date.getMonth() < 8 ? date.getFullYear() - 1 : date.getFullYear(),
+                          date.getMonth() < 8 ? date.getFullYear() : date.getFullYear() + 1,
+                        ];
+
                         let reason = paymentReason.current!;
                         reason = reason.replaceAll('[MESE]', format(date, 'MMMM yyyy'));
-                        // TODO: reason.replaceAll years
+                        reason = reason.replaceAll('[ANNO]', years.join(' - '));
                         form.setFieldValue('reason', reason);
                       }
                     }}
