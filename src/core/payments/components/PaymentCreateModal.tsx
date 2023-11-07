@@ -83,7 +83,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   }, [t]);
 
   const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
-    refetchQueries: ['Payments'],
+    refetchQueries: ['Payments', 'Members'],
     onCompleted: () => {
       message.success(t('members.payments.created'));
       onCancel();
