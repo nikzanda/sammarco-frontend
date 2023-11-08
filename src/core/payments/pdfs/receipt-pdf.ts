@@ -12,6 +12,7 @@ import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
 import { getSex, isMinor } from '../../members/helpers';
+import signatureUri from './constants/signature';
 
 const { t } = i18n;
 
@@ -491,7 +492,10 @@ class PDF {
                     },
                     {
                       border: [false, false, false, true],
-                      text: '',
+                      image: signatureUri,
+                      width: 150,
+                      height: 20,
+                      marginTop: -3,
                     },
                   ],
                 ],
