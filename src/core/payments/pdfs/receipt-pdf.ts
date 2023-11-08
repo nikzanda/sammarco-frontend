@@ -13,6 +13,7 @@ import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
 import { getSex, isMinor } from '../../members/helpers';
 import signatureUri from './constants/signature';
+import municipalities from './constants/municipalities';
 
 const { t } = i18n;
 
@@ -317,6 +318,21 @@ class PDF {
                     border: [false, false, true, true],
                     text: format(member.birthday, 'dd/MM/yyyy'),
                   },
+                ],
+                [
+                  {
+                    border: [true, false, false, true],
+                    text: t('payments.pdf.birthPlace'),
+                    colSpan: 2,
+                    style: 'label',
+                  },
+                  {},
+                  {
+                    border: [false, false, true, true],
+                    colSpan: 2,
+                    text: municipalities[member.taxCode.slice(11, 15)].toUpperCase(),
+                  },
+                  {},
                 ],
                 [
                   {
