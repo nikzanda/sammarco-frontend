@@ -321,18 +321,18 @@ class PDF {
                 ],
                 [
                   {
-                    border: [true, false, false, true],
+                    border: [true, false, false, false],
                     text: t('payments.pdf.birthPlace'),
-                    colSpan: 2,
+                    colSpan: 3,
+                    alignment: 'right',
                     style: 'label',
                   },
                   {},
+                  {},
                   {
                     border: [false, false, true, true],
-                    colSpan: 2,
                     text: municipalities[member.taxCode.slice(11, 15)].toUpperCase(),
                   },
-                  {},
                 ],
                 [
                   {

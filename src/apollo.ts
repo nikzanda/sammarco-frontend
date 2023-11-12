@@ -54,6 +54,16 @@ const httpCompositeLink = ApolloLink.from([cleanTypeName, errorLink, authLink, h
 
 const apolloClient = new ApolloClient({
   link: httpCompositeLink,
+  // TODO: in locale la cache va, in produzione no, perché?
+  defaultOptions: {
+    query: {
+      fetchPolicy: 'network-only',
+    },
+    watchQuery: {
+      nextFetchPolicy: 'network-only',
+      fetchPolicy: 'network-only',
+    },
+  },
   cache: new InMemoryCache({
     // possibleTypes: introspectionResult.possibleTypes,
   }),
