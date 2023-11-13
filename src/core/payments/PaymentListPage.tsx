@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { App, Button, Flex, Input, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
+import { App, Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
 import { format, set } from 'date-fns';
 import { FaBan, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -22,7 +22,7 @@ import { toCurrency } from '../../utils/utils';
 import { ActionButtons } from '../../commons';
 
 const PAGE_SIZE = 20;
-const LOCAL_STORAGE_PATH = 'filter/member/';
+const LOCAL_STORAGE_PATH = 'filter/payment/';
 
 const PaymentListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -71,6 +71,7 @@ const PaymentListPage: React.FC = () => {
     }
 
     const result: PaymentFilter = {
+      search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberId: filterInfo?.member?.length ? (filterInfo.member[0] as string) : undefined,
       month: filterInfo?.month?.length ? (filterInfo.month[0] as string) : undefined,
@@ -186,15 +187,18 @@ const PaymentListPage: React.FC = () => {
       {
         title: t('payments.table.member'),
         key: 'member',
-        dataIndex: 'member',
-        render: (member) => member.fullName,
+        dataIndex: ['member', 'fullName'],
         // TODO: filtro
+      },
+      {
+        title: t('payments.table.course'),
+        key: 'course',
+        dataIndex: ['fee', 'course', 'name'],
       },
       {
         title: t('payments.table.fee'),
         key: 'fee',
-        dataIndex: 'fee',
-        render: (fee) => fee.name,
+        dataIndex: ['fee', 'name'],
         // TODO: filtro
       },
       {
@@ -266,22 +270,25 @@ const PaymentListPage: React.FC = () => {
         <Typography.Title level={2}>{t('payments.name')}</Typography.Title>
       </Flex>
 
-      <Flex justify="space-between" align="center">
-        <Input.Search
-          placeholder={t('commons.searchPlaceholder')!}
-          allowClear
-          enterButton
-          size="large"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onSearch={(value) => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({
-              search: [value],
-            });
-          }}
-        />
-        <Flex justify="space-around" gap={12}>
+      <Row gutter={[12, 12]}>
+        <Col xs={24} sm={12}>
+          <Input.Search
+            placeholder={t('commons.searchPlaceholder')!}
+            allowClear
+            enterButton
+            size="large"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={(value) => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({
+                search: [value],
+              });
+            }}
+          />
+        </Col>
+
+        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
           <Button
             size="large"
             icon={<Icon component={FaPrint} />}
@@ -302,8 +309,8 @@ const PaymentListPage: React.FC = () => {
           >
             {t('buttons.resetFilter.label')}
           </Button>
-        </Flex>
-      </Flex>
+        </Col>
+      </Row>
 
       {selectedIds.length > 0 && <span>{t('commons.selected', { selected: selectedIds.length, total })}</span>}
       <Table

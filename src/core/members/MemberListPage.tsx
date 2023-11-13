@@ -1,7 +1,19 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import { Badge, Button, Flex, Input, Space, Table, Tooltip, Typography } from 'antd';
-import { ColumnsType, TableProps } from 'antd/es/table';
+import {
+  Badge,
+  Button,
+  Col,
+  Flex,
+  Input,
+  Row,
+  Space,
+  Table,
+  TableColumnsType,
+  TableProps,
+  Tooltip,
+  Typography,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { FaBan, FaPlus } from 'react-icons/fa';
@@ -100,27 +112,47 @@ const MemberListPage: React.FC = () => {
   }, [queryData, queryError, queryLoading]);
 
   const columns = React.useMemo(() => {
-    const result: ColumnsType<MemberListItemFragment> = [
+    const result: TableColumnsType<MemberListItemFragment> = [
       {
         title: t('members.table.fullName'),
         key: 'fullName',
         dataIndex: 'fullName',
         sorter: true,
-        render: (fullName, { currentMonthPayment, currentEnrollmentPayment }) => {
+        render: (fullName, { currentMonthPayments, currentEnrollmentPayment, courses }) => {
           const badge = <Badge dot color="red" />;
+
+          const courseMonthsNotPaid = courses.reduce((acc: typeof courses, course) => {
+            const payments = currentMonthPayments.filter(({ fee }) => fee.course.id === course.id);
+            if (payments.length === 0) {
+              acc.push(course);
+            } else {
+              const paidAmount = payments.reduce((acc, { amount }) => acc + amount, 0);
+              if (paidAmount < payments[0].fee.amount) {
+                acc.push(course);
+              }
+            }
+
+            return acc;
+          }, []);
+
           return (
             <>
               {fullName}{' '}
-              {!currentMonthPayment && (
-                <Tooltip
-                  title={t('members.table.currentMonthNotPaid', { month: format(Date.now(), 'MMMM').toUpperCase() })}
-                >
-                  {badge}
-                </Tooltip>
-              )}{' '}
-              {!currentEnrollmentPayment && (
-                <Tooltip title={t('members.table.currentEnrollmentNotPaid')}>{badge}</Tooltip>
-              )}
+              <Space size="small">
+                {courseMonthsNotPaid.map((course) => (
+                  <Tooltip
+                    title={t('members.table.currentMonthNotPaid', {
+                      course: course.name,
+                      month: format(Date.now(), 'MMMM').toUpperCase(),
+                    })}
+                  >
+                    {badge}
+                  </Tooltip>
+                ))}
+                {!currentEnrollmentPayment && (
+                  <Tooltip title={t('members.table.currentEnrollmentNotPaid')}>{badge}</Tooltip>
+                )}
+              </Space>
             </>
           );
         },
@@ -178,34 +210,40 @@ const MemberListPage: React.FC = () => {
         </Button>
       </Flex>
 
-      <Flex justify="space-between" align="center">
-        <Input.Search
-          placeholder={t('commons.searchPlaceholder')!}
-          allowClear
-          enterButton
-          size="large"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onSearch={(value) => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({
-              search: [value],
-            });
-          }}
-        />
-        <Button
-          danger
-          size="large"
-          icon={<Icon component={FaBan} />}
-          onClick={() => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({});
-            setSearchText('');
-          }}
-        >
-          {t('buttons.resetFilter.label')}
-        </Button>
-      </Flex>
+      <Row gutter={[12, 12]}>
+        <Col xs={24} sm={12}>
+          <Input.Search
+            placeholder={t('commons.searchPlaceholder')!}
+            allowClear
+            enterButton
+            size="large"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={(value) => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({
+                search: [value],
+              });
+            }}
+          />
+        </Col>
+
+        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
+          <Button
+            danger
+            size="large"
+            icon={<Icon component={FaBan} />}
+            onClick={() => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({});
+              setSearchText('');
+            }}
+          >
+            {t('buttons.resetFilter.label')}
+          </Button>
+        </Col>
+      </Row>
+
       <Table
         dataSource={members}
         columns={columns}

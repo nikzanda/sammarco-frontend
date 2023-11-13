@@ -34,6 +34,9 @@ export const FEES_SEARCH_QUERY = gql`
         amount
         recurrence
         reason
+        course {
+          name
+        }
       }
     }
   }
@@ -47,6 +50,9 @@ export const FEE_SEARCH_QUERY = gql`
       amount
       recurrence
       reason
+      course {
+        name
+      }
     }
   }
 `;

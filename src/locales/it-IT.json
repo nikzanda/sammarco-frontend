@@ -20,7 +20,7 @@
     "table": {
       "fullName": "Nome",
       "courses": "Corsi",
-      "currentMonthNotPaid": "Mese di {{month}} non pagato.",
+      "currentMonthNotPaid": "Mese di {{month}}, corso {{course}}, non pagato.",
       "currentEnrollmentNotPaid": "Iscrizione non pagata."
     },
     "tab": {
@@ -116,6 +116,7 @@
     "table": {
       "counter": "N.",
       "member": "Iscritto",
+      "course": "Corso",
       "fee": "Quota",
       "amount": "Importo",
       "details": "Dettagli"
@@ -131,7 +132,13 @@
       "date": "Pagato il",
       "reason": "Causale",
       "paymentType": "Tipo pagamento",
-      "sendEmail": "Invia ricevuta via email"
+      "sendEmail": {
+        "label": "Invia ricevuta via email",
+        "help": {
+          "member": "L'iscritto non ha la mail",
+          "currentUser": "La tua email non è configurata"
+        }
+      }
     },
     "pdf": {
       "receiptNo": "RICEVUTA n.",

@@ -3,7 +3,7 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Flex, Input, Space, Table, TableProps, Typography, theme } from 'antd';
+import { Button, Col, Flex, Input, Row, Space, Table, TableProps, Typography, theme } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaPlus, FaBan, FaCheck, FaTimes } from 'react-icons/fa';
 import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
@@ -12,7 +12,7 @@ import { ActionButtons } from '../../commons';
 import { toCurrency } from '../../utils/utils';
 
 const PAGE_SIZE = 20;
-const LOCAL_STORAGE_PATH = 'filter/course/';
+const LOCAL_STORAGE_PATH = 'filter/fee/';
 
 const FeeListPage: React.FC = () => {
   const { t } = useTranslation();
@@ -170,34 +170,40 @@ const FeeListPage: React.FC = () => {
         </Button>
       </Flex>
 
-      <Flex justify="space-between" align="center">
-        <Input.Search
-          placeholder={t('commons.searchPlaceholder')!}
-          allowClear
-          enterButton
-          size="large"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onSearch={(value) => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({
-              name: [value],
-            });
-          }}
-        />
-        <Button
-          danger
-          size="large"
-          icon={<Icon component={FaBan} />}
-          onClick={() => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({});
-            setSearchText('');
-          }}
-        >
-          {t('buttons.resetFilter.label')}
-        </Button>
-      </Flex>
+      <Row gutter={[12, 12]}>
+        <Col xs={24} sm={12}>
+          <Input.Search
+            placeholder={t('commons.searchPlaceholder')!}
+            allowClear
+            enterButton
+            size="large"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={(value) => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({
+                name: [value],
+              });
+            }}
+          />
+        </Col>
+
+        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
+          <Button
+            danger
+            size="large"
+            icon={<Icon component={FaBan} />}
+            onClick={() => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({});
+              setSearchText('');
+            }}
+          >
+            {t('buttons.resetFilter.label')}
+          </Button>
+        </Col>
+      </Row>
+
       <Table
         dataSource={fees}
         columns={columns}

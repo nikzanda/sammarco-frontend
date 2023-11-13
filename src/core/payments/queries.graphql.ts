@@ -11,6 +11,9 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     fee {
       id
       name
+      course {
+        name
+      }
     }
     amount
     month
@@ -29,6 +32,9 @@ export const PAYMENT_DETAIL_FRAGMENT = gql`
       amount
       recurrence
       reason
+      course {
+        name
+      }
     }
     date
     reason

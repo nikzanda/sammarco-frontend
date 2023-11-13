@@ -18,6 +18,7 @@ type Props = {
 const MemberPayments: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
 
+  // TODO: fix paginazione
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: PAGE_SIZE,
@@ -60,10 +61,14 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
       {
+        title: t('payments.table.course'),
+        key: 'course',
+        dataIndex: ['fee', 'course', 'name'],
+      },
+      {
         title: t('payments.table.fee'),
         key: 'fee',
-        dataIndex: 'fee',
-        render: (fee) => fee.name,
+        dataIndex: ['fee', 'name'],
       },
       {
         title: t('payments.table.amount'),
@@ -93,6 +98,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       {
         key: 'actions',
         dataIndex: 'id',
+        align: 'right',
         render: (id) => <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={() => handlePrint(id)} />,
       },
     ];

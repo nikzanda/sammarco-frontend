@@ -1,9 +1,9 @@
 import React from 'react';
-import { ColumnsType, FilterValue, SorterResult } from 'antd/es/table/interface';
+import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Flex, Input, Space, Table, TableProps, Typography } from 'antd';
+import { Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaPlus, FaBan } from 'react-icons/fa';
 import {
@@ -96,7 +96,7 @@ const CourseListPage: React.FC = () => {
   }, [queryData, queryError, queryLoading]);
 
   const columns = React.useMemo(() => {
-    const result: ColumnsType<CourseListItemFragment> = [
+    const result: TableColumnsType<CourseListItemFragment> = [
       {
         title: t('courses.table.name'),
         key: 'name',
@@ -138,34 +138,40 @@ const CourseListPage: React.FC = () => {
         </Button>
       </Flex>
 
-      <Flex justify="space-between" align="center">
-        <Input.Search
-          placeholder={t('commons.searchPlaceholder')!}
-          allowClear
-          enterButton
-          size="large"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onSearch={(value) => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({
-              search: [value],
-            });
-          }}
-        />
-        <Button
-          danger
-          size="large"
-          icon={<Icon component={FaBan} />}
-          onClick={() => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({});
-            setSearchText('');
-          }}
-        >
-          {t('buttons.resetFilter.label')}
-        </Button>
-      </Flex>
+      <Row gutter={[12, 12]}>
+        <Col xs={24} sm={12}>
+          <Input.Search
+            placeholder={t('commons.searchPlaceholder')!}
+            allowClear
+            enterButton
+            size="large"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={(value) => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({
+                search: [value],
+              });
+            }}
+          />
+        </Col>
+
+        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
+          <Button
+            danger
+            size="large"
+            icon={<Icon component={FaBan} />}
+            onClick={() => {
+              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
+              setFilterInfo({});
+              setSearchText('');
+            }}
+          >
+            {t('buttons.resetFilter.label')}
+          </Button>
+        </Col>
+      </Row>
+
       <Table
         dataSource={courses}
         columns={columns}

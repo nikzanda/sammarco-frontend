@@ -80,7 +80,10 @@ class PDF {
       today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
     ];
 
-    const payment: PaymentPdfFragment = {
+    const municipalityCodes = Object.keys(municipalities);
+    const municipalityCode = municipalityCodes[Math.floor(Math.random() * municipalityCodes.length - 1)];
+
+    const adultPayment: PaymentPdfFragment = {
       counter: Math.floor(Math.random() * 501),
       date: today.getTime(),
       amount: fee.amount,
@@ -92,17 +95,39 @@ class PDF {
       member: {
         name: 'Nome',
         surname: 'Cognome',
-        taxCode: 'AAAAAA90A01A000A',
+        taxCode: `AAAAAA90A01${municipalityCode}A`,
         birthday: new Date(1990, 0, 1).getTime(),
         parent: {
           name: 'Nome',
           surname: 'Cognome',
-          taxCode: 'AAAAAA90A01A000A',
+          taxCode: `AAAAAA90A01${municipalityCode}A`,
         },
       },
     };
 
-    const pdfDef = new PDF(payment).generatePDF();
+    const minorPayment: PaymentPdfFragment = {
+      counter: Math.floor(Math.random() * 501),
+      date: today.getTime(),
+      amount: fee.amount,
+      ...(fee.recurrence === RecurrenceEnum.ANNUAL && {
+        years,
+      }),
+      ...(fee.recurrence === RecurrenceEnum.MONTHLY && { month: dateToYearMonth(today) }),
+      reason: fee.reason.replaceAll('[MESE]', format(today, 'MMMM yyyy')).replaceAll('[ANNO]', years.join(' - ')),
+      member: {
+        name: 'Nome',
+        surname: 'Cognome',
+        taxCode: `AAAAAA10A01${municipalityCode}A`,
+        birthday: new Date(1990, 0, 1).getTime(),
+        parent: {
+          name: 'Nome',
+          surname: 'Cognome',
+          taxCode: `AAAAAA90A01${municipalityCode}A`,
+        },
+      },
+    };
+
+    const pdfDef = PDF.generatePDFMultiple([adultPayment, minorPayment]);
     pdfDef.watermark = 'fac-simile';
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 

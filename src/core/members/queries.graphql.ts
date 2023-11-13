@@ -4,8 +4,17 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
   fragment MemberListItem on Member {
     id
     fullName
-    currentMonthPayment {
+    currentMonthPayments {
       id
+      amount
+      fee {
+        id
+        amount
+        course {
+          id
+          name
+        }
+      }
     }
     currentEnrollmentPayment {
       id

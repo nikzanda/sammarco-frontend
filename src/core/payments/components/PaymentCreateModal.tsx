@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Select, Spin } from 'antd';
+import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Select, Spin, Typography } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,6 +14,7 @@ import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { dateToYearMonth } from '../../../utils/utils';
 import PDF from '../pdfs/receipt-pdf';
+import { AuthenticationContext } from '../../../contexts';
 
 type Props = {
   memberId: string;
@@ -30,6 +31,7 @@ const initialValues = {
 };
 
 const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
+  const { currentUser } = React.useContext(AuthenticationContext);
   const [form] = Form.useForm();
   const { t } = useTranslation();
   const { message } = App.useApp();
@@ -74,6 +76,16 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     return undefined;
   }, [memberData, memberError, memberLoading]);
 
+  const showCourse = React.useMemo(() => {
+    const courses = [
+      ...fees.reduce((acc: Set<string>, { course }) => {
+        acc.add(course.name);
+        return acc;
+      }, new Set<string>()),
+    ];
+    return courses.length > 1;
+  }, [fees]);
+
   const paymentTypeOptions = React.useMemo(() => {
     const result = Object.keys(PaymentTypeEnum).map((paymentType) => ({
       label: t(`payments.type.${paymentType}`),
@@ -81,6 +93,22 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     }));
     return result;
   }, [t]);
+
+  const disableSendEmail = React.useMemo(() => {
+    const result = !member?.email || !currentUser?.emailSettings;
+    return result;
+  }, [currentUser?.emailSettings, member?.email]);
+
+  const helpSendEmail = React.useMemo(() => {
+    const texts: string[] = [];
+    if (member && !member.email) {
+      texts.push(t('payments.form.sendEmail.help.member'));
+    }
+    if (!currentUser!.emailSettings) {
+      texts.push(t('payments.form.sendEmail.help.currentUser'));
+    }
+    return texts.join(', ');
+  }, [currentUser, member, t]);
 
   const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
     refetchQueries: ['Payments', 'Members'],
@@ -111,7 +139,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
       },
     })
       .then(async ({ data }) => {
-        if (data && sendEmailFlag && member?.email) {
+        if (data && sendEmailFlag && !disableSendEmail) {
           const { id: paymentId } = data.paymentCreate.payment;
           const attachmentUri = await PDF.print(paymentId, 'data-url');
           if (!attachmentUri) {
@@ -158,7 +186,14 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         >
           {/* TODO: fee searcher */}
           <Select
-            options={fees.map((fee) => ({ label: fee.name, value: fee.id }))}
+            options={fees.map((fee) => ({
+              label: (
+                <>
+                  {fee.name} {showCourse && <Typography.Text type="secondary">({fee.course.name})</Typography.Text>}
+                </>
+              ),
+              value: fee.id,
+            }))}
             loading={feesLoading}
             allowClear={false}
             onChange={(value) => {
@@ -336,8 +371,13 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         </Form.Item>
 
         <Spin spinning={memberLoading}>
-          <Form.Item label={t('payments.form.sendEmail')} name="sendEmail" valuePropName="checked">
-            <Checkbox disabled={!member?.email} />
+          <Form.Item
+            label={t('payments.form.sendEmail.label')}
+            name="sendEmail"
+            valuePropName="checked"
+            help={helpSendEmail}
+          >
+            <Checkbox disabled={disableSendEmail} />
           </Form.Item>
         </Spin>
       </Form>

@@ -99,26 +99,6 @@ const MemberForm: React.FC<Props> = ({ form }) => {
         <>
           <Col xs={24} md={12}>
             <Form.Item
-              label={t('members.form.parent.name')}
-              name={['parent', 'name']}
-              rules={[{ required: true, message: t('validations.required')! }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label={t('members.form.parent.surname')}
-              name={['parent', 'surname']}
-              rules={[{ required: true, message: t('validations.required')! }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
               label={t('members.form.parent.taxCode')}
               name={['parent', 'taxCode']}
               rules={[
@@ -134,6 +114,26 @@ const MemberForm: React.FC<Props> = ({ form }) => {
               ]}
             >
               <Input minLength={16} maxLength={16} />
+            </Form.Item>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Form.Item
+              label={t('members.form.parent.name')}
+              name={['parent', 'name']}
+              rules={[{ required: true, message: t('validations.required')! }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Form.Item
+              label={t('members.form.parent.surname')}
+              name={['parent', 'surname']}
+              rules={[{ required: true, message: t('validations.required')! }]}
+            >
+              <Input />
             </Form.Item>
           </Col>
         </>
