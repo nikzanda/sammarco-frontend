@@ -1,7 +1,7 @@
 import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useCourseDeleteMutation, useCourseQuery, useCourseUpdateMutation } from '../../generated/graphql';
@@ -9,11 +9,21 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
 import { Updates } from '../../commons';
 
+const DEFAULT_TAB = 'details';
+
 const CourseEditPage: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { message } = App.useApp();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+
+  React.useEffect(() => {
+    searchParams.set('tab', tab);
+    setSearchParams(searchParams);
+  }, [searchParams, setSearchParams, tab]);
 
   const {
     data: queryData,
@@ -117,6 +127,8 @@ const CourseEditPage: React.FC = () => {
       )}
       {course && (
         <Tabs
+          activeKey={tab}
+          onChange={setTab}
           items={[
             {
               label: t('courses.tab.details'),

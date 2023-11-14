@@ -1,7 +1,7 @@
 import React from 'react';
 import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
@@ -9,12 +9,22 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberForm, MemberPayments } from './components';
 import { Updates } from '../../commons';
 
+const DEFAULT_TAB = 'details';
+
 const MemberEditPage: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { message } = App.useApp();
   const [form] = Form.useForm();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+
+  React.useEffect(() => {
+    searchParams.set('tab', tab);
+    setSearchParams(searchParams);
+  }, [searchParams, setSearchParams, tab]);
 
   const {
     data: queryData,
@@ -128,6 +138,8 @@ const MemberEditPage: React.FC = () => {
       )}
       {member && (
         <Tabs
+          activeKey={tab}
+          onChange={setTab}
           items={[
             {
               label: t('members.tab.details'),
