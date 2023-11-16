@@ -17,7 +17,7 @@ import {
 import PDF from '../../payments/pdfs/receipt-pdf';
 import { toCurrency } from '../../../utils/utils';
 import { FeeTableFilter } from '../../fees/components';
-import { NumberFilter } from '../../../commons';
+import { MonthFilter, NumberFilter } from '../../../commons';
 
 const PAGE_SIZE = 10;
 
@@ -57,12 +57,12 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: [member.id],
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
-      month: filterInfo?.month?.length ? (filterInfo.month[0] as string) : undefined,
+      month: filterInfo?.details?.length ? (filterInfo.details[0] as string) : undefined,
       sortBy,
       sortDirection,
     };
     return result;
-  }, [filterInfo.counter, filterInfo.fee, filterInfo.month, member.id, sortInfo.columnKey, sortInfo.order]);
+  }, [filterInfo.counter, filterInfo.details, filterInfo.fee, member.id, sortInfo.columnKey, sortInfo.order]);
 
   const {
     data: queryData,
@@ -127,6 +127,8 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       {
         title: t('payments.table.details'),
         key: 'details',
+        filterDropdown: MonthFilter,
+        filteredValue: filterInfo.details || null,
         render: (_, { month: rawMonth, years }) => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value) => parseInt(value, 10));
@@ -150,7 +152,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       },
     ];
     return result;
-  }, [filterInfo.counter, filterInfo.fee, t]);
+  }, [filterInfo.counter, filterInfo.details, filterInfo.fee, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

@@ -19,7 +19,7 @@ import {
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { toCurrency } from '../../utils/utils';
-import { ActionButtons, NumberFilter } from '../../commons';
+import { ActionButtons, MonthFilter, NumberFilter } from '../../commons';
 import { MemberTableFilter } from '../members/components';
 import { FeeTableFilter } from '../fees/components';
 
@@ -77,7 +77,7 @@ const PaymentListPage: React.FC = () => {
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: filterInfo?.member?.length ? (filterInfo.member as string[]) : undefined,
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
-      month: filterInfo?.month?.length ? (filterInfo.month[0] as string) : undefined,
+      month: filterInfo?.details?.length ? (filterInfo.details[0] as string) : undefined,
       sortBy,
       sortDirection,
     };
@@ -218,7 +218,8 @@ const PaymentListPage: React.FC = () => {
       {
         title: t('payments.table.details'),
         key: 'details',
-        // TODO: filtro
+        filterDropdown: MonthFilter,
+        filteredValue: filterInfo.details || null,
         render: (_, { month: rawMonth, years }) => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value) => parseInt(value, 10));
@@ -253,7 +254,17 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.counter, filterInfo.fee, filterInfo.member, handlePrint, handleSend, navigate, sendingIds, t]);
+  }, [
+    filterInfo.counter,
+    filterInfo.details,
+    filterInfo.fee,
+    filterInfo.member,
+    handlePrint,
+    handleSend,
+    navigate,
+    sendingIds,
+    t,
+  ]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
