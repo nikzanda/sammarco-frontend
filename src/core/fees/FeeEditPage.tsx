@@ -115,7 +115,6 @@ const FeeEditPage: React.FC = () => {
           <Typography.Title level={3}>{title}</Typography.Title>
         </Col>
         <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          {/* TODO: stampa ricevuta di prova */}
           {fee?.canDelete && (
             <Popconfirm
               title={t('fees.delete.confirm')}

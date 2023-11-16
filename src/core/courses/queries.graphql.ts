@@ -15,6 +15,7 @@ export const COURSE_DETAIL_FRAGMENT = gql`
       from
       to
     }
+    canDelete
     createdAt
     updatedAt
   }

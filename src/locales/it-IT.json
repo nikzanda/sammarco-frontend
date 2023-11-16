@@ -51,6 +51,10 @@
     "created": "Nuovo corso creato",
     "edited": "Corso aggiornato",
     "deleted": "Corso eliminato",
+    "delete": {
+      "confirm": "Sei sicuro di voler eliminare il corso?",
+      "description": "Elimina {{name}}"
+    },
     "table": {
       "name": "Corso"
     },

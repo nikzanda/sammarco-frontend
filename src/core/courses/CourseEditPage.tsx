@@ -1,4 +1,4 @@
-import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -45,7 +45,7 @@ const CourseEditPage: React.FC = () => {
   const [deleteCourse, { loading: deleteLoading, error: deleteError }] = useCourseDeleteMutation({
     refetchQueries: ['Courses'],
     onCompleted: () => {
-      message.success('courses.deleted');
+      message.success(t('courses.deleted'));
       navigate(-1);
     },
   });
@@ -98,18 +98,17 @@ const CourseEditPage: React.FC = () => {
         </Col>
         <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
           <Space>
-            {/* TODO: elimina corso */}
-            {/* {course?.canDelete && (
-            <Popconfirm
-              title={t('courses.delete.confirm')}
-              description={t('courses.delete.description', { fullName: course.fullName })}
-              onConfirm={handleDelete}
-            >
-              <Button type="primary" danger loading={deleteLoading}>
-                {t('buttons.delete.label')}
-              </Button>
-            </Popconfirm>
-          )} */}
+            {course?.canDelete && (
+              <Popconfirm
+                title={t('courses.delete.confirm')}
+                description={t('courses.delete.description', { name: course.name })}
+                onConfirm={handleDelete}
+              >
+                <Button type="primary" size="large" danger loading={deleteLoading}>
+                  {t('buttons.delete.label')}
+                </Button>
+              </Popconfirm>
+            )}
             <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
               {t('buttons.save.label')}
             </Button>
