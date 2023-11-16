@@ -20,7 +20,7 @@ const FeeCreatePage: React.FC = () => {
     refetchQueries: ['Fees', 'FeesSearcher'],
     onCompleted: () => {
       message.success(t('fees.created'));
-      navigate(-1);
+      navigate('/fees');
     },
   });
 
@@ -71,7 +71,12 @@ const FeeCreatePage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <Row justify="space-between" align="middle">
         <Col xs={1} md={2}>
-          <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
+          <Button
+            shape="circle"
+            size="middle"
+            icon={<Icon component={FaAngleLeft} />}
+            onClick={() => navigate('/fees')}
+          />
         </Col>
         <Col xs={12} md={20}>
           <Typography.Title level={3}>{t('fees.new')}</Typography.Title>
