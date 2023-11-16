@@ -33,7 +33,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
       filter: {
-        memberId: member.id,
+        memberIds: [member.id],
       },
     },
   });

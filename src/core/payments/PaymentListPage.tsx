@@ -20,6 +20,8 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { toCurrency } from '../../utils/utils';
 import { ActionButtons } from '../../commons';
+import { MemberTableFilter } from '../members/components';
+import { FeeTableFilter } from '../fees/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/payment/';
@@ -73,7 +75,8 @@ const PaymentListPage: React.FC = () => {
     const result: PaymentFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
-      memberId: filterInfo?.member?.length ? (filterInfo.member[0] as string) : undefined,
+      memberIds: filterInfo?.member?.length ? (filterInfo.member as string[]) : undefined,
+      feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
       month: filterInfo?.month?.length ? (filterInfo.month[0] as string) : undefined,
       sortBy,
       sortDirection,
@@ -188,7 +191,8 @@ const PaymentListPage: React.FC = () => {
         title: t('payments.table.member'),
         key: 'member',
         dataIndex: ['member', 'fullName'],
-        // TODO: filtro
+        filterDropdown: MemberTableFilter,
+        filteredValue: filterInfo.member || null,
       },
       {
         title: t('payments.table.course'),
@@ -199,7 +203,8 @@ const PaymentListPage: React.FC = () => {
         title: t('payments.table.fee'),
         key: 'fee',
         dataIndex: ['fee', 'name'],
-        // TODO: filtro
+        filterDropdown: FeeTableFilter,
+        filteredValue: filterInfo.fee || null,
       },
       {
         title: t('payments.table.amount'),
@@ -246,7 +251,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [handlePrint, handleSend, navigate, sendingIds, t]);
+  }, [filterInfo.fee, filterInfo.member, handlePrint, handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

@@ -83,7 +83,7 @@ const PaymentEditPage: React.FC = () => {
   };
 
   const handleFinish = (values: any) => {
-    const { feeId, month, ...input } = values;
+    const { feeId, month, years, ...input } = values;
     updatePayment({
       variables: {
         input: {

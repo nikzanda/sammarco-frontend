@@ -1,12 +1,11 @@
-import { Select, SelectProps, Typography } from 'antd';
 import React from 'react';
+import { Select, SelectProps, Typography } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { FeeFilter, FeeSearcherQuery, useFeeSearcherQuery, useFeesSearcherQuery } from '../../../generated/graphql';
+import { FeesSearcherQuery, useFeesSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
   value: undefined,
-  queryFilters: {},
   showCourse: true,
   disabled: false,
   allowClear: true,
@@ -15,16 +14,15 @@ const defaultProps = {
 };
 
 type Props = {
-  value?: string;
-  queryFilters?: FeeFilter;
+  value?: string[];
   showCourse?: boolean;
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
-  onChange?: (value: string, fee: FeeSearcherQuery['fee']) => void;
+  onChange?: (value: string[], fees: FeesSearcherQuery['fees']['data']) => void;
   onClear?: SelectProps['onClear'];
 };
 
-const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disabled, allowClear, onChange, onClear }) => {
+const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, onChange, onClear }) => {
   const {
     data: feesData,
     loading: feesLoading,
@@ -32,22 +30,24 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disable
     refetch: feesRefetch,
   } = useFeesSearcherQuery({
     variables: {
-      filter: queryFilters,
+      filter: {},
     },
   });
 
   const {
-    data: feeData,
-    loading: feeLoading,
-    error: feeError,
-  } = useFeeSearcherQuery({
+    data: valuesData,
+    loading: valuesLoading,
+    error: valuesError,
+  } = useFeesSearcherQuery({
     variables: {
-      id: value!,
+      filter: {
+        ids: value!,
+      },
     },
     skip: !value,
   });
 
-  useDisplayGraphQLErrors(feesError, feeError);
+  useDisplayGraphQLErrors(feesError, valuesError);
 
   const fees = React.useMemo(() => {
     if (!feesLoading && !feesError && feesData) {
@@ -56,12 +56,12 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disable
     return [];
   }, [feesData, feesError, feesLoading]);
 
-  const fee = React.useMemo(() => {
-    if (!feeLoading && !feeError && feeData) {
-      return feeData.fee;
+  const values = React.useMemo(() => {
+    if (!valuesLoading && !valuesError && valuesData) {
+      return valuesData.fees.data;
     }
     return undefined;
-  }, [feeData, feeError, feeLoading]);
+  }, [valuesData, valuesError, valuesLoading]);
 
   const options = React.useMemo(() => {
     const result = fees.map((fee) => ({
@@ -72,35 +72,40 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disable
       ),
       value: fee.id,
     }));
-    if (fee && !fees.some(({ id }) => id === fee.id)) {
-      result.unshift({
-        label: (
-          <>
-            {fee.name} {showCourse && <Typography.Text type="secondary">{fee.course.name}</Typography.Text>}
-          </>
-        ),
-        value: fee.id,
-      });
+    if (values) {
+      const feeIds = fees.map(({ id }) => id);
+      result.unshift(
+        ...values
+          .filter(({ id }) => !feeIds.includes(id))
+          .map((fee) => ({
+            label: (
+              <>
+                {fee.name} {showCourse && <Typography.Text type="secondary">{fee.course.name}</Typography.Text>}
+              </>
+            ),
+            value: fee.id,
+          }))
+      );
     }
     return result;
-  }, [fee, fees, showCourse]);
+  }, [fees, showCourse, values]);
 
   const handleSearch = useDebouncedCallback((search: string) => {
     feesRefetch({
       filter: {
         name: search,
-        ...queryFilters,
       },
     });
   }, 500);
 
-  const handleChange = (value: string) => {
-    const selectedFee = fees.find(({ id }) => id === value);
-    onChange!(value, selectedFee!);
+  const handleChange = (values: string[]) => {
+    const selectedFees = fees.filter(({ id }) => values.includes(id));
+    onChange!(values, selectedFees);
   };
 
   return (
     <Select
+      mode="multiple"
       value={value}
       options={options}
       allowClear={allowClear}
@@ -109,12 +114,13 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disable
       onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
-      loading={feesLoading || feeLoading}
+      loading={feesLoading || valuesLoading}
       showSearch
+      style={{ width: '100%' }}
     />
   );
 };
 
-FeeSearcher.defaultProps = defaultProps;
+FeePicker.defaultProps = defaultProps;
 
-export default FeeSearcher;
+export default FeePicker;

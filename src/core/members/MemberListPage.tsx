@@ -30,6 +30,7 @@ import {
 import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
+import { CourseTableFilter } from '../courses/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -77,11 +78,12 @@ const MemberListPage: React.FC = () => {
 
     const result: MemberFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
+      courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       sortBy,
       sortDirection,
     };
     return result;
-  }, [filterInfo.search, sortInfo.columnKey, sortInfo.order]);
+  }, [filterInfo.courses, filterInfo.search, sortInfo.columnKey, sortInfo.order]);
 
   const {
     data: queryData,
@@ -161,8 +163,9 @@ const MemberListPage: React.FC = () => {
         title: t('members.table.courses'),
         key: 'courses',
         dataIndex: 'courses',
+        filterDropdown: CourseTableFilter,
+        filteredValue: filterInfo.courses || null,
         render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
-        // TODO: filtro
       },
       {
         key: 'actions',
@@ -183,7 +186,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [navigate, t]);
+  }, [filterInfo.courses, navigate, t]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

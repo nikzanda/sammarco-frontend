@@ -1,7 +1,7 @@
 import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { CoursesSearcherQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
+import { MembersSearcherQuery, useMembersSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
@@ -16,17 +16,17 @@ type Props = {
   value?: string[];
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
-  onChange?: (value: string[], courses: CoursesSearcherQuery['courses']['data']) => void;
+  onChange?: (value: string[], members: MembersSearcherQuery['members']['data']) => void;
   onClear?: SelectProps['onClear'];
 };
 
-const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
+const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
   const {
-    data: coursesData,
-    loading: coursesLoading,
-    error: coursesError,
-    refetch: coursesRefetch,
-  } = useCoursesSearcherQuery({
+    data: membersData,
+    loading: membersLoading,
+    error: membersError,
+    refetch: membersRefetch,
+  } = useMembersSearcherQuery({
     variables: {
       filter: {},
     },
@@ -36,7 +36,7 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
     data: valuesData,
     loading: valuesLoading,
     error: valuesError,
-  } = useCoursesSearcherQuery({
+  } = useMembersSearcherQuery({
     variables: {
       filter: {
         ids: value!,
@@ -45,43 +45,43 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
     skip: !value,
   });
 
-  useDisplayGraphQLErrors(coursesError, valuesError);
+  useDisplayGraphQLErrors(membersError, valuesError);
 
-  const courses = React.useMemo(() => {
-    if (!coursesLoading && !coursesError && coursesData) {
-      return coursesData.courses.data;
+  const members = React.useMemo(() => {
+    if (!membersLoading && !membersError && membersData) {
+      return membersData.members.data;
     }
     return [];
-  }, [coursesData, coursesError, coursesLoading]);
+  }, [membersData, membersError, membersLoading]);
 
   const values = React.useMemo(() => {
     if (!valuesLoading && !valuesError && valuesData) {
-      return valuesData.courses.data;
+      return valuesData.members.data;
     }
     return undefined;
   }, [valuesData, valuesError, valuesLoading]);
 
   const options = React.useMemo(() => {
-    const result = courses.map((course) => ({
-      label: course.name,
-      value: course.id,
+    const result = members.map((member) => ({
+      label: member.fullName,
+      value: member.id,
     }));
     if (values) {
-      const courseIds = courses.map(({ id }) => id);
+      const memberIds = members.map(({ id }) => id);
       result.unshift(
         ...values
-          .filter(({ id }) => !courseIds.includes(id))
-          .map((course) => ({
-            label: course.name,
-            value: course.id,
+          .filter(({ id }) => !memberIds.includes(id))
+          .map((member) => ({
+            label: member.fullName,
+            value: member.id,
           }))
       );
     }
     return result;
-  }, [courses, values]);
+  }, [members, values]);
 
   const handleSearch = useDebouncedCallback((search: string) => {
-    coursesRefetch({
+    membersRefetch({
       filter: {
         search,
       },
@@ -89,8 +89,8 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
   }, 500);
 
   const handleChange = (values: string[]) => {
-    const selectedCourses = courses.filter(({ id }) => values.includes(id));
-    onChange!(values, selectedCourses);
+    const selectedMembers = members.filter(({ id }) => values.includes(id));
+    onChange!(values, selectedMembers);
   };
 
   return (
@@ -104,13 +104,13 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
       onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
-      loading={coursesLoading || valuesLoading}
+      loading={membersLoading || valuesLoading}
       showSearch
       style={{ width: '100%' }}
     />
   );
 };
 
-CoursePicker.defaultProps = defaultProps;
+MemberPicker.defaultProps = defaultProps;
 
-export default CoursePicker;
+export default MemberPicker;

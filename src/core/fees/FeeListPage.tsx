@@ -10,6 +10,7 @@ import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFees
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
 import { toCurrency } from '../../utils/utils';
+import { CourseTableFilter } from '../courses/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/fee/';
@@ -56,6 +57,7 @@ const FeeListPage: React.FC = () => {
 
     const result: FeeFilter = {
       name: filterInfo.name?.length ? (filterInfo.name[0] as string).trim() : undefined,
+      courseIds: filterInfo.course?.length ? (filterInfo.course as string[]) : undefined,
       sortBy,
       sortDirection,
     };
@@ -101,8 +103,9 @@ const FeeListPage: React.FC = () => {
       {
         title: t('fees.table.course'),
         key: 'course',
-        dataIndex: 'course',
-        render: (course: FeeListItemFragment['course']) => course && course.name,
+        dataIndex: ['course', 'name'],
+        filterDropdown: CourseTableFilter,
+        filteredValue: filterInfo.course || null,
       },
       {
         title: t('fees.table.amount'),
@@ -143,7 +146,7 @@ const FeeListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [navigate, t, token.colorError, token.colorSuccess]);
+  }, [filterInfo.course, navigate, t, token.colorError, token.colorSuccess]);
 
   const handleTableChange: TableProps<FeeListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
