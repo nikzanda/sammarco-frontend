@@ -19,7 +19,7 @@ import {
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { toCurrency } from '../../utils/utils';
-import { ActionButtons } from '../../commons';
+import { ActionButtons, NumberFilter } from '../../commons';
 import { MemberTableFilter } from '../members/components';
 import { FeeTableFilter } from '../fees/components';
 
@@ -186,6 +186,8 @@ const PaymentListPage: React.FC = () => {
         title: t('payments.table.counter'),
         key: 'counter',
         dataIndex: 'counter',
+        filterDropdown: NumberFilter,
+        filteredValue: filterInfo.counter || null,
       },
       {
         title: t('payments.table.member'),
@@ -251,7 +253,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.fee, filterInfo.member, handlePrint, handleSend, navigate, sendingIds, t]);
+  }, [filterInfo.counter, filterInfo.fee, filterInfo.member, handlePrint, handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

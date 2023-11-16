@@ -1,25 +1,27 @@
 import React from 'react';
-import { Button, Card, Flex, Space } from 'antd';
+import { Button, Card, Flex, InputNumber, Space } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { useTranslation } from 'react-i18next';
-import FeePicker from './FeePicker';
 
-const FeeTableFilter: React.FC<FilterDropdownProps> = ({ selectedKeys, confirm, clearFilters, setSelectedKeys }) => {
+const NumberFilter: React.FC<FilterDropdownProps> = ({ selectedKeys, setSelectedKeys, confirm, clearFilters }) => {
   const { t } = useTranslation();
-
-  const onChange = (values: string[]) => {
-    setSelectedKeys(values);
-  };
 
   return (
     <Card style={{ width: 400 }}>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <FeePicker value={selectedKeys as string[]} onChange={onChange} />
+        <InputNumber
+          value={selectedKeys[0] as number}
+          onChange={(n) => {
+            setSelectedKeys(n ? [n] : []);
+          }}
+          style={{ width: '100%' }}
+        />
 
         <Flex justify="space-between">
           <Button
             danger
             onClick={() => {
+              setSelectedKeys([]);
               if (clearFilters) {
                 clearFilters();
                 confirm();
@@ -37,4 +39,4 @@ const FeeTableFilter: React.FC<FilterDropdownProps> = ({ selectedKeys, confirm, 
   );
 };
 
-export default FeeTableFilter;
+export default NumberFilter;

@@ -103,7 +103,7 @@ const AuthenticatedLayout: React.FC = () => {
           <Button shape="circle" size="large" icon={<Icon component={FaCog} />} ghost />
         </Dropdown>
       </Layout.Header>
-      <Layout.Content style={{ padding: '0 15px 15px 15px' }}>
+      <Layout.Content style={{ padding: '0 15px 15px 15px', overflowY: 'scroll' }}>
         <Routes>
           <Route path="members" element={<Outlet />}>
             <Route index element={<MemberListPage />} />
