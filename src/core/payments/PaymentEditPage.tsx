@@ -1,5 +1,5 @@
-import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import React from 'react';
+import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';

@@ -25,7 +25,8 @@
     },
     "tab": {
       "details": "Dettagli",
-      "payments": "Pagamenti"
+      "payments": "Pagamenti",
+      "attendances": "Presenze"
     },
     "form": {
       "name": "Nome",
