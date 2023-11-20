@@ -3,6 +3,14 @@ import { gql } from '@apollo/client';
 export const ATTENDANCE_LIST_ITEM_FRAGMENT = gql`
   fragment AttendanceListItem on Attendance {
     id
+    member {
+      id
+      fullName
+    }
+    course {
+      id
+      name
+    }
     from
     to
   }

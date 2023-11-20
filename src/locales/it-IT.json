@@ -13,6 +13,8 @@
     "created": "Nuovo iscritto creato",
     "edited": "Iscritto aggiornato",
     "deleted": "Iscritto eliminato",
+    "lessons_one": "{{number}} lezione",
+    "lessons_other": "{{number}} lezioni",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare l'iscritto?",
       "description": "Elimina {{fullName}}"
@@ -65,6 +67,9 @@
     "form": {
       "name": "Nome",
       "printName": "Nome corso per la ricevuta"
+    },
+    "searcher": {
+      "placeholder": "Seleziona corso"
     }
   },
   "fees": {
@@ -162,6 +167,9 @@
       "signature": "Firma",
       "inLetters": "IN LETTERE"
     }
+  },
+  "calendar": {
+    "name": "Calendario"
   },
   "settings": {
     "name": "Impostazioni",
