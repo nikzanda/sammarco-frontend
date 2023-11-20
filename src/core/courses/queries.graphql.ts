@@ -4,6 +4,7 @@ export const COURSE_LIST_ITEM_FRAGMENT = gql`
   fragment CourseListItem on Course {
     id
     name
+    color
   }
 `;
 

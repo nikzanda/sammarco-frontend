@@ -66,6 +66,11 @@
     },
     "form": {
       "name": "Nome",
+      "color": {
+        "label": "Colore",
+        "tooltip": "Colore del corso che verrà visualizzato nel calendario",
+        "recommended": "Colori di default"
+      },
       "printName": "Nome corso per la ricevuta"
     },
     "searcher": {

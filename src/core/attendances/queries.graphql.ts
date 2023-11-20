@@ -10,6 +10,7 @@ export const ATTENDANCE_LIST_ITEM_FRAGMENT = gql`
     course {
       id
       name
+      color
     }
     from
     to

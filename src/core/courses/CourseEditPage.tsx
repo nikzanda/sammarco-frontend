@@ -77,11 +77,14 @@ const CourseEditPage: React.FC = () => {
   };
 
   const handleFinish = (values: any) => {
+    const { color, ...input } = values;
+
     updateCourse({
       variables: {
         input: {
           id: id!,
-          ...values,
+          ...input,
+          ...(color && { color: typeof color === 'string' ? color : color.toHexString() }),
         },
       },
     });

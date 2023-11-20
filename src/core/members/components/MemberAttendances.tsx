@@ -1,6 +1,6 @@
 import React from 'react';
 import { format, isSameDay, isSameMonth, lastDayOfMonth, lastDayOfYear, set } from 'date-fns';
-import { Badge, CalendarProps, Spin } from 'antd';
+import { Badge, CalendarProps, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { AttendanceFilter, MemberDetailFragment, useAttendancesQuery } from '../../../generated/graphql';
 import { Calendar } from '../../../components';
@@ -12,6 +12,7 @@ type Props = {
 
 const MemberAttendances: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
+  const { token } = theme.useToken();
 
   const [date, setDate] = React.useState(new Date());
   const [calendarMode, setCalendarMode] = React.useState<CalendarProps<Date>['mode']>('month');
@@ -69,10 +70,10 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
 
     return (
       <>
-        {currentAttendances.map(({ from, to }) => {
+        {currentAttendances.map(({ course, from, to }) => {
           const text = [format(from, 'HH:mm'), format(to, 'HH:mm')].join(' - ');
 
-          return <Badge key={from} status="success" text={text} />;
+          return <Badge key={from} color={course.color || token.colorSuccess} text={text} />;
         })}
       </>
     );

@@ -3,7 +3,7 @@ import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
+import { Badge, Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaPlus, FaBan } from 'react-icons/fa';
 import {
@@ -102,6 +102,11 @@ const CourseListPage: React.FC = () => {
         key: 'name',
         dataIndex: 'name',
         sorter: true,
+        render: (name, { color }) => (
+          <>
+            {name} {color && <Badge color={color} />}
+          </>
+        ),
       },
       {
         key: 'actions',

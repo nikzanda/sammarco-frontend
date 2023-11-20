@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, CalendarProps, Col, Popover, Row, Space, Spin } from 'antd';
+import { Badge, CalendarProps, Col, Popover, Row, Space, Spin, theme } from 'antd';
 import { set, lastDayOfMonth, lastDayOfYear, isSameMonth, format, isSameDay } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { AttendanceFilter, AttendancesQuery, useAttendancesQuery } from '../../generated/graphql';
@@ -9,6 +9,7 @@ import { CoursePicker } from '../courses/components';
 
 const CalendarPage: React.FC = () => {
   const { t } = useTranslation();
+  const { token } = theme.useToken();
 
   const [courseIds, setCourseIds] = React.useState<string[]>();
   const [date, setDate] = React.useState(new Date());
@@ -103,7 +104,7 @@ const CalendarPage: React.FC = () => {
           <Popover title={courses[courseId].name} content={memberNames.join(', ')}>
             <Badge
               key={from}
-              status="success"
+              color={courses[courseId].color || token.colorSuccess}
               text={
                 <>
                   {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {memberNames.length}
