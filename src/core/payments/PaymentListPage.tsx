@@ -11,6 +11,7 @@ import {
   PaymentFilter,
   PaymentListItemFragment,
   PaymentSortEnum,
+  PaymentTypeEnum,
   SortDirectionEnum,
   usePaymentSendMutation,
   usePaymentUpdateMultipleMutation,
@@ -77,6 +78,7 @@ const PaymentListPage: React.FC = () => {
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: filterInfo?.member?.length ? (filterInfo.member as string[]) : undefined,
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
+      type: filterInfo?.type?.length ? (filterInfo.type[0] as PaymentTypeEnum) : undefined,
       month: filterInfo?.details?.length ? (filterInfo.details[0] as string) : undefined,
       sortBy,
       sortDirection,
@@ -216,6 +218,24 @@ const PaymentListPage: React.FC = () => {
         render: (amount) => toCurrency(amount),
       },
       {
+        title: t('payments.table.type'),
+        key: 'type',
+        dataIndex: 'type',
+        filterMultiple: false,
+        filters: [
+          {
+            text: t(`payments.type.${PaymentTypeEnum.CASH}`),
+            value: PaymentTypeEnum.CASH,
+          },
+          {
+            text: t(`payments.type.${PaymentTypeEnum.BANK_TRANSFER}`),
+            value: PaymentTypeEnum.BANK_TRANSFER,
+          },
+        ],
+        filteredValue: filterInfo.type || null,
+        render: (type: PaymentListItemFragment['type']) => t(`payments.type.${type}`),
+      },
+      {
         title: t('payments.table.details'),
         key: 'details',
         filterDropdown: MonthFilter,
@@ -254,17 +274,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [
-    filterInfo.counter,
-    filterInfo.details,
-    filterInfo.fee,
-    filterInfo.member,
-    handlePrint,
-    handleSend,
-    navigate,
-    sendingIds,
-    t,
-  ]);
+  }, [filterInfo, handlePrint, handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

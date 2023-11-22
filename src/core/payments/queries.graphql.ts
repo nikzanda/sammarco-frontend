@@ -18,6 +18,7 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     amount
     month
     years
+    type
     printed
     sent
   }
@@ -38,7 +39,6 @@ export const PAYMENT_DETAIL_FRAGMENT = gql`
     }
     date
     reason
-    type
     createdAt
     updatedAt
   }

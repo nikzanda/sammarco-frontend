@@ -134,6 +134,7 @@
       "course": "Corso",
       "fee": "Quota",
       "amount": "Importo",
+      "type": "Tipo pagamento",
       "details": "Dettagli"
     },
     "tab": {
