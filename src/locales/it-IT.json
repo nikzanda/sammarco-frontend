@@ -71,7 +71,7 @@
         "tooltip": "Colore del corso che verrà visualizzato nel calendario",
         "recommended": "Colori di default"
       },
-      "printName": "Nome corso per la ricevuta"
+      "shift": "Dalle ore - alle ore"
     },
     "searcher": {
       "placeholder": "Seleziona corso"
@@ -256,6 +256,15 @@
   "errors": {
     "something-went-wrong": "Ops, qualcosa è andato storto."
   },
+  "days": {
+    "monday": "Lunedì",
+    "tuesday": "Martedì",
+    "wednesday": "Mercoledì",
+    "thursday": "Giovedì",
+    "friday": "Venerdì",
+    "saturday": "Sabato",
+    "sunday": "Domenica"
+  },
   "commons": {
     "searchPlaceholder": "Cerca...",
     "search": "Cerca",
@@ -268,6 +277,7 @@
       "createdAt": "Creato il",
       "updatedAt": "Aggiornato il"
     },
-    "save": "Salva"
+    "save": "Salva",
+    "newRow": "Nuova riga"
   }
 }
