@@ -59,7 +59,7 @@ const CourseForm: React.FC = () => {
         <Row gutter={[24, 24]}>
           {week.map(({ label, weekDay }) => (
             <Col key={weekDay} xs={24} md={8}>
-              <Typography.Text strong>{t(`days.${label}`)}</Typography.Text>
+              <Typography.Title level={5}>{t(`days.${label}`)}</Typography.Title>
 
               <Form.List name={['shifts', weekDay]}>
                 {(fields, { add, remove }) => (

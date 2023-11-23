@@ -42,7 +42,8 @@
         "taxCode": "Codice fiscale genitore"
       },
       "address": "Indirizzo",
-      "courses": "Corsi"
+      "courses": "Corsi",
+      "shifts": "Turni corsi"
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
