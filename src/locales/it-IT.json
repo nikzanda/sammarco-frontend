@@ -13,6 +13,8 @@
     "created": "Nuovo iscritto creato",
     "edited": "Iscritto aggiornato",
     "deleted": "Iscritto eliminato",
+    "lessons_one": "{{number}} lezione",
+    "lessons_other": "{{number}} lezioni",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare l'iscritto?",
       "description": "Elimina {{fullName}}"
@@ -25,7 +27,8 @@
     },
     "tab": {
       "details": "Dettagli",
-      "payments": "Pagamenti"
+      "payments": "Pagamenti",
+      "attendances": "Presenze"
     },
     "form": {
       "name": "Nome",
@@ -39,7 +42,8 @@
         "taxCode": "Codice fiscale genitore"
       },
       "address": "Indirizzo",
-      "courses": "Corsi"
+      "courses": "Corsi",
+      "shifts": "Turni corsi"
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
@@ -63,7 +67,15 @@
     },
     "form": {
       "name": "Nome",
-      "printName": "Nome corso per la ricevuta"
+      "color": {
+        "label": "Colore",
+        "tooltip": "Colore del corso che verrà visualizzato nel calendario",
+        "recommended": "Colori di default"
+      },
+      "shift": "Dalle ore - alle ore"
+    },
+    "searcher": {
+      "placeholder": "Seleziona corso"
     }
   },
   "fees": {
@@ -123,6 +135,7 @@
       "course": "Corso",
       "fee": "Quota",
       "amount": "Importo",
+      "type": "Tipo pagamento",
       "details": "Dettagli"
     },
     "tab": {
@@ -161,6 +174,19 @@
       "signature": "Firma",
       "inLetters": "IN LETTERE"
     }
+  },
+  "attendances": {
+    "new": "Nuova presenza",
+    "created": "Presenza registrata",
+    "form": {
+      "course": "Corso",
+      "shift": "Turno",
+      "date": "Data",
+      "fromTo": "Dalle ore - alle ore"
+    }
+  },
+  "calendar": {
+    "name": "Calendario"
   },
   "settings": {
     "name": "Impostazioni",
@@ -215,6 +241,10 @@
       "label": "pagamento",
       "tooltip": "Inserisci pagamento"
     },
+    "attendance": {
+      "label": "Inserisci presenza",
+      "tooltip": "Inserisci presenza"
+    },
     "resetFilter": {
       "label": "Reset filtro"
     },
@@ -241,6 +271,15 @@
   "errors": {
     "something-went-wrong": "Ops, qualcosa è andato storto."
   },
+  "days": {
+    "monday": "Lunedì",
+    "tuesday": "Martedì",
+    "wednesday": "Mercoledì",
+    "thursday": "Giovedì",
+    "friday": "Venerdì",
+    "saturday": "Sabato",
+    "sunday": "Domenica"
+  },
   "commons": {
     "searchPlaceholder": "Cerca...",
     "search": "Cerca",
@@ -253,6 +292,7 @@
       "createdAt": "Creato il",
       "updatedAt": "Aggiornato il"
     },
-    "save": "Salva"
+    "save": "Salva",
+    "newRow": "Nuova riga"
   }
 }

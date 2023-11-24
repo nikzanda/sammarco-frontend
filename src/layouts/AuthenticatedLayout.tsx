@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
+import { FaCalendarAlt, FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
 import { MemberCreatePage, MemberEditPage, MemberListPage } from '../core/members';
@@ -11,6 +11,7 @@ import { FeeListPage, FeeCreatePage, FeeEditPage } from '../core/fees';
 import { PaymentEditPage, PaymentListPage } from '../core/payments';
 import { AuthenticationContext } from '../contexts';
 import { SettingsPage } from '../settings';
+import { CalendarPage } from '../core/calendar';
 
 const AuthenticatedLayout: React.FC = () => {
   const { logout } = React.useContext(AuthenticationContext);
@@ -43,6 +44,12 @@ const AuthenticatedLayout: React.FC = () => {
         key: 'payments',
         icon: <Icon component={FaMoneyBill} />,
         onClick: () => navigate('/payments'),
+      },
+      {
+        label: t('calendar.name'),
+        key: 'calendar',
+        icon: <Icon component={FaCalendarAlt} />,
+        onClick: () => navigate('/calendar'),
       },
     ];
     return result;
@@ -127,6 +134,8 @@ const AuthenticatedLayout: React.FC = () => {
             <Route index element={<PaymentListPage />} />
             <Route path=":id" element={<PaymentEditPage />} />
           </Route>
+
+          <Route path="calendar" element={<CalendarPage />} />
 
           <Route path="settings" element={<Outlet />}>
             <Route index element={<SettingsPage />} />

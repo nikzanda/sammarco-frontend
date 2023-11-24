@@ -4,6 +4,7 @@ export const COURSE_LIST_ITEM_FRAGMENT = gql`
   fragment CourseListItem on Course {
     id
     name
+    color
   }
 `;
 
@@ -38,6 +39,36 @@ export const COURSE_SEARCH_QUERY = gql`
     course(id: $id) {
       id
       name
+    }
+  }
+`;
+
+export const SHIFTS_QUERY = gql`
+  query Shifts($filter: ShiftFilter) {
+    shifts(filter: $filter) {
+      id
+      course {
+        id
+        name
+      }
+      weekDay
+      from
+      to
+    }
+  }
+`;
+
+export const SHIFT_QUERY = gql`
+  query Shift($id: ID!) {
+    shift(id: $id) {
+      id
+      course {
+        id
+        name
+      }
+      weekDay
+      from
+      to
     }
   }
 `;

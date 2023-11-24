@@ -24,9 +24,14 @@ const CourseCreatePage: React.FC = () => {
   useDisplayGraphQLErrors(error);
 
   const handleFinish = (values: any) => {
+    const { color, ...input } = values;
+
     createCourse({
       variables: {
-        input: values,
+        input: {
+          ...input,
+          ...(color && { color: typeof color === 'string' ? color : color.toHexString() }),
+        },
       },
     });
   };
