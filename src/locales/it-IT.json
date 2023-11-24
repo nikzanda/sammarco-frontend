@@ -175,6 +175,16 @@
       "inLetters": "IN LETTERE"
     }
   },
+  "attendances": {
+    "new": "Nuova presenza",
+    "created": "Presenza registrata",
+    "form": {
+      "course": "Corso",
+      "shift": "Turno",
+      "date": "Data",
+      "fromTo": "Dalle ore - alle ore"
+    }
+  },
   "calendar": {
     "name": "Calendario"
   },
@@ -230,6 +240,10 @@
     "fee": {
       "label": "pagamento",
       "tooltip": "Inserisci pagamento"
+    },
+    "attendance": {
+      "label": "Inserisci presenza",
+      "tooltip": "Inserisci presenza"
     },
     "resetFilter": {
       "label": "Reset filtro"

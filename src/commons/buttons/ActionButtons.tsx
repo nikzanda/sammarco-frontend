@@ -1,10 +1,10 @@
+import React from 'react';
 import Icon from '@ant-design/icons';
 import { Badge, Button, Popconfirm, Space, Tooltip } from 'antd';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaClone, FaMoneyBill, FaPaperPlane, FaPen, FaPrint } from 'react-icons/fa';
+import { FaCalendarCheck, FaClone, FaMoneyBill, FaPaperPlane, FaPen, FaPrint } from 'react-icons/fa';
 
-export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee';
+export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee' | 'attendance';
 export interface ActionButtonObject {
   button: ActionButton;
   disabled?: boolean;
@@ -19,6 +19,7 @@ const defaultProps = {
   onPrint: () => {},
   onSend: () => {},
   onFee: () => {},
+  onAttendance: () => {},
 };
 
 type Props = {
@@ -28,9 +29,10 @@ type Props = {
   onPrint?: () => void;
   onSend?: () => void;
   onFee?: () => void;
+  onAttendance?: () => void;
 };
 
-const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onSend, onFee }) => {
+const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onSend, onFee, onAttendance }) => {
   const { t } = useTranslation();
 
   const objectButtons = React.useMemo(
@@ -124,11 +126,23 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
             </Tooltip>
           );
 
+        case 'attendance':
+          return (
+            <Tooltip title={t('buttons.attendance.tooltip')}>
+              <Button
+                shape="circle"
+                icon={<Icon component={FaCalendarCheck} />}
+                onClick={onAttendance}
+                disabled={disabled}
+              />
+            </Tooltip>
+          );
+
         default:
           throw new Error('not implemented buttom');
       }
     },
-    [getDisabled, getPrinted, getSent, onClone, onEdit, onFee, onPrint, onSend, t]
+    [getDisabled, getPrinted, getSent, onAttendance, onClone, onEdit, onFee, onPrint, onSend, t]
   );
 
   return (

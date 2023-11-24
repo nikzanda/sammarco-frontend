@@ -156,12 +156,20 @@ const MemberForm: React.FC<Props> = ({ form }) => {
       </Col>
 
       <Col xs={24} md={12}>
-        <Form.Item
-          label={t('members.form.shifts')}
-          name="shiftIds"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
-          <ShiftPicker />
+        <Form.Item noStyle dependencies={['courseIds']}>
+          {({ getFieldValue }) => {
+            const courseIds = getFieldValue('courseIds');
+
+            return (
+              <Form.Item
+                label={t('members.form.shifts')}
+                name="shiftIds"
+                rules={[{ required: true, message: t('validations.required') }]}
+              >
+                <ShiftPicker multiple queryFilters={{ courseIds }} disabled={!courseIds} />
+              </Form.Item>
+            );
+          }}
         </Form.Item>
       </Col>
     </Row>

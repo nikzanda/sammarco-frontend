@@ -18,6 +18,7 @@ const week = [
 const defaultProps = {
   value: undefined,
   queryFilters: undefined,
+  multiple: false,
   disabled: false,
   allowClear: true,
   onChange: () => {},
@@ -27,13 +28,14 @@ const defaultProps = {
 type Props = {
   value?: string[];
   queryFilters?: ShiftFilter;
+  multiple?: TreeSelectProps['multiple'];
   disabled?: TreeSelectProps['disabled'];
   allowClear?: TreeSelectProps['allowClear'];
   onChange?: (value: string[], shifts: ShiftsQuery['shifts']) => void;
   onClear?: TreeSelectProps['onClear'];
 };
 
-const ShiftPicker: React.FC<Props> = ({ value, queryFilters, disabled, allowClear, onChange, onClear }) => {
+const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled, allowClear, onChange, onClear }) => {
   const { t } = useTranslation();
 
   const {
@@ -57,12 +59,11 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, disabled, allowClea
     return [];
   }, [shiftsData, shiftsError, shiftsLoading]);
 
-  // TODO: non mostrare in grigio (disabled) le label dei giorni della settimana
   const treeData = React.useMemo(() => {
     const result: TreeSelectProps['treeData'] = week
       .filter(({ weekDay }) => shifts.some(({ weekDay: shiftWeekDay }) => shiftWeekDay === weekDay))
       .map(({ label, weekDay }) => ({
-        title: t(`days.${label}`),
+        title: <Typography.Text>{t(`days.${label}`)}</Typography.Text>,
         value: label,
         disabled: true,
         children: shifts
@@ -111,7 +112,7 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, disabled, allowClea
       onChange={handleChange}
       onClear={onClear}
       loading={shiftsLoading}
-      multiple
+      multiple={multiple}
     />
   );
 };

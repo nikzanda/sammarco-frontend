@@ -31,6 +31,7 @@ import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
 import { CourseTableFilter } from '../courses/components';
+import { AttendanceCreateModal } from '../attendances/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -40,6 +41,8 @@ const MemberListPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [memberInfo, setMemberInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
+  const [newPayment, setNewPayment] = React.useState(false);
+  const [newAttendance, setNewAttendance] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -173,14 +176,22 @@ const MemberListPage: React.FC = () => {
         align: 'right',
         render: (id: string, { courses }) => (
           <ActionButtons
-            buttons={['edit', 'fee']}
+            buttons={['edit', 'fee', 'attendance']}
             onEdit={() => navigate(`/members/${id}`)}
-            onFee={() =>
+            onFee={() => {
               setMemberInfo({
                 memberId: id,
                 courseIds: courses.map((course) => course.id),
-              })
-            }
+              });
+              setNewPayment(true);
+            }}
+            onAttendance={() => {
+              setMemberInfo({
+                memberId: id,
+                courseIds: courses.map((course) => course.id),
+              });
+              setNewAttendance(true);
+            }}
           />
         ),
       },
@@ -266,11 +277,24 @@ const MemberListPage: React.FC = () => {
           },
         }}
       />
-      {memberInfo && (
+      {newPayment && memberInfo && (
         <PaymentCreateModal
           memberId={memberInfo.memberId}
           courseIds={memberInfo.courseIds}
-          onCancel={() => setMemberInfo(undefined)}
+          onCancel={() => {
+            setMemberInfo(undefined);
+            setNewPayment(false);
+          }}
+        />
+      )}
+      {newAttendance && memberInfo && (
+        <AttendanceCreateModal
+          memberId={memberInfo.memberId}
+          courseIds={memberInfo.courseIds}
+          onCancel={() => {
+            setMemberInfo(undefined);
+            setNewAttendance(false);
+          }}
         />
       )}
     </Space>

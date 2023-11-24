@@ -30,3 +30,13 @@ export const ATTENDANCES_QUERY = gql`
   }
   ${ATTENDANCE_LIST_ITEM_FRAGMENT}
 `;
+
+export const ATTENDANCE_CREATE_MUTATION = gql`
+  mutation AttendanceCreate($input: AttendanceCreateInput!) {
+    attendanceCreate(input: $input) {
+      attendance {
+        ...AttendanceListItem
+      }
+    }
+  }
+`;

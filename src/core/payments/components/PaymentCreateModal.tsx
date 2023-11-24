@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Select, Spin, Typography } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  const paymentReason = useRef<string>();
+  const paymentReason = React.useRef<string>();
 
   const [getMember, { data: memberData, loading: memberLoading, error: memberError }] = useMemberSearcherLazyQuery();
 
