@@ -1,11 +1,11 @@
 import React from 'react';
-import { App, Button, Col, Form, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { format } from 'date-fns';
-import { usePaymentQuery, usePaymentUpdateMutation } from '../../generated/graphql';
+import { usePaymentDeleteMutation, usePaymentQuery, usePaymentUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { PaymentForm } from './components';
 import PDF from './pdfs/receipt-pdf';
@@ -45,7 +45,15 @@ const PaymentEditPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(updateError);
+  const [deletePayment, { loading: deleteLoading, error: deleteError }] = usePaymentDeleteMutation({
+    refetchQueries: ['Payments'],
+    onCompleted: () => {
+      message.success(t('payments.deleted'));
+      navigate('/payments');
+    },
+  });
+
+  useDisplayGraphQLErrors(updateError, deleteError);
 
   const payment = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -82,6 +90,16 @@ const PaymentEditPage: React.FC = () => {
     PDF.print(id!);
   };
 
+  const handleDelete = () => {
+    deletePayment({
+      variables: {
+        input: {
+          id: id!,
+        },
+      },
+    });
+  };
+
   const handleFinish = (values: any) => {
     const { feeId, month, years, ...input } = values;
     updatePayment({
@@ -110,7 +128,7 @@ const PaymentEditPage: React.FC = () => {
         </Col>
         <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
           <Space>
-            {/* {payment?.canDelete && (
+            {payment?.canDelete && (
               <Popconfirm
                 title={t('payments.delete.confirm')}
                 description={t('payments.delete.description')}
@@ -120,7 +138,7 @@ const PaymentEditPage: React.FC = () => {
                   {t('buttons.delete.label')}
                 </Button>
               </Popconfirm>
-            )} */}
+            )}
             <Button size="large" loading={updateLoading} onClick={handlePrint}>
               {t('buttons.print.label')}
             </Button>

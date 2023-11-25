@@ -39,6 +39,7 @@ export const PAYMENT_DETAIL_FRAGMENT = gql`
     }
     date
     reason
+    canDelete
     createdAt
     updatedAt
   }
