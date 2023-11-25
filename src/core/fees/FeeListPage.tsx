@@ -130,6 +130,8 @@ const FeeListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
+        fixed: 'right',
+        width: 100,
         render: (id) => (
           <ActionButtons
             buttons={['edit', 'clone']}
@@ -225,6 +227,7 @@ const FeeListPage: React.FC = () => {
             return t('commons.table.pagination', { start, end, total });
           },
         }}
+        scroll={{ x: 1000 }}
       />
     </Space>
   );

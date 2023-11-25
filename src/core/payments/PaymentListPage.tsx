@@ -259,6 +259,7 @@ const PaymentListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
+        fixed: 'right',
         render: (id, { printed, sent }) => (
           <ActionButtons
             buttons={[
@@ -365,6 +366,7 @@ const PaymentListPage: React.FC = () => {
           selectedRowKeys: selectedIds,
           onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys as string[]),
         }}
+        scroll={{ x: 1100 }}
       />
     </Space>
   );
