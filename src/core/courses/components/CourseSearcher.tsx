@@ -1,5 +1,5 @@
-import { Select, SelectProps } from 'antd';
 import React from 'react';
+import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
 import {
   CourseFilter,

@@ -7,6 +7,7 @@ import { PaymentTypeEnum, RecurrenceEnum, PaymentDetailFragment, FeeSearcherQuer
 import { dateToYearMonth } from '../../../utils/utils';
 import { DatePicker } from '../../../components';
 import { FeeSearcher } from '../../fees/components';
+import { MemberSearcher } from '../../members/components';
 
 const defaultProps = {
   payment: undefined,
@@ -20,7 +21,7 @@ type Props = {
 const PaymentForm: React.FC<Props> = ({ form, payment }) => {
   const { t } = useTranslation();
 
-  const paymentReason = React.useRef<string>();
+  const paymentReason = React.useRef<string>(payment?.fee.reason || '');
   const [fee, setFee] = React.useState<FeeSearcherQuery['fee'] | undefined>(payment?.fee);
 
   const paymentTypeOptions = React.useMemo(() => {
@@ -33,6 +34,16 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
 
   return (
     <Row gutter={24}>
+      <Col xs={24} md={12}>
+        <Form.Item
+          label={t('payments.form.member')}
+          name="memberId"
+          rules={[{ required: true, message: t('validations.required') }]}
+        >
+          <MemberSearcher allowClear={false} />
+        </Form.Item>
+      </Col>
+
       <Col xs={24} md={12}>
         <Form.Item
           label={t('payments.form.fee')}
@@ -60,7 +71,6 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
                 form.setFieldValue('reason', reason);
               }
             }}
-            disabled={!!payment}
           />
         </Form.Item>
       </Col>
@@ -110,7 +120,6 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
                         form.setFieldValue('reason', reason);
                       }
                     }}
-                    disabled={!!payment}
                   />
                 </Form.Item>
               );
@@ -138,12 +147,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
                     return null;
                   }}
                 >
-                  <DatePicker.RangePicker
-                    picker="year"
-                    allowClear={false}
-                    style={{ width: '100%' }}
-                    disabled={!!payment}
-                  />
+                  <DatePicker.RangePicker picker="year" allowClear={false} style={{ width: '100%' }} />
                 </Form.Item>
               );
             }

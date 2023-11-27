@@ -79,6 +79,7 @@ const PaymentEditPage: React.FC = () => {
     if (payment) {
       const result = {
         ...payment,
+        memberId: payment.member.id,
         feeId: payment.fee.id,
       };
       return result;
@@ -101,12 +102,11 @@ const PaymentEditPage: React.FC = () => {
   };
 
   const handleFinish = (values: any) => {
-    const { feeId, month, years, ...input } = values;
     updatePayment({
       variables: {
         input: {
           id: id!,
-          ...input,
+          ...values,
         },
       },
     });

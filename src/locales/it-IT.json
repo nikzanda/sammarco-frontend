@@ -143,6 +143,7 @@
       "details": "Dettagli"
     },
     "form": {
+      "member": "Iscritto",
       "fee": "Quota",
       "amount": "Importo",
       "month": "Mese",

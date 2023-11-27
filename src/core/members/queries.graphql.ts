@@ -55,7 +55,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
 `;
 
 export const MEMBERS_SEARCH_QUERY = gql`
-  query MembersSearcher($filter: MemberFilter!) {
+  query MembersSearcher($filter: MemberFilter) {
     members(pageIndex: 0, pageSize: 20, filter: $filter) {
       data {
         id
