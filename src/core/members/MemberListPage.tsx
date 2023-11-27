@@ -223,6 +223,7 @@ const MemberListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
+        fixed: 'right',
         render: (id: string, { courses }) => (
           <ActionButtons
             buttons={['edit', 'fee', 'attendance']}
@@ -362,6 +363,7 @@ const MemberListPage: React.FC = () => {
           // },
           onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys as string[]),
         }}
+        scroll={{ x: 600 }}
       />
       {newPayment && memberInfo && (
         <PaymentCreateModal
