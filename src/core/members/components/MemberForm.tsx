@@ -161,11 +161,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
             const courseIds = getFieldValue('courseIds');
 
             return (
-              <Form.Item
-                label={t('members.form.shifts')}
-                name="shiftIds"
-                rules={[{ required: true, message: t('validations.required') }]}
-              >
+              <Form.Item label={t('members.form.shifts')} name="shiftIds">
                 <ShiftPicker multiple queryFilters={{ courseIds }} disabled={!courseIds} />
               </Form.Item>
             );

@@ -22,7 +22,13 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
     courses {
       id
       name
+      shifts {
+        id
+        from
+        to
+      }
     }
+    shiftIds
   }
 `;
 

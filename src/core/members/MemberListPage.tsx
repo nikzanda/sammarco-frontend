@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaPlus } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format } from 'date-fns';
@@ -39,6 +39,8 @@ const LOCAL_STORAGE_PATH = 'filter/member/';
 const MemberListPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const [memberInfo, setMemberInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
   const [newPayment, setNewPayment] = React.useState(false);
@@ -244,6 +246,16 @@ const MemberListPage: React.FC = () => {
 
         <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
           <Button
+            size="large"
+            icon={<Icon component={FaCalendarCheck} />}
+            onClick={() => {
+              setNewAttendance(true);
+            }}
+            disabled={selectedIds.length === 0}
+          >
+            {t('attendances.new')}
+          </Button>
+          <Button
             danger
             size="large"
             icon={<Icon component={FaBan} />}
@@ -258,6 +270,7 @@ const MemberListPage: React.FC = () => {
         </Col>
       </Row>
 
+      {selectedIds.length > 0 && <span>{t('commons.selected', { selected: selectedIds.length, total })}</span>}
       <Table
         dataSource={members}
         columns={columns}
@@ -276,6 +289,32 @@ const MemberListPage: React.FC = () => {
             return t('commons.table.pagination', { start, end, total });
           },
         }}
+        rowSelection={{
+          selections: [Table.SELECTION_NONE],
+          preserveSelectedRowKeys: true,
+          selectedRowKeys: selectedIds,
+          // getCheckboxProps: (record) => {
+          //   if (selectedIds.length === 0) {
+          //     return {
+          //       disabled: false
+          //     };
+          //   }
+
+          //   const member = members.find(({ id, courses }) => selectedIds.includes(id) && courses.length === 1)
+          //   if (!member) {
+          //     return {
+          //       disabled: false
+          //     };
+          //   }
+
+          //   const [course] = member.courses;
+          //   const disabled = !record.courses.map(({id}) => id).includes(course.id)
+          //   return {
+          //     disabled
+          //   }
+          // },
+          onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys as string[]),
+        }}
       />
       {newPayment && memberInfo && (
         <PaymentCreateModal
@@ -289,8 +328,28 @@ const MemberListPage: React.FC = () => {
       )}
       {newAttendance && memberInfo && (
         <AttendanceCreateModal
-          memberId={memberInfo.memberId}
+          memberIds={[memberInfo.memberId]}
           courseIds={memberInfo.courseIds}
+          onCancel={() => {
+            setMemberInfo(undefined);
+            setNewAttendance(false);
+          }}
+        />
+      )}
+      {newAttendance && selectedIds.length > 0 && (
+        <AttendanceCreateModal
+          memberIds={selectedIds}
+          courseIds={[
+            ...members.reduce((acc: Set<string>, { id: memberId, courses }) => {
+              if (!selectedIds.includes(memberId)) {
+                return acc;
+              }
+              courses.forEach(({ id }) => {
+                acc.add(id);
+              });
+              return acc;
+            }, new Set<string>()),
+          ]}
           onCancel={() => {
             setMemberInfo(undefined);
             setNewAttendance(false);

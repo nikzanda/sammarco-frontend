@@ -4,17 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { set } from 'date-fns';
 import { CourseSearcher, ShiftPicker } from '../../courses/components';
 import { DatePicker } from '../../../components';
-import { ShiftsQuery, useAttendanceCreateMutation } from '../../../generated/graphql';
+import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 type Props = {
-  memberId: string;
+  memberIds: string[];
   courseIds: string[];
   // TODO: shiftIds
   onCancel: () => void;
 };
 
-const AttendanceCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
+const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel }) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { message } = App.useApp();
@@ -29,7 +29,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel 
     return result;
   }, [courseIds]);
 
-  const [createAttendance, { loading: mutationLoading, error: mutationError }] = useAttendanceCreateMutation({
+  const [createAttendances, { loading: mutationLoading, error: mutationError }] = useAttendanceCreateManyMutation({
     refetchQueries: ['Attendances'],
     onCompleted: () => {
       message.success(t('attendances.created'));
@@ -62,10 +62,10 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel 
       milliseconds: 0,
     }).getTime();
 
-    createAttendance({
+    createAttendances({
       variables: {
         input: {
-          memberId,
+          memberIds,
           courseId,
           from,
           to,
