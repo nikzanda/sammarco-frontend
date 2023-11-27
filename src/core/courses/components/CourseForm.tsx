@@ -4,16 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Icon, { PlusOutlined } from '@ant-design/icons';
 import { FaTrash } from 'react-icons/fa';
 import { DatePicker } from '../../../components';
-
-const week = [
-  { label: 'monday', weekDay: 1 },
-  { label: 'tuesday', weekDay: 2 },
-  { label: 'wednesday', weekDay: 3 },
-  { label: 'thursday', weekDay: 4 },
-  { label: 'friday', weekDay: 5 },
-  { label: 'saturday', weekDay: 6 },
-  { label: 'sunday', weekDay: 0 },
-];
+import { week } from '../../../commons';
 
 const CourseForm: React.FC = () => {
   const { t } = useTranslation();

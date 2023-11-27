@@ -23,7 +23,8 @@
       "fullName": "Nome",
       "courses": "Corsi",
       "currentMonthNotPaid": "Mese di {{month}}, corso {{course}}, non pagato.",
-      "currentEnrollmentNotPaid": "Iscrizione non pagata."
+      "currentEnrollmentNotPaid": "Iscrizione non pagata.",
+      "shifts": "Turni"
     },
     "tab": {
       "details": "Dettagli",

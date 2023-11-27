@@ -4,16 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { format, set } from 'date-fns';
 import { ShiftFilter, ShiftsQuery, useShiftsQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-
-const week = [
-  { label: 'monday', weekDay: 1 },
-  { label: 'tuesday', weekDay: 2 },
-  { label: 'wednesday', weekDay: 3 },
-  { label: 'thursday', weekDay: 4 },
-  { label: 'friday', weekDay: 5 },
-  { label: 'saturday', weekDay: 6 },
-  { label: 'sunday', weekDay: 0 },
-];
+import { week } from '../../../commons';
 
 const defaultProps = {
   value: undefined,
@@ -113,6 +104,7 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled,
       onClear={onClear}
       loading={shiftsLoading}
       multiple={multiple}
+      style={{ width: '100%' }}
     />
   );
 };

@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBan, FaCalendarCheck, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import {
   MemberFilter,
   MemberListItemFragment,
@@ -29,8 +29,8 @@ import {
 } from '../../generated/graphql';
 import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons } from '../../commons';
-import { CourseTableFilter } from '../courses/components';
+import { ActionButtons, week } from '../../commons';
+import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 
 const PAGE_SIZE = 20;
@@ -84,11 +84,12 @@ const MemberListPage: React.FC = () => {
     const result: MemberFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
+      shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
       sortBy,
       sortDirection,
     };
     return result;
-  }, [filterInfo.courses, filterInfo.search, sortInfo.columnKey, sortInfo.order]);
+  }, [filterInfo, sortInfo]);
 
   const {
     data: queryData,
@@ -173,6 +174,52 @@ const MemberListPage: React.FC = () => {
         render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
       },
       {
+        title: t('members.table.shifts'),
+        key: 'shifts',
+        dataIndex: 'courses',
+        filterDropdown: ShiftTableFilter,
+        filteredValue: filterInfo.shifts || null,
+        render: (courses: MemberListItemFragment['courses'], { shiftIds }) => {
+          const shifts = courses.reduce(
+            (
+              acc: { id: string; courseName: string; weekDay: number; from: [number, number]; to: [number, number] }[],
+              { name, shifts: courseShifts }
+            ) => {
+              courseShifts.forEach((dayShifts, weekDay) => {
+                dayShifts.forEach((shift) => {
+                  if (shiftIds.includes(shift.id)) {
+                    acc.push({
+                      id: shift.id,
+                      courseName: name,
+                      weekDay,
+                      from: shift.from as [number, number],
+                      to: shift.to as [number, number],
+                    });
+                  }
+                });
+              });
+              return acc;
+            },
+            []
+          );
+          return (
+            <Space direction="vertical" size="small">
+              {shifts.map((shift) => {
+                const from = set(Date.now(), { hours: shift.from[0], minutes: shift.from[1] });
+                const to = set(Date.now(), { hours: shift.to[0], minutes: shift.to[1] });
+                const day = week.find(({ weekDay }) => weekDay === shift.weekDay)!;
+
+                return (
+                  <span key={shift.id}>
+                    {t(`days.${day.label}`)}: {format(from, 'HH:mm')} - {format(to, 'HH:mm')}
+                  </span>
+                );
+              })}
+            </Space>
+          );
+        },
+      },
+      {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
@@ -199,7 +246,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.courses, navigate, t]);
+  }, [filterInfo, navigate, t]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
