@@ -96,12 +96,13 @@ const CalendarPage: React.FC = () => {
         }
 
         return acc;
-      }, []);
+      }, [])
+      .sort(({ from: aFrom }, { from: bFrom }) => aFrom - bFrom);
 
     return (
       <>
         {currentAttendances.map(({ courseId, from, to, memberNames }) => (
-          <Popover title={courses[courseId].name} content={memberNames.join(', ')}>
+          <Popover title={courses[courseId].name} content={memberNames.join(', ')} trigger="click">
             <Badge
               key={from}
               color={courses[courseId].color || token.colorSuccess}

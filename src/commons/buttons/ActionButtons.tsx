@@ -105,7 +105,7 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
 
         case 'send':
           return (
-            <Tooltip title={t('buttons.send.tooltip')}>
+            <Tooltip title={t('buttons.send.tooltip')} placement="bottom">
               <Popconfirm
                 title={t('buttons.send.confirm.title')}
                 description={t('buttons.send.confirm.description')}
