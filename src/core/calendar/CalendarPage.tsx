@@ -1,7 +1,9 @@
 import React from 'react';
-import { Badge, CalendarProps, Col, Popover, Row, Space, Spin, theme } from 'antd';
+import { Badge, Button, CalendarProps, Col, Modal, Row, Space, Spin, theme } from 'antd';
 import { set, lastDayOfMonth, lastDayOfYear, isSameMonth, format, isSameDay } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { FaExpand } from 'react-icons/fa';
+import Icon from '@ant-design/icons';
 import { AttendanceFilter, AttendancesQuery, useAttendancesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { Calendar } from '../../components';
@@ -10,6 +12,7 @@ import { CoursePicker } from '../courses/components';
 const CalendarPage: React.FC = () => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
+  const [modal, contextHolder] = Modal.useModal();
 
   const [courseIds, setCourseIds] = React.useState<string[]>();
   const [date, setDate] = React.useState(new Date());
@@ -102,17 +105,30 @@ const CalendarPage: React.FC = () => {
     return (
       <>
         {currentAttendances.map(({ courseId, from, to, memberNames }) => (
-          <Popover title={courses[courseId].name} content={memberNames.join(', ')} trigger="click">
-            <Badge
-              key={from}
-              color={courses[courseId].color || token.colorSuccess}
-              text={
-                <>
-                  {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {memberNames.length}
-                </>
-              }
-            />
-          </Popover>
+          <Badge
+            key={from}
+            color={courses[courseId].color || token.colorSuccess}
+            text={
+              <>
+                {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {memberNames.length}{' '}
+                <Button
+                  size="small"
+                  shape="circle"
+                  icon={<Icon component={FaExpand} />}
+                  onClick={() => {
+                    modal.info({
+                      title: (
+                        <>
+                          {format(from, 'dd/MM/yyyy')}, {courses[courseId].name}
+                        </>
+                      ),
+                      content: memberNames.join(', '),
+                    });
+                  }}
+                />
+              </>
+            }
+          />
         ))}
       </>
     );
@@ -152,6 +168,8 @@ const CalendarPage: React.FC = () => {
           }}
         />
       </Spin>
+
+      {contextHolder}
     </Space>
   );
 };

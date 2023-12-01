@@ -149,6 +149,7 @@ const MemberListPage: React.FC = () => {
               <Space size="small">
                 {courseMonthsNotPaid.map((course) => (
                   <Tooltip
+                    key={course.id}
                     title={t('members.table.currentMonthNotPaid', {
                       course: course.name,
                       month: format(Date.now(), 'MMMM').toUpperCase(),

@@ -1,11 +1,12 @@
 import React from 'react';
 import { format, isSameDay, isSameMonth, lastDayOfMonth, lastDayOfYear, set } from 'date-fns';
-import { App, Badge, Button, CalendarProps, Popconfirm, Spin, theme } from 'antd';
+import { App, Badge, Button, CalendarProps, Popconfirm, Space, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { FaTrash } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import {
   AttendanceFilter,
+  AttendanceListItemFragment,
   MemberDetailFragment,
   useAttendanceDeleteMutation,
   useAttendancesQuery,
@@ -82,12 +83,38 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
   };
 
   const monthCellRender = (current: Date) => {
-    const lessonsNumber = attendances.filter((attendance) => isSameMonth(current, attendance.from)).length;
-    if (lessonsNumber === 0) {
+    const lessons = attendances.filter((attendance) => isSameMonth(current, attendance.from));
+    if (lessons.length === 0) {
       return undefined;
     }
 
-    return <Badge status="success" text={t('members.lessons', { number: lessonsNumber, count: lessonsNumber })} />;
+    const lessonsByCourse = lessons.reduce(
+      (acc: { course: AttendanceListItemFragment['course']; count: number }[], { course }) => {
+        const found = acc.find((row) => row.course.id === course.id);
+        if (!found) {
+          acc.push({
+            course,
+            count: 1,
+          });
+        } else {
+          found.count++;
+        }
+        return acc;
+      },
+      []
+    );
+
+    return (
+      <Space direction="vertical">
+        {lessonsByCourse.map(({ course, count }) => (
+          <Badge
+            key={course.id}
+            color={course.color || token.colorSuccess}
+            text={t('members.lessons', { number: count, count })}
+          />
+        ))}
+      </Space>
+    );
   };
 
   const dateCellRender = (current: Date) => {
@@ -99,8 +126,8 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
           const text = [format(from, 'HH:mm'), format(to, 'HH:mm')].join(' - ');
 
           return (
-            <>
-              <Badge key={from} color={course.color || token.colorSuccess} text={text} />{' '}
+            <React.Fragment key={from}>
+              <Badge color={course.color || token.colorSuccess} text={text} />{' '}
               <Popconfirm
                 title={t('attendances.delete.confirm')}
                 description={t('attendances.delete.description')}
@@ -114,7 +141,7 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
                   loading={mutationLoading}
                 />
               </Popconfirm>
-            </>
+            </React.Fragment>
           );
         })}
       </>
