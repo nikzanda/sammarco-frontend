@@ -213,7 +213,7 @@
         },
         "body": {
           "label": "Contenuto",
-          "help": "Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome dell'iscritto"
+          "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome dell'iscritto (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
         },
         "host": "Host",
         "port": "Porta",

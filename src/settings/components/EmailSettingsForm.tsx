@@ -42,7 +42,7 @@ const EmailSettingsForm: React.FC = () => {
         <Col span={24}>
           <Form.Item
             label={t('settings.form.emailSettings.body.label')}
-            help={t('settings.form.emailSettings.body.help')}
+            help={<span className="break-line">{t('settings.form.emailSettings.body.help')}</span>}
             name={['emailSettings', 'body']}
           >
             <Input.TextArea rows={6} />
