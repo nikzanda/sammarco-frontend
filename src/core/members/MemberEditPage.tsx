@@ -172,7 +172,7 @@ const MemberEditPage: React.FC = () => {
               children: <MemberPayments member={member} />,
             },
             {
-              label: t('members.tab.attendances'),
+              label: t('members.tab.calendar'),
               key: 'attendances',
               children: <MemberAttendances member={member} />,
             },

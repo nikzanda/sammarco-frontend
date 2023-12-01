@@ -1,8 +1,15 @@
 import React from 'react';
 import { format, isSameDay, isSameMonth, lastDayOfMonth, lastDayOfYear, set } from 'date-fns';
-import { Badge, CalendarProps, Spin, theme } from 'antd';
+import { App, Badge, Button, CalendarProps, Popconfirm, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { AttendanceFilter, MemberDetailFragment, useAttendancesQuery } from '../../../generated/graphql';
+import { FaTrash } from 'react-icons/fa';
+import Icon from '@ant-design/icons';
+import {
+  AttendanceFilter,
+  MemberDetailFragment,
+  useAttendanceDeleteMutation,
+  useAttendancesQuery,
+} from '../../../generated/graphql';
 import { Calendar } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
@@ -13,6 +20,7 @@ type Props = {
 const MemberAttendances: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
+  const { message } = App.useApp();
 
   const [date, setDate] = React.useState(new Date());
   const [calendarMode, setCalendarMode] = React.useState<CalendarProps<Date>['mode']>('month');
@@ -47,7 +55,14 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError);
+  const [deleteAttendance, { loading: mutationLoading, error: mutationError }] = useAttendanceDeleteMutation({
+    refetchQueries: ['Attendances'],
+    onCompleted: () => {
+      message.success(t('attendances.deleted'));
+    },
+  });
+
+  useDisplayGraphQLErrors(queryError, mutationError);
 
   const attendances = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -55,6 +70,16 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
     }
     return [];
   }, [queryData, queryError, queryLoading]);
+
+  const handleDelete = (attendanceId: string) => {
+    deleteAttendance({
+      variables: {
+        input: {
+          id: attendanceId,
+        },
+      },
+    });
+  };
 
   const monthCellRender = (current: Date) => {
     const lessonsNumber = attendances.filter((attendance) => isSameMonth(current, attendance.from)).length;
@@ -70,10 +95,27 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
 
     return (
       <>
-        {currentAttendances.map(({ course, from, to }) => {
+        {currentAttendances.map(({ id, course, from, to }) => {
           const text = [format(from, 'HH:mm'), format(to, 'HH:mm')].join(' - ');
 
-          return <Badge key={from} color={course.color || token.colorSuccess} text={text} />;
+          return (
+            <>
+              <Badge key={from} color={course.color || token.colorSuccess} text={text} />{' '}
+              <Popconfirm
+                title={t('attendances.delete.confirm')}
+                description={t('attendances.delete.description')}
+                onConfirm={() => handleDelete(id)}
+              >
+                <Button
+                  size="small"
+                  shape="circle"
+                  danger
+                  icon={<Icon component={FaTrash} />}
+                  loading={mutationLoading}
+                />
+              </Popconfirm>
+            </>
+          );
         })}
       </>
     );

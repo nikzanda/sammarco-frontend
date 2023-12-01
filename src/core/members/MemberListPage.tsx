@@ -399,9 +399,12 @@ const MemberListPage: React.FC = () => {
               return acc;
             }, new Set<string>()),
           ]}
-          onCancel={() => {
+          onCancel={(success) => {
             setMemberInfo(undefined);
             setNewAttendance(false);
+            if (success) {
+              setSelectedIds([]);
+            }
           }}
         />
       )}

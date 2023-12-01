@@ -29,7 +29,7 @@
     "tab": {
       "details": "Dettagli",
       "payments": "Pagamenti",
-      "attendances": "Presenze"
+      "calendar": "Calendario"
     },
     "form": {
       "name": "Nome",
@@ -180,6 +180,11 @@
   "attendances": {
     "new": "Nuova presenza",
     "created": "Presenza registrata",
+    "deleted": "Presenza eliminata",
+    "delete": {
+      "confirm": "Sei sicuro di voler eliminare la presenza?",
+      "description": "Elimina presenza"
+    },
     "form": {
       "course": "Corso",
       "shift": "Turno",

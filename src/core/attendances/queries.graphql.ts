@@ -40,3 +40,13 @@ export const ATTENDANCE_CREATE_MANY_MUTATION = gql`
     }
   }
 `;
+
+export const ATTENDANCE_DELETE_MUTATION = gql`
+  mutation AttendanceDelete($input: AttendanceDeleteInput!) {
+    attendanceDelete(input: $input) {
+      attendance {
+        ...AttendanceListItem
+      }
+    }
+  }
+`;

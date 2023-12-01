@@ -1,7 +1,7 @@
 import { App, Form, Modal } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { set } from 'date-fns';
+import { isToday, set } from 'date-fns';
 import { CourseSearcher, ShiftPicker } from '../../courses/components';
 import { DatePicker } from '../../../components';
 import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
@@ -10,8 +10,7 @@ import { useDisplayGraphQLErrors } from '../../../hooks';
 type Props = {
   memberIds: string[];
   courseIds: string[];
-  // TODO: shiftIds
-  onCancel: () => void;
+  onCancel: (success: boolean) => void;
 };
 
 const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel }) => {
@@ -33,7 +32,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
     refetchQueries: ['Attendances'],
     onCompleted: () => {
       message.success(t('attendances.created'));
-      onCancel();
+      onCancel(true);
     },
   });
 
@@ -83,7 +82,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         form: 'form',
         loading: mutationLoading,
       }}
-      onCancel={onCancel}
+      onCancel={() => onCancel(false)}
     >
       <Form
         id="form"
@@ -165,6 +164,9 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
             style={{ width: '100%' }}
             disabledDate={(date) => {
               if (!selectedShift) {
+                return false;
+              }
+              if (isToday(date)) {
                 return false;
               }
 

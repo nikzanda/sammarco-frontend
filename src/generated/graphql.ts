@@ -799,6 +799,13 @@ export type AttendanceCreateManyMutationVariables = Exact<{
 
 export type AttendanceCreateManyMutation = { __typename?: 'Mutation', attendanceCreateMany: { __typename?: 'AttendanceCreateManyPayload', attendances: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', id: string, fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }> } };
 
+export type AttendanceDeleteMutationVariables = Exact<{
+  input: AttendanceDeleteInput;
+}>;
+
+
+export type AttendanceDeleteMutation = { __typename?: 'Mutation', attendanceDelete: { __typename?: 'AttendanceDeletePayload', attendance: { __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', id: string, fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } } } };
+
 export type CourseListItemFragment = { __typename?: 'Course', id: string, name: string, color?: string | null };
 
 export type CourseDetailFragment = { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> };
@@ -1451,6 +1458,41 @@ export function useAttendanceCreateManyMutation(baseOptions?: Apollo.MutationHoo
 export type AttendanceCreateManyMutationHookResult = ReturnType<typeof useAttendanceCreateManyMutation>;
 export type AttendanceCreateManyMutationResult = Apollo.MutationResult<AttendanceCreateManyMutation>;
 export type AttendanceCreateManyMutationOptions = Apollo.BaseMutationOptions<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
+export const AttendanceDeleteDocument = gql`
+    mutation AttendanceDelete($input: AttendanceDeleteInput!) {
+  attendanceDelete(input: $input) {
+    attendance {
+      ...AttendanceListItem
+    }
+  }
+}
+    ${AttendanceListItemFragmentDoc}`;
+export type AttendanceDeleteMutationFn = Apollo.MutationFunction<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
+
+/**
+ * __useAttendanceDeleteMutation__
+ *
+ * To run a mutation, you first call `useAttendanceDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAttendanceDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [attendanceDeleteMutation, { data, loading, error }] = useAttendanceDeleteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAttendanceDeleteMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>(AttendanceDeleteDocument, options);
+      }
+export type AttendanceDeleteMutationHookResult = ReturnType<typeof useAttendanceDeleteMutation>;
+export type AttendanceDeleteMutationResult = Apollo.MutationResult<AttendanceDeleteMutation>;
+export type AttendanceDeleteMutationOptions = Apollo.BaseMutationOptions<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
 export const CoursesSearcherDocument = gql`
     query CoursesSearcher($filter: CourseFilter) {
   courses(pageIndex: 0, pageSize: 20, filter: $filter) {
