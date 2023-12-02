@@ -86,7 +86,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
               {t('members.table.expandable.paid')}: {icon}
             </span>
             <span>
-              {t('members.table.expandable.attendances')}: <Typography.Text strong>{attendancesCount}</Typography.Text>{' '}
+              {t('members.table.expandable.attendances')}: <Typography.Text strong>{attendancesCount}</Typography.Text>
             </span>
           </Space>
         ),

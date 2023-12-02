@@ -34,6 +34,7 @@ import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getYears } from '../../utils/utils';
 import { MemberExpandable } from './components';
+import { DatePicker } from '../../components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -88,6 +89,7 @@ const MemberListPage: React.FC = () => {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
+      monthsNotPaid: filterInfo.monthsNotPaid?.length ? (filterInfo.monthsNotPaid as number[]) : undefined,
       sortBy,
       sortDirection,
     };
@@ -167,8 +169,7 @@ const MemberListPage: React.FC = () => {
               {fullName}{' '}
               {showAlert && (
                 <Tooltip title={t('members.alerts.warnings')}>
-                  {' '}
-                  <Icon component={FaExclamationTriangle} style={{ color: token.colorError }} />{' '}
+                  <Icon component={FaExclamationTriangle} style={{ color: token.colorError }} />
                 </Tooltip>
               )}
             </>
@@ -266,6 +267,7 @@ const MemberListPage: React.FC = () => {
     } else {
       setFilterInfo({
         ...(searchText && { search: [searchText] }),
+        ...(filterInfo.monthsNotPaid && { monthsNotPaid: filterInfo.monthsNotPaid }),
       });
     }
     setSortInfo(sorter as SorterResult<MemberListItemFragment>);
@@ -285,7 +287,7 @@ const MemberListPage: React.FC = () => {
       </Flex>
 
       <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={10}>
           <Input.Search
             placeholder={t('commons.searchPlaceholder')!}
             allowClear
@@ -302,7 +304,23 @@ const MemberListPage: React.FC = () => {
           />
         </Col>
 
-        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
+        <Col xs={24} sm={6}>
+          <DatePicker
+            value={filterInfo.monthsNotPaid && new Date(filterInfo.monthsNotPaid[0] as number)}
+            size="large"
+            picker="month"
+            style={{ width: '100%' }}
+            placeholder={t('members.filterByMonthsNotPaid')}
+            onChange={(value) => {
+              setFilterInfo({
+                ...filterInfo,
+                monthsNotPaid: value ? [value.getTime()] : null,
+              });
+            }}
+          />
+        </Col>
+
+        <Col xs={24} sm={8} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
           <Button
             size="large"
             icon={<Icon component={FaCalendarCheck} />}

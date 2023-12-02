@@ -15,6 +15,7 @@
     "deleted": "Iscritto eliminato",
     "lessons_one": "{{number}} lezione",
     "lessons_other": "{{number}} lezioni",
+    "filterByMonthsNotPaid": "Cerca per mese non pagato",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare l'iscritto?",
       "description": "Elimina {{fullName}}"
