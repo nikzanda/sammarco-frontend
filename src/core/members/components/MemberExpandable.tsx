@@ -34,9 +34,8 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       return {
         month,
         paid:
-          attendancesCount === 0
-            ? undefined
-            : member.payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth),
+          member.payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth) ||
+          (attendancesCount === 0 ? undefined : false),
         attendancesCount,
       };
     };
