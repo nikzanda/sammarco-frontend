@@ -21,3 +21,29 @@ export const dateToYearMonth = (date: Date | number) => {
   const result = format(date, 'yyyy-MM');
   return result;
 };
+
+export const getYears = (): [number, number] => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  if (today.getMonth() < 8) {
+    return [currentYear - 1, currentYear];
+  }
+  return [currentYear, currentYear + 1];
+};
+
+export const getMonths = (): [Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date] => {
+  const result = getYears().reduce((acc: Date[], year, index) => {
+    switch (index) {
+      case 0:
+        acc.push(...[8, 9, 10, 11].map((monthNumber) => new Date(year, monthNumber)));
+        break;
+
+      case 1:
+        acc.push(...[0, 1, 2, 3, 4, 5, 6, 7].map((monthNumber) => new Date(year, monthNumber)));
+        break;
+    }
+
+    return acc;
+  }, []);
+  return result as [Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date];
+};

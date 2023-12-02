@@ -1,7 +1,6 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
 import {
-  Badge,
   Button,
   Col,
   Flex,
@@ -13,13 +12,14 @@ import {
   TableProps,
   Tooltip,
   Typography,
+  theme,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaPlus } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { format, set } from 'date-fns';
+import { format, isSameMonth, isSameYear, set } from 'date-fns';
 import {
   MemberFilter,
   MemberListItemFragment,
@@ -32,6 +32,8 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
+import { getMonths, getYears } from '../../utils/utils';
+import { MemberExpandable } from './components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -39,6 +41,7 @@ const LOCAL_STORAGE_PATH = 'filter/member/';
 const MemberListPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { token } = theme.useToken();
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
@@ -100,6 +103,7 @@ const MemberListPage: React.FC = () => {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
       filter: queryFilter,
+      years: getYears(),
     },
   });
 
@@ -126,42 +130,47 @@ const MemberListPage: React.FC = () => {
         key: 'fullName',
         dataIndex: 'fullName',
         sorter: true,
-        render: (fullName, { currentMonthPayments, currentEnrollmentPayment, courses }) => {
-          const badge = <Badge dot color="red" />;
+        render: (fullName, { attendances, payments, courses }) => {
+          const currentYears = getYears();
+          let showAlert = false;
+          if (
+            attendances.length > 0 &&
+            !payments.some(({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1])
+          ) {
+            showAlert = true;
+          }
 
-          const courseMonthsNotPaid = courses.reduce((acc: typeof courses, course) => {
-            const payments = currentMonthPayments.filter(({ fee }) => fee.course.id === course.id);
-            if (payments.length === 0) {
-              acc.push(course);
-            } else {
-              const paidAmount = payments.reduce((acc, { amount }) => acc + amount, 0);
-              if (paidAmount < payments[0].fee.amount) {
-                acc.push(course);
-              }
-            }
+          const monthsPaid = getMonths()
+            .filter((month) => month.valueOf() < Date.now())
+            .some((month) => {
+              const result = courses.some(({ id: courseId }) => {
+                if (
+                  attendances.some(
+                    ({ from, course }) => isSameYear(from, month) && isSameMonth(from, month) && course.id === courseId
+                  )
+                ) {
+                  return !payments.some(
+                    ({ month: paymentMonth }) => paymentMonth && format(month, 'yyyy-MM') === paymentMonth
+                  );
+                }
+                return false;
+              });
+              return result;
+            });
 
-            return acc;
-          }, []);
+          if (monthsPaid) {
+            showAlert = true;
+          }
 
           return (
             <>
               {fullName}{' '}
-              <Space size="small">
-                {courseMonthsNotPaid.map((course) => (
-                  <Tooltip
-                    key={course.id}
-                    title={t('members.table.currentMonthNotPaid', {
-                      course: course.name,
-                      month: format(Date.now(), 'MMMM').toUpperCase(),
-                    })}
-                  >
-                    {badge}
-                  </Tooltip>
-                ))}
-                {!currentEnrollmentPayment && (
-                  <Tooltip title={t('members.table.currentEnrollmentNotPaid')}>{badge}</Tooltip>
-                )}
-              </Space>
+              {showAlert && (
+                <Tooltip title={t('members.alerts.warnings')}>
+                  {' '}
+                  <Icon component={FaExclamationTriangle} style={{ color: token.colorError }} />{' '}
+                </Tooltip>
+              )}
             </>
           );
         },
@@ -248,7 +257,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo, navigate, t]);
+  }, [filterInfo.courses, filterInfo.shifts, navigate, t, token.colorError]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
@@ -363,6 +372,10 @@ const MemberListPage: React.FC = () => {
           //   }
           // },
           onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys as string[]),
+        }}
+        expandable={{
+          // eslint-disable-next-line react/no-unstable-nested-components
+          expandedRowRender: (member) => <MemberExpandable member={member} />,
         }}
         scroll={{ x: 600 }}
       />

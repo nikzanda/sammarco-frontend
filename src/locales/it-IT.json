@@ -19,12 +19,18 @@
       "confirm": "Sei sicuro di voler eliminare l'iscritto?",
       "description": "Elimina {{fullName}}"
     },
+    "alerts": {
+      "warnings": "Attenzione, ci sono degli avvisi per questo iscritto",
+      "currentEnrollmentNotPaid": "Iscrizione non pagata."
+    },
     "table": {
       "fullName": "Nome",
       "courses": "Corsi",
-      "currentMonthNotPaid": "Mese di {{month}}, corso {{course}}, non pagato.",
-      "currentEnrollmentNotPaid": "Iscrizione non pagata.",
-      "shifts": "Turni"
+      "shifts": "Turni",
+      "expandable": {
+        "paid": "Pagamento",
+        "attendances": "Presenze"
+      }
     },
     "tab": {
       "details": "Dettagli",

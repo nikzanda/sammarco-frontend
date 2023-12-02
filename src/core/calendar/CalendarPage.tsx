@@ -122,7 +122,7 @@ const CalendarPage: React.FC = () => {
                           {format(from, 'dd/MM/yyyy')}, {courses[courseId].name}
                         </>
                       ),
-                      content: memberNames.join(', '),
+                      content: memberNames.sort().join(', '),
                     });
                   }}
                 />

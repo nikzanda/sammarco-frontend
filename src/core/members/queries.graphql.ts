@@ -4,21 +4,34 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
   fragment MemberListItem on Member {
     id
     fullName
-    currentMonthPayments {
+    payments(years: $years) {
       id
-      amount
-      fee {
+      month
+      years
+    }
+    attendances(years: $years) {
+      id
+      course {
         id
-        amount
-        course {
-          id
-          name
-        }
       }
+      from
+      to
     }
-    currentEnrollmentPayment {
-      id
-    }
+    # currentMonthPayments {
+    #   id
+    #   amount
+    #   fee {
+    #     id
+    #     amount
+    #     course {
+    #       id
+    #       name
+    #     }
+    #   }
+    # }
+    # currentEnrollmentPayment {
+    #   id
+    # }
     courses {
       id
       name
@@ -77,7 +90,7 @@ export const MEMBER_SEARCH_QUERY = gql`
 `;
 
 export const MEMBERS_QUERY = gql`
-  query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter) {
+  query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter, $years: [Int!]) {
     members(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
       data {
         ...MemberListItem
@@ -91,7 +104,7 @@ export const MEMBERS_QUERY = gql`
 `;
 
 export const MEMBER_QUERY = gql`
-  query Member($id: ID!) {
+  query Member($id: ID!, $years: [Int!]) {
     member(id: $id) {
       ...MemberDetail
     }
@@ -100,7 +113,7 @@ export const MEMBER_QUERY = gql`
 `;
 
 export const MEMBER_CREATE_MUTATION = gql`
-  mutation MemberCreate($input: MemberCreateInput!) {
+  mutation MemberCreate($input: MemberCreateInput!, $years: [Int!]) {
     memberCreate(input: $input) {
       member {
         ...MemberDetail
@@ -111,7 +124,7 @@ export const MEMBER_CREATE_MUTATION = gql`
 `;
 
 export const MEMBER_UPDATE_MUTATION = gql`
-  mutation MemberUpdate($input: MemberUpdateInput!) {
+  mutation MemberUpdate($input: MemberUpdateInput!, $years: [Int!]) {
     memberUpdate(input: $input) {
       member {
         ...MemberDetail
@@ -122,7 +135,7 @@ export const MEMBER_UPDATE_MUTATION = gql`
 `;
 
 export const MEMBER_DELETE_MUTATION = gql`
-  mutation MemberDelete($input: MemberDeleteInput!) {
+  mutation MemberDelete($input: MemberDeleteInput!, $years: [Int!]) {
     memberDelete(input: $input) {
       member {
         ...MemberDetail
