@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge, Button, CalendarProps, Col, Modal, Row, Space, Spin, theme } from 'antd';
-import { set, lastDayOfMonth, lastDayOfYear, isSameMonth, format, isSameDay } from 'date-fns';
+import { set, lastDayOfMonth, lastDayOfYear, isSameMonth, format, isSameDay, endOfDay } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { FaExpand } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -28,7 +28,8 @@ const CalendarPage: React.FC = () => {
       milliseconds: 0,
     }).getTime();
 
-    const to = calendarMode === 'month' ? lastDayOfMonth(date).getTime() : lastDayOfYear(date).getTime();
+    const to =
+      calendarMode === 'month' ? endOfDay(lastDayOfMonth(date)).getTime() : endOfDay(lastDayOfYear(date)).getTime();
 
     const result: AttendanceFilter = {
       courseIds,

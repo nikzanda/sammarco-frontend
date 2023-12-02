@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, isSameDay, isSameMonth, lastDayOfMonth, lastDayOfYear, set } from 'date-fns';
+import { endOfDay, format, isSameDay, isSameMonth, lastDayOfMonth, lastDayOfYear, set } from 'date-fns';
 import { App, Badge, Button, CalendarProps, Popconfirm, Space, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { FaTrash } from 'react-icons/fa';
@@ -36,7 +36,8 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
       milliseconds: 0,
     }).getTime();
 
-    const to = calendarMode === 'month' ? lastDayOfMonth(date).getTime() : lastDayOfYear(date).getTime();
+    const to =
+      calendarMode === 'month' ? endOfDay(lastDayOfMonth(date)).getTime() : endOfDay(lastDayOfYear(date)).getTime();
 
     const result: AttendanceFilter = {
       memberIds: [member.id],
