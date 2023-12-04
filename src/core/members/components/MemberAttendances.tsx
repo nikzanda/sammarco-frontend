@@ -119,7 +119,9 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
   };
 
   const dateCellRender = (current: Date) => {
-    const currentAttendances = attendances.filter((attendance) => isSameDay(current, attendance.from));
+    const currentAttendances = attendances
+      .filter((attendance) => isSameDay(current, attendance.from))
+      .sort((a, b) => a.from - b.from);
 
     return (
       <>

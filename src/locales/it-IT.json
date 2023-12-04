@@ -188,6 +188,7 @@
     "new": "Nuova presenza",
     "created": "Presenza registrata",
     "deleted": "Presenza eliminata",
+    "yearLessons": "{{lessons}} lezioni, {{members}} partecipanti",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare la presenza?",
       "description": "Elimina presenza"

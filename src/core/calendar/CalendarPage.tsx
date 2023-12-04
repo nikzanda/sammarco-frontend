@@ -72,14 +72,73 @@ const CalendarPage: React.FC = () => {
   }, [attendances]);
 
   const monthCellRender = (current: Date) => {
-    const lessonsNumber = attendances.filter((attendance) => isSameMonth(current, attendance.from)).length;
-    if (lessonsNumber === 0) {
+    const lessons = attendances.filter((attendance) => isSameMonth(current, attendance.from));
+    if (lessons.length === 0) {
       return undefined;
     }
 
-    return <Badge status="success" text={t('members.lessons', { number: lessonsNumber, count: lessonsNumber })} />;
+    const tmp = lessons
+      .reduce(
+        (acc: { course: (typeof lessons)[0]['course']; from: number; to: number; memberNumbers: number }[], lesson) => {
+          const a = acc.find(
+            ({ course, from, to }) => course.id === lesson.course.id && from === lesson.from && to === lesson.to
+          );
+          if (a) {
+            a.memberNumbers++;
+          } else {
+            acc.push({
+              course: lesson.course,
+              from: lesson.from,
+              to: lesson.to,
+              memberNumbers: 1,
+            });
+          }
+
+          return acc;
+        },
+        []
+      )
+      .reduce(
+        (
+          acc: {
+            [courseId: string]: { course: (typeof lessons)[0]['course']; lessons: number; memberNumbers: number };
+          },
+          lesson
+        ) => {
+          if (!acc[lesson.course.id]) {
+            acc[lesson.course.id] = {
+              course: lesson.course,
+              lessons: 0,
+              memberNumbers: 0,
+            };
+          }
+
+          acc[lesson.course.id].lessons++;
+          acc[lesson.course.id].memberNumbers += lesson.memberNumbers;
+
+          return acc;
+        },
+        {}
+      );
+
+    return (
+      <Space direction="vertical" size="small">
+        {Object.values(tmp).map(({ course, lessons, memberNumbers }) => {
+          const average = Math.floor(memberNumbers / lessons);
+
+          return (
+            <Badge
+              key={course.id}
+              color={course.color || token.colorSuccess}
+              text={t('attendances.yearLessons', { lessons, members: average })}
+            />
+          );
+        })}
+      </Space>
+    );
   };
 
+  // TODO: first day of month - 7
   const dateCellRender = (current: Date) => {
     const currentAttendances = attendances
       .filter((attendance) => isSameDay(current, attendance.from))
