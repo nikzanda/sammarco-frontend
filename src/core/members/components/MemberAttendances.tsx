@@ -1,5 +1,15 @@
 import React from 'react';
-import { endOfDay, format, isSameDay, isSameMonth, lastDayOfMonth, lastDayOfYear, set } from 'date-fns';
+import {
+  addDays,
+  endOfDay,
+  format,
+  isSameDay,
+  isSameMonth,
+  lastDayOfMonth,
+  lastDayOfYear,
+  set,
+  subDays,
+} from 'date-fns';
 import { App, Badge, Button, CalendarProps, Popconfirm, Space, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { FaTrash } from 'react-icons/fa';
@@ -27,17 +37,22 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
   const [calendarMode, setCalendarMode] = React.useState<CalendarProps<Date>['mode']>('month');
 
   const queryFilter = React.useMemo(() => {
-    const from = set(date, {
-      ...(calendarMode === 'year' && { month: 0 }),
-      date: 1,
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-      milliseconds: 0,
-    }).getTime();
+    const from = subDays(
+      set(date, {
+        ...(calendarMode === 'year' && { month: 0 }),
+        date: 1,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        milliseconds: 0,
+      }),
+      14
+    ).getTime();
 
-    const to =
-      calendarMode === 'month' ? endOfDay(lastDayOfMonth(date)).getTime() : endOfDay(lastDayOfYear(date)).getTime();
+    const to = addDays(
+      calendarMode === 'month' ? endOfDay(lastDayOfMonth(date)) : endOfDay(lastDayOfYear(date)),
+      14
+    ).getTime();
 
     const result: AttendanceFilter = {
       memberIds: [member.id],

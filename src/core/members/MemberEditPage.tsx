@@ -6,7 +6,7 @@ import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { MemberAttendances, MemberForm, MemberPayments } from './components';
+import { MemberAttendances, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { Updates } from '../../commons';
 
 const DEFAULT_TAB = 'details';
@@ -89,6 +89,8 @@ const MemberEditPage: React.FC = () => {
   };
 
   const handleFinish = (values: any) => {
+    // console.log('values:', values)
+
     updateMember({
       variables: {
         input: {
@@ -142,42 +144,47 @@ const MemberEditPage: React.FC = () => {
         />
       )}
       {member && (
-        <Tabs
-          activeKey={tab}
-          onChange={setTab}
-          items={[
-            {
-              label: t('members.tab.details'),
-              key: 'details',
-              children: (
-                <>
-                  <Form
-                    id="form"
-                    form={form}
-                    initialValues={initialValues}
-                    layout="vertical"
-                    autoComplete="off"
-                    onFinish={handleFinish}
-                  >
+        <Form
+          id="form"
+          form={form}
+          initialValues={initialValues}
+          layout="vertical"
+          autoComplete="off"
+          onFinish={handleFinish}
+        >
+          <Tabs
+            activeKey={tab}
+            onChange={setTab}
+            items={[
+              {
+                label: t('members.tab.details'),
+                key: 'details',
+                children: (
+                  <>
                     <MemberForm form={form} />
-                  </Form>
 
-                  <Updates updates={member} />
-                </>
-              ),
-            },
-            {
-              label: t('members.tab.payments'),
-              key: 'payments',
-              children: <MemberPayments member={member} />,
-            },
-            {
-              label: t('members.tab.calendar'),
-              key: 'attendances',
-              children: <MemberAttendances member={member} />,
-            },
-          ]}
-        />
+                    <Updates updates={member} />
+                  </>
+                ),
+              },
+              {
+                label: 'certificato medico...',
+                key: 'certificate',
+                children: <MemberMedicalCertificate member={member} form={form} />,
+              },
+              {
+                label: t('members.tab.payments'),
+                key: 'payments',
+                children: <MemberPayments member={member} />,
+              },
+              {
+                label: t('members.tab.calendar'),
+                key: 'attendances',
+                children: <MemberAttendances member={member} />,
+              },
+            ]}
+          />
+        </Form>
       )}
     </Space>
   );

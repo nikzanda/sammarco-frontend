@@ -17,21 +17,6 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
       from
       to
     }
-    # currentMonthPayments {
-    #   id
-    #   amount
-    #   fee {
-    #     id
-    #     amount
-    #     course {
-    #       id
-    #       name
-    #     }
-    #   }
-    # }
-    # currentEnrollmentPayment {
-    #   id
-    # }
     courses {
       id
       name
@@ -61,6 +46,10 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     address
     canDelete
     shiftIds
+    medicalCertificate {
+      attachment
+      expireAt
+    }
     createdAt
     updatedAt
   }

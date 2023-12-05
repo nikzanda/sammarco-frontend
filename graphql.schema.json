@@ -1058,7 +1058,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "YearMonth",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1689,6 +1689,18 @@
             "deprecationReason": null
           },
           {
+            "name": "medicalCertificate",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "MedicalCertificate",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "canDelete",
             "description": null,
             "args": [],
@@ -1722,6 +1734,45 @@
           },
           {
             "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MedicalCertificate",
+        "description": null,
+        "fields": [
+          {
+            "name": "attachment",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "expireAt",
             "description": null,
             "args": [],
             "type": {
@@ -2750,7 +2801,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "YearMonth",
               "ofType": null
             },
             "defaultValue": null,
@@ -3060,7 +3111,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "YearMonth",
               "ofType": null
             },
             "defaultValue": null,
@@ -3276,6 +3327,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "medicalCertificate",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MedicalCertificateInput",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -4591,7 +4654,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "YearMonth",
               "ofType": null
             },
             "defaultValue": null,
@@ -5231,6 +5294,45 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "MedicalCertificateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attachment",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "expireAt",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "EmailSettingsInput",
         "description": null,
         "fields": null,
@@ -5513,6 +5615,16 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "YearMonth",
+        "description": "String scalar representing year and month in format yyyy-MM",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
         "possibleTypes": null
       },
       {

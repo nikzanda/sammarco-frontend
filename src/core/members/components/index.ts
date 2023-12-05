@@ -1,4 +1,5 @@
 export { default as MemberForm } from './MemberForm';
+export { default as MemberMedicalCertificate } from './MemberMedicalCertificate';
 export { default as MemberPayments } from './MemberPayments';
 export { default as MemberAttendances } from './MemberAttendances';
 export { default as MemberSearcher } from './MemberSearcher';
