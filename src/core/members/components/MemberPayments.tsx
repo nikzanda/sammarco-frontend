@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Icon from '@ant-design/icons';
 import { TableColumnsType, Button, Result, Table, TableProps, Flex, Space } from 'antd';
 import { format, set } from 'date-fns';
-import { FaBan, FaPrint } from 'react-icons/fa';
+import { FaBan, FaMoneyBill, FaPrint } from 'react-icons/fa';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import {
@@ -18,6 +18,7 @@ import PDF from '../../payments/pdfs/receipt-pdf';
 import { toCurrency } from '../../../utils/utils';
 import { FeeTableFilter } from '../../fees/components';
 import { MonthFilter, NumberFilter } from '../../../commons';
+import { PaymentCreateModal } from '../../payments/components';
 
 const PAGE_SIZE = 10;
 
@@ -27,6 +28,8 @@ type Props = {
 
 const MemberPayments: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
+
+  const [newPayment, setNewPayment] = React.useState(false);
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -175,7 +178,10 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         />
       )}
 
-      <Flex justify="end">
+      <Flex justify="end" gap={12}>
+        <Button size="large" icon={<Icon component={FaMoneyBill} />} onClick={() => setNewPayment(true)}>
+          {t('payments.new')}
+        </Button>
         <Button
           danger
           size="large"
@@ -208,6 +214,16 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
           },
         }}
       />
+
+      {newPayment && (
+        <PaymentCreateModal
+          memberId={member.id}
+          courseIds={member.courses.map(({ id }) => id)}
+          onCancel={() => {
+            setNewPayment(false);
+          }}
+        />
+      )}
     </Space>
   );
 };

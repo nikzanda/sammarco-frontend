@@ -10,9 +10,9 @@ import {
   set,
   subDays,
 } from 'date-fns';
-import { App, Badge, Button, CalendarProps, Popconfirm, Spin, theme } from 'antd';
+import { App, Badge, Button, CalendarProps, Flex, Popconfirm, Space, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FaTrash } from 'react-icons/fa';
+import { FaCalendarCheck, FaTrash } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import {
   AttendanceFilter,
@@ -23,6 +23,7 @@ import {
 } from '../../../generated/graphql';
 import { Calendar } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
+import { AttendanceCreateModal } from '../../attendances/components';
 
 type Props = {
   member: MemberDetailFragment;
@@ -33,6 +34,7 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
   const { token } = theme.useToken();
   const { message } = App.useApp();
 
+  const [newAttendance, setNewAttendance] = React.useState(false);
   const [date, setDate] = React.useState(new Date());
   const [calendarMode, setCalendarMode] = React.useState<CalendarProps<Date>['mode']>('month');
 
@@ -195,15 +197,31 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
   };
 
   return (
-    <Spin spinning={queryLoading}>
-      <Calendar
-        cellRender={cellRender}
-        onPanelChange={(date, mode) => {
-          setDate(date);
-          setCalendarMode(mode);
-        }}
-      />
-    </Spin>
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Flex justify="end">
+        <Button size="large" icon={<Icon component={FaCalendarCheck} />} onClick={() => setNewAttendance(true)}>
+          {t('attendances.new')}
+        </Button>
+      </Flex>
+
+      <Spin spinning={queryLoading}>
+        <Calendar
+          cellRender={cellRender}
+          onPanelChange={(date, mode) => {
+            setDate(date);
+            setCalendarMode(mode);
+          }}
+        />
+      </Spin>
+
+      {newAttendance && (
+        <AttendanceCreateModal
+          memberIds={[member.id]}
+          courseIds={member.courses.map(({ id }) => id)}
+          onCancel={() => setNewAttendance(false)}
+        />
+      )}
+    </Space>
   );
 };
 

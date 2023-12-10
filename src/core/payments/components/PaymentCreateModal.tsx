@@ -166,13 +166,13 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
       open
       okButtonProps={{
         htmlType: 'submit',
-        form: 'form',
+        form: 'payment-create-form',
         loading: mutationLoading,
       }}
       onCancel={onCancel}
     >
       <Form
-        id="form"
+        id="payment-create-form"
         form={form}
         initialValues={initialValues}
         layout="vertical"

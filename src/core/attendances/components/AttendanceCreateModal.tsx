@@ -79,13 +79,13 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
       open
       okButtonProps={{
         htmlType: 'submit',
-        form: 'form',
+        form: 'attendance-create-form',
         loading: mutationLoading,
       }}
       onCancel={() => onCancel(false)}
     >
       <Form
-        id="form"
+        id="attendance-create-form"
         form={form}
         initialValues={initialValues}
         layout="vertical"
