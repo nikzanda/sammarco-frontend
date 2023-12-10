@@ -5,6 +5,8 @@ config:
   sort: false
   namingConvention:
     enumValues: upper-case#upperCase
+  scalars:
+    YearMonth: string
 generates:
   src/generated/graphql.ts:
     plugins:

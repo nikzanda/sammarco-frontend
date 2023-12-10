@@ -19,13 +19,12 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
       <Row gutter={24}>
         <Col xs={24} md={12}>
           <Form.Item name={['medicalCertificate', 'attachment']} label="certificate" valuePropName="file">
-            {/* TODO accept img & pdf */}
             <Upload.Dragger
               name="file"
               customRequest={({ onSuccess }) => {
                 onSuccess!('ok');
               }}
-              // beforeUpload={() => false}
+              accept="image/*, application/pdf"
               beforeUpload={(file) => {
                 const reader = new FileReader();
 
@@ -40,13 +39,11 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
               listType="picture"
               maxCount={1}
               onChange={(info) => {
-                if (info.file.status !== 'uploading') {
-                  // eslint-disable-next-line no-console
-                  console.log(info.file, info.fileList);
-                }
                 if (info.file.status === 'done') {
+                  // TODO: translate
                   message.success(`${info.file.name} file uploaded successfully`);
                 } else if (info.file.status === 'error') {
+                  // TODO: translate
                   message.error(`${info.file.name} file upload failed.`);
                 }
               }}
@@ -54,8 +51,10 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
+              {/* TODO: translate */}
               <p className="ant-upload-text">Click or drag file to this area to upload</p>
               <p className="ant-upload-hint">
+                {/* TODO: translate */}
                 Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
                 files.
               </p>
