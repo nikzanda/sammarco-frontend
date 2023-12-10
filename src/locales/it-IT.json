@@ -22,7 +22,13 @@
     },
     "alerts": {
       "warnings": "Attenzione, ci sono degli avvisi per questo iscritto",
-      "currentEnrollmentNotPaid": "Iscrizione non pagata."
+      "currentEnrollmentNotPaid": "Iscrizione non pagata.",
+      "medicalCertificate": {
+        "empty": "Data di scadenza del certificato medico non inserita.",
+        "expiring": "Il certificato medico scadrà tra {{days}} giorni.",
+        "expired": "Certificato medico scaduto.",
+        "expire": "Scadenza certificato medico"
+      }
     },
     "table": {
       "fullName": "Nome",
@@ -36,6 +42,7 @@
     "tab": {
       "details": "Dettagli",
       "payments": "Pagamenti",
+      "medicalCertificate": "Certificato medico",
       "calendar": "Calendario"
     },
     "form": {
@@ -51,7 +58,8 @@
       },
       "address": "Indirizzo",
       "courses": "Corsi",
-      "shifts": "Turni corsi"
+      "shifts": "Turni corsi",
+      "expireAt": "Data di scadenza del certificato medico"
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
@@ -201,7 +209,11 @@
     }
   },
   "calendar": {
-    "name": "Calendario"
+    "name": "Calendario",
+    "medicalCertificate": {
+      "title": "Certificati medici in scadenza",
+      "expiring": "{{count}} certificati medici in scadenza."
+    }
   },
   "settings": {
     "name": "Impostazioni",
@@ -278,6 +290,11 @@
         "description": "Sei sicuro di voler inviare la mail contenente la ricevuta?"
       }
     }
+  },
+  "upload": {
+    "clickOrDrag": "Clicca o trascina il file in questa area per caricarlo",
+    "hint": "Puoi caricare un solo file nel formato PDF o immagine.",
+    "success": "File caricato!"
   },
   "validations": {
     "required": "Campo obbligatorio",

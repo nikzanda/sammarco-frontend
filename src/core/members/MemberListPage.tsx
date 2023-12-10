@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { format, isSameMonth, isSameYear, set } from 'date-fns';
+import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
 import {
   MemberFilter,
   MemberListItemFragment,
@@ -132,14 +132,28 @@ const MemberListPage: React.FC = () => {
         key: 'fullName',
         dataIndex: 'fullName',
         sorter: true,
-        render: (fullName, { attendances, payments, courses }) => {
-          const currentYears = getYears();
+        render: (fullName, { attendances, payments, courses, medicalCertificate }) => {
           let showAlert = false;
+          let alertColor = token.colorError;
+
+          const differenceDays = medicalCertificate?.expireAt
+            ? differenceInDays(medicalCertificate.expireAt, Date.now())
+            : 0;
+          if (!medicalCertificate || differenceDays <= 30) {
+            showAlert = true;
+            if (differenceDays > 10) {
+              alertColor = token.colorWarning;
+            }
+          }
+
+          const currentYears = getYears();
+
           if (
             attendances.length > 0 &&
             !payments.some(({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1])
           ) {
             showAlert = true;
+            alertColor = token.colorError;
           }
 
           const monthsPaid = getMonths()
@@ -162,6 +176,7 @@ const MemberListPage: React.FC = () => {
 
           if (monthsPaid) {
             showAlert = true;
+            alertColor = token.colorError;
           }
 
           return (
@@ -169,7 +184,7 @@ const MemberListPage: React.FC = () => {
               {fullName}{' '}
               {showAlert && (
                 <Tooltip title={t('members.alerts.warnings')}>
-                  <Icon component={FaExclamationTriangle} style={{ color: token.colorError }} />
+                  <Icon component={FaExclamationTriangle} style={{ color: alertColor }} />
                 </Tooltip>
               )}
             </>
@@ -258,7 +273,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.courses, filterInfo.shifts, navigate, t, token.colorError]);
+  }, [filterInfo.courses, filterInfo.shifts, navigate, t, token.colorError, token.colorWarning]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
@@ -369,26 +384,6 @@ const MemberListPage: React.FC = () => {
           selections: [Table.SELECTION_NONE],
           preserveSelectedRowKeys: true,
           selectedRowKeys: selectedIds,
-          // getCheckboxProps: (record) => {
-          //   if (selectedIds.length === 0) {
-          //     return {
-          //       disabled: false
-          //     };
-          //   }
-
-          //   const member = members.find(({ id, courses }) => selectedIds.includes(id) && courses.length === 1)
-          //   if (!member) {
-          //     return {
-          //       disabled: false
-          //     };
-          //   }
-
-          //   const [course] = member.courses;
-          //   const disabled = !record.courses.map(({id}) => id).includes(course.id)
-          //   return {
-          //     disabled
-          //   }
-          // },
           onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys as string[]),
         }}
         expandable={{

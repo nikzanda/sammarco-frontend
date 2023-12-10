@@ -17,21 +17,6 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
       from
       to
     }
-    # currentMonthPayments {
-    #   id
-    #   amount
-    #   fee {
-    #     id
-    #     amount
-    #     course {
-    #       id
-    #       name
-    #     }
-    #   }
-    # }
-    # currentEnrollmentPayment {
-    #   id
-    # }
     courses {
       id
       name
@@ -40,6 +25,9 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
         from
         to
       }
+    }
+    medicalCertificate {
+      expireAt
     }
     shiftIds
   }
@@ -61,6 +49,10 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     address
     canDelete
     shiftIds
+    medicalCertificate {
+      attachment
+      expireAt
+    }
     createdAt
     updatedAt
   }
@@ -132,6 +124,14 @@ export const MEMBER_UPDATE_MUTATION = gql`
     }
   }
   ${MEMBER_DETAIL_FRAGMENT}
+`;
+
+export const MEMBER_UPLOAD_MUTATION = gql`
+  mutation MemberUpload($input: MemberUploadInput!) {
+    memberUpload(input: $input) {
+      success
+    }
+  }
 `;
 
 export const MEMBER_DELETE_MUTATION = gql`
