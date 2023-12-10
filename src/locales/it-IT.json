@@ -213,7 +213,13 @@
     "medicalCertificate": {
       "title": "Certificati medici in scadenza",
       "expiring": "{{count}} certificati medici in scadenza."
-    }
+    },
+    "deleteAll": {
+      "label": "Elimina tutto",
+      "confirm": "Sei sicuro di voler eliminare tutto?",
+      "description": "Elimina tutte le presenze"
+    },
+    "deleted": "Presenze eliminate"
   },
   "settings": {
     "name": "Impostazioni",
@@ -325,6 +331,7 @@
       "updatedAt": "Aggiornato il"
     },
     "save": "Salva",
-    "newRow": "Nuova riga"
+    "newRow": "Nuova riga",
+    "close": "Chiudi"
   }
 }

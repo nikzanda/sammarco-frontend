@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, CalendarProps, Col, Modal, Row, Space, Spin, theme } from 'antd';
+import { App, Badge, Button, CalendarProps, Col, Modal, Popconfirm, Row, Space, Spin, theme } from 'antd';
 import {
   set,
   lastDayOfMonth,
@@ -14,7 +14,12 @@ import {
 import { useTranslation } from 'react-i18next';
 import { FaExpand } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
-import { AttendanceFilter, AttendancesQuery, useAttendancesQuery } from '../../generated/graphql';
+import {
+  AttendanceFilter,
+  AttendancesQuery,
+  useAttendanceDeleteManyMutation,
+  useAttendancesQuery,
+} from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { Calendar } from '../../components';
 import { CoursePicker } from '../courses/components';
@@ -22,6 +27,7 @@ import { CoursePicker } from '../courses/components';
 const CalendarPage: React.FC = () => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
+  const { message } = App.useApp();
   const [modal, contextHolder] = Modal.useModal();
 
   const [courseIds, setCourseIds] = React.useState<string[]>();
@@ -64,7 +70,15 @@ const CalendarPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError);
+  const [deleteAttendances, { loading: mutationLoading, error: mutationError }] = useAttendanceDeleteManyMutation({
+    refetchQueries: ['Attendances'],
+    onCompleted: () => {
+      message.success(t('calendar.deleted'));
+      Modal.destroyAll();
+    },
+  });
+
+  useDisplayGraphQLErrors(queryError, mutationError);
 
   const attendances = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -195,24 +209,29 @@ const CalendarPage: React.FC = () => {
   const dateCellRender = (current: Date) => {
     const currentAttendances = attendances
       .filter((attendance) => isSameDay(current, attendance.from))
-      .reduce((acc: { courseId: string; from: number; to: number; memberNames: string[] }[], attendance) => {
-        const lesson = acc.find(
-          ({ courseId, from, to }) =>
-            courseId === attendance.course.id && from === attendance.from && to === attendance.to
-        );
-        if (lesson) {
-          lesson.memberNames.push(attendance.member.fullName);
-        } else {
-          acc.push({
-            courseId: attendance.course.id,
-            from: attendance.from,
-            to: attendance.to,
-            memberNames: [attendance.member.fullName],
-          });
-        }
+      .reduce(
+        (acc: { courseId: string; from: number; to: number; memberNames: string[]; ids: string[] }[], attendance) => {
+          const lesson = acc.find(
+            ({ courseId, from, to }) =>
+              courseId === attendance.course.id && from === attendance.from && to === attendance.to
+          );
+          if (lesson) {
+            lesson.memberNames.push(attendance.member.fullName);
+            lesson.ids.push(attendance.id);
+          } else {
+            acc.push({
+              courseId: attendance.course.id,
+              from: attendance.from,
+              to: attendance.to,
+              memberNames: [attendance.member.fullName],
+              ids: [attendance.id],
+            });
+          }
 
-        return acc;
-      }, [])
+          return acc;
+        },
+        []
+      )
       .sort(({ from: aFrom }, { from: bFrom }) => aFrom - bFrom);
 
     const expires = members
@@ -244,7 +263,7 @@ const CalendarPage: React.FC = () => {
             />
           </li>
         )}
-        {currentAttendances.map(({ courseId, from, to, memberNames }) => (
+        {currentAttendances.map(({ courseId, from, to, memberNames, ids }) => (
           <li key={from}>
             <Badge
               color={courses[courseId].color || token.colorSuccess}
@@ -259,10 +278,39 @@ const CalendarPage: React.FC = () => {
                       modal.info({
                         title: (
                           <>
-                            {format(from, 'dd/MM/yyyy')}, {courses[courseId].name}
+                            {format(from, 'dd/MM/yyyy')}, {format(from, 'HH:mm')} - {format(to, 'HH:mm')},{' '}
+                            {courses[courseId].name}
                           </>
                         ),
                         content: memberNames.sort().join(', '),
+                        width: 1000,
+                        okText: t('commons.close'),
+                        okButtonProps: {
+                          type: 'default',
+                        },
+                        // eslint-disable-next-line react/no-unstable-nested-components
+                        footer: (_, { OkBtn }) => (
+                          <>
+                            <Popconfirm
+                              title={t('calendar.deleteAll.confirm')}
+                              description={t('calendar.deleteAll.description')}
+                              onConfirm={() =>
+                                deleteAttendances({
+                                  variables: {
+                                    input: {
+                                      ids,
+                                    },
+                                  },
+                                })
+                              }
+                            >
+                              <Button type="primary" loading={mutationLoading} danger>
+                                {t('calendar.deleteAll.label')}
+                              </Button>
+                            </Popconfirm>
+                            <OkBtn />
+                          </>
+                        ),
                       });
                     }}
                   />
