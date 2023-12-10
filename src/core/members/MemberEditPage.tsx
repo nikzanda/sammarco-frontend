@@ -72,6 +72,7 @@ const MemberEditPage: React.FC = () => {
       const result = {
         ...member,
         courseIds: member.courses.map(({ id: courseId }) => courseId),
+        certificateExpiryDate: member.medicalCertificate?.expireAt,
       };
       return result;
     }
@@ -89,8 +90,6 @@ const MemberEditPage: React.FC = () => {
   };
 
   const handleFinish = (values: any) => {
-    // console.log('values:', values)
-
     updateMember({
       variables: {
         input: {
@@ -168,7 +167,7 @@ const MemberEditPage: React.FC = () => {
                 ),
               },
               {
-                label: 'certificato medico...',
+                label: t('members.tab.medicalCertificate'),
                 key: 'certificate',
                 children: <MemberMedicalCertificate member={member} form={form} />,
               },

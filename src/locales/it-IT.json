@@ -36,6 +36,7 @@
     "tab": {
       "details": "Dettagli",
       "payments": "Pagamenti",
+      "medicalCertificate": "Certificato medico",
       "calendar": "Calendario"
     },
     "form": {
@@ -51,7 +52,8 @@
       },
       "address": "Indirizzo",
       "courses": "Corsi",
-      "shifts": "Turni corsi"
+      "shifts": "Turni corsi",
+      "expireAt": "Data di scadenza del certificato medico"
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
@@ -278,6 +280,11 @@
         "description": "Sei sicuro di voler inviare la mail contenente la ricevuta?"
       }
     }
+  },
+  "upload": {
+    "clickOrDrag": "Clicca o trascina il file in questa area per caricarlo",
+    "hint": "Puoi caricare un solo file nel formato PDF o immagine.",
+    "success": "File caricato!"
   },
   "validations": {
     "required": "Campo obbligatorio",

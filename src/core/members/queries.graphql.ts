@@ -123,6 +123,14 @@ export const MEMBER_UPDATE_MUTATION = gql`
   ${MEMBER_DETAIL_FRAGMENT}
 `;
 
+export const MEMBER_UPLOAD_MUTATION = gql`
+  mutation MemberUpload($input: MemberUploadInput!) {
+    memberUpload(input: $input) {
+      success
+    }
+  }
+`;
+
 export const MEMBER_DELETE_MUTATION = gql`
   mutation MemberDelete($input: MemberDeleteInput!, $years: [Int!]) {
     memberDelete(input: $input) {
