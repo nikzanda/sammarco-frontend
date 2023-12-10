@@ -7,6 +7,7 @@ import { FaBan, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
+import Highlighter from 'react-highlight-words';
 import {
   PaymentFilter,
   PaymentListItemFragment,
@@ -197,6 +198,13 @@ const PaymentListPage: React.FC = () => {
         dataIndex: ['member', 'fullName'],
         filterDropdown: MemberTableFilter,
         filteredValue: filterInfo.member || null,
+        render: (fullName) => (
+          <Highlighter
+            searchWords={[searchText]}
+            textToHighlight={fullName}
+            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          />
+        ),
       },
       {
         title: t('payments.table.course'),
@@ -209,6 +217,13 @@ const PaymentListPage: React.FC = () => {
         dataIndex: ['fee', 'name'],
         filterDropdown: FeeTableFilter,
         filteredValue: filterInfo.fee || null,
+        render: (feeName) => (
+          <Highlighter
+            searchWords={[searchText]}
+            textToHighlight={feeName}
+            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          />
+        ),
       },
       {
         title: t('payments.table.amount'),
@@ -275,7 +290,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo, handlePrint, handleSend, navigate, sendingIds, t]);
+  }, [filterInfo, handlePrint, handleSend, navigate, searchText, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

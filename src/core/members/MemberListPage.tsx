@@ -20,6 +20,7 @@ import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaPlus } from 'react-ico
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
+import Highlighter from 'react-highlight-words';
 import {
   MemberFilter,
   MemberListItemFragment,
@@ -181,7 +182,11 @@ const MemberListPage: React.FC = () => {
 
           return (
             <>
-              {fullName}{' '}
+              <Highlighter
+                searchWords={[searchText]}
+                textToHighlight={fullName}
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+              />{' '}
               {showAlert && (
                 <Tooltip title={t('members.alerts.warnings')}>
                   <Icon component={FaExclamationTriangle} style={{ color: alertColor }} />
@@ -273,7 +278,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.courses, filterInfo.shifts, navigate, t, token.colorError, token.colorWarning]);
+  }, [filterInfo.courses, filterInfo.shifts, navigate, searchText, t, token.colorError, token.colorWarning]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

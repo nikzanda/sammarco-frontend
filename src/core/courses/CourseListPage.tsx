@@ -6,6 +6,7 @@ import useLocalStorageState from 'use-local-storage-state';
 import { Badge, Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaPlus, FaBan } from 'react-icons/fa';
+import Highlighter from 'react-highlight-words';
 import {
   CourseFilter,
   CourseListItemFragment,
@@ -104,7 +105,12 @@ const CourseListPage: React.FC = () => {
         sorter: true,
         render: (name, { color }) => (
           <>
-            {name} {color && <Badge color={color} />}
+            <Highlighter
+              searchWords={[searchText]}
+              textToHighlight={name}
+              highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+            />{' '}
+            {color && <Badge color={color} />}
           </>
         ),
       },
@@ -116,7 +122,7 @@ const CourseListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [navigate, t]);
+  }, [navigate, searchText, t]);
 
   const handleTableChange: TableProps<CourseListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

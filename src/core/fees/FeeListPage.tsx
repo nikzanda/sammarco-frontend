@@ -6,6 +6,7 @@ import useLocalStorageState from 'use-local-storage-state';
 import { Button, Col, Flex, Input, Row, Space, Table, TableProps, Typography, theme } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaPlus, FaBan, FaCheck, FaTimes } from 'react-icons/fa';
+import Highlighter from 'react-highlight-words';
 import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
@@ -99,6 +100,13 @@ const FeeListPage: React.FC = () => {
         key: 'name',
         dataIndex: 'name',
         sorter: true,
+        render: (name) => (
+          <Highlighter
+            searchWords={[searchText]}
+            textToHighlight={name}
+            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          />
+        ),
       },
       {
         title: t('fees.table.course'),
@@ -148,7 +156,7 @@ const FeeListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.course, navigate, t, token.colorError, token.colorSuccess]);
+  }, [filterInfo.course, navigate, searchText, t, token.colorError, token.colorSuccess]);
 
   const handleTableChange: TableProps<FeeListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
