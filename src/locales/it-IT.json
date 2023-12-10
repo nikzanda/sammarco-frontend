@@ -152,7 +152,11 @@
       "fee": "Quota",
       "amount": "Importo",
       "type": "Tipo pagamento",
-      "details": "Dettagli"
+      "details": "Dettagli",
+      "sent": {
+        "true": "Inviato",
+        "false": "Non inviato"
+      }
     },
     "tab": {
       "details": "Dettagli"

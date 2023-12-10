@@ -81,6 +81,7 @@ const PaymentListPage: React.FC = () => {
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
       type: filterInfo?.type?.length ? (filterInfo.type[0] as PaymentTypeEnum) : undefined,
       month: filterInfo?.details?.length ? (filterInfo.details[0] as string) : undefined,
+      sent: filterInfo?.actions?.length ? (filterInfo.actions[0] as boolean) : undefined,
       sortBy,
       sortDirection,
     };
@@ -275,6 +276,18 @@ const PaymentListPage: React.FC = () => {
         dataIndex: 'id',
         align: 'right',
         fixed: 'right',
+        filterMultiple: false,
+        filters: [
+          {
+            text: t('payments.table.sent.true'),
+            value: true,
+          },
+          {
+            text: t('payments.table.sent.false'),
+            value: false,
+          },
+        ],
+        filteredValue: filterInfo.actions || null,
         render: (id, { printed, sent }) => (
           <ActionButtons
             buttons={[
