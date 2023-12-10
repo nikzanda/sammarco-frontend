@@ -10,7 +10,7 @@ import {
   set,
   subDays,
 } from 'date-fns';
-import { App, Badge, Button, CalendarProps, Popconfirm, Space, Spin, theme } from 'antd';
+import { App, Badge, Button, CalendarProps, Popconfirm, Spin, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { FaTrash } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -28,7 +28,7 @@ type Props = {
   member: MemberDetailFragment;
 };
 
-const MemberAttendances: React.FC<Props> = ({ member }) => {
+const MemberCalendar: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
   const { message } = App.useApp();
@@ -121,15 +121,18 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
     );
 
     return (
-      <Space direction="vertical">
+      <ul className="events">
+        {member.medicalCertificate && isSameMonth(member.medicalCertificate.expireAt, current) && (
+          <li>
+            <Badge color="gold" text={t('members.alerts.medicalCertificate.expire')} />
+          </li>
+        )}
         {lessonsByCourse.map(({ course, count }) => (
-          <Badge
-            key={course.id}
-            color={course.color || token.colorSuccess}
-            text={t('members.lessons', { number: count, count })}
-          />
+          <li key={course.id}>
+            <Badge color={course.color || token.colorSuccess} text={t('members.lessons', { number: count, count })} />
+          </li>
         ))}
-      </Space>
+      </ul>
     );
   };
 
@@ -139,30 +142,42 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
       .sort((a, b) => a.from - b.from);
 
     return (
-      <>
+      <ul className="events">
+        {member.medicalCertificate && isSameDay(member.medicalCertificate.expireAt, current) && (
+          <li>
+            <Badge color="gold" text={t('members.alerts.medicalCertificate.expire')} />
+          </li>
+        )}
         {currentAttendances.map(({ id, course, from, to }) => {
           const text = [format(from, 'HH:mm'), format(to, 'HH:mm')].join(' - ');
 
           return (
-            <React.Fragment key={from}>
-              <Badge color={course.color || token.colorSuccess} text={text} />{' '}
-              <Popconfirm
-                title={t('attendances.delete.confirm')}
-                description={t('attendances.delete.description')}
-                onConfirm={() => handleDelete(id)}
-              >
-                <Button
-                  size="small"
-                  shape="circle"
-                  danger
-                  icon={<Icon component={FaTrash} />}
-                  loading={mutationLoading}
-                />
-              </Popconfirm>
-            </React.Fragment>
+            <li key={from} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+              <Badge
+                color={course.color || token.colorSuccess}
+                text={
+                  <>
+                    {text}{' '}
+                    <Popconfirm
+                      title={t('attendances.delete.confirm')}
+                      description={t('attendances.delete.description')}
+                      onConfirm={() => handleDelete(id)}
+                    >
+                      <Button
+                        size="small"
+                        shape="circle"
+                        danger
+                        icon={<Icon component={FaTrash} />}
+                        loading={mutationLoading}
+                      />
+                    </Popconfirm>
+                  </>
+                }
+              />
+            </li>
           );
         })}
-      </>
+      </ul>
     );
   };
 
@@ -192,4 +207,4 @@ const MemberAttendances: React.FC<Props> = ({ member }) => {
   );
 };
 
-export default MemberAttendances;
+export default MemberCalendar;

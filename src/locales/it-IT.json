@@ -22,7 +22,13 @@
     },
     "alerts": {
       "warnings": "Attenzione, ci sono degli avvisi per questo iscritto",
-      "currentEnrollmentNotPaid": "Iscrizione non pagata."
+      "currentEnrollmentNotPaid": "Iscrizione non pagata.",
+      "medicalCertificate": {
+        "empty": "Data di scadenza del certificato medico non inserita.",
+        "expiring": "Il certificato medico scadrà tra {{days}} giorni.",
+        "expired": "Certificato medico scaduto.",
+        "expire": "Scadenza certificato medico"
+      }
     },
     "table": {
       "fullName": "Nome",
@@ -203,7 +209,11 @@
     }
   },
   "calendar": {
-    "name": "Calendario"
+    "name": "Calendario",
+    "medicalCertificate": {
+      "title": "Certificati medici in scadenza",
+      "expiring": "{{count}} certificati medici in scadenza."
+    }
   },
   "settings": {
     "name": "Impostazioni",

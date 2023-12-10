@@ -1,7 +1,7 @@
 import React from 'react';
-import { Alert, Descriptions, DescriptionsProps, Space, Typography, theme } from 'antd';
+import { Alert, AlertProps, Descriptions, DescriptionsProps, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { format, isSameMonth, isSameYear } from 'date-fns';
+import { differenceInDays, format, isSameMonth, isSameYear } from 'date-fns';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { MemberListItemFragment } from '../../../generated/graphql';
@@ -22,6 +22,40 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
     );
     return result;
   }, [member.payments]);
+
+  const isMedicalCertificateExpiring = React.useMemo((): AlertProps | undefined => {
+    const { medicalCertificate } = member;
+    if (!medicalCertificate) {
+      return {
+        message: t('members.alerts.medicalCertificate.empty'),
+        type: 'error',
+      };
+    }
+
+    const differenceDays = differenceInDays(medicalCertificate.expireAt, Date.now());
+    if (differenceDays <= 0) {
+      return {
+        message: t('members.alerts.medicalCertificate.expired'),
+        type: 'error',
+      };
+    }
+
+    if (differenceDays <= 10) {
+      return {
+        message: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
+        type: 'error',
+      };
+    }
+
+    if (differenceDays <= 30) {
+      return {
+        message: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
+        type: 'warning',
+      };
+    }
+
+    return undefined;
+  }, [member, t]);
 
   // TODO: se l'iscritto appartiene a più corsi
   const descriptionItems = React.useMemo(() => {
@@ -99,7 +133,9 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       {member.attendances.length > 0 && !isCurrentEnrollemtPaid && (
         <Alert message={t('members.alerts.currentEnrollmentNotPaid')} type="error" showIcon />
       )}
-      {/* TODO: alert / warning certificato medico */}
+      {isMedicalCertificateExpiring && (
+        <Alert message={isMedicalCertificateExpiring.message} type={isMedicalCertificateExpiring.type} showIcon />
+      )}
       <Descriptions items={descriptionItems} bordered />
     </Space>
   );

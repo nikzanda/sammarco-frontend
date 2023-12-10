@@ -6,7 +6,7 @@ import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { MemberAttendances, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
+import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { Updates } from '../../commons';
 
 const DEFAULT_TAB = 'details';
@@ -178,8 +178,8 @@ const MemberEditPage: React.FC = () => {
               },
               {
                 label: t('members.tab.calendar'),
-                key: 'attendances',
-                children: <MemberAttendances member={member} />,
+                key: 'calendar',
+                children: <MemberCalendar member={member} />,
               },
             ]}
           />

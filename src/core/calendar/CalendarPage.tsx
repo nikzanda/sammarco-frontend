@@ -86,20 +86,31 @@ const CalendarPage: React.FC = () => {
     return result;
   }, [attendances]);
 
+  const members = React.useMemo(() => {
+    const result = attendances.reduce(
+      (acc: AttendancesQuery['attendances']['data'][number]['member'][], { member }) => {
+        if (!acc.some(({ id }) => id === member.id)) {
+          acc.push(member);
+        }
+
+        return acc;
+      },
+      []
+    );
+    return result;
+  }, [attendances]);
+
   const monthCellRender = (current: Date) => {
     const lessons = attendances.filter((attendance) => isSameMonth(current, attendance.from));
-    if (lessons.length === 0) {
-      return undefined;
-    }
 
-    const tmp = lessons
+    const coursesData = lessons
       .reduce(
         (acc: { course: (typeof lessons)[0]['course']; from: number; to: number; memberNumbers: number }[], lesson) => {
-          const a = acc.find(
+          const accRow = acc.find(
             ({ course, from, to }) => course.id === lesson.course.id && from === lesson.from && to === lesson.to
           );
-          if (a) {
-            a.memberNumbers++;
+          if (accRow) {
+            accRow.memberNumbers++;
           } else {
             acc.push({
               course: lesson.course,
@@ -136,20 +147,48 @@ const CalendarPage: React.FC = () => {
         {}
       );
 
+    const expires = members
+      .filter(({ medicalCertificate }) => medicalCertificate && isSameMonth(medicalCertificate.expireAt, current))
+      .map(({ fullName }) => fullName);
+
     return (
-      <Space direction="vertical" size="small">
-        {Object.values(tmp).map(({ course, lessons, memberNumbers }) => {
+      <ul className="events">
+        {expires.length > 0 && (
+          <li>
+            <Badge
+              color="gold"
+              text={
+                <>
+                  {t('calendar.medicalCertificate.expiring', { count: expires.length })}{' '}
+                  <Button
+                    size="small"
+                    shape="circle"
+                    icon={<Icon component={FaExpand} />}
+                    onClick={() => {
+                      modal.info({
+                        title: t('calendar.medicalCertificate.title'),
+                        content: expires.sort().join(', '),
+                      });
+                    }}
+                  />
+                </>
+              }
+            />
+          </li>
+        )}
+        {Object.values(coursesData).map(({ course, lessons, memberNumbers }) => {
           const average = Math.floor(memberNumbers / lessons);
 
           return (
-            <Badge
-              key={course.id}
-              color={course.color || token.colorSuccess}
-              text={t('attendances.yearLessons', { lessons, members: average })}
-            />
+            <li key={course.id}>
+              <Badge
+                color={course.color || token.colorSuccess}
+                text={t('attendances.yearLessons', { lessons, members: average })}
+              />
+            </li>
           );
         })}
-      </Space>
+      </ul>
     );
   };
 
@@ -176,35 +215,63 @@ const CalendarPage: React.FC = () => {
       }, [])
       .sort(({ from: aFrom }, { from: bFrom }) => aFrom - bFrom);
 
+    const expires = members
+      .filter(({ medicalCertificate }) => medicalCertificate && isSameDay(medicalCertificate.expireAt, current))
+      .map(({ fullName }) => fullName);
+
     return (
-      <>
+      <ul className="events">
+        {expires.length > 0 && (
+          <li>
+            <Badge
+              color="gold"
+              text={
+                <>
+                  {t('calendar.medicalCertificate.expiring', { count: expires.length })}{' '}
+                  <Button
+                    size="small"
+                    shape="circle"
+                    icon={<Icon component={FaExpand} />}
+                    onClick={() => {
+                      modal.info({
+                        title: t('calendar.medicalCertificate.title'),
+                        content: expires.sort().join(', '),
+                      });
+                    }}
+                  />
+                </>
+              }
+            />
+          </li>
+        )}
         {currentAttendances.map(({ courseId, from, to, memberNames }) => (
-          <Badge
-            key={from}
-            color={courses[courseId].color || token.colorSuccess}
-            text={
-              <>
-                {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {memberNames.length}{' '}
-                <Button
-                  size="small"
-                  shape="circle"
-                  icon={<Icon component={FaExpand} />}
-                  onClick={() => {
-                    modal.info({
-                      title: (
-                        <>
-                          {format(from, 'dd/MM/yyyy')}, {courses[courseId].name}
-                        </>
-                      ),
-                      content: memberNames.sort().join(', '),
-                    });
-                  }}
-                />
-              </>
-            }
-          />
+          <li key={from}>
+            <Badge
+              color={courses[courseId].color || token.colorSuccess}
+              text={
+                <>
+                  {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {memberNames.length}{' '}
+                  <Button
+                    size="small"
+                    shape="circle"
+                    icon={<Icon component={FaExpand} />}
+                    onClick={() => {
+                      modal.info({
+                        title: (
+                          <>
+                            {format(from, 'dd/MM/yyyy')}, {courses[courseId].name}
+                          </>
+                        ),
+                        content: memberNames.sort().join(', '),
+                      });
+                    }}
+                  />
+                </>
+              }
+            />
+          </li>
         ))}
-      </>
+      </ul>
     );
   };
 

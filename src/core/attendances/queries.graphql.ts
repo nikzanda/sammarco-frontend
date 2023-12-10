@@ -6,6 +6,9 @@ export const ATTENDANCE_LIST_ITEM_FRAGMENT = gql`
     member {
       id
       fullName
+      medicalCertificate {
+        expireAt
+      }
     }
     course {
       id

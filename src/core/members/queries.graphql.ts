@@ -26,6 +26,9 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
         to
       }
     }
+    medicalCertificate {
+      expireAt
+    }
     shiftIds
   }
 `;
