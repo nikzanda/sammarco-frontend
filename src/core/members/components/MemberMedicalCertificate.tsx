@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { App, Col, Empty, Form, FormInstance, Row, Upload, UploadProps, Image } from 'antd';
+import { App, Col, Empty, Form, FormInstance, Row, Upload, UploadProps, Image, Skeleton } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { MemberDetailFragment, useMemberUploadMutation } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
@@ -15,14 +15,14 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  const [uploadAttachment, { error }] = useMemberUploadMutation({
+  const [uploadAttachment, { loading: mutationLoading, error: mutationError }] = useMemberUploadMutation({
     refetchQueries: ['Member'],
     onCompleted: () => {
       message.success(t('upload.success'));
     },
   });
 
-  useDisplayGraphQLErrors(error);
+  useDisplayGraphQLErrors(mutationError);
 
   const handleBeforeUpload: UploadProps['beforeUpload'] = async (file) => {
     const base64 = await new Promise<string>((resolve, reject) => {
@@ -48,6 +48,10 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
   };
 
   const attachmentPreview = React.useMemo(() => {
+    if (mutationLoading) {
+      return <Skeleton.Image active />;
+    }
+
     if (!member.medicalCertificate?.attachment) {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
     }
@@ -60,7 +64,7 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
     }
 
     return <Image src={attachment} />;
-  }, [member.medicalCertificate]);
+  }, [member.medicalCertificate, mutationLoading]);
 
   return (
     <>
