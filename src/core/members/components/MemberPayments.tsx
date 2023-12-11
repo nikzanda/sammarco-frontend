@@ -1,23 +1,27 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Icon from '@ant-design/icons';
-import { TableColumnsType, Button, Result, Table, TableProps, Flex, Space } from 'antd';
+import { TableColumnsType, Button, Result, Table, TableProps, Flex, Space, App } from 'antd';
 import { format, set } from 'date-fns';
-import { FaBan, FaMoneyBill, FaPrint } from 'react-icons/fa';
+import { FaBan, FaMoneyBill } from 'react-icons/fa';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import { useNavigate } from 'react-router-dom';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import {
   MemberDetailFragment,
   PaymentFilter,
   PaymentListItemFragment,
   PaymentSortEnum,
+  PaymentTypeEnum,
   SortDirectionEnum,
+  usePaymentSendMutation,
+  usePaymentUpdateMutation,
   usePaymentsQuery,
 } from '../../../generated/graphql';
 import PDF from '../../payments/pdfs/receipt-pdf';
 import { toCurrency } from '../../../utils/utils';
 import { FeeTableFilter } from '../../fees/components';
-import { MonthFilter, NumberFilter } from '../../../commons';
+import { ActionButtons, MonthFilter, NumberFilter } from '../../../commons';
 import { PaymentCreateModal } from '../../payments/components';
 
 const PAGE_SIZE = 10;
@@ -28,8 +32,11 @@ type Props = {
 
 const MemberPayments: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { message } = App.useApp();
 
   const [newPayment, setNewPayment] = React.useState(false);
+  const [sendingIds, setSendingIds] = React.useState<string[]>([]);
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -61,11 +68,13 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       memberIds: [member.id],
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
       months: filterInfo?.details?.length ? (filterInfo.details as string[]) : undefined,
+      type: filterInfo?.type?.length ? (filterInfo.type[0] as PaymentTypeEnum) : undefined,
+      sent: filterInfo?.actions?.length ? (filterInfo.actions[0] as boolean) : undefined,
       sortBy,
       sortDirection,
     };
     return result;
-  }, [filterInfo.counter, filterInfo.details, filterInfo.fee, member.id, sortInfo.columnKey, sortInfo.order]);
+  }, [filterInfo, member.id, sortInfo]);
 
   const {
     data: queryData,
@@ -79,7 +88,18 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError);
+  const [updatePayment, { error: updatePaymentError }] = usePaymentUpdateMutation({
+    refetchQueries: ['Payments'],
+  });
+
+  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
+    refetchQueries: ['Payments'],
+    onCompleted: () => {
+      message.success(t('payments.sent'));
+    },
+  });
+
+  useDisplayGraphQLErrors(queryError, updatePaymentError, sendError);
 
   const payments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -95,9 +115,46 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     return 0;
   }, [queryData, queryError, queryLoading]);
 
-  const handlePrint = (paymentId: string) => {
-    PDF.print(paymentId);
-  };
+  const handlePrint = React.useCallback(
+    (paymentId: string) => {
+      if (payments.some(({ id, printed }) => id === paymentId && !printed)) {
+        updatePayment({
+          variables: {
+            input: {
+              id: paymentId,
+              printed: true,
+            },
+          },
+        });
+      }
+      PDF.print(paymentId);
+    },
+    [payments, updatePayment]
+  );
+
+  const handleSend = React.useCallback(
+    async (paymentId: string) => {
+      const attachmentUri = await PDF.print(paymentId, 'data-url');
+      if (!attachmentUri) {
+        message.error(t('payments.printError'));
+        return;
+      }
+
+      setSendingIds([...sendingIds, paymentId]);
+
+      sendEmail({
+        variables: {
+          input: {
+            id: paymentId,
+            attachmentUri,
+          },
+        },
+      }).finally(() => {
+        setSendingIds([...sendingIds]);
+      });
+    },
+    [message, sendEmail, sendingIds, t]
+  );
 
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
@@ -128,6 +185,24 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         render: (amount) => toCurrency(amount),
       },
       {
+        title: t('payments.table.type'),
+        key: 'type',
+        dataIndex: 'type',
+        filterMultiple: false,
+        filters: [
+          {
+            text: t(`payments.type.${PaymentTypeEnum.CASH}`),
+            value: PaymentTypeEnum.CASH,
+          },
+          {
+            text: t(`payments.type.${PaymentTypeEnum.BANK_TRANSFER}`),
+            value: PaymentTypeEnum.BANK_TRANSFER,
+          },
+        ],
+        filteredValue: filterInfo.type || null,
+        render: (type: PaymentListItemFragment['type']) => t(`payments.type.${type}`),
+      },
+      {
         title: t('payments.table.details'),
         key: 'details',
         filterDropdown: MonthFilter,
@@ -151,11 +226,35 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
-        render: (id) => <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={() => handlePrint(id)} />,
+        fixed: 'right',
+        filterMultiple: false,
+        filters: [
+          {
+            text: t('payments.table.sent.true'),
+            value: true,
+          },
+          {
+            text: t('payments.table.sent.false'),
+            value: false,
+          },
+        ],
+        filteredValue: filterInfo.actions || null,
+        render: (id, { printed, sent }) => (
+          <ActionButtons
+            buttons={[
+              'edit',
+              { button: 'print', printed },
+              { button: 'send', sent, disabled: sendingIds.includes(id) },
+            ]}
+            onEdit={() => navigate(`/payments/${id}`)}
+            onPrint={() => handlePrint(id)}
+            onSend={() => handleSend(id)}
+          />
+        ),
       },
     ];
     return result;
-  }, [filterInfo.counter, filterInfo.details, filterInfo.fee, t]);
+  }, [filterInfo, handleSend, handlePrint, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
@@ -213,6 +312,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
             return t('commons.table.pagination', { start, end, total });
           },
         }}
+        scroll={{ x: 1100 }}
       />
 
       {newPayment && (
