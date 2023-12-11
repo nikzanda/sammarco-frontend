@@ -60,7 +60,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: [member.id],
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
-      month: filterInfo?.details?.length ? (filterInfo.details[0] as string) : undefined,
+      months: filterInfo?.details?.length ? (filterInfo.details as string[]) : undefined,
       sortBy,
       sortDirection,
     };

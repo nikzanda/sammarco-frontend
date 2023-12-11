@@ -47,3 +47,5 @@ export const getMonths = (): [Date, Date, Date, Date, Date, Date, Date, Date, Da
   }, []);
   return result as [Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date];
 };
+
+export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);

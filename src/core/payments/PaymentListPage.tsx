@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
 import { App, Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
 import { format, set } from 'date-fns';
-import { FaBan, FaPrint } from 'react-icons/fa';
+import { FaBan, FaFileCsv, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
@@ -20,10 +20,11 @@ import {
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
-import { toCurrency } from '../../utils/utils';
+import { capitalize, toCurrency } from '../../utils/utils';
 import { ActionButtons, MonthFilter, NumberFilter } from '../../commons';
 import { MemberTableFilter } from '../members/components';
 import { FeeTableFilter } from '../fees/components';
+import { ExportPaymentsModal } from './components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/payment/';
@@ -35,6 +36,7 @@ const PaymentListPage: React.FC = () => {
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [sendingIds, setSendingIds] = React.useState<string[]>([]);
+  const [exportCsv, setExportCsv] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -80,7 +82,7 @@ const PaymentListPage: React.FC = () => {
       memberIds: filterInfo?.member?.length ? (filterInfo.member as string[]) : undefined,
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
       type: filterInfo?.type?.length ? (filterInfo.type[0] as PaymentTypeEnum) : undefined,
-      month: filterInfo?.details?.length ? (filterInfo.details[0] as string) : undefined,
+      months: filterInfo?.details?.length ? (filterInfo.details as string[]) : undefined,
       sent: filterInfo?.actions?.length ? (filterInfo.actions[0] as boolean) : undefined,
       sortBy,
       sortDirection,
@@ -260,8 +262,7 @@ const PaymentListPage: React.FC = () => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value: string) => parseInt(value, 10));
 
-            const str = format(set(Date.now(), { year, month: month - 1 }), 'MMMM yyyy');
-            return str.charAt(0).toUpperCase() + str.slice(1);
+            return capitalize(format(set(Date.now(), { year, month: month - 1 }), 'MMMM yyyy'));
           }
 
           if (years) {
@@ -325,6 +326,9 @@ const PaymentListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <Flex justify="space-between" align="center">
         <Typography.Title level={2}>{t('payments.name')}</Typography.Title>
+        <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
+          {t('payments.export.button')}
+        </Button>
       </Flex>
 
       <Row gutter={[12, 12]}>
@@ -396,6 +400,8 @@ const PaymentListPage: React.FC = () => {
         }}
         scroll={{ x: 1100 }}
       />
+
+      {exportCsv && <ExportPaymentsModal onCancel={() => setExportCsv(false)} />}
     </Space>
   );
 };

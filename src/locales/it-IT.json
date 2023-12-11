@@ -145,6 +145,10 @@
       "CASH": "Contanti",
       "BANK_TRANSFER": "Bonifico bancario"
     },
+    "export": {
+      "button": "Esporta",
+      "title": "Esporta CSV"
+    },
     "table": {
       "counter": "N.",
       "member": "Iscritto",
@@ -194,6 +198,16 @@
       "for": "Per",
       "signature": "Firma",
       "inLetters": "IN LETTERE"
+    },
+    "csv": {
+      "counter": "Nr.",
+      "member": "Socio",
+      "fee": "Quota",
+      "course": "Corso",
+      "amount": "Importo",
+      "date": "Pagato il",
+      "details": "Dettagli",
+      "type": "Tipologia pagamento"
     }
   },
   "attendances": {
@@ -299,6 +313,9 @@
         "title": "Attenzione",
         "description": "Sei sicuro di voler inviare la mail contenente la ricevuta?"
       }
+    },
+    "export": {
+      "label": "Esporta"
     }
   },
   "upload": {

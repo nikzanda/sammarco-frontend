@@ -110,6 +110,30 @@ export const PAYMENT_PDF_QUERY = gql`
   ${PAYMENT_PDF_FRAGMENT}
 `;
 
+export const PAYMENTS_CSV_QUERY = gql`
+  query PaymentsCsv($filter: PaymentFilter!) {
+    payments(pageIndex: 0, pageSize: 0, filter: $filter) {
+      data {
+        counter
+        member {
+          fullName
+        }
+        fee {
+          name
+          course {
+            name
+          }
+        }
+        amount
+        date
+        month
+        years
+        type
+      }
+    }
+  }
+`;
+
 export const PAYMENT_CREATE_MUTATION = gql`
   mutation PaymentCreate($input: PaymentCreateInput!) {
     paymentCreate(input: $input) {
