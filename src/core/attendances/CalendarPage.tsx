@@ -15,10 +15,10 @@ import { useTranslation } from 'react-i18next';
 import { FaExpand } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import {
-  AttendanceFilter,
-  AttendancesQuery,
+  DayAttendancesFilter,
+  DayAttendancesQuery,
   useAttendanceDeleteManyMutation,
-  useAttendancesQuery,
+  useDayAttendancesQuery,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { Calendar } from '../../components';
@@ -35,7 +35,7 @@ const CalendarPage: React.FC = () => {
   const [calendarMode, setCalendarMode] = React.useState<CalendarProps<Date>['mode']>('month');
 
   const queryFilter = React.useMemo(() => {
-    const from = subDays(
+    const startFrom = subDays(
       set(date, {
         ...(calendarMode === 'year' && { month: 0 }),
         date: 1,
@@ -44,18 +44,18 @@ const CalendarPage: React.FC = () => {
         seconds: 0,
         milliseconds: 0,
       }),
-      14
+      6
     ).getTime();
 
-    const to = addDays(
+    const endFrom = addDays(
       calendarMode === 'month' ? endOfDay(lastDayOfMonth(date)) : endOfDay(lastDayOfYear(date)),
-      14
+      13
     ).getTime();
 
-    const result: AttendanceFilter = {
+    const result: DayAttendancesFilter = {
       courseIds,
-      from,
-      to,
+      startFrom,
+      endFrom,
     };
     return result;
   }, [calendarMode, courseIds, date]);
@@ -64,7 +64,7 @@ const CalendarPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useAttendancesQuery({
+  } = useDayAttendancesQuery({
     variables: {
       filter: queryFilter,
     },
@@ -82,84 +82,55 @@ const CalendarPage: React.FC = () => {
 
   const attendances = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
-      return queryData.attendances.data;
+      return queryData.dayAttendances;
     }
     return [];
   }, [queryData, queryError, queryLoading]);
 
-  const courses = React.useMemo(() => {
-    const result = attendances.reduce(
-      (acc: { [courseId: string]: AttendancesQuery['attendances']['data'][number]['course'] }, { course }) => {
-        if (!acc[course.id]) {
-          acc[course.id] = course;
-        }
-        return acc;
-      },
-      {}
-    );
-    return result;
-  }, [attendances]);
-
   const members = React.useMemo(() => {
-    const result = attendances.reduce(
-      (acc: AttendancesQuery['attendances']['data'][number]['member'][], { member }) => {
+    const result = attendances.reduce((acc: DayAttendancesQuery['dayAttendances'][number]['members'], { members }) => {
+      members.forEach((member) => {
         if (!acc.some(({ id }) => id === member.id)) {
           acc.push(member);
         }
+      });
 
-        return acc;
-      },
-      []
-    );
+      return acc;
+    }, []);
     return result;
   }, [attendances]);
 
   const monthCellRender = (current: Date) => {
-    const lessons = attendances.filter((attendance) => isSameMonth(current, attendance.from));
-
-    const coursesData = lessons
-      .reduce(
-        (acc: { course: (typeof lessons)[0]['course']; from: number; to: number; memberNumbers: number }[], lesson) => {
-          const accRow = acc.find(
-            ({ course, from, to }) => course.id === lesson.course.id && from === lesson.from && to === lesson.to
-          );
-          if (accRow) {
-            accRow.memberNumbers++;
-          } else {
-            acc.push({
-              course: lesson.course,
-              from: lesson.from,
-              to: lesson.to,
-              memberNumbers: 1,
-            });
-          }
-
-          return acc;
+    const coursesData = attendances.reduce(
+      (
+        acc: {
+          [courseId: string]: {
+            course: DayAttendancesQuery['dayAttendances'][number]['course'];
+            lessons: number;
+            memberNumbers: number;
+          };
         },
-        []
-      )
-      .reduce(
-        (
-          acc: {
-            [courseId: string]: { course: (typeof lessons)[0]['course']; lessons: number; memberNumbers: number };
-          },
-          lesson
-        ) => {
-          if (!acc[lesson.course.id]) {
-            acc[lesson.course.id] = {
-              course: lesson.course,
-              lessons: 0,
-              memberNumbers: 0,
-            };
-          }
-
-          acc[lesson.course.id].lessons++;
-          acc[lesson.course.id].memberNumbers += lesson.memberNumbers;
-
+        attendance
+      ) => {
+        if (!isSameMonth(current, attendance.from)) {
           return acc;
-        },
-        {}
-      );
+        }
+
+        if (!acc[attendance.course.id]) {
+          acc[attendance.course.id] = {
+            course: attendance.course,
+            lessons: 0,
+            memberNumbers: 0,
+          };
+        }
+
+        acc[attendance.course.id].lessons++;
+        acc[attendance.course.id].memberNumbers += attendance.members.length;
+
+        return acc;
+      },
+      {}
+    );
 
     const expires = members
       .filter(({ medicalCertificate }) => medicalCertificate && isSameMonth(medicalCertificate.expireAt, current))
@@ -209,29 +180,6 @@ const CalendarPage: React.FC = () => {
   const dateCellRender = (current: Date) => {
     const currentAttendances = attendances
       .filter((attendance) => isSameDay(current, attendance.from))
-      .reduce(
-        (acc: { courseId: string; from: number; to: number; memberNames: string[]; ids: string[] }[], attendance) => {
-          const lesson = acc.find(
-            ({ courseId, from, to }) =>
-              courseId === attendance.course.id && from === attendance.from && to === attendance.to
-          );
-          if (lesson) {
-            lesson.memberNames.push(attendance.member.fullName);
-            lesson.ids.push(attendance.id);
-          } else {
-            acc.push({
-              courseId: attendance.course.id,
-              from: attendance.from,
-              to: attendance.to,
-              memberNames: [attendance.member.fullName],
-              ids: [attendance.id],
-            });
-          }
-
-          return acc;
-        },
-        []
-      )
       .sort(({ from: aFrom }, { from: bFrom }) => aFrom - bFrom);
 
     const expires = members
@@ -263,13 +211,13 @@ const CalendarPage: React.FC = () => {
             />
           </li>
         )}
-        {currentAttendances.map(({ courseId, from, to, memberNames, ids }) => (
+        {currentAttendances.map(({ ids, from, to, course, members }) => (
           <li key={from}>
             <Badge
-              color={courses[courseId].color || token.colorSuccess}
+              color={course.color || token.colorSuccess}
               text={
                 <>
-                  {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {memberNames.length}{' '}
+                  {format(from, 'HH:mm')} - {format(to, 'HH:mm')}: {members.length}{' '}
                   <Button
                     size="small"
                     shape="circle"
@@ -278,11 +226,10 @@ const CalendarPage: React.FC = () => {
                       modal.info({
                         title: (
                           <>
-                            {format(from, 'dd/MM/yyyy')}, {format(from, 'HH:mm')} - {format(to, 'HH:mm')},{' '}
-                            {courses[courseId].name}
+                            {format(from, 'dd/MM/yyyy')}, {format(from, 'HH:mm')} - {format(to, 'HH:mm')}, {course.name}
                           </>
                         ),
-                        content: memberNames.sort().join(', '),
+                        content: members.map(({ fullName }) => fullName).join(', '),
                         width: 1000,
                         okText: t('commons.close'),
                         okButtonProps: {

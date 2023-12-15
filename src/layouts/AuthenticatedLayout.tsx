@@ -11,7 +11,7 @@ import { FeeListPage, FeeCreatePage, FeeEditPage } from '../core/fees';
 import { PaymentEditPage, PaymentListPage } from '../core/payments';
 import { AuthenticationContext } from '../contexts';
 import { SettingsPage } from '../settings';
-import { CalendarPage } from '../core/calendar';
+import { CalendarPage } from '../core/attendances';
 
 const AuthenticatedLayout: React.FC = () => {
   const { logout } = React.useContext(AuthenticationContext);
