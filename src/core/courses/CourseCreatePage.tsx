@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaAngleLeft } from 'react-icons/fa';
-import { useCourseCreateMutation } from '../../generated/graphql';
+import { ShiftInput, useCourseCreateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
 
@@ -24,13 +24,30 @@ const CourseCreatePage: React.FC = () => {
   useDisplayGraphQLErrors(error);
 
   const handleFinish = (values: any) => {
-    const { color, ...input } = values;
+    const { color, shifts, ...input } = values;
+
+    const timestampToHourMinutes = (timestamp: number) => {
+      const date = new Date(timestamp);
+      return [date.getHours(), date.getMinutes()];
+    };
 
     createCourse({
       variables: {
         input: {
           ...input,
           ...(color && { color: typeof color === 'string' ? color : color.toHexString() }),
+          shifts: shifts.map((dayShifts: [{ id?: string; range: [number, number] }]) => {
+            if (!dayShifts) {
+              return [];
+            }
+
+            const result: ShiftInput[] = dayShifts.map((shift) => ({
+              id: shift.id,
+              from: timestampToHourMinutes(shift.range[0]),
+              to: timestampToHourMinutes(shift.range[1]),
+            }));
+            return result;
+          }),
         },
       },
     });
