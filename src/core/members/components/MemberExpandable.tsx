@@ -57,76 +57,79 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
     return undefined;
   }, [member, t]);
 
-  // TODO: se l'iscritto appartiene a più corsi
-  const descriptionItems = React.useMemo(() => {
-    const mapFn = (monthNumber: number, year: number): { month: Date; paid?: boolean; attendancesCount: number } => {
-      const month = new Date(year, monthNumber, 1);
-      const attendancesCount = member.attendances.filter(
-        ({ from }) => isSameYear(from, month) && isSameMonth(from, month)
-      ).length;
+  const getDescriptionItems = React.useCallback(
+    (courseId: string) => {
+      const mapFn = (monthNumber: number, year: number): { month: Date; paid?: boolean; attendancesCount: number } => {
+        const month = new Date(year, monthNumber, 1);
+        const attendancesCount = member.attendances.filter(
+          ({ from, course }) => isSameYear(from, month) && isSameMonth(from, month) && course.id === courseId
+        ).length;
 
-      return {
-        month,
-        paid:
-          member.payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth) ||
-          (attendancesCount === 0 ? undefined : false),
-        attendancesCount,
+        return {
+          month,
+          paid:
+            member.payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth) ||
+            (attendancesCount === 0 ? undefined : false),
+          attendancesCount,
+        };
       };
-    };
 
-    const months = getYears().reduce(
-      (acc: { month: Date; paid?: boolean; attendancesCount: number }[], year, index) => {
-        switch (index) {
-          case 0:
-            acc.push(...[8, 9, 10, 11].map((monthNumber) => mapFn(monthNumber, year)));
-            break;
+      const months = getYears().reduce(
+        (acc: { month: Date; paid?: boolean; attendancesCount: number }[], year, index) => {
+          switch (index) {
+            case 0:
+              acc.push(...[8, 9, 10, 11].map((monthNumber) => mapFn(monthNumber, year)));
+              break;
 
-          case 1:
-            acc.push(...[0, 1, 2, 3, 4, 5, 6, 7].map((monthNumber) => mapFn(monthNumber, year)));
-            break;
+            case 1:
+              acc.push(...[0, 1, 2, 3, 4, 5, 6, 7].map((monthNumber) => mapFn(monthNumber, year)));
+              break;
+          }
+
+          return acc;
+        },
+        []
+      );
+
+      const result: DescriptionsProps['items'] = months.map(({ month, paid, attendancesCount }) => {
+        let icon: React.ReactNode = '-';
+        if (typeof paid === 'boolean') {
+          icon = (
+            <Icon
+              component={paid ? FaCheckCircle : FaTimesCircle}
+              style={{ color: paid ? token.colorSuccess : token.colorError }}
+            />
+          );
         }
 
-        return acc;
-      },
-      []
-    );
+        const isCurrentMonth = isSameMonth(Date.now(), month);
 
-    const result: DescriptionsProps['items'] = months.map(({ month, paid, attendancesCount }) => {
-      let icon: React.ReactNode = '-';
-      if (typeof paid === 'boolean') {
-        icon = (
-          <Icon
-            component={paid ? FaCheckCircle : FaTimesCircle}
-            style={{ color: paid ? token.colorSuccess : token.colorError }}
-          />
-        );
-      }
-
-      const isCurrentMonth = isSameMonth(Date.now(), month);
-
-      return {
-        key: month.valueOf(),
-        label: format(month, 'MMMM yyyy'),
-        labelStyle: {
-          textTransform: 'capitalize',
-          fontWeight: isCurrentMonth ? 'bold' : 'initial',
-          ...(isCurrentMonth && { border: `1px solid ${token.colorPrimary}` }),
-          ...(typeof paid === 'boolean' && !paid && { border: `1px solid ${token.colorError}` }),
-        },
-        children: (
-          <Space direction="vertical">
-            <span>
-              {t('members.table.expandable.paid')}: {icon}
-            </span>
-            <span>
-              {t('members.table.expandable.attendances')}: <Typography.Text strong>{attendancesCount}</Typography.Text>
-            </span>
-          </Space>
-        ),
-      };
-    });
-    return result;
-  }, [member.attendances, member.payments, t, token.colorError, token.colorPrimary, token.colorSuccess]);
+        return {
+          key: month.valueOf(),
+          label: format(month, 'MMMM yyyy'),
+          labelStyle: {
+            textTransform: 'capitalize',
+            fontWeight: isCurrentMonth ? 'bold' : 'initial',
+            ...(isCurrentMonth && { border: `1px solid ${token.colorPrimary}` }),
+            ...(typeof paid === 'boolean' && !paid && { border: `1px solid ${token.colorError}` }),
+          },
+          children: (
+            <Space direction="vertical">
+              <span>
+                {t('members.table.expandable.paid')}: {icon}
+              </span>
+              <span>
+                {t('members.table.expandable.attendances')}:{' '}
+                <Typography.Text strong>{attendancesCount}</Typography.Text>
+              </span>
+            </Space>
+          ),
+        };
+      });
+      return result;
+    },
+    [member.attendances, member.payments, t, token.colorError, token.colorPrimary, token.colorSuccess]
+  );
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -136,7 +139,12 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       {isMedicalCertificateExpiring && (
         <Alert message={isMedicalCertificateExpiring.message} type={isMedicalCertificateExpiring.type} showIcon />
       )}
-      <Descriptions items={descriptionItems} bordered />
+      {member.courses.map(({ id: courseId, name }) => (
+        <React.Fragment key={courseId}>
+          {member.courses.length > 1 && name}
+          <Descriptions items={getDescriptionItems(courseId)} bordered />
+        </React.Fragment>
+      ))}
     </Space>
   );
 };
