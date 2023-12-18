@@ -1,11 +1,13 @@
 import React from 'react';
-import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Select, Spin, Typography } from 'antd';
+import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Spin } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
+  FeeSearcherQuery,
+  FeeSortEnum,
   PaymentTypeEnum,
   RecurrenceEnum,
-  useFeesSearcherQuery,
+  SortDirectionEnum,
   useMemberSearcherLazyQuery,
   usePaymentCreateMutation,
   usePaymentSendMutation,
@@ -15,6 +17,7 @@ import { useDisplayGraphQLErrors } from '../../../hooks';
 import { dateToYearMonth } from '../../../utils/utils';
 import PDF from '../pdfs/receipt-pdf';
 import { AuthenticationContext } from '../../../contexts';
+import { FeeSearcher } from '../../fees/components';
 
 type Props = {
   memberId: string;
@@ -37,20 +40,9 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   const { message } = App.useApp();
 
   const paymentReason = React.useRef<string>();
+  const [selectedFee, setSelectedFee] = React.useState<FeeSearcherQuery['fee']>();
 
   const [getMember, { data: memberData, loading: memberLoading, error: memberError }] = useMemberSearcherLazyQuery();
-
-  const {
-    data: feesData,
-    loading: feesLoading,
-    error: feesError,
-  } = useFeesSearcherQuery({
-    variables: {
-      filter: {
-        courseIds,
-      },
-    },
-  });
 
   React.useEffect(() => {
     if (memberId) {
@@ -62,29 +54,12 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     }
   }, [getMember, memberId]);
 
-  const fees = React.useMemo(() => {
-    if (!feesLoading && !feesError && feesData) {
-      return feesData.fees.data;
-    }
-    return [];
-  }, [feesData, feesError, feesLoading]);
-
   const member = React.useMemo(() => {
     if (!memberLoading && !memberError && memberData) {
       return memberData.member;
     }
     return undefined;
   }, [memberData, memberError, memberLoading]);
-
-  const showCourse = React.useMemo(() => {
-    const courses = [
-      ...fees.reduce((acc: Set<string>, { course }) => {
-        acc.add(course.name);
-        return acc;
-      }, new Set<string>()),
-    ];
-    return courses.length > 1;
-  }, [fees]);
 
   const paymentTypeOptions = React.useMemo(() => {
     const result = Object.keys(PaymentTypeEnum).map((paymentType) => ({
@@ -125,7 +100,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
-  useDisplayGraphQLErrors(mutationError, feesError, memberError, sendError);
+  useDisplayGraphQLErrors(mutationError, memberError, sendError);
 
   const handleSubmit = (values: any) => {
     const { sendEmail: sendEmailFlag, ...input } = values;
@@ -184,21 +159,13 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
           name="feeId"
           rules={[{ required: true, message: t('validations.required') }]}
         >
-          {/* TODO: fee searcher */}
-          <Select
-            options={fees.map((fee) => ({
-              label: (
-                <>
-                  {fee.name} {showCourse && <Typography.Text type="secondary">({fee.course.name})</Typography.Text>}
-                </>
-              ),
-              value: fee.id,
-            }))}
-            loading={feesLoading}
+          <FeeSearcher
+            queryFilters={{ courseIds, sortBy: FeeSortEnum.NAME, sortDirection: SortDirectionEnum.ASC }}
+            showCourse={courseIds.length > 1}
             allowClear={false}
-            onChange={(value) => {
-              const fee = fees.find(({ id }) => id === value);
+            onChange={(_value, fee) => {
               if (fee) {
+                setSelectedFee(fee);
                 form.setFieldValue('amount', fee.amount);
 
                 const today = new Date();
@@ -220,16 +187,11 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
-            if (!feeId) {
+            if (!feeId || !selectedFee) {
               return undefined;
             }
 
-            const fee = fees.find(({ id }) => id === feeId);
-            if (!fee) {
-              return undefined;
-            }
-
-            if (fee.recurrence && [RecurrenceEnum.MONTHLY].includes(fee.recurrence)) {
+            if (selectedFee.recurrence && [RecurrenceEnum.MONTHLY].includes(selectedFee.recurrence)) {
               return (
                 <Form.Item
                   label={t('payments.form.month')}
@@ -271,7 +233,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
               );
             }
 
-            if (fee.recurrence && [RecurrenceEnum.ANNUAL].includes(fee.recurrence)) {
+            if (selectedFee.recurrence && [RecurrenceEnum.ANNUAL].includes(selectedFee.recurrence)) {
               return (
                 <Form.Item
                   label={t('payments.form.years')}

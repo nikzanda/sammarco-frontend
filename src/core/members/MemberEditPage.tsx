@@ -135,13 +135,7 @@ const MemberEditPage: React.FC = () => {
       </Row>
 
       {queryLoading && <Skeleton active />}
-      {queryError && (
-        <Result
-          status="500"
-          title="500"
-          subTitle={t('errors.something-went-wrong')} // TODO: refetch
-        />
-      )}
+      {queryError && <Result status="500" title="500" subTitle={t('errors.something-went-wrong')} />}
       {member && (
         <Form
           id="form"

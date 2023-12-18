@@ -269,13 +269,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      {queryError && (
-        <Result
-          status="500"
-          title="500"
-          subTitle="Sorry, something went wrong." // TODO: refetch
-        />
-      )}
+      {queryError && <Result status="500" title="500" subTitle="Sorry, something went wrong." />}
 
       <Flex justify="end" gap={12}>
         <Button size="large" icon={<Icon component={FaMoneyBill} />} onClick={() => setNewPayment(true)}>

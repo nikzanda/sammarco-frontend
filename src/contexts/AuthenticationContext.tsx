@@ -45,7 +45,7 @@ export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
     refetch: meRefetch,
   } = useMeQuery({
     skip: !isAuthenticated(),
-  }); // TODO: use lazy query
+  });
 
   const login = React.useCallback(
     async (username: string, password: string) => {
