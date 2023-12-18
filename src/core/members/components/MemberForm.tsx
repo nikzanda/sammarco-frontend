@@ -64,12 +64,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
       </Col>
 
       <Col xs={24} md={12}>
-        <Form.Item
-          label={t('members.form.email')}
-          name="email"
-          // TODO: validazione email
-          // rules={[{ required: true, message: t('validations.required')! }]}
-        >
+        <Form.Item label={t('members.form.email')} name="email" rules={[{ type: 'email' }]}>
           <Input />
         </Form.Item>
       </Col>

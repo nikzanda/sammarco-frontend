@@ -89,7 +89,7 @@ const EmailSettingsForm: React.FC = () => {
           <Form.Item
             label={t('settings.form.emailSettings.email')}
             name={['emailSettings', 'email']}
-            // TODO: validazione email
+            rules={[{ type: 'email' }]}
           >
             <Input />
           </Form.Item>
