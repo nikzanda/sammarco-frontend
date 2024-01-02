@@ -17,8 +17,10 @@ import Icon from '@ant-design/icons';
 import {
   DayAttendancesFilter,
   DayAttendancesQuery,
+  DayExpireMedicalCertificatesFilter,
   useAttendanceDeleteManyMutation,
   useDayAttendancesQuery,
+  useDayExpireMedicalCertificatesQuery,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { Calendar } from '../../components';
@@ -52,7 +54,7 @@ const CalendarPage: React.FC = () => {
       13
     ).getTime();
 
-    const result: DayAttendancesFilter = {
+    const result: DayAttendancesFilter | DayExpireMedicalCertificatesFilter = {
       courseIds,
       startFrom,
       endFrom,
@@ -61,10 +63,20 @@ const CalendarPage: React.FC = () => {
   }, [calendarMode, courseIds, date]);
 
   const {
-    data: queryData,
-    loading: queryLoading,
-    error: queryError,
+    data: dayAttendancesQueryData,
+    loading: dayAttendancesQueryLoading,
+    error: dayAttendancesQueryError,
   } = useDayAttendancesQuery({
+    variables: {
+      filter: queryFilter,
+    },
+  });
+
+  const {
+    data: dayExpireMedicalCertificatesQueryData,
+    loading: dayExpireMedicalCertificatesQueryLoading,
+    error: dayExpireMedicalCertificatesQueryError,
+  } = useDayExpireMedicalCertificatesQuery({
     variables: {
       filter: queryFilter,
     },
@@ -78,27 +90,29 @@ const CalendarPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError, mutationError);
+  useDisplayGraphQLErrors(dayAttendancesQueryError, dayExpireMedicalCertificatesQueryError, mutationError);
 
   const attendances = React.useMemo(() => {
-    if (!queryLoading && !queryError && queryData) {
-      return queryData.dayAttendances;
+    if (!dayAttendancesQueryLoading && !dayAttendancesQueryError && dayAttendancesQueryData) {
+      return dayAttendancesQueryData.dayAttendances;
     }
     return [];
-  }, [queryData, queryError, queryLoading]);
+  }, [dayAttendancesQueryData, dayAttendancesQueryError, dayAttendancesQueryLoading]);
 
-  const members = React.useMemo(() => {
-    const result = attendances.reduce((acc: DayAttendancesQuery['dayAttendances'][number]['members'], { members }) => {
-      members.forEach((member) => {
-        if (!acc.some(({ id }) => id === member.id)) {
-          acc.push(member);
-        }
-      });
-
-      return acc;
-    }, []);
-    return result;
-  }, [attendances]);
+  const expireMedicalCertificates = React.useMemo(() => {
+    if (
+      !dayExpireMedicalCertificatesQueryLoading &&
+      !dayExpireMedicalCertificatesQueryError &&
+      dayExpireMedicalCertificatesQueryData
+    ) {
+      return dayExpireMedicalCertificatesQueryData.dayExpireMedicalCertificates;
+    }
+    return [];
+  }, [
+    dayExpireMedicalCertificatesQueryData,
+    dayExpireMedicalCertificatesQueryError,
+    dayExpireMedicalCertificatesQueryLoading,
+  ]);
 
   const monthCellRender = (current: Date) => {
     const coursesData = attendances.reduce(
@@ -132,9 +146,9 @@ const CalendarPage: React.FC = () => {
       {}
     );
 
-    const expires = members
-      .filter(({ medicalCertificate }) => medicalCertificate && isSameMonth(medicalCertificate.expireAt, current))
-      .map(({ fullName }) => fullName);
+    const expires = expireMedicalCertificates
+      .filter(({ expireAt }) => isSameMonth(expireAt, current))
+      .flatMap(({ members }) => members.map(({ fullName }) => fullName));
 
     return (
       <ul className="events">
@@ -182,9 +196,9 @@ const CalendarPage: React.FC = () => {
       .filter((attendance) => isSameDay(current, attendance.from))
       .sort(({ from: aFrom }, { from: bFrom }) => aFrom - bFrom);
 
-    const expires = members
-      .filter(({ medicalCertificate }) => medicalCertificate && isSameDay(medicalCertificate.expireAt, current))
-      .map(({ fullName }) => fullName);
+    const expires = expireMedicalCertificates
+      .filter(({ expireAt }) => isSameDay(expireAt, current))
+      .flatMap(({ members }) => members.map(({ fullName }) => fullName));
 
     return (
       <ul className="events">
@@ -295,7 +309,7 @@ const CalendarPage: React.FC = () => {
         </Col>
       </Row>
 
-      <Spin spinning={queryLoading}>
+      <Spin spinning={dayAttendancesQueryLoading || dayExpireMedicalCertificatesQueryLoading}>
         <Calendar
           cellRender={cellRender}
           onPanelChange={(date, mode) => {

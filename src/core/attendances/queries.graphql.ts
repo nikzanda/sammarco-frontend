@@ -4,11 +4,7 @@ export const ATTENDANCE_LIST_ITEM_FRAGMENT = gql`
   fragment AttendanceListItem on Attendance {
     id
     member {
-      id
       fullName
-      medicalCertificate {
-        expireAt
-      }
     }
     course {
       id
@@ -39,11 +35,7 @@ export const DAY_ATTENDANCES_QUERY = gql`
     dayAttendances(pageIndex: 0, pageSize: 0, filter: $filter) {
       ids
       members {
-        id
         fullName
-        medicalCertificate {
-          expireAt
-        }
       }
       course {
         id
@@ -52,6 +44,17 @@ export const DAY_ATTENDANCES_QUERY = gql`
       }
       from
       to
+    }
+  }
+`;
+
+export const DAY_EXPIRE_MEDICAL_CERTIFICATES_QUERY = gql`
+  query DayExpireMedicalCertificates($filter: DayExpireMedicalCertificatesFilter!) {
+    dayExpireMedicalCertificates(pageIndex: 0, pageSize: 0, filter: $filter) {
+      expireAt
+      members {
+        fullName
+      }
     }
   }
 `;

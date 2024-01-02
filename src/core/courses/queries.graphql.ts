@@ -58,21 +58,6 @@ export const SHIFTS_QUERY = gql`
   }
 `;
 
-export const SHIFT_QUERY = gql`
-  query Shift($id: ID!) {
-    shift(id: $id) {
-      id
-      course {
-        id
-        name
-      }
-      weekDay
-      from
-      to
-    }
-  }
-`;
-
 export const COURSES_QUERY = gql`
   query Courses($pageIndex: Int!, $pageSize: Int!, $filter: CourseFilter) {
     courses(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
