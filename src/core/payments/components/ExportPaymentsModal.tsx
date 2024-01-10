@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { addMonths, differenceInCalendarMonths, format } from 'date-fns';
+import { endOfDay, format, lastDayOfMonth, set, startOfDay } from 'date-fns';
 import { CSVDownload } from 'react-csv';
 import { PaymentSortEnum, SortDirectionEnum, usePaymentsCsvLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
@@ -55,18 +55,13 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
       return;
     }
 
-    const months: string[] = [];
     const [dateFrom, dateTo] = monthRange;
-
-    for (let i = 0; i < Math.abs(differenceInCalendarMonths(dateFrom, dateTo)) + 1; i++) {
-      const current = addMonths(dateFrom, i);
-      months.push(format(current, 'yyyy-MM'));
-    }
 
     getPayments({
       variables: {
         filter: {
-          period: months,
+          dateFrom: startOfDay(set(dateFrom, { date: 1 })).getTime(),
+          dateTo: endOfDay(lastDayOfMonth(dateTo)).getTime(),
           sortBy: PaymentSortEnum.COUNTER,
           sortDirection: SortDirectionEnum.ASC,
         },
