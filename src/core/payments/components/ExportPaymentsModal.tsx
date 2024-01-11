@@ -35,16 +35,27 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
   const csvData = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
       return queryData.payments.data.map(
-        ({ counter, member, fee, fee: { course }, amount, date, month, years, type }) => ({
-          counter,
-          member: member.fullName,
-          fee: fee.name,
-          course: course.name,
-          amount: toCurrency(amount),
-          date: format(date, 'dd/MM/yyyy'),
-          details: month ? capitalize(format(new Date(month), 'MMMM yyyy')) : years!.join(' - '),
-          type: t(`payments.type.${type}`),
-        })
+        ({ counter, member, fee, fee: { course }, amount, date, month, years, type }) => {
+          let details = '';
+          if (month) {
+            details = capitalize(format(new Date(month), 'MMMM yyyy'));
+          }
+
+          if (years) {
+            details = years.join(' - ');
+          }
+
+          return {
+            counter,
+            member: member.fullName,
+            fee: fee.name,
+            course: course.name,
+            amount: toCurrency(amount),
+            date: format(date, 'dd/MM/yyyy'),
+            details,
+            type: t(`payments.type.${type}`),
+          };
+        }
       );
     }
     return undefined;
@@ -86,6 +97,7 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
         picker="month"
         style={{ width: '100%' }}
         onChange={(values) => setMonthRange(values as any)}
+        inputReadOnly
       />
 
       {csvData && <CSVDownload data={csvData} headers={headers} filename={format(Date.now(), 'yyyy-MM-dd_HH:mm:ss')} />}
