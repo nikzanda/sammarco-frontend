@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
       justify="center"
       align="middle"
     >
-      <Col span={6}>
+      <Col xs={18} sm={14} lg={8}>
         <Card title="Sammarco" headStyle={{ textAlign: 'center' }}>
           <Form onFinish={onFinish} autoComplete="off">
             <Form.Item name="username" rules={[{ required: true, message: t('validations.required')! }]}>
