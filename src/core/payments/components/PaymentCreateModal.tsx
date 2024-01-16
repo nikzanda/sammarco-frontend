@@ -14,7 +14,7 @@ import {
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-import { dateToYearMonth } from '../../../utils/utils';
+import { dateToYearMonth, getYears } from '../../../utils/utils';
 import PDF from '../pdfs/receipt-pdf';
 import { AuthenticationContext } from '../../../contexts';
 import { FeeSearcher } from '../../fees/components';
@@ -28,7 +28,7 @@ type Props = {
 const initialValues = {
   date: Date.now(),
   month: [new Date().getFullYear(), (new Date().getMonth() + 1).toString().padStart(2, '0')].join('-'),
-  years: [new Date().getFullYear(), new Date().getFullYear() + 1],
+  years: getYears(),
   type: PaymentTypeEnum.CASH,
   sendEmail: true,
 };
@@ -168,11 +168,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                 setSelectedFee(fee);
                 form.setFieldValue('amount', fee.amount);
 
-                const today = new Date();
-                const years = [
-                  today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear(),
-                  today.getMonth() < 8 ? today.getFullYear() : today.getFullYear() + 1,
-                ];
+                const years = getYears();
 
                 let { reason } = fee;
                 paymentReason.current = reason;
