@@ -59,22 +59,20 @@ const PaymentListPage: React.FC = () => {
   );
 
   const queryFilter = React.useMemo(() => {
-    let sortBy;
-    let sortDirection;
+    let sortBy: PaymentSortEnum;
 
     switch (sortInfo.columnKey) {
-      case 'counter':
-        sortBy = PaymentSortEnum.COUNTER;
+      case 'createdAt':
+        sortBy = PaymentSortEnum.CREATED_AT;
         break;
       case 'month':
         sortBy = PaymentSortEnum.MONTH;
         break;
       default:
-        sortBy = PaymentSortEnum.CREATED_AT;
+        sortBy = PaymentSortEnum.COUNTER;
     }
-    if (sortBy) {
-      sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
-    }
+
+    const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: PaymentFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,

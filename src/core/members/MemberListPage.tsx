@@ -72,8 +72,7 @@ const MemberListPage: React.FC = () => {
   );
 
   const queryFilter = React.useMemo(() => {
-    let sortBy;
-    let sortDirection;
+    let sortBy: MemberSortEnum;
 
     switch (sortInfo.columnKey) {
       case 'fullName':
@@ -82,9 +81,8 @@ const MemberListPage: React.FC = () => {
       default:
         sortBy = MemberSortEnum.CREATED_AT;
     }
-    if (sortBy) {
-      sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
-    }
+
+    const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: MemberFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,

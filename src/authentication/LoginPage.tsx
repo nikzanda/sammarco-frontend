@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Col, Form, Input, Row } from 'antd';
+import { Alert, Button, Card, Col, Form, Input, Row } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { AuthenticationContext } from '../contexts';
 
 const LoginPage: React.FC = () => {
-  const { login } = React.useContext(AuthenticationContext);
+  const { login, loginError } = React.useContext(AuthenticationContext);
   const { t } = useTranslation();
 
   const onFinish = (values: any) => {
@@ -41,6 +41,8 @@ const LoginPage: React.FC = () => {
               </Button>
             </Form.Item>
           </Form>
+
+          {loginError && <Alert type="error" description={loginError.message} showIcon />}
         </Card>
       </Col>
     </Row>

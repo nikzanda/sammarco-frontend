@@ -42,8 +42,7 @@ const FeeListPage: React.FC = () => {
   );
 
   const queryFilter = React.useMemo(() => {
-    let sortBy;
-    let sortDirection;
+    let sortBy: FeeSortEnum;
 
     switch (sortInfo.columnKey) {
       case 'name':
@@ -52,9 +51,8 @@ const FeeListPage: React.FC = () => {
       default:
         sortBy = FeeSortEnum.CREATED_AT;
     }
-    if (sortBy) {
-      sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
-    }
+
+    const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: FeeFilter = {
       name: filterInfo.name?.length ? (filterInfo.name[0] as string).trim() : undefined,

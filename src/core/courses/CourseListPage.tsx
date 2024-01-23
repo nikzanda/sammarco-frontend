@@ -45,8 +45,7 @@ const CourseListPage: React.FC = () => {
   );
 
   const queryFilter = React.useMemo(() => {
-    let sortBy;
-    let sortDirection;
+    let sortBy: CourseSortEnum;
 
     switch (sortInfo.columnKey) {
       case 'name':
@@ -55,9 +54,8 @@ const CourseListPage: React.FC = () => {
       default:
         sortBy = CourseSortEnum.CREATED_AT;
     }
-    if (sortBy) {
-      sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
-    }
+
+    const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: CourseFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,

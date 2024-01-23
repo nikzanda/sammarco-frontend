@@ -1,12 +1,14 @@
 import React from 'react';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
-import { useApolloClient } from '@apollo/client';
+import { ApolloError, useApolloClient } from '@apollo/client';
 import { MeQuery, useLoginMutation, useMeQuery } from '../generated/graphql';
+import { useDisplayGraphQLErrors } from '../hooks';
 
 interface IAuthenticationContext {
   loading?: boolean;
   currentUser?: MeQuery['me'];
   login?: (username: string, password: string) => Promise<void>;
+  loginError?: ApolloError;
   logout?: () => void;
 }
 
@@ -40,8 +42,8 @@ export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
 
   // const [getMe, { loading: meLoading, data: meData }] = useMeLazyQuery();
   const {
-    loading: meLoading,
     data: meData,
+    loading: meLoading,
     refetch: meRefetch,
   } = useMeQuery({
     skip: !isAuthenticated(),
@@ -74,6 +76,8 @@ export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
   //   }
   // }, [getMe])
 
+  useDisplayGraphQLErrors(mutationError);
+
   React.useEffect(() => {
     if (!mutationLoading && !mutationError && mutationData) {
       const { token } = mutationData.login;
@@ -91,14 +95,16 @@ export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
         logout,
         currentUser: meData.me,
         loading: meLoading,
+        loginError: mutationError,
       };
     }
     return {
       login,
       logout,
       loading: meLoading,
+      loginError: mutationError,
     };
-  }, [login, logout, meData, meLoading]);
+  }, [login, logout, meData, meLoading, mutationError]);
 
   return <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>;
 };
