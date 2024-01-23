@@ -8,6 +8,7 @@ interface IAuthenticationContext {
   loading?: boolean;
   currentUser?: MeQuery['me'];
   login?: (username: string, password: string) => Promise<void>;
+  loginLoading?: boolean;
   loginError?: ApolloError;
   logout?: () => void;
 }
@@ -95,6 +96,7 @@ export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
         logout,
         currentUser: meData.me,
         loading: meLoading,
+        loginLoading: mutationLoading,
         loginError: mutationError,
       };
     }
@@ -102,9 +104,10 @@ export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
       login,
       logout,
       loading: meLoading,
+      loginLoading: mutationLoading,
       loginError: mutationError,
     };
-  }, [login, logout, meData, meLoading, mutationError]);
+  }, [login, logout, meData, meLoading, mutationError, mutationLoading]);
 
   return <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>;
 };

@@ -5,7 +5,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { AuthenticationContext } from '../contexts';
 
 const LoginPage: React.FC = () => {
-  const { login, loginError } = React.useContext(AuthenticationContext);
+  const { login, loginError, loginLoading } = React.useContext(AuthenticationContext);
   const { t } = useTranslation();
 
   const onFinish = (values: any) => {
@@ -36,7 +36,7 @@ const LoginPage: React.FC = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" block>
+              <Button type="primary" htmlType="submit" block loading={loginLoading}>
                 {t('authentication.login')}
               </Button>
             </Form.Item>
