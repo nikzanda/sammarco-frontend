@@ -145,6 +145,10 @@
       "CASH": "Contanti",
       "BANK_TRANSFER": "Bonifico bancario"
     },
+    "print": {
+      "all": "Massiva",
+      "selected": "Righe selezionate"
+    },
     "export": {
       "button": "Esporta",
       "title": "Esporta CSV"

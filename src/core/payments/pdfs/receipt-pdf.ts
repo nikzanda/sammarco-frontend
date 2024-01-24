@@ -7,7 +7,7 @@ import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
 import { cardinalConverter } from 'italian-numbers';
 import apolloClient from '../../../apollo';
-import { FeeDetailFragment, PaymentPdfFragment, RecurrenceEnum } from '../../../generated/graphql';
+import { FeeDetailFragment, PaymentFilter, PaymentPdfFragment, RecurrenceEnum } from '../../../generated/graphql';
 import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
@@ -134,13 +134,11 @@ class PDF {
     pdfGenerated.open();
   }
 
-  public static async printMultiple(paymentIds: string[]) {
+  public static async printMultiple(paymentFilter: PaymentFilter) {
     const { data, error } = await apolloClient.query({
       query: PAYMENTS_PDF_QUERY,
       variables: {
-        filter: {
-          ids: paymentIds,
-        },
+        filter: paymentFilter,
       },
     });
 

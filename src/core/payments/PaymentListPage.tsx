@@ -1,7 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { App, Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
+import {
+  App,
+  Button,
+  Col,
+  Dropdown,
+  Flex,
+  Input,
+  Row,
+  Space,
+  Table,
+  TableColumnsType,
+  TableProps,
+  Typography,
+} from 'antd';
 import { format, set } from 'date-fns';
 import { FaBan, FaFileCsv, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -24,7 +37,7 @@ import { capitalize, toCurrency } from '../../utils/utils';
 import { ActionButtons, MonthFilter, NumberFilter } from '../../commons';
 import { MemberTableFilter } from '../members/components';
 import { FeeTableFilter } from '../fees/components';
-import { ExportPaymentsModal } from './components';
+import { ExportPaymentsModal, PrintPaymentsModal } from './components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/payment/';
@@ -37,6 +50,7 @@ const PaymentListPage: React.FC = () => {
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [sendingIds, setSendingIds] = React.useState<string[]>([]);
   const [exportCsv, setExportCsv] = React.useState(false);
+  const [printAll, setPrintAll] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -62,14 +76,14 @@ const PaymentListPage: React.FC = () => {
     let sortBy: PaymentSortEnum;
 
     switch (sortInfo.columnKey) {
-      case 'createdAt':
-        sortBy = PaymentSortEnum.CREATED_AT;
+      case 'counter':
+        sortBy = PaymentSortEnum.COUNTER;
         break;
       case 'month':
         sortBy = PaymentSortEnum.MONTH;
         break;
       default:
-        sortBy = PaymentSortEnum.COUNTER;
+        sortBy = PaymentSortEnum.CREATED_AT;
     }
 
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
@@ -157,7 +171,7 @@ const PaymentListPage: React.FC = () => {
         },
       });
     }
-    PDF.printMultiple(selectedIds);
+    PDF.printMultiple({ ids: selectedIds });
   };
 
   const handleSend = React.useCallback(
@@ -190,6 +204,7 @@ const PaymentListPage: React.FC = () => {
         title: t('payments.table.counter'),
         key: 'counter',
         dataIndex: 'counter',
+        sorter: true,
         filterDropdown: NumberFilter,
         filteredValue: filterInfo.counter || null,
       },
@@ -324,9 +339,41 @@ const PaymentListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <Flex justify="space-between" align="center">
         <Typography.Title level={2}>{t('payments.name')}</Typography.Title>
-        <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
-          {t('payments.export.button')}
-        </Button>
+        <Flex gap={12}>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  label: t('payments.print.all'),
+                  key: 'all',
+                },
+                {
+                  label: t('payments.print.selected'),
+                  key: 'selected',
+                  disabled: selectedIds.length === 0,
+                },
+              ],
+              onClick: ({ key }) => {
+                switch (key) {
+                  case 'all':
+                    setPrintAll(true);
+                    break;
+
+                  case 'selected':
+                    handlePrintMultiple();
+                    break;
+                }
+              },
+            }}
+          >
+            <Button size="large" icon={<Icon component={FaPrint} />}>
+              {t('buttons.print.label')}
+            </Button>
+          </Dropdown>
+          <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
+            {t('payments.export.button')}
+          </Button>
+        </Flex>
       </Flex>
 
       <Row gutter={[12, 12]}>
@@ -348,14 +395,6 @@ const PaymentListPage: React.FC = () => {
         </Col>
 
         <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            size="large"
-            icon={<Icon component={FaPrint} />}
-            disabled={selectedIds.length === 0}
-            onClick={handlePrintMultiple}
-          >
-            {t('buttons.print.label')}
-          </Button>
           <Button
             danger
             size="large"
@@ -399,6 +438,7 @@ const PaymentListPage: React.FC = () => {
         scroll={{ x: 1100 }}
       />
 
+      {printAll && <PrintPaymentsModal onCancel={() => setPrintAll(false)} />}
       {exportCsv && <ExportPaymentsModal onCancel={() => setExportCsv(false)} />}
     </Space>
   );
