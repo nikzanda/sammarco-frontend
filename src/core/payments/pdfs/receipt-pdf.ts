@@ -7,7 +7,14 @@ import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
 import { cardinalConverter } from 'italian-numbers';
 import apolloClient from '../../../apollo';
-import { FeeDetailFragment, PaymentFilter, PaymentPdfFragment, RecurrenceEnum } from '../../../generated/graphql';
+import {
+  FeeDetailFragment,
+  PaymentFilter,
+  PaymentPdfFragment,
+  PaymentPdfQuery,
+  PaymentPdfQueryVariables,
+  RecurrenceEnum,
+} from '../../../generated/graphql';
 import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
@@ -44,7 +51,7 @@ class PDF {
   }
 
   public static async print(paymentId: string, action: 'open' | 'data-url' = 'open'): Promise<string | undefined> {
-    const { data, error } = await apolloClient.query({
+    const { data, error } = await apolloClient.query<PaymentPdfQuery, PaymentPdfQueryVariables>({
       query: PAYMENT_PDF_QUERY,
       variables: {
         id: paymentId,

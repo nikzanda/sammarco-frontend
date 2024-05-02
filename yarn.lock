@@ -7554,10 +7554,10 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-italian-numbers@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/italian-numbers/-/italian-numbers-1.0.1.tgz#3e309df11c850c5af41c12cf34da7382b2aee045"
-  integrity sha512-+SGpo1e60tqev2wxNmeV0vpg3zlD7VExqQN5pn+iZssnVqjTo8/XU4h5dqD4Y6I0VqpBCOsflmeYEdEkGlycYg==
+italian-numbers@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/italian-numbers/-/italian-numbers-1.3.4.tgz#553f7791c924b4faaeb8d6219a60b07f2a77a8ff"
+  integrity sha512-JYfA3PBsR7zUpClrM8jJbfJQUJqVokvBhtsvR8AKaYY9dEfFy3C3/WXJt9KC83KpN2CRS2ZdIIAXdF85ga5tRQ==
 
 iterator.prototype@^1.1.2:
   version "1.1.2"
