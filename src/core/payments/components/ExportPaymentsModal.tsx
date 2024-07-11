@@ -82,10 +82,10 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
 
   return (
     <Modal
-      title={t('payments.export.title')}
+      title={t('commons.export.title')}
       open
       onCancel={onCancel}
-      okText={t('payments.export.button')}
+      okText={t('commons.export.button')}
       okButtonProps={{
         loading: queryLoading,
         disabled: !monthRange,

@@ -105,6 +105,19 @@ export const MEMBER_QUERY = gql`
   ${MEMBER_DETAIL_FRAGMENT}
 `;
 
+export const MEMBERS_CSV_QUERY = gql`
+  query MembersCsv($filter: MemberFilter) {
+    members(pageIndex: 0, pageSize: 0, filter: $filter) {
+      data {
+        name
+        surname
+        taxCode
+        csenCardNumber
+      }
+    }
+  }
+`;
+
 export const MEMBER_CREATE_MUTATION = gql`
   mutation MemberCreate($input: MemberCreateInput!, $years: [Int!]) {
     memberCreate(input: $input) {

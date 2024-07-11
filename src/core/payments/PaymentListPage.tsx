@@ -371,7 +371,7 @@ const PaymentListPage: React.FC = () => {
             </Button>
           </Dropdown>
           <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
-            {t('payments.export.button')}
+            {t('commons.export.button')}
           </Button>
         </Flex>
       </Flex>

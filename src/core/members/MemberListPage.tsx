@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaPlus } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -34,7 +34,7 @@ import { ActionButtons, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getYears } from '../../utils/utils';
-import { MemberExpandable } from './components';
+import { ExportMembersModal, MemberExpandable } from './components';
 import { DatePicker } from '../../components';
 
 const PAGE_SIZE = 20;
@@ -50,6 +50,7 @@ const MemberListPage: React.FC = () => {
   const [memberInfo, setMemberInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
   const [newPayment, setNewPayment] = React.useState(false);
   const [newAttendance, setNewAttendance] = React.useState(false);
+  const [exportCsv, setExportCsv] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -299,9 +300,19 @@ const MemberListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <Flex justify="space-between" align="center">
         <Typography.Title level={2}>{t('members.name')}</Typography.Title>
-        <Button type="primary" size="large" icon={<Icon component={FaPlus} />} onClick={() => navigate('/members/new')}>
-          {t('members.new')}
-        </Button>
+        <Flex gap={12}>
+          <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
+            {t('commons.export.button')}
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            icon={<Icon component={FaPlus} />}
+            onClick={() => navigate('/members/new')}
+          >
+            {t('members.new')}
+          </Button>
+        </Flex>
       </Flex>
 
       <Row gutter={[12, 12]}>
@@ -438,6 +449,7 @@ const MemberListPage: React.FC = () => {
           }}
         />
       )}
+      {exportCsv && <ExportMembersModal onCancel={() => setExportCsv(false)} />}
     </Space>
   );
 };

@@ -64,6 +64,12 @@
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
+    },
+    "csv": {
+      "name": "Nome",
+      "surname": "Cognome",
+      "taxCode": "Codice fiscale",
+      "csenCardNumber": "Numero tessera CSEN"
     }
   },
   "courses": {
@@ -149,10 +155,6 @@
     "print": {
       "all": "Massiva",
       "selected": "Righe selezionate"
-    },
-    "export": {
-      "button": "Esporta",
-      "title": "Esporta CSV"
     },
     "table": {
       "counter": "N.",
@@ -358,6 +360,10 @@
     },
     "save": "Salva",
     "newRow": "Nuova riga",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "export": {
+      "button": "Esporta",
+      "title": "Esporta CSV"
+    }
   }
 }
