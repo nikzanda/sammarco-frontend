@@ -69,7 +69,7 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
   return (
     <>
       <Row gutter={24}>
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('members.form.expireAt')}
             name="certificateExpiryDate"

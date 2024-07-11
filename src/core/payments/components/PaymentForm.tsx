@@ -34,7 +34,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('payments.form.member')}
           name="memberId"
@@ -44,7 +44,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('payments.form.fee')}
           name="feeId"
@@ -75,7 +75,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
@@ -157,7 +157,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
@@ -183,7 +183,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('payments.form.date')}
           name="date"
@@ -205,7 +205,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
@@ -223,7 +223,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('payments.form.paymentType')}
           name="type"

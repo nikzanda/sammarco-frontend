@@ -25,7 +25,7 @@ const EmailSettingsForm: React.FC = () => {
       <Divider plain>{t('settings.emailSettings.text')}</Divider>
 
       <Row gutter={24}>
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('settings.form.emailSettings.subject.label')}
             help={t('settings.form.emailSettings.subject.help')}
@@ -49,19 +49,19 @@ const EmailSettingsForm: React.FC = () => {
       <Divider plain>{t('settings.emailSettings.credentials')}</Divider>
 
       <Row gutter={24}>
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item label={t('settings.form.emailSettings.host')} name={['emailSettings', 'host']}>
             <Input />
           </Form.Item>
         </Col>
 
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item label={t('settings.form.emailSettings.port')} name={['emailSettings', 'port']}>
             <InputNumber min={1} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
 
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('settings.form.emailSettings.secure')}
             name={['emailSettings', 'secure']}
@@ -71,7 +71,7 @@ const EmailSettingsForm: React.FC = () => {
           </Form.Item>
         </Col>
 
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('settings.form.emailSettings.ignoreTLS')}
             name={['emailSettings', 'ignoreTLS']}
@@ -81,7 +81,7 @@ const EmailSettingsForm: React.FC = () => {
           </Form.Item>
         </Col>
 
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('settings.form.emailSettings.email')}
             name={['emailSettings', 'email']}
@@ -91,7 +91,7 @@ const EmailSettingsForm: React.FC = () => {
           </Form.Item>
         </Col>
 
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item label={t('settings.form.emailSettings.password')} name={['emailSettings', 'password']}>
             <Input.Password />
           </Form.Item>

@@ -11,7 +11,7 @@ const CourseForm: React.FC = () => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('courses.form.name')}
           // TODO: validare nome univoco
@@ -22,7 +22,7 @@ const CourseForm: React.FC = () => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('courses.form.color.label')} tooltip={t('courses.form.color.tooltip')} name="color">
           <ColorPicker
             presets={[

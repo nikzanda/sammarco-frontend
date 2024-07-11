@@ -22,7 +22,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('members.form.name')}
           name="name"
@@ -32,7 +32,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('members.form.surname')}
           name="surname"
@@ -42,7 +42,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('members.form.taxCode')}
           name="taxCode"
@@ -63,13 +63,13 @@ const MemberForm: React.FC<Props> = ({ form }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('members.form.email')} name="email" rules={[{ type: 'email' }]}>
           <Input />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('members.form.enrolledAt')}
           name="enrolledAt"
@@ -92,7 +92,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
 
       {isMinor && (
         <>
-          <Col xs={24} md={12}>
+          <Col xs={24} md={12} xxl={8}>
             <Form.Item
               label={t('members.form.parent.taxCode')}
               name={['parent', 'taxCode']}
@@ -112,7 +112,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
             </Form.Item>
           </Col>
 
-          <Col xs={24} md={12}>
+          <Col xs={24} md={12} xxl={8}>
             <Form.Item
               label={t('members.form.parent.name')}
               name={['parent', 'name']}
@@ -122,7 +122,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
             </Form.Item>
           </Col>
 
-          <Col xs={24} md={12}>
+          <Col xs={24} md={12} xxl={8}>
             <Form.Item
               label={t('members.form.parent.surname')}
               name={['parent', 'surname']}
@@ -134,13 +134,13 @@ const MemberForm: React.FC<Props> = ({ form }) => {
         </>
       )}
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('members.form.address')} name="address">
           <Input />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('members.form.courses')}
           name="courseIds"
@@ -150,7 +150,7 @@ const MemberForm: React.FC<Props> = ({ form }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['courseIds']}>
           {({ getFieldValue }) => {
             const courseIds = getFieldValue('courseIds');

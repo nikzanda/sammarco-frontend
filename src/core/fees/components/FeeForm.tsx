@@ -25,7 +25,7 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('fees.form.name')}
           name="name"
@@ -35,7 +35,7 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('fees.form.course')}
           name="courseId"
@@ -45,7 +45,7 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('fees.form.amount')}
           name="amount"
@@ -55,13 +55,13 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('fees.form.recurrence')} name="recurrence">
           <Select options={recurrenceOptions} allowClear />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('fees.form.reason.label')}
           help={t('fees.form.reason.help')}
@@ -73,7 +73,7 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
       </Col>
 
       {!!fee && (
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item label={t('fees.form.enabled')} name="enabled" valuePropName="checked">
             <Switch />
           </Form.Item>
