@@ -1,6 +1,6 @@
 import React from 'react';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { ApolloError, useApolloClient } from '@apollo/client';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { MeQuery, useLoginMutation, useMeQuery } from '../generated/graphql';
 import { useDisplayGraphQLErrors } from '../hooks';
 

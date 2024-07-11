@@ -303,10 +303,6 @@ export type Attendance = {
   to: Scalars['Float']['output'];
 };
 
-export type VerifyEmailSettingsInput = {
-  dummy?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 export type VerifyEmailSettingsPayload = {
   __typename?: 'VerifyEmailSettingsPayload';
   verified?: Maybe<Scalars['Boolean']['output']>;
@@ -673,8 +669,8 @@ export type EmailSettingsInput = {
 };
 
 export enum SortDirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC'
+  ASC = 'asc',
+  DESC = 'desc'
 }
 
 export enum RecurrenceEnum {
@@ -735,11 +731,6 @@ export type Mutation = {
   attendanceDelete: AttendanceDeletePayload;
   attendanceCreateMany: AttendanceCreateManyPayload;
   attendanceCreate: AttendanceCreatePayload;
-};
-
-
-export type MutationVerifyEmailSettingsArgs = {
-  input: VerifyEmailSettingsInput;
 };
 
 
@@ -864,9 +855,7 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, emailSettings?: { __typename?: 'EmailSettings', subject?: string | null, body?: string | null, host: string, port: number, secure: boolean, ignoreTLS: boolean, email: string } | null } };
 
-export type VerifyEmailSettingsMutationVariables = Exact<{
-  input: VerifyEmailSettingsInput;
-}>;
+export type VerifyEmailSettingsMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type VerifyEmailSettingsMutation = { __typename?: 'Mutation', verifyEmailSettings: { __typename?: 'VerifyEmailSettingsPayload', verified?: boolean | null } };
@@ -1438,8 +1427,8 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const VerifyEmailSettingsDocument = gql`
-    mutation VerifyEmailSettings($input: VerifyEmailSettingsInput!) {
-  verifyEmailSettings(input: $input) {
+    mutation VerifyEmailSettings {
+  verifyEmailSettings {
     verified
   }
 }
@@ -1459,7 +1448,6 @@ export type VerifyEmailSettingsMutationFn = Apollo.MutationFunction<VerifyEmailS
  * @example
  * const [verifyEmailSettingsMutation, { data, loading, error }] = useVerifyEmailSettingsMutation({
  *   variables: {
- *      input: // value for 'input'
  *   },
  * });
  */

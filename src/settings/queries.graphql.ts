@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const VERIFY_EMAIL_SETTINGS = gql`
-  mutation VerifyEmailSettings($input: VerifyEmailSettingsInput!) {
-    verifyEmailSettings(input: $input) {
+  mutation VerifyEmailSettings {
+    verifyEmailSettings {
       verified
     }
   }

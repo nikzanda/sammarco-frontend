@@ -1,17 +1,36 @@
-import React from 'react';
-import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
+import React, { Suspense } from 'react';
+import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps, Spin } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaCalendarAlt, FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
-import { MemberCreatePage, MemberEditPage, MemberListPage } from '../core/members';
-import { CourseCreatePage, CourseEditPage, CourseListPage } from '../core/courses';
-import { FeeListPage, FeeCreatePage, FeeEditPage } from '../core/fees';
-import { PaymentEditPage, PaymentListPage } from '../core/payments';
 import { AuthenticationContext } from '../contexts';
-import { SettingsPage } from '../settings';
-import { CalendarPage } from '../core/attendances';
+
+// Members
+const MemberCreatePage = React.lazy(() => import('../core/members/MemberCreatePage'));
+const MemberEditPage = React.lazy(() => import('../core/members/MemberEditPage'));
+const MemberListPage = React.lazy(() => import('../core/members/MemberListPage'));
+
+// Courses
+const CourseCreatePage = React.lazy(() => import('../core/courses/CourseCreatePage'));
+const CourseEditPage = React.lazy(() => import('../core/courses/CourseEditPage'));
+const CourseListPage = React.lazy(() => import('../core/courses/CourseListPage'));
+
+// Fees
+const FeeListPage = React.lazy(() => import('../core/fees/FeeListPage'));
+const FeeCreatePage = React.lazy(() => import('../core/fees/FeeCreatePage'));
+const FeeEditPage = React.lazy(() => import('../core/fees/FeeEditPage'));
+
+// Payments
+const PaymentEditPage = React.lazy(() => import('../core/payments/PaymentEditPage'));
+const PaymentListPage = React.lazy(() => import('../core/payments/PaymentListPage'));
+
+// Calendar
+const CalendarPage = React.lazy(() => import('../core/attendances/CalendarPage'));
+
+// Settings
+const SettingsPage = React.lazy(() => import('../settings/SettingsPage'));
 
 const AuthenticatedLayout: React.FC = () => {
   const { logout } = React.useContext(AuthenticationContext);
@@ -111,38 +130,40 @@ const AuthenticatedLayout: React.FC = () => {
         </Dropdown>
       </Layout.Header>
       <Layout.Content style={{ padding: '0 15px 15px 15px', overflowY: 'scroll' }}>
-        <Routes>
-          <Route path="members" element={<Outlet />}>
-            <Route index element={<MemberListPage />} />
-            <Route path="new" element={<MemberCreatePage />} />
-            <Route path=":id" element={<MemberEditPage />} />
-          </Route>
+        <Suspense fallback={<Spin spinning size="large" />}>
+          <Routes>
+            <Route path="members" element={<Outlet />}>
+              <Route index element={<MemberListPage />} />
+              <Route path="new" element={<MemberCreatePage />} />
+              <Route path=":id" element={<MemberEditPage />} />
+            </Route>
 
-          <Route path="courses" element={<Outlet />}>
-            <Route index element={<CourseListPage />} />
-            <Route path="new" element={<CourseCreatePage />} />
-            <Route path=":id" element={<CourseEditPage />} />
-          </Route>
+            <Route path="courses" element={<Outlet />}>
+              <Route index element={<CourseListPage />} />
+              <Route path="new" element={<CourseCreatePage />} />
+              <Route path=":id" element={<CourseEditPage />} />
+            </Route>
 
-          <Route path="fees" element={<Outlet />}>
-            <Route index element={<FeeListPage />} />
-            <Route path="new" element={<FeeCreatePage />} />
-            <Route path=":id" element={<FeeEditPage />} />
-          </Route>
+            <Route path="fees" element={<Outlet />}>
+              <Route index element={<FeeListPage />} />
+              <Route path="new" element={<FeeCreatePage />} />
+              <Route path=":id" element={<FeeEditPage />} />
+            </Route>
 
-          <Route path="payments" element={<Outlet />}>
-            <Route index element={<PaymentListPage />} />
-            <Route path=":id" element={<PaymentEditPage />} />
-          </Route>
+            <Route path="payments" element={<Outlet />}>
+              <Route index element={<PaymentListPage />} />
+              <Route path=":id" element={<PaymentEditPage />} />
+            </Route>
 
-          <Route path="calendar" element={<CalendarPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
 
-          <Route path="settings" element={<Outlet />}>
-            <Route index element={<SettingsPage />} />
-          </Route>
+            <Route path="settings" element={<Outlet />}>
+              <Route index element={<SettingsPage />} />
+            </Route>
 
-          <Route path="/" element={<Navigate to="/members" replace />} />
-        </Routes>
+            <Route path="/" element={<Navigate to="/members" replace />} />
+          </Routes>
+        </Suspense>
       </Layout.Content>
     </Layout>
   );

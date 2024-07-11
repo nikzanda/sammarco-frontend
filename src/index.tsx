@@ -5,7 +5,7 @@ import { ApolloProvider } from '@apollo/client';
 import { Alert } from 'antd';
 import itIT from 'antd/es/locale/it_IT';
 import { setDefaultOptions } from 'date-fns';
-import it from 'date-fns/locale/it';
+import { it } from 'date-fns/locale';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import apolloClient from './apollo';

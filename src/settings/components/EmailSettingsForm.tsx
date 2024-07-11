@@ -17,11 +17,7 @@ const EmailSettingsForm: React.FC = () => {
   useDisplayGraphQLErrors(error);
 
   const handleVerify = () => {
-    verifyEmailSettings({
-      variables: {
-        input: {},
-      },
-    });
+    verifyEmailSettings();
   };
 
   return (
