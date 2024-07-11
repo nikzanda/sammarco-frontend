@@ -141,6 +141,12 @@ const MemberForm: React.FC<Props> = ({ form }) => {
       </Col>
 
       <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('members.form.csenCardNumber')} name="csenCardNumber">
+          <Input />
+        </Form.Item>
+      </Col>
+
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('members.form.courses')}
           name="courseIds"

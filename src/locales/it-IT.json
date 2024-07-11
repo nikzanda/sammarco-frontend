@@ -57,6 +57,7 @@
         "taxCode": "Codice fiscale genitore"
       },
       "address": "Indirizzo",
+      "csenCardNumber": "Numero tessera CSEN",
       "courses": "Corsi",
       "shifts": "Turni corsi",
       "expireAt": "Data di scadenza del certificato medico"

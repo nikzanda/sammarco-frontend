@@ -47,12 +47,13 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
       taxCode
     }
     address
-    canDelete
+    csenCardNumber
     shiftIds
     medicalCertificate {
       attachment
       expireAt
     }
+    canDelete
     createdAt
     updatedAt
   }
