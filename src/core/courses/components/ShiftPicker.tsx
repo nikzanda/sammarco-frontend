@@ -80,7 +80,10 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled,
               value: shift.id,
               title: (
                 <>
-                  <Typography.Text type="secondary">{shift.course.name}</Typography.Text>: {[from, to].join(' - ')}
+                  <Typography.Text type="secondary">
+                    {shift.course.name} - {t(`days.${label}`).toLowerCase()}
+                  </Typography.Text>
+                  : {[from, to].join(' - ')}
                 </>
               ),
             };

@@ -2,7 +2,7 @@ import React from 'react';
 import { App, Button, Col, Result, Row, Skeleton, Space, Spin, Tabs, Typography, Form, Popconfirm } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { useFeeDeleteMutation, useFeeQuery, useFeeUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
@@ -134,7 +134,14 @@ const FeeEditPage: React.FC = () => {
           <Button size="large" onClick={handlePrint}>
             {t('buttons.printFacSimile.label')}
           </Button>
-          <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            form="form"
+            size="large"
+            loading={updateLoading}
+            icon={<Icon component={FaSave} />}
+          >
             {t('buttons.save.label')}
           </Button>
         </Col>

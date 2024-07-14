@@ -3,7 +3,7 @@ import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin,
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
@@ -127,7 +127,14 @@ const MemberEditPage: React.FC = () => {
                 </Button>
               </Popconfirm>
             )}
-            <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              form="form"
+              size="large"
+              loading={updateLoading}
+              icon={<Icon component={FaSave} />}
+            >
               {t('buttons.save.label')}
             </Button>
           </Space>

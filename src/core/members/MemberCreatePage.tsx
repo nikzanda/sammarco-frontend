@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '@ant-design/icons';
 import { App, Button, Col, Form, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { MemberForm } from './components';
 import { useMemberCreateMutation } from '../../generated/graphql';
@@ -47,7 +47,14 @@ const MemberCreatePage: React.FC = () => {
           <Typography.Title level={3}>{t('members.new')}</Typography.Title>
         </Col>
         <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button type="primary" htmlType="submit" form="form" size="large" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            form="form"
+            size="large"
+            loading={loading}
+            icon={<Icon component={FaSave} />}
+          >
             {t('buttons.save.label')}
           </Button>
         </Col>
