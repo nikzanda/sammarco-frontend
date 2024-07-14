@@ -69,7 +69,11 @@
       "name": "Nome",
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
-      "csenCardNumber": "Numero tessera CSEN"
+      "email": "Email",
+      "enrolledAt": "Iscritto il",
+      "address": "Indirizzo",
+      "csenCardNumber": "Numero tessera CSEN",
+      "courses": "Corsi"
     }
   },
   "courses": {
@@ -364,6 +368,7 @@
     "export": {
       "button": "Esporta",
       "title": "Esporta CSV"
-    }
+    },
+    "checkAll": "Seleziona tutti"
   }
 }
