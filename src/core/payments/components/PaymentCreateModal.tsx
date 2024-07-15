@@ -145,6 +145,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         loading: mutationLoading,
       }}
       onCancel={onCancel}
+      zIndex={9999}
     >
       <Form
         id="payment-create-form"

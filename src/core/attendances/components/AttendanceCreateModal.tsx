@@ -1,4 +1,4 @@
-import { App, Form, Modal } from 'antd';
+import { App, Form, FormProps, Modal } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isToday, set } from 'date-fns';
@@ -38,7 +38,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
 
   useDisplayGraphQLErrors(mutationError);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit: FormProps['onFinish'] = (values) => {
     const { courseId, date: inputDate, fromTo } = values;
 
     const [inputFrom, inputTo] = fromTo;
@@ -83,6 +83,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         loading: mutationLoading,
       }}
       onCancel={() => onCancel(false)}
+      zIndex={9999}
     >
       <Form
         id="attendance-create-form"

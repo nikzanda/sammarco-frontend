@@ -130,7 +130,13 @@ const AuthenticatedLayout: React.FC = () => {
         </Dropdown>
       </Layout.Header>
       <Layout.Content style={{ padding: '0 15px 15px 15px', overflowY: 'scroll' }}>
-        <Suspense fallback={<Spin spinning size="large" />}>
+        <Suspense
+          fallback={
+            <Layout.Content style={{ textAlign: 'center', minHeight: '100vh', lineHeight: '100vh' }}>
+              <Spin spinning size="large" />
+            </Layout.Content>
+          }
+        >
           <Routes>
             <Route path="members" element={<Outlet />}>
               <Route index element={<MemberListPage />} />
