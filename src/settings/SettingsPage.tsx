@@ -2,16 +2,27 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaSave } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
-import { Space, Flex, Typography, Button, Tabs, Form, App } from 'antd';
+import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import { AuthenticationContext } from '../contexts';
-import { EmailSettingsForm } from './components';
+import { EmailSettingsForm, EmailTextsForm } from './components';
 import { useUserUpdateMutation } from '../generated/graphql';
 import { useDisplayGraphQLErrors } from '../hooks';
+
+const DEFAULT_TAB = 'email-settings';
 
 const SettingsPage: React.FC = () => {
   const { currentUser } = React.useContext(AuthenticationContext);
   const { t } = useTranslation();
   const { message } = App.useApp();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+
+  React.useEffect(() => {
+    searchParams.set('tab', tab);
+    setSearchParams(searchParams);
+  }, [searchParams, setSearchParams, tab]);
 
   const initialValues = React.useMemo(() => {
     if (!currentUser!.emailSettings) {
@@ -31,7 +42,7 @@ const SettingsPage: React.FC = () => {
 
   useDisplayGraphQLErrors(error);
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     updateUser({
       variables: {
         input: values,
@@ -57,11 +68,18 @@ const SettingsPage: React.FC = () => {
 
       <Form id="form" initialValues={initialValues} layout="vertical" autoComplete="off" onFinish={handleFinish}>
         <Tabs
+          activeKey={tab}
+          onChange={setTab}
           items={[
             {
               label: t('settings.tab.emailSettings'),
               key: 'email-settings',
               children: <EmailSettingsForm />,
+            },
+            {
+              label: t('settings.tab.emailTexts'),
+              key: 'email-texts',
+              children: <EmailTextsForm />,
             },
           ]}
         />

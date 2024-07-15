@@ -14,13 +14,19 @@ export const ME_QUERY = gql`
       id
       username
       emailSettings {
-        subject
-        body
         host
         port
         secure
         ignoreTLS
         email
+        receiptEmail {
+          subject
+          body
+        }
+        reminderEmail {
+          subject
+          body
+        }
       }
     }
   }

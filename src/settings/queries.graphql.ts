@@ -15,13 +15,19 @@ export const USER_UPDATE_MUTATION = gql`
         id
         username
         emailSettings {
-          subject
-          body
           host
           port
           secure
           ignoreTLS
           email
+          receiptEmail {
+            subject
+            body
+          }
+          reminderEmail {
+            subject
+            body
+          }
         }
       }
     }

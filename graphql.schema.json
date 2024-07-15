@@ -2148,7 +2148,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "EmailSettings",
+        "name": "EmailText",
         "description": null,
         "isOneOf": null,
         "fields": [
@@ -2175,7 +2175,19 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          },
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "EmailSettings",
+        "description": null,
+        "isOneOf": null,
+        "fields": [
           {
             "name": "host",
             "description": null,
@@ -2250,6 +2262,38 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiptEmail",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EmailText",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reminderEmail",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EmailText",
                 "ofType": null
               }
             },
@@ -2904,7 +2948,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "PaymentUpdateMultipleInput",
+        "name": "PaymentUpdateManyInput",
         "description": null,
         "isOneOf": false,
         "fields": null,
@@ -2964,7 +3008,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "PaymentUpdateMultiplePayload",
+        "name": "PaymentUpdateManyPayload",
         "description": null,
         "isOneOf": null,
         "fields": [
@@ -6016,7 +6060,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EmailSettingsInput",
+        "name": "EmailTextInput",
         "description": null,
         "isOneOf": false,
         "fields": null,
@@ -6044,7 +6088,19 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
-          },
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "EmailSettingsInput",
+        "description": null,
+        "isOneOf": false,
+        "fields": null,
+        "inputFields": [
           {
             "name": "host",
             "description": null,
@@ -6111,6 +6167,30 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiptEmail",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "EmailTextInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reminderEmail",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "EmailTextInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -6408,7 +6488,7 @@
             "deprecationReason": null
           },
           {
-            "name": "paymentUpdateMultiple",
+            "name": "paymentUpdateMany",
             "description": null,
             "args": [
               {
@@ -6419,7 +6499,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "PaymentUpdateMultipleInput",
+                    "name": "PaymentUpdateManyInput",
                     "ofType": null
                   }
                 },
@@ -6433,7 +6513,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "PaymentUpdateMultiplePayload",
+                "name": "PaymentUpdateManyPayload",
                 "ofType": null
               }
             },

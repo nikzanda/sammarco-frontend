@@ -157,8 +157,8 @@ export const PAYMENT_UPDATE_MUTATION = gql`
 `;
 
 export const PAYMENT_UPDATE_MULTIPLE_MUTATION = gql`
-  mutation PaymentUpdateMultiple($input: PaymentUpdateMultipleInput!) {
-    paymentUpdateMultiple(input: $input) {
+  mutation PaymentUpdateMany($input: PaymentUpdateManyInput!) {
+    paymentUpdateMany(input: $input) {
       payments {
         id
         printed

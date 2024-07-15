@@ -74,7 +74,9 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
   };
 
   const handleExport = () => {
-    getMembers();
+    if (checkedList.length > 0) {
+      getMembers();
+    }
   };
 
   return (

@@ -254,11 +254,14 @@
     "name": "Impostazioni",
     "saved": "Impostazioni aggiornate correttamente",
     "tab": {
-      "emailSettings": "Impostazioni email"
+      "emailSettings": "Impostazioni email",
+      "emailTexts": "Testi email"
     },
     "emailSettings": {
-      "text": "Testo email",
-      "credentials": "Credenziali",
+      "type": {
+        "receipt": "Testo per l'invio della ricevuta del pagamento",
+        "reminder": "Testo per l'invio del sollecito pagamento"
+      },
       "verify": {
         "label": "Verifica",
         "tooltip": "Assicurati di aver salvato prima di verificare"

@@ -28,8 +28,8 @@ import {
   PaymentTypeEnum,
   SortDirectionEnum,
   usePaymentSendMutation,
-  usePaymentUpdateMultipleMutation,
   usePaymentsQuery,
+  usePaymentUpdateManyMutation,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
@@ -114,7 +114,7 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  const [updateMultiple, { error: updateMultipleError }] = usePaymentUpdateMultipleMutation({
+  const [updateMultiple, { error: updateMultipleError }] = usePaymentUpdateManyMutation({
     refetchQueries: ['Payments', 'Payment'],
   });
 
