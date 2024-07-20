@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
       align="middle"
     >
       <Col xs={18} sm={14} lg={8}>
-        <Card title="Sammarco" headStyle={{ textAlign: 'center' }}>
+        <Card title="Sammarco" styles={{ header: { textAlign: 'center' } }}>
           <Form onFinish={onFinish} autoComplete="off">
             <Form.Item name="username" rules={[{ required: true, message: t('validations.required')! }]}>
               <Input prefix={<UserOutlined />} placeholder={t('authentication.form.username')!} />
