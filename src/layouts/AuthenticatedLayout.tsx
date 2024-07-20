@@ -1,11 +1,12 @@
 import React, { Suspense } from 'react';
-import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps, Spin } from 'antd';
+import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaCalendarAlt, FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
 import { AuthenticationContext } from '../contexts';
+import { LoadingPage, NotFoundPage } from '../views';
 
 // Members
 const MemberCreatePage = React.lazy(() => import('../core/members/MemberCreatePage'));
@@ -130,13 +131,7 @@ const AuthenticatedLayout: React.FC = () => {
         </Dropdown>
       </Layout.Header>
       <Layout.Content style={{ padding: '0 15px 15px 15px', overflowY: 'scroll' }}>
-        <Suspense
-          fallback={
-            <Layout.Content style={{ textAlign: 'center', minHeight: '100vh', lineHeight: '100vh' }}>
-              <Spin spinning size="large" />
-            </Layout.Content>
-          }
-        >
+        <Suspense fallback={<LoadingPage />}>
           <Routes>
             <Route path="members" element={<Outlet />}>
               <Route index element={<MemberListPage />} />
@@ -168,6 +163,8 @@ const AuthenticatedLayout: React.FC = () => {
             </Route>
 
             <Route path="/" element={<Navigate to="/members" replace />} />
+
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </Layout.Content>
