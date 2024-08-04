@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Button, Col, Form, Row, Space, Typography } from 'antd';
+import { App, Button, Col, Form, FormProps, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaAngleLeft, FaSave } from 'react-icons/fa';
@@ -59,7 +59,7 @@ const FeeCreatePage: React.FC = () => {
     return false;
   }, [initialValues, location.state]);
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     createFee({
       variables: {
         input: values,

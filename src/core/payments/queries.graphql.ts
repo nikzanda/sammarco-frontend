@@ -170,8 +170,8 @@ export const PAYMENT_UPDATE_MULTIPLE_MUTATION = gql`
 `;
 
 export const PAYMENT_SEND_MUTATION = gql`
-  mutation PaymentSend($input: PaymentSendInput!) {
-    paymentSend(input: $input) {
+  mutation PaymentSendReceipt($input: PaymentSendReceiptInput!) {
+    paymentSendReceipt(input: $input) {
       sent
     }
   }

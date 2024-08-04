@@ -1,5 +1,19 @@
 import React from 'react';
-import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import {
+  App,
+  Button,
+  Col,
+  Form,
+  FormProps,
+  Popconfirm,
+  Result,
+  Row,
+  Skeleton,
+  Space,
+  Spin,
+  Tabs,
+  Typography,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
@@ -101,7 +115,7 @@ const PaymentEditPage: React.FC = () => {
     });
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     updatePayment({
       variables: {
         input: {

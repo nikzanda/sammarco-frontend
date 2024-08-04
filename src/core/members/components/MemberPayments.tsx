@@ -14,7 +14,7 @@ import {
   PaymentSortEnum,
   PaymentTypeEnum,
   SortDirectionEnum,
-  usePaymentSendMutation,
+  usePaymentSendReceiptMutation,
   usePaymentUpdateMutation,
   usePaymentsQuery,
 } from '../../../generated/graphql';
@@ -92,7 +92,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     refetchQueries: ['Payments'],
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
+  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
     refetchQueries: ['Payments'],
     onCompleted: () => {
       message.success(t('payments.sent'));

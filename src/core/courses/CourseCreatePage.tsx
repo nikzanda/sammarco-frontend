@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Button, Col, Form, Row, Space, Typography } from 'antd';
+import { App, Button, Col, Form, FormProps, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@ant-design/icons';
@@ -23,7 +23,7 @@ const CourseCreatePage: React.FC = () => {
 
   useDisplayGraphQLErrors(error);
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     const { color, shifts, ...input } = values;
 
     const timestampToHourMinutes = (timestamp: number) => {

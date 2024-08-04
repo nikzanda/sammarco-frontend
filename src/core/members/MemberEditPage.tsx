@@ -1,5 +1,19 @@
 import React from 'react';
-import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import {
+  App,
+  Button,
+  Col,
+  Form,
+  FormProps,
+  Popconfirm,
+  Result,
+  Row,
+  Skeleton,
+  Space,
+  Spin,
+  Tabs,
+  Typography,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
@@ -8,6 +22,7 @@ import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { Updates } from '../../commons';
+import { EmailTable } from '../emails/components';
 
 const DEFAULT_TAB = 'details';
 
@@ -89,7 +104,7 @@ const MemberEditPage: React.FC = () => {
     });
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     updateMember({
       variables: {
         input: {
@@ -181,6 +196,11 @@ const MemberEditPage: React.FC = () => {
                 label: t('members.tab.calendar'),
                 key: 'calendar',
                 children: <MemberCalendar member={member} />,
+              },
+              {
+                label: t('members.tab.emails'),
+                key: 'emails',
+                children: <EmailTable filters={{ memberIds: [id!] }} />,
               },
             ]}
           />

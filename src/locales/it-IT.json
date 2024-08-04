@@ -43,7 +43,8 @@
       "details": "Dettagli",
       "payments": "Pagamenti",
       "medicalCertificate": "Certificato medico",
-      "calendar": "Calendario"
+      "calendar": "Calendario",
+      "emails": "Email"
     },
     "form": {
       "name": "Nome",
@@ -237,6 +238,13 @@
       "fromTo": "Dalle ore - alle ore"
     }
   },
+  "emails": {
+    "table": {
+      "course": "Corso",
+      "subject": "Oggetto",
+      "to": "Destinatario"
+    }
+  },
   "calendar": {
     "name": "Calendario",
     "medicalCertificate": {
@@ -358,6 +366,7 @@
     "search": "Cerca",
     "resetFilter": "Cancella",
     "table": {
+      "createdAt": "Creato il",
       "pagination": "{{start}}-{{end}} di {{total}}"
     },
     "selected": "{{selected}} di {{total}} selezionati",

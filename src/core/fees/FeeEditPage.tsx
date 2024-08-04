@@ -1,5 +1,19 @@
 import React from 'react';
-import { App, Button, Col, Result, Row, Skeleton, Space, Spin, Tabs, Typography, Form, Popconfirm } from 'antd';
+import {
+  App,
+  Button,
+  Col,
+  Result,
+  Row,
+  Skeleton,
+  Space,
+  Spin,
+  Tabs,
+  Typography,
+  Form,
+  Popconfirm,
+  FormProps,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { FaAngleLeft, FaSave } from 'react-icons/fa';
@@ -92,7 +106,7 @@ const FeeEditPage: React.FC = () => {
     PDF.printFacSimile(fee!);
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     const { courseId, ...input } = values;
 
     updateFee({

@@ -10,7 +10,7 @@ import {
   SortDirectionEnum,
   useMemberSearcherLazyQuery,
   usePaymentCreateMutation,
-  usePaymentSendMutation,
+  usePaymentSendReceiptMutation,
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
@@ -93,7 +93,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
+  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
     refetchQueries: ['Payments'],
     onCompleted: () => {
       message.success(t('payments.sent'));

@@ -27,7 +27,7 @@ import {
   PaymentSortEnum,
   PaymentTypeEnum,
   SortDirectionEnum,
-  usePaymentSendMutation,
+  usePaymentSendReceiptMutation,
   usePaymentsQuery,
   usePaymentUpdateManyMutation,
 } from '../../generated/graphql';
@@ -118,7 +118,7 @@ const PaymentListPage: React.FC = () => {
     refetchQueries: ['Payments', 'Payment'],
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
+  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
     refetchQueries: ['Payments', 'Payment'],
     onCompleted: () => {
       message.success(t('payments.sent'));
