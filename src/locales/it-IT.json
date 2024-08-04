@@ -239,10 +239,20 @@
     }
   },
   "emails": {
+    "sendReminder": "Invia sollecito pagamento",
+    "sent": "Email inviata",
+    "type": {
+      "RECEIPT": "RICEVUTA",
+      "REMINDER": "SOLLECITO"
+    },
     "table": {
       "course": "Corso",
       "subject": "Oggetto",
       "to": "Destinatario"
+    },
+    "form": {
+      "course": "Corso",
+      "month": "Mese"
     }
   },
   "calendar": {
@@ -338,6 +348,10 @@
     },
     "export": {
       "label": "Esporta"
+    },
+    "reminder": {
+      "label": "Invia sollecito pagamento",
+      "tooltip": "Invia sollecito pagamento"
     }
   },
   "upload": {

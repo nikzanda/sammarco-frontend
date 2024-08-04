@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as EmailTable } from './EmailTable';
+export { default as SendReminderModal } from './SendReminderModal';

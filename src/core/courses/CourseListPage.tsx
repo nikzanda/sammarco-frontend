@@ -116,6 +116,7 @@ const CourseListPage: React.FC = () => {
         key: 'actions',
         dataIndex: 'id',
         align: 'right',
+        width: 60,
         render: (id) => <ActionButtons buttons={['edit']} onEdit={() => navigate(`/courses/${id}`)} />,
       },
     ];

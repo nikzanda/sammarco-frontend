@@ -1,9 +1,16 @@
 import React from 'react';
-import { Table, TableColumnsType, TableProps } from 'antd';
+import { Table, TableColumnsType, TableProps, Tag, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { format } from 'date-fns';
-import { EmailFilter, EmailSortEnum, EmailsQuery, SortDirectionEnum, useEmailsQuery } from '../../../generated/graphql';
+import {
+  EmailFilter,
+  EmailSortEnum,
+  EmailsQuery,
+  EmailTypeEnum,
+  SortDirectionEnum,
+  useEmailsQuery,
+} from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 type TableData = EmailsQuery['emails']['data'][number];
@@ -20,6 +27,7 @@ const PAGE_SIZE = 10;
 
 const EmailTable: React.FC<Props> = ({ filters }) => {
   const { t } = useTranslation();
+  const { token } = theme.useToken();
 
   const [searchText, setSearchText] = React.useState('');
   const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: PAGE_SIZE });
@@ -75,6 +83,19 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
   const columns = React.useMemo(() => {
     const result: TableColumnsType<TableData> = [
       {
+        // title:
+        key: 'type',
+        dataIndex: 'type',
+        align: 'center',
+        render: (type: EmailTypeEnum) => {
+          const color = {
+            [EmailTypeEnum.RECEIPT]: token.colorSuccess,
+            [EmailTypeEnum.REMINDER]: token.colorError,
+          }[type];
+          return <Tag color={color}>{t(`emails.type.${type}`)}</Tag>;
+        },
+      },
+      {
         title: t('emails.table.course'),
         key: 'course',
         dataIndex: ['course', 'name'],
@@ -97,7 +118,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
       },
     ];
     return result;
-  }, [t]);
+  }, [t, token.colorError, token.colorSuccess]);
 
   const handleTableChange: TableProps<TableData>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

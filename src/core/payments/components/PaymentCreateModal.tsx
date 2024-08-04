@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Spin } from 'antd';
+import { App, Checkbox, Form, FormProps, Input, InputNumber, Modal, Radio, Spin } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
@@ -102,7 +102,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
 
   useDisplayGraphQLErrors(mutationError, memberError, sendError);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit: FormProps['onFinish'] = (values) => {
     const { sendEmail: sendEmailFlag, ...input } = values;
 
     createPayment({

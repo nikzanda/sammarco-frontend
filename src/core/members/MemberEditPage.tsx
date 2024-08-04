@@ -3,6 +3,7 @@ import {
   App,
   Button,
   Col,
+  Flex,
   Form,
   FormProps,
   Popconfirm,
@@ -17,12 +18,12 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft, FaSave } from 'react-icons/fa';
+import { FaAngleLeft, FaBell, FaSave } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { Updates } from '../../commons';
-import { EmailTable } from '../emails/components';
+import { EmailTable, SendReminderModal } from '../emails/components';
 
 const DEFAULT_TAB = 'details';
 
@@ -35,6 +36,7 @@ const MemberEditPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+  const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
 
   React.useEffect(() => {
     searchParams.set('tab', tab);
@@ -200,11 +202,37 @@ const MemberEditPage: React.FC = () => {
               {
                 label: t('members.tab.emails'),
                 key: 'emails',
-                children: <EmailTable filters={{ memberIds: [id!] }} />,
+                children: (
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    <Flex justify="end">
+                      <Button
+                        size="large"
+                        icon={<Icon component={FaBell} />}
+                        onClick={() => {
+                          setSendReminderData({
+                            memberId: member.id,
+                            courseIds: member.courses.map(({ id }) => id),
+                          });
+                        }}
+                      >
+                        {t('buttons.reminder.label')}
+                      </Button>
+                    </Flex>
+                    <EmailTable filters={{ memberIds: [id!] }} />
+                  </Space>
+                ),
               },
             ]}
           />
         </Form>
+      )}
+
+      {sendReminderData && (
+        <SendReminderModal
+          memberId={sendReminderData.memberId}
+          courseIds={sendReminderData.courseIds}
+          onCancel={() => setSendReminderData(undefined)}
+        />
       )}
     </Space>
   );

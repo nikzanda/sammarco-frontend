@@ -36,6 +36,7 @@ import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getYears } from '../../utils/utils';
 import { ExportMembersModal, MemberExpandable } from './components';
 import { DatePicker } from '../../components';
+import { SendReminderModal } from '../emails/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -50,6 +51,7 @@ const MemberListPage: React.FC = () => {
   const [memberInfo, setMemberInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
   const [newPayment, setNewPayment] = React.useState(false);
   const [newAttendance, setNewAttendance] = React.useState(false);
+  const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
   const [exportCsv, setExportCsv] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
@@ -254,9 +256,15 @@ const MemberListPage: React.FC = () => {
         dataIndex: 'id',
         align: 'right',
         fixed: 'right',
-        render: (id: string, { courses }) => (
+        width: 180,
+        render: (id: string, { courses, currentMonthReminderEmails }) => (
           <ActionButtons
-            buttons={['edit', 'fee', 'attendance']}
+            buttons={[
+              'edit',
+              'fee',
+              'attendance',
+              { button: 'reminder', sentRemindersCount: currentMonthReminderEmails.length },
+            ]}
             onEdit={() => navigate(`/members/${id}`)}
             onFee={() => {
               setMemberInfo({
@@ -271,6 +279,12 @@ const MemberListPage: React.FC = () => {
                 courseIds: courses.map((course) => course.id),
               });
               setNewAttendance(true);
+            }}
+            onReminder={() => {
+              setSendReminderData({
+                memberId: id,
+                courseIds: courses.map(({ id }) => id),
+              });
             }}
           />
         ),
@@ -447,6 +461,13 @@ const MemberListPage: React.FC = () => {
               setSelectedIds([]);
             }
           }}
+        />
+      )}
+      {sendReminderData && (
+        <SendReminderModal
+          memberId={sendReminderData.memberId}
+          courseIds={sendReminderData.courseIds}
+          onCancel={() => setSendReminderData(undefined)}
         />
       )}
       {exportCsv && <ExportMembersModal onCancel={() => setExportCsv(false)} />}

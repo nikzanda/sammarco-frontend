@@ -29,6 +29,9 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
     medicalCertificate {
       expireAt
     }
+    currentMonthReminderEmails {
+      id
+    }
     shiftIds
   }
 `;

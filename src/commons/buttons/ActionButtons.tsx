@@ -2,14 +2,15 @@ import React from 'react';
 import Icon from '@ant-design/icons';
 import { Badge, Button, Popconfirm, Space, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FaCalendarCheck, FaClone, FaMoneyBill, FaPaperPlane, FaPen, FaPrint } from 'react-icons/fa';
+import { FaBell, FaCalendarCheck, FaClone, FaMoneyBill, FaPaperPlane, FaPen, FaPrint } from 'react-icons/fa';
 
-export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee' | 'attendance';
+export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee' | 'attendance' | 'reminder';
 export interface ActionButtonObject {
   button: ActionButton;
   disabled?: boolean;
   printed?: boolean;
   sent?: boolean;
+  sentRemindersCount?: number;
 }
 export type ActionButtonsType = (ActionButton | ActionButtonObject)[];
 
@@ -20,6 +21,7 @@ const defaultProps = {
   onSend: () => {},
   onFee: () => {},
   onAttendance: () => {},
+  onReminder: () => {},
 };
 
 type Props = {
@@ -30,9 +32,19 @@ type Props = {
   onSend?: () => void;
   onFee?: () => void;
   onAttendance?: () => void;
+  onReminder?: () => void;
 };
 
-const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onSend, onFee, onAttendance }) => {
+const ActionButtons: React.FC<Props> = ({
+  buttons,
+  onEdit,
+  onClone,
+  onPrint,
+  onSend,
+  onFee,
+  onAttendance,
+  onReminder,
+}) => {
   const { t } = useTranslation();
 
   const objectButtons = React.useMemo(
@@ -73,11 +85,23 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
     [objectButtons]
   );
 
+  const getSentRemindersCount = React.useCallback(
+    (actionButton: ActionButton, defaultSentRemindersCount = undefined) => {
+      const button = objectButtons.find(({ button }) => button === actionButton);
+      if (button && button.sentRemindersCount != null) {
+        return button.sentRemindersCount;
+      }
+      return defaultSentRemindersCount;
+    },
+    [objectButtons]
+  );
+
   const renderButton = React.useCallback(
     (button: ActionButton) => {
       const disabled = getDisabled(button);
       const printed = getPrinted(button);
       const sent = getSent(button);
+      const sentRemindersCount = getSentRemindersCount(button);
 
       switch (button) {
         case 'edit':
@@ -126,6 +150,15 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
             </Tooltip>
           );
 
+        case 'reminder':
+          return (
+            <Tooltip title={t('buttons.reminder.tooltip')}>
+              <Badge count={sentRemindersCount}>
+                <Button shape="circle" icon={<Icon component={FaBell} />} onClick={onReminder} disabled={disabled} />
+              </Badge>
+            </Tooltip>
+          );
+
         case 'attendance':
           return (
             <Tooltip title={t('buttons.attendance.tooltip')}>
@@ -142,7 +175,20 @@ const ActionButtons: React.FC<Props> = ({ buttons, onEdit, onClone, onPrint, onS
           throw new Error('not implemented buttom');
       }
     },
-    [getDisabled, getPrinted, getSent, onAttendance, onClone, onEdit, onFee, onPrint, onSend, t]
+    [
+      getDisabled,
+      getPrinted,
+      getSent,
+      getSentRemindersCount,
+      onAttendance,
+      onClone,
+      onEdit,
+      onFee,
+      onPrint,
+      onReminder,
+      onSend,
+      t,
+    ]
   );
 
   return (

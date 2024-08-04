@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 
-// eslint-disable-next-line import/prefer-default-export
 export const EMAILS_QUERY = gql`
   query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {
     emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
@@ -9,6 +8,7 @@ export const EMAILS_QUERY = gql`
         course {
           name
         }
+        type
         to
         subject
         body
@@ -16,6 +16,16 @@ export const EMAILS_QUERY = gql`
       }
       pageInfo {
         total
+      }
+    }
+  }
+`;
+
+export const SEND_REMINDER_MUTATION = gql`
+  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {
+    paymentSendReminder(input: $input) {
+      email {
+        id
       }
     }
   }

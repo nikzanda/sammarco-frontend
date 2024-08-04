@@ -290,6 +290,7 @@ const PaymentListPage: React.FC = () => {
         dataIndex: 'id',
         align: 'right',
         fixed: 'right',
+        width: 150,
         filterMultiple: false,
         filters: [
           {
