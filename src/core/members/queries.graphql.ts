@@ -42,18 +42,22 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     name
     surname
     taxCode
+    address
+    qualification
     email
-    enrolledAt
+    registrationRequestDate
+    registrationAcceptanceDate
+    socialCardNumber
+    asiCardNumber
+    csenCardNumber
     parent {
       name
       surname
       taxCode
     }
-    address
-    csenCardNumber
     shiftIds
     medicalCertificate {
-      attachment
+      base64
       expireAt
     }
     canDelete
@@ -115,7 +119,6 @@ export const MEMBERS_CSV_QUERY = gql`
     $includeSurname: Boolean!
     $includeTaxCode: Boolean!
     $includeEmail: Boolean!
-    $includeEnrolledAt: Boolean!
     $includeAddress: Boolean!
     $includeCsenCardNumber: Boolean!
     $includeCourses: Boolean!
@@ -126,7 +129,6 @@ export const MEMBERS_CSV_QUERY = gql`
         surname @include(if: $includeSurname)
         taxCode @include(if: $includeTaxCode)
         email @include(if: $includeEmail)
-        enrolledAt @include(if: $includeEnrolledAt)
         address @include(if: $includeAddress)
         csenCardNumber @include(if: $includeCsenCardNumber)
         courses @include(if: $includeCourses) {
@@ -157,14 +159,6 @@ export const MEMBER_UPDATE_MUTATION = gql`
     }
   }
   ${MEMBER_DETAIL_FRAGMENT}
-`;
-
-export const MEMBER_UPLOAD_MUTATION = gql`
-  mutation MemberUpload($input: MemberUploadInput!) {
-    memberUpload(input: $input) {
-      success
-    }
-  }
 `;
 
 export const MEMBER_DELETE_MUTATION = gql`

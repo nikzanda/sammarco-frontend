@@ -8,20 +8,20 @@
     }
   },
   "members": {
-    "name": "Iscritti",
-    "new": "Nuovo iscritto",
-    "created": "Nuovo iscritto creato",
-    "edited": "Iscritto aggiornato",
-    "deleted": "Iscritto eliminato",
+    "name": "Soci",
+    "new": "Nuovo socio",
+    "created": "Nuovo socio creato",
+    "edited": "Socio aggiornato",
+    "deleted": "Socio eliminato",
     "lessons_one": "{{number}} lezione",
     "lessons_other": "{{number}} lezioni",
     "filterByMonthsNotPaid": "Cerca per mese non pagato",
     "delete": {
-      "confirm": "Sei sicuro di voler eliminare l'iscritto?",
+      "confirm": "Sei sicuro di voler eliminare il socio?",
       "description": "Elimina {{fullName}}"
     },
     "alerts": {
-      "warnings": "Attenzione, ci sono degli avvisi per questo iscritto",
+      "warnings": "Attenzione, ci sono degli avvisi per questo socio",
       "currentEnrollmentNotPaid": "Iscrizione non pagata.",
       "medicalCertificate": {
         "empty": "Data di scadenza del certificato medico non inserita.",
@@ -51,7 +51,6 @@
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
       "email": "Email",
-      "enrolledAt": "Iscritto il",
       "parent": {
         "name": "Nome genitore",
         "surname": "Cognome genitore",
@@ -71,7 +70,6 @@
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
       "email": "Email",
-      "enrolledAt": "Iscritto il",
       "address": "Indirizzo",
       "csenCardNumber": "Numero tessera CSEN",
       "courses": "Corsi"
@@ -163,7 +161,7 @@
     },
     "table": {
       "counter": "N.",
-      "member": "Iscritto",
+      "member": "Socio",
       "course": "Corso",
       "fee": "Quota",
       "amount": "Importo",
@@ -178,7 +176,7 @@
       "details": "Dettagli"
     },
     "form": {
-      "member": "Iscritto",
+      "member": "Socio",
       "fee": "Quota",
       "amount": "Importo",
       "month": "Mese",
@@ -189,7 +187,7 @@
       "sendEmail": {
         "label": "Invia ricevuta via email",
         "help": {
-          "member": "L'iscritto non ha la mail",
+          "member": "Il socio non ha la mail",
           "currentUser": "La tua email non è configurata"
         }
       }
@@ -294,7 +292,7 @@
         },
         "body": {
           "label": "Contenuto",
-          "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome dell'iscritto (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
+          "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
         },
         "host": "Host",
         "port": "Porta",

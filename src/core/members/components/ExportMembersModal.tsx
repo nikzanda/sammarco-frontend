@@ -46,7 +46,6 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
       includeSurname: isIncluded('surname'),
       includeTaxCode: isIncluded('taxCode'),
       includeEmail: isIncluded('email'),
-      includeEnrolledAt: isIncluded('enrolledAt'),
       includeAddress: isIncluded('address'),
       includeCsenCardNumber: isIncluded('csenCardNumber'),
       includeCourses: isIncluded('courses'),

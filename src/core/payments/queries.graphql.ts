@@ -19,7 +19,6 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     month
     years
     type
-    printed
     sent
   }
 `;
@@ -161,7 +160,6 @@ export const PAYMENT_UPDATE_MULTIPLE_MUTATION = gql`
     paymentUpdateMany(input: $input) {
       payments {
         id
-        printed
         sent
       }
     }

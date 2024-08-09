@@ -29,7 +29,6 @@ import {
   SortDirectionEnum,
   usePaymentSendReceiptMutation,
   usePaymentsQuery,
-  usePaymentUpdateManyMutation,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
@@ -114,10 +113,6 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  const [updateMultiple, { error: updateMultipleError }] = usePaymentUpdateManyMutation({
-    refetchQueries: ['Payments', 'Payment'],
-  });
-
   const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
     refetchQueries: ['Payments', 'Payment'],
     onCompleted: () => {
@@ -125,7 +120,7 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError, sendError, updateMultipleError);
+  useDisplayGraphQLErrors(queryError, sendError);
 
   const payments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -141,36 +136,11 @@ const PaymentListPage: React.FC = () => {
     return 0;
   }, [queryData, queryError, queryLoading]);
 
-  const handlePrint = React.useCallback(
-    (paymentId: string) => {
-      if (payments.some(({ id, printed }) => id === paymentId && !printed)) {
-        updateMultiple({
-          variables: {
-            input: {
-              ids: [paymentId],
-              printed: true,
-            },
-          },
-        });
-      }
-      PDF.print(paymentId);
-    },
-    [payments, updateMultiple]
-  );
+  const handlePrint = (paymentId: string) => {
+    PDF.print(paymentId);
+  };
 
   const handlePrintMultiple = () => {
-    const ids = payments.filter(({ id, printed }) => selectedIds.includes(id) && !printed).map(({ id }) => id);
-
-    if (ids.length > 0) {
-      updateMultiple({
-        variables: {
-          input: {
-            ids,
-            printed: true,
-          },
-        },
-      });
-    }
     PDF.printMultiple({ ids: selectedIds });
   };
 
@@ -303,13 +273,9 @@ const PaymentListPage: React.FC = () => {
           },
         ],
         filteredValue: filterInfo.actions || null,
-        render: (id, { printed, sent }) => (
+        render: (id, { sent }) => (
           <ActionButtons
-            buttons={[
-              'edit',
-              { button: 'print', printed },
-              { button: 'send', sent, disabled: sendingIds.includes(id) },
-            ]}
+            buttons={['edit', { button: 'print' }, { button: 'send', sent, disabled: sendingIds.includes(id) }]}
             onEdit={() => navigate(`/payments/${id}`)}
             onPrint={() => handlePrint(id)}
             onSend={() => handleSend(id)}
@@ -318,7 +284,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo, handlePrint, handleSend, navigate, searchText, sendingIds, t]);
+  }, [filterInfo, handleSend, navigate, searchText, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

@@ -82,9 +82,7 @@ export const ATTENDANCE_DELETE_MUTATION = gql`
 export const ATTENDANCE_DELETE_MANY_MUTATION = gql`
   mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {
     attendanceDeleteMany(input: $input) {
-      attendances {
-        id
-      }
+      success
     }
   }
 `;

@@ -8,7 +8,6 @@ export type ActionButton = 'edit' | 'clone' | 'print' | 'send' | 'fee' | 'attend
 export interface ActionButtonObject {
   button: ActionButton;
   disabled?: boolean;
-  printed?: boolean;
   sent?: boolean;
   sentRemindersCount?: number;
 }
@@ -63,17 +62,6 @@ const ActionButtons: React.FC<Props> = ({
     [objectButtons]
   );
 
-  const getPrinted = React.useCallback(
-    (actionButton: ActionButton, defaultPrinted = undefined) => {
-      const button = objectButtons.find(({ button }) => button === actionButton);
-      if (button && button.printed != null) {
-        return button.printed;
-      }
-      return defaultPrinted;
-    },
-    [objectButtons]
-  );
-
   const getSent = React.useCallback(
     (actionButton: ActionButton, defaultSent = undefined) => {
       const button = objectButtons.find(({ button }) => button === actionButton);
@@ -99,7 +87,6 @@ const ActionButtons: React.FC<Props> = ({
   const renderButton = React.useCallback(
     (button: ActionButton) => {
       const disabled = getDisabled(button);
-      const printed = getPrinted(button);
       const sent = getSent(button);
       const sentRemindersCount = getSentRemindersCount(button);
 
@@ -121,9 +108,7 @@ const ActionButtons: React.FC<Props> = ({
         case 'print':
           return (
             <Tooltip title={t('buttons.print.tooltip')}>
-              <Badge dot={typeof printed === 'boolean'} color={printed ? 'green' : 'red'}>
-                <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={onPrint} disabled={disabled} />
-              </Badge>
+              <Button shape="circle" icon={<Icon component={FaPrint} />} onClick={onPrint} disabled={disabled} />
             </Tooltip>
           );
 
@@ -175,20 +160,7 @@ const ActionButtons: React.FC<Props> = ({
           throw new Error('not implemented buttom');
       }
     },
-    [
-      getDisabled,
-      getPrinted,
-      getSent,
-      getSentRemindersCount,
-      onAttendance,
-      onClone,
-      onEdit,
-      onFee,
-      onPrint,
-      onReminder,
-      onSend,
-      t,
-    ]
+    [getDisabled, getSent, getSentRemindersCount, onAttendance, onClone, onEdit, onFee, onPrint, onReminder, onSend, t]
   );
 
   return (

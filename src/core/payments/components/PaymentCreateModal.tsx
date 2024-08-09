@@ -16,7 +16,6 @@ import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { dateToYearMonth, getYears } from '../../../utils/utils';
 import PDF from '../pdfs/receipt-pdf';
-import { AuthenticationContext } from '../../../contexts';
 import { FeeSearcher } from '../../fees/components';
 
 interface Props {
@@ -34,7 +33,7 @@ const initialValues = {
 };
 
 const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
-  const { currentUser } = React.useContext(AuthenticationContext);
+  // const { currentUser } = React.useContext(AuthenticationContext);
   const [form] = Form.useForm();
   const { t } = useTranslation();
   const { message } = App.useApp();
@@ -70,20 +69,21 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   }, [t]);
 
   const disableSendEmail = React.useMemo(() => {
-    const result = !member?.email || !currentUser?.emailSettings;
+    // const result = !member?.email || !currentUser?.emailSettings; // TODO settings emailSettings
+    const result = !member?.email;
     return result;
-  }, [currentUser?.emailSettings, member?.email]);
+  }, [member?.email]);
 
   const helpSendEmail = React.useMemo(() => {
     const texts: string[] = [];
     if (member && !member.email) {
       texts.push(t('payments.form.sendEmail.help.member'));
     }
-    if (!currentUser!.emailSettings) {
-      texts.push(t('payments.form.sendEmail.help.currentUser'));
-    }
+    // if (!currentUser!.emailSettings) {
+    //   texts.push(t('payments.form.sendEmail.help.currentUser'));
+    // }
     return texts.join(', ');
-  }, [currentUser, member, t]);
+  }, [member, t]);
 
   const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
     refetchQueries: ['Payments', 'Members'],

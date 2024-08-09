@@ -13,21 +13,30 @@ export const ME_QUERY = gql`
     me {
       id
       username
+    }
+  }
+`;
+
+export const SETTING_QUERY = gql`
+  query Setting {
+    setting {
       emailSettings {
         host
         port
         secure
-        ignoreTLS
         email
-        receiptEmail {
+      }
+      emailTextList {
+        receipt {
           subject
           body
         }
-        reminderEmail {
+        reminder {
           subject
           body
         }
       }
+      reminderEmailMonthDay
     }
   }
 `;

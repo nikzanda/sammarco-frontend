@@ -8,27 +8,27 @@ export const VERIFY_EMAIL_SETTINGS = gql`
   }
 `;
 
-export const USER_UPDATE_MUTATION = gql`
-  mutation UserUpdate($input: UserUpdateInput!) {
-    userUpdate(input: $input) {
-      user {
-        id
-        username
+export const SETTING_UPDATE_MUTATION = gql`
+  mutation SettingUpdate($input: SettingUpdateInput!) {
+    settingUpdate(input: $input) {
+      setting {
         emailSettings {
           host
           port
           secure
-          ignoreTLS
           email
-          receiptEmail {
+        }
+        emailTextList {
+          receipt {
             subject
             body
           }
-          reminderEmail {
+          reminder {
             subject
             body
           }
         }
+        reminderEmailMonthDay
       }
     }
   }

@@ -6,7 +6,6 @@ import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps } from 'ant
 import { useSearchParams } from 'react-router-dom';
 import { AuthenticationContext } from '../contexts';
 import { EmailSettingsForm, EmailTextsForm } from './components';
-import { useUserUpdateMutation } from '../generated/graphql';
 import { useDisplayGraphQLErrors } from '../hooks';
 
 const DEFAULT_TAB = 'email-settings';
@@ -24,31 +23,31 @@ const SettingsPage: React.FC = () => {
     setSearchParams(searchParams);
   }, [searchParams, setSearchParams, tab]);
 
-  const initialValues = React.useMemo(() => {
-    if (!currentUser!.emailSettings) {
-      return {
-        emailSettings: { secure: false, ignoreTLS: false },
-      };
-    }
-    return currentUser;
-  }, [currentUser]);
+  // const initialValues = React.useMemo(() => {
+  //   if (!currentUser!.emailSettings) {
+  //     return {
+  //       emailSettings: { secure: false, ignoreTLS: false },
+  //     };
+  //   }
+  //   return currentUser;
+  // }, [currentUser]);
 
-  const [updateUser, { loading, error }] = useUserUpdateMutation({
-    refetchQueries: ['Me'],
-    onCompleted: () => {
-      message.success(t('settings.saved'));
-    },
-  });
+  // const [updateUser, { loading, error }] = useUserUpdateMutation({
+  //   refetchQueries: ['Me'],
+  //   onCompleted: () => {
+  //     message.success(t('settings.saved'));
+  //   },
+  // });
 
-  useDisplayGraphQLErrors(error);
+  // useDisplayGraphQLErrors(error);
 
-  const handleFinish: FormProps['onFinish'] = (values) => {
-    updateUser({
-      variables: {
-        input: values,
-      },
-    });
-  };
+  // const handleFinish: FormProps['onFinish'] = (values) => {
+  //   updateUser({
+  //     variables: {
+  //       input: values,
+  //     },
+  //   });
+  // };
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -60,13 +59,19 @@ const SettingsPage: React.FC = () => {
           type="primary"
           size="large"
           icon={<Icon component={FaSave} />}
-          loading={loading}
+          // loading={loading}
         >
           {t('commons.save')}
         </Button>
       </Flex>
 
-      <Form id="form" initialValues={initialValues} layout="vertical" autoComplete="off" onFinish={handleFinish}>
+      <Form
+        id="form"
+        // initialValues={initialValues}
+        layout="vertical"
+        autoComplete="off"
+        // onFinish={handleFinish}
+      >
         <Tabs
           activeKey={tab}
           onChange={setTab}
