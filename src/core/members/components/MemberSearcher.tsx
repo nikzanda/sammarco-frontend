@@ -18,14 +18,14 @@ const defaultProps = {
   onClear: () => {},
 };
 
-type Props = {
+interface Props {
   value?: string;
   queryFilters?: MemberFilter;
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
   onChange?: (value: string, member: MemberSearcherQuery['member']) => void;
   onClear?: SelectProps['onClear'];
-};
+}
 
 const MemberSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowClear, onChange, onClear }) => {
   const {

@@ -18,14 +18,14 @@ const defaultProps = {
   onClear: () => {},
 };
 
-type Props = {
+interface Props {
   value?: string;
   queryFilters?: CourseFilter;
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
   onChange?: (value: string, course: CourseSearcherQuery['course']) => void;
   onClear?: SelectProps['onClear'];
-};
+}
 
 const CourseSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowClear, onChange, onClear }) => {
   const {

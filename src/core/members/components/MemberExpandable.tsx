@@ -7,9 +7,9 @@ import Icon from '@ant-design/icons';
 import { MemberListItemFragment } from '../../../generated/graphql';
 import { getYears } from '../../../utils/utils';
 
-type Props = {
+interface Props {
   member: MemberListItemFragment;
-};
+}
 
 const MemberExpandable: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();

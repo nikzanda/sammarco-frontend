@@ -12,13 +12,13 @@ const defaultProps = {
   onClear: () => {},
 };
 
-type Props = {
+interface Props {
   value?: string[];
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
   onChange?: (value: string[], members: MembersSearcherQuery['members']['data']) => void;
   onClear?: SelectProps['onClear'];
-};
+}
 
 const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
   const {

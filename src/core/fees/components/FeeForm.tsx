@@ -8,9 +8,9 @@ const defaultProps = {
   fee: undefined,
 };
 
-type Props = {
+interface Props {
   fee?: FeeDetailFragment;
-};
+}
 
 const FeeForm: React.FC<Props> = ({ fee }) => {
   const { t } = useTranslation();

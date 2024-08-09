@@ -14,7 +14,7 @@ const defaultProps = {
   onClear: () => {},
 };
 
-type Props = {
+interface Props {
   value?: string;
   queryFilters?: FeeFilter;
   showCourse?: boolean;
@@ -22,7 +22,7 @@ type Props = {
   allowClear?: SelectProps['allowClear'];
   onChange?: (value: string, fee: FeeSearcherQuery['fee']) => void;
   onClear?: SelectProps['onClear'];
-};
+}
 
 const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disabled, allowClear, onChange, onClear }) => {
   const {

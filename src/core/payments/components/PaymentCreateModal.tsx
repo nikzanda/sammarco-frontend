@@ -19,11 +19,11 @@ import PDF from '../pdfs/receipt-pdf';
 import { AuthenticationContext } from '../../../contexts';
 import { FeeSearcher } from '../../fees/components';
 
-type Props = {
+interface Props {
   memberId: string;
   courseIds: string[];
   onCancel: () => void;
-};
+}
 
 const initialValues = {
   date: Date.now(),

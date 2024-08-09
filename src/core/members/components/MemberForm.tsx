@@ -5,9 +5,9 @@ import { DatePicker } from '../../../components';
 import { isTaxCodeValid, isMinor as isMinorFn } from '../helpers';
 import { CoursePicker, ShiftPicker } from '../../courses/components';
 
-type Props = {
+interface Props {
   form: FormInstance<any>;
-};
+}
 
 const MemberForm: React.FC<Props> = ({ form }) => {
   const { t } = useTranslation();

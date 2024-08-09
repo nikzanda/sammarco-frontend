@@ -26,9 +26,9 @@ import { PaymentCreateModal } from '../../payments/components';
 
 const PAGE_SIZE = 10;
 
-type Props = {
+interface Props {
   member: MemberDetailFragment;
-};
+}
 
 const MemberPayments: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();

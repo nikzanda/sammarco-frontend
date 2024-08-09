@@ -6,10 +6,10 @@ import { MemberDetailFragment, useMemberUploadMutation } from '../../../generate
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-type Props = {
+interface Props {
   member: MemberDetailFragment;
   form: FormInstance<any>;
-};
+}
 
 const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
   const { t } = useTranslation();

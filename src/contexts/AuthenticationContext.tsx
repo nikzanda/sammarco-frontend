@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { ApolloError, useApolloClient } from '@apollo/client';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { MeQuery, useLoginMutation, useMeQuery } from '../generated/graphql';
@@ -12,10 +12,6 @@ interface IAuthenticationContext {
   loginError?: ApolloError;
   logout?: () => void;
 }
-
-type Props = {
-  children: React.ReactNode;
-};
 
 const isAuthenticated = () => {
   const token = window.localStorage.getItem('token');
@@ -36,7 +32,7 @@ const isAuthenticated = () => {
 
 export const AuthenticationContext = React.createContext<IAuthenticationContext>({});
 
-export const AuthenticationProvider: React.FC<Props> = ({ children }) => {
+export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [loginAction, { loading: mutationLoading, data: mutationData, error: mutationError }] = useLoginMutation();
 
   const client = useApolloClient();

@@ -25,9 +25,9 @@ import { Calendar } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { AttendanceCreateModal } from '../../attendances/components';
 
-type Props = {
+interface Props {
   member: MemberDetailFragment;
-};
+}
 
 const MemberCalendar: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();

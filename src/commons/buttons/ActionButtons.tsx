@@ -24,7 +24,7 @@ const defaultProps = {
   onReminder: () => {},
 };
 
-type Props = {
+interface Props {
   buttons: ActionButtonsType;
   onEdit?: () => void;
   onClone?: () => void;
@@ -33,7 +33,7 @@ type Props = {
   onFee?: () => void;
   onAttendance?: () => void;
   onReminder?: () => void;
-};
+}
 
 const ActionButtons: React.FC<Props> = ({
   buttons,

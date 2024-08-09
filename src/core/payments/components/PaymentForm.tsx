@@ -13,10 +13,10 @@ const defaultProps = {
   payment: undefined,
 };
 
-type Props = {
+interface Props {
   form: FormInstance<any>;
   payment?: PaymentDetailFragment;
-};
+}
 
 const PaymentForm: React.FC<Props> = ({ form, payment }) => {
   const { t } = useTranslation();

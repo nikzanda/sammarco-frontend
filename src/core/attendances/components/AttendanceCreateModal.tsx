@@ -7,11 +7,11 @@ import { DatePicker } from '../../../components';
 import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-type Props = {
+interface Props {
   memberIds: string[];
   courseIds: string[];
   onCancel: (success: boolean) => void;
-};
+}
 
 const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel }) => {
   const { t } = useTranslation();

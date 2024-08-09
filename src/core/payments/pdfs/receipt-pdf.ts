@@ -450,7 +450,7 @@ class PDF {
                     })),
                 },
                 {
-                  text: `${cardinalConverter(this.payment.amount).toUpperCase()}/00`,
+                  text: cardinalConverter(this.payment.amount, { includeDecimals: true }).toUpperCase(),
                   fontSize: 15,
                   bold: true,
                   margin: [0, -17],

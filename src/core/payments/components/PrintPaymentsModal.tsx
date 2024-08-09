@@ -5,9 +5,9 @@ import { endOfMonth, startOfMonth } from 'date-fns';
 import { DatePicker } from '../../../components';
 import PDF from '../pdfs/receipt-pdf';
 
-type Props = {
+interface Props {
   onCancel: () => void;
-};
+}
 
 const PrintPaymentsModal: React.FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
