@@ -1,12 +1,12 @@
 import React from 'react';
-import { Checkbox, CheckboxProps, Divider, Modal } from 'antd';
+import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { CSVDownload } from 'react-csv';
 import { format } from 'date-fns';
 import { useMembersCsvLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-
-const fields = ['name', 'surname', 'taxCode', 'email', 'enrolledAt', 'address', 'csenCardNumber', 'courses'];
+import { getYears } from '../../../utils/utils';
+import { getBirthPlace } from '../../../utils';
 
 interface Props {
   onCancel: () => void;
@@ -15,40 +15,25 @@ interface Props {
 const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
 
-  const [checkedList, setCheckedList] = React.useState<string[]>(fields);
-
-  const isIncluded = React.useCallback(
-    (field: string) => {
-      const result = checkedList.includes(field);
-      return result;
-    },
-    [checkedList]
-  );
-
-  const options = fields.map((field) => ({
-    label: t(`members.csv.${field}`),
-    value: field,
-  }));
-
-  const headers = React.useMemo(() => {
-    const result = fields
-      .map((field) => ({
-        label: t(`members.csv.${field}`),
-        key: field,
-      }))
-      .filter(({ key }) => isIncluded(key));
-    return result;
-  }, [isIncluded, t]);
+  const headers = [
+    { label: t('members.csv.socialCardNumber'), key: 'socialCardNumber' },
+    { label: t('members.csv.registrationRequestDate'), key: 'registrationRequestDate' },
+    { label: t('members.csv.registrationAcceptanceDate'), key: 'registrationAcceptanceDate' },
+    { label: t('members.csv.fullName'), key: 'fullName' },
+    { label: t('members.csv.birthday'), key: 'birthday' },
+    { label: t('members.csv.birthPlace'), key: 'birthPlace' },
+    { label: t('members.csv.taxCode'), key: 'taxCode' },
+    { label: t('members.csv.address'), key: 'address' },
+    { label: t('members.csv.qualification'), key: 'qualification' },
+    { label: t('members.csv.socialYear'), key: 'socialYear' },
+    { label: t('members.csv.paidMembershipFee'), key: 'paidMembershipFee' },
+    { label: t('members.csv.csenCardNumber'), key: 'csenCardNumber' },
+    { label: t('members.csv.asiCardNumber'), key: 'asiCardNumber' },
+  ];
 
   const [getMembers, { data: queryData, loading: queryLoading, error: queryError }] = useMembersCsvLazyQuery({
     variables: {
-      includeName: isIncluded('name'),
-      includeSurname: isIncluded('surname'),
-      includeTaxCode: isIncluded('taxCode'),
-      includeEmail: isIncluded('email'),
-      includeAddress: isIncluded('address'),
-      includeCsenCardNumber: isIncluded('csenCardNumber'),
-      includeCourses: isIncluded('courses'),
+      years: getYears(),
     },
   });
 
@@ -56,26 +41,24 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
 
   const csvData = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
-      return queryData.members.data.map(({ courses, ...member }) => ({
-        ...member,
-        courses: courses?.map(({ name }) => name).join(', '),
-      }));
+      return queryData.members.data.map(
+        ({ registrationRequestDate, registrationAcceptanceDate, birthday, taxCode, qualification, ...member }) => ({
+          ...member,
+          taxCode,
+          birthPlace: getBirthPlace(taxCode),
+          birthday: format(birthday, 'dd/MM/yyyy'),
+          registrationRequestDate: registrationRequestDate && format(registrationRequestDate, 'dd/MM/yyyy'),
+          registrationAcceptanceDate: registrationAcceptanceDate && format(registrationAcceptanceDate, 'dd/MM/yyyy'),
+          socialYear: getYears()[0],
+          qualification: t(`members.qualification.${qualification}`),
+        })
+      );
     }
     return undefined;
-  }, [queryData, queryError, queryLoading]);
-
-  const onChange = (list: string[]) => {
-    setCheckedList(list);
-  };
-
-  const onCheckAllChange: CheckboxProps['onChange'] = (e) => {
-    setCheckedList(e.target.checked ? options.map(({ value }) => value) : []);
-  };
+  }, [queryData, queryError, queryLoading, t]);
 
   const handleExport = () => {
-    if (checkedList.length > 0) {
-      getMembers();
-    }
+    getMembers();
   };
 
   return (
@@ -87,19 +70,8 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
       okButtonProps={{
         loading: queryLoading,
         onClick: handleExport,
-        disabled: checkedList.length === 0,
       }}
     >
-      <Checkbox
-        indeterminate={checkedList.length > 0 && checkedList.length < options.length}
-        onChange={onCheckAllChange}
-        checked={options.length === checkedList.length}
-      >
-        {t('commons.checkAll')}
-      </Checkbox>
-      <Divider plain />
-      <Checkbox.Group options={options} value={checkedList} onChange={onChange} />
-
       {csvData && <CSVDownload data={csvData} headers={headers} filename={format(Date.now(), 'yyyy-MM-dd_HH:mm:ss')} />}
     </Modal>
   );

@@ -190,7 +190,7 @@ const PaymentEditPage: React.FC = () => {
                     autoComplete="off"
                     onFinish={handleFinish}
                   >
-                    <PaymentForm form={form} payment={payment} />
+                    <PaymentForm payment={payment} />
                   </Form>
 
                   <Updates updates={payment} />

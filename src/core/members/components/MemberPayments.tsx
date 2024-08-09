@@ -88,7 +88,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
   });
 
   const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
-    refetchQueries: ['Payments'],
+    refetchQueries: ['Payments', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));
     },

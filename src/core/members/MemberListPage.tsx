@@ -235,7 +235,7 @@ const MemberListPage: React.FC = () => {
             []
           );
           return (
-            <Space direction="vertical" size="small">
+            <Flex vertical>
               {shifts.map((shift) => {
                 const from = set(Date.now(), { hours: shift.from[0], minutes: shift.from[1] });
                 const to = set(Date.now(), { hours: shift.to[0], minutes: shift.to[1] });
@@ -247,7 +247,7 @@ const MemberListPage: React.FC = () => {
                   </span>
                 );
               })}
-            </Space>
+            </Flex>
           );
         },
       },

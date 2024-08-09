@@ -114,7 +114,7 @@ const PaymentListPage: React.FC = () => {
   });
 
   const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
-    refetchQueries: ['Payments', 'Payment'],
+    refetchQueries: ['Payments', 'Payment', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));
     },

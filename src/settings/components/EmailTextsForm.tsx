@@ -8,15 +8,15 @@ const EmailTextsForm: React.FC = () => {
   return (
     <Collapse
       items={['receipt', 'reminder'].map((type) => ({
-        label: t(`settings.emailSettings.type.${type}`),
+        label: t(`settings.emailTextList.type.${type}`),
         key: type,
         children: (
           <Row gutter={24}>
             <Col xs={24} md={12} xxl={8}>
               <Form.Item
-                label={t('settings.form.emailSettings.subject.label')}
-                help={t('settings.form.emailSettings.subject.help')}
-                name={['emailSettings', `${type}Email`, 'subject']}
+                label={t('settings.form.emailText.subject.label')}
+                help={t('settings.form.emailText.subject.help')}
+                name={['emailTextList', type, 'subject']}
               >
                 <Input />
               </Form.Item>
@@ -24,9 +24,9 @@ const EmailTextsForm: React.FC = () => {
 
             <Col span={24}>
               <Form.Item
-                label={t('settings.form.emailSettings.body.label')}
-                help={<span className="break-line">{t('settings.form.emailSettings.body.help')}</span>}
-                name={['emailSettings', `${type}Email`, 'body']}
+                label={t('settings.form.emailText.body.label')}
+                help={<span className="break-line">{t('settings.form.emailTextList.body.help')}</span>}
+                name={['emailTextList', type, 'body']}
               >
                 <Input.TextArea rows={6} />
               </Form.Item>

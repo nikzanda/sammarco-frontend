@@ -93,11 +93,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         autoComplete="off"
         onFinish={handleSubmit}
       >
-        <Form.Item
-          label={t('attendances.form.course')}
-          name="courseId"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+        <Form.Item label={t('attendances.form.course')} name="courseId" rules={[{ required: true }]}>
           <CourseSearcher
             queryFilters={{ ids: courseIds }}
             allowClear={false}
@@ -146,7 +142,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         <Form.Item
           label={t('attendances.form.date')}
           name="date"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: number) => {
             if (v) {
               return { value: new Date(v) };
@@ -179,7 +175,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         <Form.Item
           label={t('attendances.form.fromTo')}
           name="fromTo"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: [number, number]) => {
             if (v?.length) {
               return { value: v.map((d) => new Date(d)) };

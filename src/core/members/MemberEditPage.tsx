@@ -178,8 +178,7 @@ const MemberEditPage: React.FC = () => {
                 key: 'details',
                 children: (
                   <>
-                    <MemberForm form={form} />
-
+                    <MemberForm />
                     <Updates updates={member} />
                   </>
                 ),
@@ -187,7 +186,7 @@ const MemberEditPage: React.FC = () => {
               {
                 label: t('members.tab.medicalCertificate'),
                 key: 'certificate',
-                children: <MemberMedicalCertificate member={member} form={form} />,
+                children: <MemberMedicalCertificate member={member} />,
               },
               {
                 label: t('members.tab.payments'),

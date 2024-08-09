@@ -113,27 +113,20 @@ export const MEMBER_QUERY = gql`
 `;
 
 export const MEMBERS_CSV_QUERY = gql`
-  query MembersCsv(
-    $filter: MemberFilter
-    $includeName: Boolean!
-    $includeSurname: Boolean!
-    $includeTaxCode: Boolean!
-    $includeEmail: Boolean!
-    $includeAddress: Boolean!
-    $includeCsenCardNumber: Boolean!
-    $includeCourses: Boolean!
-  ) {
-    members(pageIndex: 0, pageSize: 0, filter: $filter) {
+  query MembersCsv($years: [Int!]!) {
+    members(pageIndex: 0, pageSize: 0) {
       data {
-        name @include(if: $includeName)
-        surname @include(if: $includeSurname)
-        taxCode @include(if: $includeTaxCode)
-        email @include(if: $includeEmail)
-        address @include(if: $includeAddress)
-        csenCardNumber @include(if: $includeCsenCardNumber)
-        courses @include(if: $includeCourses) {
-          name
-        }
+        socialCardNumber
+        registrationRequestDate
+        registrationAcceptanceDate
+        fullName
+        birthday
+        taxCode
+        address
+        qualification
+        paidMembershipFee(years: $years)
+        csenCardNumber
+        asiCardNumber
       }
     }
   }

@@ -61,7 +61,7 @@ const MemberCreatePage: React.FC = () => {
       </Row>
 
       <Form id="form" form={form} layout="vertical" autoComplete="off" onFinish={handleFinish}>
-        <MemberForm form={form} />
+        <MemberForm />
       </Form>
     </Space>
   );

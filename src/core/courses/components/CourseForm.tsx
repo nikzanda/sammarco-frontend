@@ -16,7 +16,7 @@ const CourseForm: React.FC = () => {
           label={t('courses.form.name')}
           // TODO: validare nome univoco
           name="name"
-          rules={[{ required: true, message: t('validations.required')! }]}
+          rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
@@ -67,7 +67,7 @@ const CourseForm: React.FC = () => {
                               {...field}
                               label={t('courses.form.shift')}
                               name={[name, 'range']}
-                              rules={[{ required: true, message: t('validations.required') }]}
+                              rules={[{ required: true }]}
                               getValueProps={(v: [number, number]) => {
                                 if (v?.length) {
                                   return { value: v.map((d) => new Date(d)) };

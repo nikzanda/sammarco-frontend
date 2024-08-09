@@ -4,14 +4,15 @@ import { FaSave } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import { AuthenticationContext } from '../contexts';
-import { EmailSettingsForm, EmailTextsForm } from './components';
+import { SettingsContext } from '../contexts';
+import { EmailSettingsForm, EmailTextsForm, ReminderSendForm } from './components';
 import { useDisplayGraphQLErrors } from '../hooks';
+import { useSettingUpdateMutation } from '../generated/graphql';
 
 const DEFAULT_TAB = 'email-settings';
 
 const SettingsPage: React.FC = () => {
-  const { currentUser } = React.useContext(AuthenticationContext);
+  const { settings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const { message } = App.useApp();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,31 +24,22 @@ const SettingsPage: React.FC = () => {
     setSearchParams(searchParams);
   }, [searchParams, setSearchParams, tab]);
 
-  // const initialValues = React.useMemo(() => {
-  //   if (!currentUser!.emailSettings) {
-  //     return {
-  //       emailSettings: { secure: false, ignoreTLS: false },
-  //     };
-  //   }
-  //   return currentUser;
-  // }, [currentUser]);
+  const [updateUser, { loading: mutationLoading, error: mutationError }] = useSettingUpdateMutation({
+    refetchQueries: ['Me'],
+    onCompleted: () => {
+      message.success(t('settings.saved'));
+    },
+  });
 
-  // const [updateUser, { loading, error }] = useUserUpdateMutation({
-  //   refetchQueries: ['Me'],
-  //   onCompleted: () => {
-  //     message.success(t('settings.saved'));
-  //   },
-  // });
+  useDisplayGraphQLErrors(mutationError);
 
-  // useDisplayGraphQLErrors(error);
-
-  // const handleFinish: FormProps['onFinish'] = (values) => {
-  //   updateUser({
-  //     variables: {
-  //       input: values,
-  //     },
-  //   });
-  // };
+  const handleFinish: FormProps['onFinish'] = (values) => {
+    updateUser({
+      variables: {
+        input: values,
+      },
+    });
+  };
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -59,19 +51,13 @@ const SettingsPage: React.FC = () => {
           type="primary"
           size="large"
           icon={<Icon component={FaSave} />}
-          // loading={loading}
+          loading={mutationLoading}
         >
           {t('commons.save')}
         </Button>
       </Flex>
 
-      <Form
-        id="form"
-        // initialValues={initialValues}
-        layout="vertical"
-        autoComplete="off"
-        // onFinish={handleFinish}
-      >
+      <Form id="form" initialValues={settings} layout="vertical" autoComplete="off" onFinish={handleFinish}>
         <Tabs
           activeKey={tab}
           onChange={setTab}
@@ -85,6 +71,11 @@ const SettingsPage: React.FC = () => {
               label: t('settings.tab.emailTexts'),
               key: 'email-texts',
               children: <EmailTextsForm />,
+            },
+            {
+              label: t('settings.tab.reminderSend'),
+              key: 'reminder-send',
+              children: <ReminderSendForm />,
             },
           ]}
         />

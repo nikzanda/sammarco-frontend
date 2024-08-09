@@ -30,6 +30,15 @@
         "expire": "Scadenza certificato medico"
       }
     },
+    "divider": {
+      "memberData": "Dati socio"
+    },
+    "qualification": {
+      "PRESIDENT": "Presidente",
+      "VICE_PRESIDENT": "Vice presidente",
+      "SECRETARY": "Segretario",
+      "ORDINARY_MEMBER": "Socio ordinario"
+    },
     "table": {
       "fullName": "Nome",
       "courses": "Corsi",
@@ -50,13 +59,18 @@
       "name": "Nome",
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
+      "address": "Indirizzo",
       "email": "Email",
       "parent": {
         "name": "Nome genitore",
         "surname": "Cognome genitore",
         "taxCode": "Codice fiscale genitore"
       },
-      "address": "Indirizzo",
+      "qualification": "Qualifica",
+      "registrationRequestDate": "Data di richiesta iscrizione",
+      "registrationAcceptanceDate": "Data di accettazione dell'iscrizione",
+      "socialCardNumber": "Numero tessera sociale",
+      "asiCardNumber": "Numero tessera ASI",
       "csenCardNumber": "Numero tessera CSEN",
       "courses": "Corsi",
       "shifts": "Turni corsi",
@@ -66,13 +80,19 @@
       "created": "Nuovo pagamento inserito"
     },
     "csv": {
-      "name": "Nome",
-      "surname": "Cognome",
+      "socialCardNumber": "Numero tessera sociale",
+      "registrationRequestDate": "Data di richiesta iscrizione",
+      "registrationAcceptanceDate": "Data di accettazione dell'iscrizione",
+      "fullName": "Nome",
+      "birthday": "Data di nascita",
+      "birthPlace": "Luogo di nascita",
       "taxCode": "Codice fiscale",
-      "email": "Email",
       "address": "Indirizzo",
+      "qualification": "Qualifica",
+      "socialYear": "Anno sociale",
+      "paidMembershipFee": "Quota sociale versata",
       "csenCardNumber": "Numero tessera CSEN",
-      "courses": "Corsi"
+      "asiCardNumber": "Numero tessera ASI"
     }
   },
   "courses": {
@@ -271,21 +291,31 @@
     "saved": "Impostazioni aggiornate correttamente",
     "tab": {
       "emailSettings": "Impostazioni email",
-      "emailTexts": "Testi email"
+      "emailTexts": "Testi email",
+      "reminderSend": "Invio sollecito"
     },
     "emailSettings": {
-      "type": {
-        "receipt": "Testo per l'invio della ricevuta del pagamento",
-        "reminder": "Testo per l'invio del sollecito pagamento"
-      },
       "verify": {
         "label": "Verifica",
         "tooltip": "Assicurati di aver salvato prima di verificare"
       },
       "verified": "Email verificata"
     },
+    "emailTextList": {
+      "type": {
+        "receipt": "Testo per l'invio della ricevuta del pagamento",
+        "reminder": "Testo per l'invio del sollecito pagamento"
+      }
+    },
     "form": {
       "emailSettings": {
+        "host": "Host",
+        "port": "Porta",
+        "secure": "Usa TLS",
+        "email": "Email",
+        "password": "Inserisci nuova password"
+      },
+      "emailText": {
         "subject": {
           "label": "Oggetto",
           "help": "Utilizza i placeholder [MESE] e/o [ANNO] per sostituire rispettivamente mese del pagamento e/o anno d'iscrizione."
@@ -293,14 +323,9 @@
         "body": {
           "label": "Contenuto",
           "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
-        },
-        "host": "Host",
-        "port": "Porta",
-        "secure": "Usa TLS",
-        "ignoreTLS": "Ignora TLS",
-        "email": "Email",
-        "password": "Password"
-      }
+        }
+      },
+      "reminderEmailMonthDay": "Giorno del mese in cui inviare la mail di sollecito"
     }
   },
   "buttons": {

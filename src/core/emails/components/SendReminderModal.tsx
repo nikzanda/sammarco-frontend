@@ -65,18 +65,14 @@ const SendReminderModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) =
         initialValues={initialValues}
         onFinish={handleSubmit}
       >
-        <Form.Item
-          label={t('emails.form.course')}
-          name="courseId"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+        <Form.Item label={t('emails.form.course')} name="courseId" rules={[{ required: true }]}>
           <CourseSearcher queryFilters={{ ids: courseIds }} allowClear={false} />
         </Form.Item>
 
         <Form.Item
           label={t('emails.form.month')}
           name="month"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: string) => {
             if (v) {
               const [year, month] = v.split('-');

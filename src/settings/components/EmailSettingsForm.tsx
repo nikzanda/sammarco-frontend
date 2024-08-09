@@ -24,13 +24,21 @@ const EmailSettingsForm: React.FC = () => {
     <>
       <Row gutter={24}>
         <Col xs={24} md={12} xxl={8}>
-          <Form.Item label={t('settings.form.emailSettings.host')} name={['emailSettings', 'host']}>
+          <Form.Item
+            label={t('settings.form.emailSettings.host')}
+            name={['emailSettings', 'host']}
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
         </Col>
 
         <Col xs={24} md={12} xxl={8}>
-          <Form.Item label={t('settings.form.emailSettings.port')} name={['emailSettings', 'port']}>
+          <Form.Item
+            label={t('settings.form.emailSettings.port')}
+            name={['emailSettings', 'port']}
+            rules={[{ required: true }]}
+          >
             <InputNumber min={1} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
@@ -40,16 +48,7 @@ const EmailSettingsForm: React.FC = () => {
             label={t('settings.form.emailSettings.secure')}
             name={['emailSettings', 'secure']}
             valuePropName="checked"
-          >
-            <Switch />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} md={12} xxl={8}>
-          <Form.Item
-            label={t('settings.form.emailSettings.ignoreTLS')}
-            name={['emailSettings', 'ignoreTLS']}
-            valuePropName="checked"
+            rules={[{ required: true }]}
           >
             <Switch />
           </Form.Item>
