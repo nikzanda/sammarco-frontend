@@ -36,15 +36,20 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
 });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, extensions, locations, path }) => {
+      if (extensions.code === 'UNAUTHORIZED') {
+        window.localStorage.removeItem('token');
+        window.location.replace('/');
+      }
+
+      // eslint-disable-next-line no-console
+      console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+    });
+  }
   if (networkError) {
     // eslint-disable-next-line no-console
-    console.error('networkError:', networkError);
-  }
-  if (graphQLErrors) {
-    graphQLErrors.map(({ message, locations, path }) =>
-      // eslint-disable-next-line no-console
-      console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-    );
+    console.error(networkError);
   }
 });
 
