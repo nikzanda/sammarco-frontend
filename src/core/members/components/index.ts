@@ -6,3 +6,4 @@ export { default as MemberSearcher } from './MemberSearcher';
 export { default as MemberPicker } from './MemberPicker';
 export { default as MemberTableFilter } from './MemberTableFilter';
 export { default as MemberExpandable } from './MemberExpandable';
+export { default as ExportMembersModal } from './ExportMembersModal';

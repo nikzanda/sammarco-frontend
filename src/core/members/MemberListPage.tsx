@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaPlus } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -34,8 +34,9 @@ import { ActionButtons, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getYears } from '../../utils/utils';
-import { MemberExpandable } from './components';
+import { ExportMembersModal, MemberExpandable } from './components';
 import { DatePicker } from '../../components';
+import { SendReminderModal } from '../emails/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -50,6 +51,8 @@ const MemberListPage: React.FC = () => {
   const [memberInfo, setMemberInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
   const [newPayment, setNewPayment] = React.useState(false);
   const [newAttendance, setNewAttendance] = React.useState(false);
+  const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
+  const [exportCsv, setExportCsv] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -232,7 +235,7 @@ const MemberListPage: React.FC = () => {
             []
           );
           return (
-            <Space direction="vertical" size="small">
+            <Flex vertical>
               {shifts.map((shift) => {
                 const from = set(Date.now(), { hours: shift.from[0], minutes: shift.from[1] });
                 const to = set(Date.now(), { hours: shift.to[0], minutes: shift.to[1] });
@@ -244,7 +247,7 @@ const MemberListPage: React.FC = () => {
                   </span>
                 );
               })}
-            </Space>
+            </Flex>
           );
         },
       },
@@ -253,9 +256,15 @@ const MemberListPage: React.FC = () => {
         dataIndex: 'id',
         align: 'right',
         fixed: 'right',
-        render: (id: string, { courses }) => (
+        width: 180,
+        render: (id: string, { courses, currentMonthReminderEmails }) => (
           <ActionButtons
-            buttons={['edit', 'fee', 'attendance']}
+            buttons={[
+              'edit',
+              'fee',
+              'attendance',
+              { button: 'reminder', sentRemindersCount: currentMonthReminderEmails.length },
+            ]}
             onEdit={() => navigate(`/members/${id}`)}
             onFee={() => {
               setMemberInfo({
@@ -270,6 +279,12 @@ const MemberListPage: React.FC = () => {
                 courseIds: courses.map((course) => course.id),
               });
               setNewAttendance(true);
+            }}
+            onReminder={() => {
+              setSendReminderData({
+                memberId: id,
+                courseIds: courses.map(({ id }) => id),
+              });
             }}
           />
         ),
@@ -299,9 +314,19 @@ const MemberListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <Flex justify="space-between" align="center">
         <Typography.Title level={2}>{t('members.name')}</Typography.Title>
-        <Button type="primary" size="large" icon={<Icon component={FaPlus} />} onClick={() => navigate('/members/new')}>
-          {t('members.new')}
-        </Button>
+        <Flex gap={12}>
+          <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
+            {t('commons.export.button')}
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            icon={<Icon component={FaPlus} />}
+            onClick={() => navigate('/members/new')}
+          >
+            {t('members.new')}
+          </Button>
+        </Flex>
       </Flex>
 
       <Row gutter={[12, 12]}>
@@ -438,6 +463,14 @@ const MemberListPage: React.FC = () => {
           }}
         />
       )}
+      {sendReminderData && (
+        <SendReminderModal
+          memberId={sendReminderData.memberId}
+          courseIds={sendReminderData.courseIds}
+          onCancel={() => setSendReminderData(undefined)}
+        />
+      )}
+      {exportCsv && <ExportMembersModal onCancel={() => setExportCsv(false)} />}
     </Space>
   );
 };

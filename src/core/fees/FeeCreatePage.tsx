@@ -1,8 +1,8 @@
 import React from 'react';
-import { App, Button, Col, Form, Row, Space, Typography } from 'antd';
+import { App, Button, Col, Form, FormProps, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { useFeeCreateMutation, useFeeLazyQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
@@ -59,7 +59,7 @@ const FeeCreatePage: React.FC = () => {
     return false;
   }, [initialValues, location.state]);
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     createFee({
       variables: {
         input: values,
@@ -82,7 +82,14 @@ const FeeCreatePage: React.FC = () => {
           <Typography.Title level={3}>{t('fees.new')}</Typography.Title>
         </Col>
         <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button type="primary" htmlType="submit" form="form" size="large" loading={mutationLoading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            form="form"
+            size="large"
+            loading={mutationLoading}
+            icon={<Icon component={FaSave} />}
+          >
             {t('buttons.save.label')}
           </Button>
         </Col>

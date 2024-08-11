@@ -29,6 +29,9 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
     medicalCertificate {
       expireAt
     }
+    currentMonthReminderEmails {
+      id
+    }
     shiftIds
   }
 `;
@@ -39,20 +42,25 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     name
     surname
     taxCode
+    address
+    qualification
     email
-    enrolledAt
+    registrationRequestDate
+    registrationAcceptanceDate
+    socialCardNumber
+    asiCardNumber
+    csenCardNumber
     parent {
       name
       surname
       taxCode
     }
-    address
-    canDelete
     shiftIds
     medicalCertificate {
-      attachment
+      base64
       expireAt
     }
+    canDelete
     createdAt
     updatedAt
   }
@@ -104,6 +112,26 @@ export const MEMBER_QUERY = gql`
   ${MEMBER_DETAIL_FRAGMENT}
 `;
 
+export const MEMBERS_CSV_QUERY = gql`
+  query MembersCsv($years: [Int!]!) {
+    members(pageIndex: 0, pageSize: 0) {
+      data {
+        socialCardNumber
+        registrationRequestDate
+        registrationAcceptanceDate
+        fullName
+        birthday
+        taxCode
+        address
+        qualification
+        paidMembershipFee(years: $years)
+        csenCardNumber
+        asiCardNumber
+      }
+    }
+  }
+`;
+
 export const MEMBER_CREATE_MUTATION = gql`
   mutation MemberCreate($input: MemberCreateInput!, $years: [Int!]) {
     memberCreate(input: $input) {
@@ -124,14 +152,6 @@ export const MEMBER_UPDATE_MUTATION = gql`
     }
   }
   ${MEMBER_DETAIL_FRAGMENT}
-`;
-
-export const MEMBER_UPLOAD_MUTATION = gql`
-  mutation MemberUpload($input: MemberUploadInput!) {
-    memberUpload(input: $input) {
-      success
-    }
-  }
 `;
 
 export const MEMBER_DELETE_MUTATION = gql`

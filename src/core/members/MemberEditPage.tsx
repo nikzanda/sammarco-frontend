@@ -1,13 +1,29 @@
 import React from 'react';
-import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import {
+  App,
+  Button,
+  Col,
+  Flex,
+  Form,
+  FormProps,
+  Popconfirm,
+  Result,
+  Row,
+  Skeleton,
+  Space,
+  Spin,
+  Tabs,
+  Typography,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaBell, FaSave } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { Updates } from '../../commons';
+import { EmailTable, SendReminderModal } from '../emails/components';
 
 const DEFAULT_TAB = 'details';
 
@@ -20,6 +36,7 @@ const MemberEditPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+  const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
 
   React.useEffect(() => {
     searchParams.set('tab', tab);
@@ -89,7 +106,7 @@ const MemberEditPage: React.FC = () => {
     });
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     updateMember({
       variables: {
         input: {
@@ -127,7 +144,14 @@ const MemberEditPage: React.FC = () => {
                 </Button>
               </Popconfirm>
             )}
-            <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              form="form"
+              size="large"
+              loading={updateLoading}
+              icon={<Icon component={FaSave} />}
+            >
               {t('buttons.save.label')}
             </Button>
           </Space>
@@ -154,8 +178,7 @@ const MemberEditPage: React.FC = () => {
                 key: 'details',
                 children: (
                   <>
-                    <MemberForm form={form} />
-
+                    <MemberForm />
                     <Updates updates={member} />
                   </>
                 ),
@@ -163,7 +186,7 @@ const MemberEditPage: React.FC = () => {
               {
                 label: t('members.tab.medicalCertificate'),
                 key: 'certificate',
-                children: <MemberMedicalCertificate member={member} form={form} />,
+                children: <MemberMedicalCertificate member={member} />,
               },
               {
                 label: t('members.tab.payments'),
@@ -175,9 +198,40 @@ const MemberEditPage: React.FC = () => {
                 key: 'calendar',
                 children: <MemberCalendar member={member} />,
               },
+              {
+                label: t('members.tab.emails'),
+                key: 'emails',
+                children: (
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    <Flex justify="end">
+                      <Button
+                        size="large"
+                        icon={<Icon component={FaBell} />}
+                        onClick={() => {
+                          setSendReminderData({
+                            memberId: member.id,
+                            courseIds: member.courses.map(({ id }) => id),
+                          });
+                        }}
+                      >
+                        {t('buttons.reminder.label')}
+                      </Button>
+                    </Flex>
+                    <EmailTable filters={{ memberIds: [id!] }} />
+                  </Space>
+                ),
+              },
             ]}
           />
         </Form>
+      )}
+
+      {sendReminderData && (
+        <SendReminderModal
+          memberId={sendReminderData.memberId}
+          courseIds={sendReminderData.courseIds}
+          onCancel={() => setSendReminderData(undefined)}
+        />
       )}
     </Space>
   );

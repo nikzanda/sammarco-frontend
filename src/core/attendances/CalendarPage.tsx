@@ -83,7 +83,7 @@ const CalendarPage: React.FC = () => {
   });
 
   const [deleteAttendances, { loading: mutationLoading, error: mutationError }] = useAttendanceDeleteManyMutation({
-    refetchQueries: ['Attendances'],
+    refetchQueries: ['Attendances', 'DayAttendances', 'DayExpireMedicalCertificates'],
     onCompleted: () => {
       message.success(t('calendar.deleted'));
       Modal.destroyAll();

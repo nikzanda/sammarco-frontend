@@ -13,14 +13,14 @@ const defaultProps = {
   onClear: () => {},
 };
 
-type Props = {
+interface Props {
   value?: string[];
   showCourse?: boolean;
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
   onChange?: (value: string[], fees: FeesSearcherQuery['fees']['data']) => void;
   onClear?: SelectProps['onClear'];
-};
+}
 
 const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, onChange, onClear }) => {
   const {

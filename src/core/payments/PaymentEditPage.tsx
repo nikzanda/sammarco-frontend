@@ -1,9 +1,23 @@
 import React from 'react';
-import { App, Button, Col, Form, Popconfirm, Result, Row, Skeleton, Space, Spin, Tabs, Typography } from 'antd';
+import {
+  App,
+  Button,
+  Col,
+  Form,
+  FormProps,
+  Popconfirm,
+  Result,
+  Row,
+  Skeleton,
+  Space,
+  Spin,
+  Tabs,
+  Typography,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { usePaymentDeleteMutation, usePaymentQuery, usePaymentUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
@@ -101,7 +115,7 @@ const PaymentEditPage: React.FC = () => {
     });
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     updatePayment({
       variables: {
         input: {
@@ -142,7 +156,14 @@ const PaymentEditPage: React.FC = () => {
             <Button size="large" loading={updateLoading} onClick={handlePrint}>
               {t('buttons.print.label')}
             </Button>
-            <Button type="primary" htmlType="submit" form="form" size="large" loading={updateLoading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              form="form"
+              size="large"
+              loading={updateLoading}
+              icon={<Icon component={FaSave} />}
+            >
               {t('buttons.save.label')}
             </Button>
           </Space>
@@ -169,7 +190,7 @@ const PaymentEditPage: React.FC = () => {
                     autoComplete="off"
                     onFinish={handleFinish}
                   >
-                    <PaymentForm form={form} payment={payment} />
+                    <PaymentForm payment={payment} />
                   </Form>
 
                   <Updates updates={payment} />

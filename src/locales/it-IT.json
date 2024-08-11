@@ -8,20 +8,20 @@
     }
   },
   "members": {
-    "name": "Iscritti",
-    "new": "Nuovo iscritto",
-    "created": "Nuovo iscritto creato",
-    "edited": "Iscritto aggiornato",
-    "deleted": "Iscritto eliminato",
+    "name": "Soci",
+    "new": "Nuovo socio",
+    "created": "Nuovo socio creato",
+    "edited": "Socio aggiornato",
+    "deleted": "Socio eliminato",
     "lessons_one": "{{number}} lezione",
     "lessons_other": "{{number}} lezioni",
     "filterByMonthsNotPaid": "Cerca per mese non pagato",
     "delete": {
-      "confirm": "Sei sicuro di voler eliminare l'iscritto?",
+      "confirm": "Sei sicuro di voler eliminare il socio?",
       "description": "Elimina {{fullName}}"
     },
     "alerts": {
-      "warnings": "Attenzione, ci sono degli avvisi per questo iscritto",
+      "warnings": "Attenzione, ci sono degli avvisi per questo socio",
       "currentEnrollmentNotPaid": "Iscrizione non pagata.",
       "medicalCertificate": {
         "empty": "Data di scadenza del certificato medico non inserita.",
@@ -29,6 +29,15 @@
         "expired": "Certificato medico scaduto.",
         "expire": "Scadenza certificato medico"
       }
+    },
+    "divider": {
+      "memberData": "Dati socio"
+    },
+    "qualification": {
+      "PRESIDENT": "Presidente",
+      "VICE_PRESIDENT": "Vice presidente",
+      "SECRETARY": "Segretario",
+      "ORDINARY_MEMBER": "Socio ordinario"
     },
     "table": {
       "fullName": "Nome",
@@ -43,26 +52,47 @@
       "details": "Dettagli",
       "payments": "Pagamenti",
       "medicalCertificate": "Certificato medico",
-      "calendar": "Calendario"
+      "calendar": "Calendario",
+      "emails": "Email"
     },
     "form": {
       "name": "Nome",
       "surname": "Cognome",
       "taxCode": "Codice fiscale",
+      "address": "Indirizzo",
       "email": "Email",
-      "enrolledAt": "Iscritto il",
       "parent": {
         "name": "Nome genitore",
         "surname": "Cognome genitore",
         "taxCode": "Codice fiscale genitore"
       },
-      "address": "Indirizzo",
+      "qualification": "Qualifica",
+      "registrationRequestDate": "Data di richiesta iscrizione",
+      "registrationAcceptanceDate": "Data di accettazione dell'iscrizione",
+      "socialCardNumber": "Numero tessera sociale",
+      "asiCardNumber": "Numero tessera ASI",
+      "csenCardNumber": "Numero tessera CSEN",
       "courses": "Corsi",
       "shifts": "Turni corsi",
       "expireAt": "Data di scadenza del certificato medico"
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
+    },
+    "csv": {
+      "socialCardNumber": "Numero tessera sociale",
+      "registrationRequestDate": "Data di richiesta iscrizione",
+      "registrationAcceptanceDate": "Data di accettazione dell'iscrizione",
+      "fullName": "Nome",
+      "birthday": "Data di nascita",
+      "birthPlace": "Luogo di nascita",
+      "taxCode": "Codice fiscale",
+      "address": "Indirizzo",
+      "qualification": "Qualifica",
+      "socialYear": "Anno sociale",
+      "paidMembershipFee": "Quota sociale versata",
+      "csenCardNumber": "Numero tessera CSEN",
+      "asiCardNumber": "Numero tessera ASI"
     }
   },
   "courses": {
@@ -149,13 +179,9 @@
       "all": "Massiva",
       "selected": "Righe selezionate"
     },
-    "export": {
-      "button": "Esporta",
-      "title": "Esporta CSV"
-    },
     "table": {
       "counter": "N.",
-      "member": "Iscritto",
+      "member": "Socio",
       "course": "Corso",
       "fee": "Quota",
       "amount": "Importo",
@@ -170,7 +196,7 @@
       "details": "Dettagli"
     },
     "form": {
-      "member": "Iscritto",
+      "member": "Socio",
       "fee": "Quota",
       "amount": "Importo",
       "month": "Mese",
@@ -181,7 +207,7 @@
       "sendEmail": {
         "label": "Invia ricevuta via email",
         "help": {
-          "member": "L'iscritto non ha la mail",
+          "member": "Il socio non ha la mail",
           "currentUser": "La tua email non è configurata"
         }
       }
@@ -230,6 +256,23 @@
       "fromTo": "Dalle ore - alle ore"
     }
   },
+  "emails": {
+    "sendReminder": "Invia sollecito pagamento",
+    "sent": "Email inviata",
+    "type": {
+      "RECEIPT": "RICEVUTA",
+      "REMINDER": "SOLLECITO"
+    },
+    "table": {
+      "course": "Corso",
+      "subject": "Oggetto",
+      "to": "Destinatario"
+    },
+    "form": {
+      "course": "Corso",
+      "month": "Mese"
+    }
+  },
   "calendar": {
     "name": "Calendario",
     "medicalCertificate": {
@@ -247,34 +290,42 @@
     "name": "Impostazioni",
     "saved": "Impostazioni aggiornate correttamente",
     "tab": {
-      "emailSettings": "Impostazioni email"
+      "emailSettings": "Impostazioni email",
+      "emailTexts": "Testi email",
+      "reminderSend": "Invio sollecito"
     },
     "emailSettings": {
-      "text": "Testo email",
-      "credentials": "Credenziali",
       "verify": {
         "label": "Verifica",
         "tooltip": "Assicurati di aver salvato prima di verificare"
       },
       "verified": "Email verificata"
     },
+    "emailTextList": {
+      "type": {
+        "receipt": "Testo per l'invio della ricevuta del pagamento",
+        "reminder": "Testo per l'invio del sollecito pagamento"
+      }
+    },
     "form": {
       "emailSettings": {
+        "host": "Host",
+        "port": "Porta",
+        "secure": "Usa TLS",
+        "email": "Email",
+        "password": "Inserisci nuova password"
+      },
+      "emailText": {
         "subject": {
           "label": "Oggetto",
           "help": "Utilizza i placeholder [MESE] e/o [ANNO] per sostituire rispettivamente mese del pagamento e/o anno d'iscrizione."
         },
         "body": {
           "label": "Contenuto",
-          "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome dell'iscritto (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
-        },
-        "host": "Host",
-        "port": "Porta",
-        "secure": "Usa TLS",
-        "ignoreTLS": "Ignora TLS",
-        "email": "Email",
-        "password": "Password"
-      }
+          "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
+        }
+      },
+      "reminderEmailMonthDay": "Giorno del mese in cui inviare la mail di sollecito"
     }
   },
   "buttons": {
@@ -320,6 +371,10 @@
     },
     "export": {
       "label": "Esporta"
+    },
+    "reminder": {
+      "label": "Invia sollecito pagamento",
+      "tooltip": "Invia sollecito pagamento"
     }
   },
   "upload": {
@@ -348,6 +403,7 @@
     "search": "Cerca",
     "resetFilter": "Cancella",
     "table": {
+      "createdAt": "Creato il",
       "pagination": "{{start}}-{{end}} di {{total}}"
     },
     "selected": "{{selected}} di {{total}} selezionati",
@@ -357,6 +413,11 @@
     },
     "save": "Salva",
     "newRow": "Nuova riga",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "export": {
+      "button": "Esporta",
+      "title": "Esporta CSV"
+    },
+    "checkAll": "Seleziona tutti"
   }
 }

@@ -11,18 +11,18 @@ const CourseForm: React.FC = () => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('courses.form.name')}
           // TODO: validare nome univoco
           name="name"
-          rules={[{ required: true, message: t('validations.required')! }]}
+          rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('courses.form.color.label')} tooltip={t('courses.form.color.tooltip')} name="color">
           <ColorPicker
             presets={[
@@ -67,7 +67,7 @@ const CourseForm: React.FC = () => {
                               {...field}
                               label={t('courses.form.shift')}
                               name={[name, 'range']}
-                              rules={[{ required: true, message: t('validations.required') }]}
+                              rules={[{ required: true }]}
                               getValueProps={(v: [number, number]) => {
                                 if (v?.length) {
                                   return { value: v.map((d) => new Date(d)) };

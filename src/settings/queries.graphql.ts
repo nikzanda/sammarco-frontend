@@ -1,28 +1,34 @@
 import { gql } from '@apollo/client';
 
 export const VERIFY_EMAIL_SETTINGS = gql`
-  mutation VerifyEmailSettings($input: VerifyEmailSettingsInput!) {
-    verifyEmailSettings(input: $input) {
+  mutation VerifyEmailSettings {
+    verifyEmailSettings {
       verified
     }
   }
 `;
 
-export const USER_UPDATE_MUTATION = gql`
-  mutation UserUpdate($input: UserUpdateInput!) {
-    userUpdate(input: $input) {
-      user {
-        id
-        username
+export const SETTING_UPDATE_MUTATION = gql`
+  mutation SettingUpdate($input: SettingUpdateInput!) {
+    settingUpdate(input: $input) {
+      setting {
         emailSettings {
-          subject
-          body
           host
           port
           secure
-          ignoreTLS
           email
         }
+        emailTextList {
+          receipt {
+            subject
+            body
+          }
+          reminder {
+            subject
+            body
+          }
+        }
+        reminderEmailMonthDay
       }
     }
   }

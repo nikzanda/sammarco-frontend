@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 
 const TIMESTAMP_FORMAT = 'dd/MM/yyyy HH:mm';
 
-type Props = {
+interface Props {
   updates: {
     createdAt?: number | Date;
     updatedAt?: number | Date;
   };
-};
+}
 
 const Updates: React.FC<Props> = ({ updates }) => {
   const { t } = useTranslation();

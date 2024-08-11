@@ -1,4 +1,4 @@
-import { App, Form, Modal } from 'antd';
+import { App, Form, FormProps, Modal } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isToday, set } from 'date-fns';
@@ -7,11 +7,11 @@ import { DatePicker } from '../../../components';
 import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-type Props = {
+interface Props {
   memberIds: string[];
   courseIds: string[];
   onCancel: (success: boolean) => void;
-};
+}
 
 const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel }) => {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
 
   useDisplayGraphQLErrors(mutationError);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit: FormProps['onFinish'] = (values) => {
     const { courseId, date: inputDate, fromTo } = values;
 
     const [inputFrom, inputTo] = fromTo;
@@ -83,6 +83,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         loading: mutationLoading,
       }}
       onCancel={() => onCancel(false)}
+      zIndex={9999}
     >
       <Form
         id="attendance-create-form"
@@ -92,11 +93,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         autoComplete="off"
         onFinish={handleSubmit}
       >
-        <Form.Item
-          label={t('attendances.form.course')}
-          name="courseId"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+        <Form.Item label={t('attendances.form.course')} name="courseId" rules={[{ required: true }]}>
           <CourseSearcher
             queryFilters={{ ids: courseIds }}
             allowClear={false}
@@ -145,7 +142,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         <Form.Item
           label={t('attendances.form.date')}
           name="date"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: number) => {
             if (v) {
               return { value: new Date(v) };
@@ -178,7 +175,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         <Form.Item
           label={t('attendances.form.fromTo')}
           name="fromTo"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: [number, number]) => {
             if (v?.length) {
               return { value: v.map((d) => new Date(d)) };

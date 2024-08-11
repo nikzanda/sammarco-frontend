@@ -18,9 +18,8 @@ import {
 import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
 import { dateToYearMonth, toQuantity } from '../../../utils/utils';
-import { getSex, isMinor } from '../../members/helpers';
-import signatureUri from './constants/signature';
-import municipalities from './constants/municipalities';
+import { isMinor, getSex } from '../../../utils';
+import { municipalities, signature as signatureUri } from '../../../constants';
 
 const { t } = i18n;
 
@@ -450,7 +449,7 @@ class PDF {
                     })),
                 },
                 {
-                  text: `${cardinalConverter(this.payment.amount).toUpperCase()}/00`,
+                  text: cardinalConverter(this.payment.amount, { includeDecimals: true }).toUpperCase(),
                   fontSize: 15,
                   bold: true,
                   margin: [0, -17],

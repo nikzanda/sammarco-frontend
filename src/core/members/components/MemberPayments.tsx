@@ -14,8 +14,7 @@ import {
   PaymentSortEnum,
   PaymentTypeEnum,
   SortDirectionEnum,
-  usePaymentSendMutation,
-  usePaymentUpdateMutation,
+  usePaymentSendReceiptMutation,
   usePaymentsQuery,
 } from '../../../generated/graphql';
 import PDF from '../../payments/pdfs/receipt-pdf';
@@ -26,9 +25,9 @@ import { PaymentCreateModal } from '../../payments/components';
 
 const PAGE_SIZE = 10;
 
-type Props = {
+interface Props {
   member: MemberDetailFragment;
-};
+}
 
 const MemberPayments: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
@@ -88,18 +87,14 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     },
   });
 
-  const [updatePayment, { error: updatePaymentError }] = usePaymentUpdateMutation({
-    refetchQueries: ['Payments'],
-  });
-
-  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
-    refetchQueries: ['Payments'],
+  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
+    refetchQueries: ['Payments', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));
     },
   });
 
-  useDisplayGraphQLErrors(queryError, updatePaymentError, sendError);
+  useDisplayGraphQLErrors(queryError, sendError);
 
   const payments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -115,22 +110,9 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     return 0;
   }, [queryData, queryError, queryLoading]);
 
-  const handlePrint = React.useCallback(
-    (paymentId: string) => {
-      if (payments.some(({ id, printed }) => id === paymentId && !printed)) {
-        updatePayment({
-          variables: {
-            input: {
-              id: paymentId,
-              printed: true,
-            },
-          },
-        });
-      }
-      PDF.print(paymentId);
-    },
-    [payments, updatePayment]
-  );
+  const handlePrint = (paymentId: string) => {
+    PDF.print(paymentId);
+  };
 
   const handleSend = React.useCallback(
     async (paymentId: string) => {
@@ -239,13 +221,9 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
           },
         ],
         filteredValue: filterInfo.actions || null,
-        render: (id, { printed, sent }) => (
+        render: (id, { sent }) => (
           <ActionButtons
-            buttons={[
-              'edit',
-              { button: 'print', printed },
-              { button: 'send', sent, disabled: sendingIds.includes(id) },
-            ]}
+            buttons={['edit', { button: 'print' }, { button: 'send', sent, disabled: sendingIds.includes(id) }]}
             onEdit={() => navigate(`/payments/${id}`)}
             onPrint={() => handlePrint(id)}
             onSend={() => handleSend(id)}
@@ -254,7 +232,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       },
     ];
     return result;
-  }, [filterInfo, handleSend, handlePrint, navigate, sendingIds, t]);
+  }, [filterInfo, handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

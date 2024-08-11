@@ -16,7 +16,7 @@ const defaultProps = {
   onClear: () => {},
 };
 
-type Props = {
+interface Props {
   value?: string[];
   queryFilters?: ShiftFilter;
   multiple?: TreeSelectProps['multiple'];
@@ -24,7 +24,7 @@ type Props = {
   allowClear?: TreeSelectProps['allowClear'];
   onChange?: (value: string[], shifts: ShiftsQuery['shifts']) => void;
   onClear?: TreeSelectProps['onClear'];
-};
+}
 
 const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled, allowClear, onChange, onClear }) => {
   const { t } = useTranslation();
@@ -80,7 +80,10 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled,
               value: shift.id,
               title: (
                 <>
-                  <Typography.Text type="secondary">{shift.course.name}</Typography.Text>: {[from, to].join(' - ')}
+                  <Typography.Text type="secondary">
+                    {shift.course.name} - {t(`days.${label}`).toLowerCase()}
+                  </Typography.Text>
+                  : {[from, to].join(' - ')}
                 </>
               ),
             };

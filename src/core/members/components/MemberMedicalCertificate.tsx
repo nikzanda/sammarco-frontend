@@ -1,78 +1,49 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { App, Col, Empty, Form, FormInstance, Row, Upload, UploadProps, Image, Skeleton } from 'antd';
+import { Col, Empty, Form, Row, Upload, Image, Input } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { MemberDetailFragment, useMemberUploadMutation } from '../../../generated/graphql';
+import { MemberDetailFragment } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
-import { useDisplayGraphQLErrors } from '../../../hooks';
 
-type Props = {
-  member: MemberDetailFragment;
-  form: FormInstance<any>;
+const readFileAsDataURL = async (file: File) => {
+  const dataUri = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+  return dataUri;
 };
 
-const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
+interface Props {
+  member: MemberDetailFragment;
+}
+
+const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
-  const { message } = App.useApp();
-
-  const [uploadAttachment, { loading: mutationLoading, error: mutationError }] = useMemberUploadMutation({
-    refetchQueries: ['Member'],
-    onCompleted: () => {
-      message.success(t('upload.success'));
-    },
-  });
-
-  useDisplayGraphQLErrors(mutationError);
-
-  const handleBeforeUpload: UploadProps['beforeUpload'] = async (file) => {
-    const base64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-
-    const extension = file.name.split('.').pop() || '';
-
-    uploadAttachment({
-      variables: {
-        input: {
-          id: member.id,
-          attachment: base64,
-          extension,
-        },
-      },
-    });
-
-    return false;
-  };
+  const form = Form.useFormInstance();
 
   const attachmentPreview = React.useMemo(() => {
-    if (mutationLoading) {
-      return <Skeleton.Image active />;
-    }
-
-    if (!member.medicalCertificate?.attachment) {
+    if (!member.medicalCertificate?.base64) {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
     }
 
-    const { attachment } = member.medicalCertificate;
-    const fileType = attachment.slice(5, attachment.indexOf(';base64,'));
+    const { base64 } = member.medicalCertificate;
+    const fileType = base64.slice(5, base64.indexOf(';base64,'));
 
     if (fileType === 'application/pdf') {
-      return <embed src={member.medicalCertificate.attachment} width="1000" height="1000" />;
+      return <embed src={member.medicalCertificate.base64} width="1000" height="1000" />;
     }
 
-    return <Image src={attachment} />;
-  }, [member.medicalCertificate, mutationLoading]);
+    return <Image src={base64} />;
+  }, [member.medicalCertificate]);
 
   return (
     <>
       <Row gutter={24}>
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('members.form.expireAt')}
-            name="certificateExpiryDate"
+            name={['medicalCertificate', 'expireAt']}
             getValueProps={(v: number) => {
               if (v) {
                 return { value: new Date(v) };
@@ -93,9 +64,19 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
         <Col span={24}>
           <Upload.Dragger
             accept="image/*, application/pdf"
-            beforeUpload={handleBeforeUpload}
             maxCount={1}
-            showUploadList={false}
+            customRequest={({ onSuccess }) => {
+              setTimeout(() => {
+                onSuccess!('ok');
+              }, 0);
+            }}
+            onChange={async (info) => {
+              const filesDataUri = await Promise.all(
+                info.fileList.map(({ originFileObj }) => readFileAsDataURL(originFileObj! as File))
+              );
+              const result = info.fileList.map((_, index) => filesDataUri[index] as string);
+              form.setFieldValue(['medicalCertificate', 'base64'], result[0]);
+            }}
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
@@ -105,6 +86,10 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member, form }) => {
           </Upload.Dragger>
         </Col>
       </Row>
+
+      <Form.Item noStyle name={['medicalCertificate', 'base64']}>
+        <Input type="hidden" />
+      </Form.Item>
 
       <br />
 

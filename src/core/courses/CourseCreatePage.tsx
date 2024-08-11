@@ -1,9 +1,9 @@
 import React from 'react';
-import { App, Button, Col, Form, Row, Space, Typography } from 'antd';
+import { App, Button, Col, Form, FormProps, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft } from 'react-icons/fa';
+import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { ShiftInput, useCourseCreateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
@@ -23,7 +23,7 @@ const CourseCreatePage: React.FC = () => {
 
   useDisplayGraphQLErrors(error);
 
-  const handleFinish = (values: any) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     const { color, shifts, ...input } = values;
 
     const timestampToHourMinutes = (timestamp: number) => {
@@ -68,7 +68,14 @@ const CourseCreatePage: React.FC = () => {
           <Typography.Title level={3}>{t('courses.new')}</Typography.Title>
         </Col>
         <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button type="primary" htmlType="submit" form="form" size="large" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            form="form"
+            size="large"
+            loading={loading}
+            icon={<Icon component={FaSave} />}
+          >
             {t('buttons.save.label')}
           </Button>
         </Col>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Checkbox, Form, Input, InputNumber, Modal, Radio, Spin } from 'antd';
+import { App, Checkbox, Form, FormProps, Input, InputNumber, Modal, Radio, Spin } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,20 +10,19 @@ import {
   SortDirectionEnum,
   useMemberSearcherLazyQuery,
   usePaymentCreateMutation,
-  usePaymentSendMutation,
+  usePaymentSendReceiptMutation,
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { dateToYearMonth, getYears } from '../../../utils/utils';
 import PDF from '../pdfs/receipt-pdf';
-import { AuthenticationContext } from '../../../contexts';
 import { FeeSearcher } from '../../fees/components';
 
-type Props = {
+interface Props {
   memberId: string;
   courseIds: string[];
   onCancel: () => void;
-};
+}
 
 const initialValues = {
   date: Date.now(),
@@ -34,7 +33,7 @@ const initialValues = {
 };
 
 const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
-  const { currentUser } = React.useContext(AuthenticationContext);
+  // const { currentUser } = React.useContext(AuthenticationContext);
   const [form] = Form.useForm();
   const { t } = useTranslation();
   const { message } = App.useApp();
@@ -70,20 +69,21 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   }, [t]);
 
   const disableSendEmail = React.useMemo(() => {
-    const result = !member?.email || !currentUser?.emailSettings;
+    // const result = !member?.email || !currentUser?.emailSettings; // TODO settings emailSettings
+    const result = !member?.email;
     return result;
-  }, [currentUser?.emailSettings, member?.email]);
+  }, [member?.email]);
 
   const helpSendEmail = React.useMemo(() => {
     const texts: string[] = [];
     if (member && !member.email) {
       texts.push(t('payments.form.sendEmail.help.member'));
     }
-    if (!currentUser!.emailSettings) {
-      texts.push(t('payments.form.sendEmail.help.currentUser'));
-    }
+    // if (!currentUser!.emailSettings) {
+    //   texts.push(t('payments.form.sendEmail.help.currentUser'));
+    // }
     return texts.join(', ');
-  }, [currentUser, member, t]);
+  }, [member, t]);
 
   const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
     refetchQueries: ['Payments', 'Members'],
@@ -93,8 +93,8 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendMutation({
-    refetchQueries: ['Payments'],
+  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
+    refetchQueries: ['Payments', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));
     },
@@ -102,7 +102,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
 
   useDisplayGraphQLErrors(mutationError, memberError, sendError);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit: FormProps['onFinish'] = (values) => {
     const { sendEmail: sendEmailFlag, ...input } = values;
 
     createPayment({
@@ -145,6 +145,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         loading: mutationLoading,
       }}
       onCancel={onCancel}
+      zIndex={9999}
     >
       <Form
         id="payment-create-form"
@@ -154,11 +155,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         autoComplete="off"
         onFinish={handleSubmit}
       >
-        <Form.Item
-          label={t('payments.form.fee')}
-          name="feeId"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+        <Form.Item label={t('payments.form.fee')} name="feeId" rules={[{ required: true }]}>
           <FeeSearcher
             queryFilters={{ courseIds, sortBy: FeeSortEnum.NAME, sortDirection: SortDirectionEnum.ASC }}
             showCourse={courseIds.length > 1}
@@ -192,7 +189,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                 <Form.Item
                   label={t('payments.form.month')}
                   name="month"
-                  rules={[{ required: true, message: t('validations.required') }]}
+                  rules={[{ required: true }]}
                   getValueProps={(v: string) => {
                     if (v) {
                       const [year, month] = v.split('-');
@@ -234,7 +231,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                 <Form.Item
                   label={t('payments.form.years')}
                   name="years"
-                  rules={[{ required: true, message: t('validations.required') }]}
+                  rules={[{ required: true }]}
                   getValueProps={(v: [number, number]) => {
                     if (v) {
                       const [yearFrom, yearTo] = v;
@@ -265,11 +262,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
             const feeId = getFieldValue('feeId');
 
             return (
-              <Form.Item
-                label={t('payments.form.amount')}
-                name="amount"
-                rules={[{ required: true, message: t('validations.required') }]}
-              >
+              <Form.Item label={t('payments.form.amount')} name="amount" rules={[{ required: true }]}>
                 <InputNumber
                   min={0}
                   step={1}
@@ -287,7 +280,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         <Form.Item
           label={t('payments.form.date')}
           name="date"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: number) => {
             if (v) {
               return { value: new Date(v) };
@@ -309,22 +302,14 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
             const feeId = getFieldValue('feeId');
 
             return (
-              <Form.Item
-                label={t('payments.form.reason')}
-                name="reason"
-                rules={[{ required: true, message: t('validations.required') }]}
-              >
+              <Form.Item label={t('payments.form.reason')} name="reason" rules={[{ required: true }]}>
                 <Input.TextArea disabled={!feeId} />
               </Form.Item>
             );
           }}
         </Form.Item>
 
-        <Form.Item
-          label={t('payments.form.paymentType')}
-          name="type"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+        <Form.Item label={t('payments.form.paymentType')} name="type" rules={[{ required: true }]}>
           <Radio.Group options={paymentTypeOptions} />
         </Form.Item>
 

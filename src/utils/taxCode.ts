@@ -1,3 +1,5 @@
+import { municipalities } from '../constants';
+
 export const isTaxCodeValid = (taxCode: string) => {
   const result =
     taxCode.length === 16 &&
@@ -39,4 +41,14 @@ export const getSex = (taxCode: string): 'male' | 'female' => {
   const sexChar = parseInt(taxCode.charAt(9), 10);
   const result = sexChar >= 4 ? 'female' : 'male';
   return result;
+};
+
+export const getBirthPlace = (taxCode: string): string => {
+  if (!isTaxCodeValid(taxCode)) {
+    return '';
+  }
+
+  const municipality = taxCode.slice(11, 15);
+  const result = municipalities[municipality];
+  return result || '';
 };

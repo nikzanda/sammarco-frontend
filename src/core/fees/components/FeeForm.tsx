@@ -8,9 +8,9 @@ const defaultProps = {
   fee: undefined,
 };
 
-type Props = {
+interface Props {
   fee?: FeeDetailFragment;
-};
+}
 
 const FeeForm: React.FC<Props> = ({ fee }) => {
   const { t } = useTranslation();
@@ -25,55 +25,43 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
-        <Form.Item
-          label={t('fees.form.name')}
-          name="name"
-          rules={[{ required: true, message: t('validations.required')! }]}
-        >
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('fees.form.name')} name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
-        <Form.Item
-          label={t('fees.form.course')}
-          name="courseId"
-          rules={[{ required: true, message: t('validations.required')! }]}
-        >
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('fees.form.course')} name="courseId" rules={[{ required: true }]}>
           <CourseSearcher disabled={!!fee} />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
-        <Form.Item
-          label={t('fees.form.amount')}
-          name="amount"
-          rules={[{ required: true, message: t('validations.required')! }]}
-        >
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('fees.form.amount')} name="amount" rules={[{ required: true }]}>
           <InputNumber min={0} step={1} precision={2} decimalSeparator="," addonAfter="€" style={{ width: '100%' }} />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('fees.form.recurrence')} name="recurrence">
           <Select options={recurrenceOptions} allowClear />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('fees.form.reason.label')}
           help={t('fees.form.reason.help')}
           name="reason"
-          rules={[{ required: true, message: t('validations.required')! }]}
+          rules={[{ required: true }]}
         >
           <Input.TextArea />
         </Form.Item>
       </Col>
 
       {!!fee && (
-        <Col xs={24} md={12}>
+        <Col xs={24} md={12} xxl={8}>
           <Form.Item label={t('fees.form.enabled')} name="enabled" valuePropName="checked">
             <Switch />
           </Form.Item>

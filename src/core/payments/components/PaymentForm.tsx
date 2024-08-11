@@ -1,6 +1,5 @@
 import React from 'react';
 import { Col, Form, Input, InputNumber, Radio, Row } from 'antd';
-import { FormInstance } from 'antd/es/form';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { PaymentTypeEnum, RecurrenceEnum, PaymentDetailFragment, FeeSearcherQuery } from '../../../generated/graphql';
@@ -13,13 +12,13 @@ const defaultProps = {
   payment: undefined,
 };
 
-type Props = {
-  form: FormInstance<any>;
+interface Props {
   payment?: PaymentDetailFragment;
-};
+}
 
-const PaymentForm: React.FC<Props> = ({ form, payment }) => {
+const PaymentForm: React.FC<Props> = ({ payment }) => {
   const { t } = useTranslation();
+  const form = Form.useFormInstance();
 
   const paymentReason = React.useRef<string>(payment?.fee.reason || '');
   const [fee, setFee] = React.useState<FeeSearcherQuery['fee'] | undefined>(payment?.fee);
@@ -34,22 +33,14 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
 
   return (
     <Row gutter={24}>
-      <Col xs={24} md={12}>
-        <Form.Item
-          label={t('payments.form.member')}
-          name="memberId"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('payments.form.member')} name="memberId" rules={[{ required: true }]}>
           <MemberSearcher allowClear={false} />
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
-        <Form.Item
-          label={t('payments.form.fee')}
-          name="feeId"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('payments.form.fee')} name="feeId" rules={[{ required: true }]}>
           <FeeSearcher
             // queryFilters={{ courseIds: [] }}
             allowClear={false}
@@ -75,7 +66,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
@@ -88,7 +79,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
                 <Form.Item
                   label={t('payments.form.month')}
                   name="month"
-                  rules={[{ required: true, message: t('validations.required') }]}
+                  rules={[{ required: true }]}
                   getValueProps={(v: string) => {
                     if (v) {
                       const [year, month] = v.split('-');
@@ -130,7 +121,7 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
                 <Form.Item
                   label={t('payments.form.years')}
                   name="years"
-                  rules={[{ required: true, message: t('validations.required') }]}
+                  rules={[{ required: true }]}
                   getValueProps={(v: [number, number]) => {
                     if (v) {
                       const [yearFrom, yearTo] = v;
@@ -157,17 +148,13 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
 
             return (
-              <Form.Item
-                label={t('payments.form.amount')}
-                name="amount"
-                rules={[{ required: true, message: t('validations.required') }]}
-              >
+              <Form.Item label={t('payments.form.amount')} name="amount" rules={[{ required: true }]}>
                 <InputNumber
                   min={0}
                   step={1}
@@ -183,11 +170,11 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item
           label={t('payments.form.date')}
           name="date"
-          rules={[{ required: true, message: t('validations.required') }]}
+          rules={[{ required: true }]}
           getValueProps={(v: number) => {
             if (v) {
               return { value: new Date(v) };
@@ -205,17 +192,13 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
+      <Col xs={24} md={12} xxl={8}>
         <Form.Item noStyle dependencies={['feeId']}>
           {({ getFieldValue }) => {
             const feeId = getFieldValue('feeId');
 
             return (
-              <Form.Item
-                label={t('payments.form.reason')}
-                name="reason"
-                rules={[{ required: true, message: t('validations.required') }]}
-              >
+              <Form.Item label={t('payments.form.reason')} name="reason" rules={[{ required: true }]}>
                 <Input.TextArea disabled={!feeId} />
               </Form.Item>
             );
@@ -223,12 +206,8 @@ const PaymentForm: React.FC<Props> = ({ form, payment }) => {
         </Form.Item>
       </Col>
 
-      <Col xs={24} md={12}>
-        <Form.Item
-          label={t('payments.form.paymentType')}
-          name="type"
-          rules={[{ required: true, message: t('validations.required') }]}
-        >
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item label={t('payments.form.paymentType')} name="type" rules={[{ required: true }]}>
           <Radio.Group options={paymentTypeOptions} />
         </Form.Item>
       </Col>

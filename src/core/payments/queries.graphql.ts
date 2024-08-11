@@ -19,7 +19,6 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     month
     years
     type
-    printed
     sent
   }
 `;
@@ -157,11 +156,10 @@ export const PAYMENT_UPDATE_MUTATION = gql`
 `;
 
 export const PAYMENT_UPDATE_MULTIPLE_MUTATION = gql`
-  mutation PaymentUpdateMultiple($input: PaymentUpdateMultipleInput!) {
-    paymentUpdateMultiple(input: $input) {
+  mutation PaymentUpdateMany($input: PaymentUpdateManyInput!) {
+    paymentUpdateMany(input: $input) {
       payments {
         id
-        printed
         sent
       }
     }
@@ -170,9 +168,11 @@ export const PAYMENT_UPDATE_MULTIPLE_MUTATION = gql`
 `;
 
 export const PAYMENT_SEND_MUTATION = gql`
-  mutation PaymentSend($input: PaymentSendInput!) {
-    paymentSend(input: $input) {
-      sent
+  mutation PaymentSendReceipt($input: PaymentSendReceiptInput!) {
+    paymentSendReceipt(input: $input) {
+      email {
+        id
+      }
     }
   }
 `;
