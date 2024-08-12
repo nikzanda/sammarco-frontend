@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FaCalendarAlt, FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
-import { AuthenticationContext } from '../contexts';
+import { AuthenticationContext, SettingsProvider } from '../contexts';
 import { LoadingPage, NotFoundPage } from '../views';
 
 // Members
@@ -131,42 +131,44 @@ const AuthenticatedLayout: React.FC = () => {
         </Dropdown>
       </Layout.Header>
       <Layout.Content style={{ padding: '0 15px 15px 15px', overflowY: 'scroll' }}>
-        <Suspense fallback={<LoadingPage />}>
-          <Routes>
-            <Route path="members" element={<Outlet />}>
-              <Route index element={<MemberListPage />} />
-              <Route path="new" element={<MemberCreatePage />} />
-              <Route path=":id" element={<MemberEditPage />} />
-            </Route>
+        <SettingsProvider>
+          <Suspense fallback={<LoadingPage />}>
+            <Routes>
+              <Route path="members" element={<Outlet />}>
+                <Route index element={<MemberListPage />} />
+                <Route path="new" element={<MemberCreatePage />} />
+                <Route path=":id" element={<MemberEditPage />} />
+              </Route>
 
-            <Route path="courses" element={<Outlet />}>
-              <Route index element={<CourseListPage />} />
-              <Route path="new" element={<CourseCreatePage />} />
-              <Route path=":id" element={<CourseEditPage />} />
-            </Route>
+              <Route path="courses" element={<Outlet />}>
+                <Route index element={<CourseListPage />} />
+                <Route path="new" element={<CourseCreatePage />} />
+                <Route path=":id" element={<CourseEditPage />} />
+              </Route>
 
-            <Route path="fees" element={<Outlet />}>
-              <Route index element={<FeeListPage />} />
-              <Route path="new" element={<FeeCreatePage />} />
-              <Route path=":id" element={<FeeEditPage />} />
-            </Route>
+              <Route path="fees" element={<Outlet />}>
+                <Route index element={<FeeListPage />} />
+                <Route path="new" element={<FeeCreatePage />} />
+                <Route path=":id" element={<FeeEditPage />} />
+              </Route>
 
-            <Route path="payments" element={<Outlet />}>
-              <Route index element={<PaymentListPage />} />
-              <Route path=":id" element={<PaymentEditPage />} />
-            </Route>
+              <Route path="payments" element={<Outlet />}>
+                <Route index element={<PaymentListPage />} />
+                <Route path=":id" element={<PaymentEditPage />} />
+              </Route>
 
-            <Route path="calendar" element={<CalendarPage />} />
+              <Route path="calendar" element={<CalendarPage />} />
 
-            <Route path="settings" element={<Outlet />}>
-              <Route index element={<SettingsPage />} />
-            </Route>
+              <Route path="settings" element={<Outlet />}>
+                <Route index element={<SettingsPage />} />
+              </Route>
 
-            <Route path="/" element={<Navigate to="/members" replace />} />
+              <Route path="/" element={<Navigate to="/members" replace />} />
 
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </SettingsProvider>
       </Layout.Content>
     </Layout>
   );

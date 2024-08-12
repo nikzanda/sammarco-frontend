@@ -14,7 +14,27 @@ const useDisplayGraphQLErrors = (...errors: (ApolloError | undefined)[]) => {
       }
 
       if (error.graphQLErrors?.length) {
-        message.error(error.graphQLErrors.map((e) => t(`errors.${e.message}`)).join('\n'));
+        message.error(
+          error.graphQLErrors
+            .map((e) => {
+              const errorResponse = e.extensions.response as any;
+              if (!errorResponse) {
+                return t(`errors.${e.message}`);
+              }
+
+              const errorData = errorResponse.body.errors[0];
+              const message: string = errorData.message || e.message;
+              let args: any;
+              switch (errorData.extensions.code) {
+                case 'NOT_FOUND': {
+                  const count = errorData.extensions.multiple ? 2 : 1;
+                  args = { count, type: t(`types.${errorData.extensions.type}`, { count }) };
+                }
+              }
+              return t(`errors.${message}`, args);
+            })
+            .join('\n')
+        );
       } else if (error.clientErrors?.length) {
         message.error(error.clientErrors.map((e) => t(`errors.${e.message}`)).join('\n'));
       } else {

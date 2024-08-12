@@ -3,7 +3,7 @@ import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { CSVDownload } from 'react-csv';
 import { format } from 'date-fns';
-import { useMembersCsvLazyQuery } from '../../../generated/graphql';
+import { MemberSortEnum, SortDirectionEnum, useMembersCsvLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { getYears } from '../../../utils/utils';
 import { getBirthPlace } from '../../../utils';
@@ -34,6 +34,10 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
   const [getMembers, { data: queryData, loading: queryLoading, error: queryError }] = useMembersCsvLazyQuery({
     variables: {
       years: getYears(),
+      filter: {
+        sortBy: MemberSortEnum.REGISTRATION_REQUEST_DATE,
+        sortDirection: SortDirectionEnum.ASC,
+      },
     },
   });
 

@@ -4170,6 +4170,24 @@
             "deprecationReason": null
           },
           {
+            "name": "TAX_CODE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REGISTRATION_REQUEST_DATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REGISTRATION_ACCEPTANCE_DATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CREATED_AT",
             "description": null,
             "isDeprecated": false,
@@ -4908,6 +4926,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "PaymentSendReminderPayload",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sendMonthlyReminders",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SendMonthlyRemindersPayload",
                 "ofType": null
               }
             },
@@ -7405,6 +7439,34 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SendMonthlyRemindersPayload",
+        "description": null,
+        "isOneOf": null,
+        "fields": [
+          {
+            "name": "sentReminders",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
         "possibleTypes": null
       },
       {

@@ -33,7 +33,7 @@ const MemberForm: React.FC = () => {
             {
               validator(_rule, value?: string) {
                 if (!value || !isTaxCodeValid(value)) {
-                  return Promise.reject(t('validations.invalid-tax-code'));
+                  return Promise.reject(t('validations.invalidTaxCode'));
                 }
                 return Promise.resolve();
               },
@@ -63,7 +63,7 @@ const MemberForm: React.FC = () => {
                     {
                       validator(_rule, value?: string) {
                         if (!value || !isTaxCodeValid(value)) {
-                          return Promise.reject(t('validations.invalid-tax-code'));
+                          return Promise.reject(t('validations.invalidTaxCode'));
                         }
                         return Promise.resolve();
                       },

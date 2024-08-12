@@ -159,7 +159,7 @@ const MemberEditPage: React.FC = () => {
       </Row>
 
       {queryLoading && <Skeleton active />}
-      {queryError && <Result status="500" title="500" subTitle={t('errors.something-went-wrong')} />}
+      {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {member && (
         <Form
           id="form"

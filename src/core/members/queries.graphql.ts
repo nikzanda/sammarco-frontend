@@ -113,7 +113,7 @@ export const MEMBER_QUERY = gql`
 `;
 
 export const MEMBERS_CSV_QUERY = gql`
-  query MembersCsv($years: [Int!]!) {
+  query MembersCsv($years: [Int!]!, $filter: MemberFilter) {
     members(pageIndex: 0, pageSize: 0) {
       data {
         socialCardNumber

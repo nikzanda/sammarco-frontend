@@ -384,10 +384,12 @@
   },
   "validations": {
     "required": "Campo obbligatorio",
-    "invalid-tax-code": "Codice fiscale non valido"
+    "invalidTaxCode": "Codice fiscale non valido"
   },
   "errors": {
-    "something-went-wrong": "Ops, qualcosa è andato storto."
+    "somethingWentWrong": "Ops, qualcosa è andato storto.",
+    "notFound_one": "{{type}} non trovato",
+    "notFound_other": "{{type}} non trovati"
   },
   "days": {
     "monday": "Lunedì",
@@ -419,5 +421,23 @@
       "title": "Esporta CSV"
     },
     "checkAll": "Seleziona tutti"
+  },
+  "types": {
+    "User_one": "Utente",
+    "User_other": "Utenti",
+    "Setting_one": "Impostazione",
+    "Setting_other": "Impostazioni",
+    "Member_one": "Socio",
+    "Member_other": "Soci",
+    "Course_one": "Corso",
+    "Course_other": "Corsi",
+    "Payment_one": "Pagamento",
+    "Payment_other": "Pagamenti",
+    "Fee_one": "Quota",
+    "Fee_other": "Quote",
+    "Attendance_one": "Presenza",
+    "Attendance_other": "Presenze",
+    "Email_one": "Email",
+    "Email_other": "Email"
   }
 }
