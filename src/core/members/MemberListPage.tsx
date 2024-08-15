@@ -5,6 +5,7 @@ import {
   Col,
   Flex,
   Input,
+  Popconfirm,
   Row,
   Space,
   Table,
@@ -16,7 +17,7 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus, FaSync } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -34,12 +35,15 @@ import { ActionButtons, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getYears } from '../../utils/utils';
-import { ExportMembersModal, MemberExpandable } from './components';
+import { ExportMembersModal, MemberExpandable, SyncButton } from './components';
 import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
+
+const { REACT_APP_BASENAME } = process.env;
+const showSync = parseInt(REACT_APP_BASENAME!, 10) - 1 < getYears()[0];
 
 const MemberListPage: React.FC = () => {
   const { t } = useTranslation();
@@ -315,6 +319,7 @@ const MemberListPage: React.FC = () => {
       <Flex justify="space-between" align="center">
         <Typography.Title level={2}>{t('members.name')}</Typography.Title>
         <Flex gap={12}>
+          {showSync && <SyncButton selectedIds={selectedIds} />}
           <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
             {t('commons.export.button')}
           </Button>

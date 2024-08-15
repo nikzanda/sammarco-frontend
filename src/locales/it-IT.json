@@ -93,6 +93,11 @@
       "paidMembershipFee": "Quota sociale versata",
       "csenCardNumber": "Numero tessera CSEN",
       "asiCardNumber": "Numero tessera ASI"
+    },
+    "sync": {
+      "title": "Sei sicuro di voler sincronizzare i soci selezionati?",
+      "success": "{{count}} soci sincronizzati correttamente!",
+      "error": "Soci non sincronizzati"
     }
   },
   "courses": {
@@ -375,6 +380,9 @@
     "reminder": {
       "label": "Invia sollecito pagamento",
       "tooltip": "Invia sollecito pagamento"
+    },
+    "sync": {
+      "label": "Sincronizza soci"
     }
   },
   "upload": {

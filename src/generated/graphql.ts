@@ -418,6 +418,27 @@ export type MemberCreateInput = {
   medicalCertificate?: InputMaybe<MedicalCertificateInput>;
 };
 
+export type MemberCreateManyInput = {
+  name: Scalars['String']['input'];
+  surname: Scalars['String']['input'];
+  taxCode: Scalars['String']['input'];
+  address?: InputMaybe<Scalars['String']['input']>;
+  qualification?: InputMaybe<QualificationEnum>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  socialCardNumber?: InputMaybe<Scalars['String']['input']>;
+  asiCardNumber?: InputMaybe<Scalars['String']['input']>;
+  csenCardNumber?: InputMaybe<Scalars['String']['input']>;
+  parent?: InputMaybe<ParentInput>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  medicalCertificate?: InputMaybe<MedicalCertificateInput>;
+};
+
+export type MemberCreateManyPayload = {
+  __typename?: 'MemberCreateManyPayload';
+  members: Array<Member>;
+};
+
 export type MemberCreatePayload = {
   __typename?: 'MemberCreatePayload';
   member: Member;
@@ -499,6 +520,7 @@ export type Mutation = {
   paymentCreate: PaymentCreatePayload;
   memberUpdate: MemberUpdatePayload;
   memberDelete: MemberDeletePayload;
+  memberCreateMany: MemberCreateManyPayload;
   memberCreate: MemberCreatePayload;
   feeUpdate: FeeUpdatePayload;
   feeDelete: FeeDeletePayload;
@@ -558,6 +580,11 @@ export type MutationMemberUpdateArgs = {
 
 export type MutationMemberDeleteArgs = {
   input: MemberDeleteInput;
+};
+
+
+export type MutationMemberCreateManyArgs = {
+  input: Array<MemberCreateManyInput>;
 };
 
 
@@ -1100,22 +1127,6 @@ export type CourseDeleteMutationVariables = Exact<{
 
 export type CourseDeleteMutation = { __typename?: 'Mutation', courseDelete: { __typename?: 'CourseDeletePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
 
-export type EmailsQueryVariables = Exact<{
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<EmailFilter>;
-}>;
-
-
-export type EmailsQuery = { __typename?: 'Query', emails: { __typename?: 'EmailPagination', data: Array<{ __typename?: 'Email', id: string, type: EmailTypeEnum, to: string, subject: string, body: string, createdAt: number, course: { __typename?: 'Course', name: string } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
-
-export type PaymentSendReminderMutationVariables = Exact<{
-  input: PaymentSendReminderInput;
-}>;
-
-
-export type PaymentSendReminderMutation = { __typename?: 'Mutation', paymentSendReminder: { __typename?: 'PaymentSendReminderPayload', email: { __typename?: 'Email', id: string } } };
-
 export type FeeListItemFragment = { __typename?: 'Fee', id: string, name: string, amount: number, enabled: boolean, course: { __typename?: 'Course', id: string, name: string } };
 
 export type FeeDetailFragment = { __typename?: 'Fee', recurrence?: RecurrenceEnum | null, reason: string, createdAt: number, updatedAt: number, canDelete: boolean, id: string, name: string, amount: number, enabled: boolean, course: { __typename?: 'Course', id: string, name: string } };
@@ -1215,6 +1226,13 @@ export type MembersCsvQueryVariables = Exact<{
 
 export type MembersCsvQuery = { __typename?: 'Query', members: { __typename?: 'MemberPagination', data: Array<{ __typename?: 'Member', socialCardNumber?: string | null, registrationRequestDate?: number | null, registrationAcceptanceDate?: number | null, fullName: string, birthday: number, taxCode: string, address?: string | null, qualification: QualificationEnum, paidMembershipFee: number, csenCardNumber?: string | null, asiCardNumber?: string | null }> } };
 
+export type MembersSyncQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+
+export type MembersSyncQuery = { __typename?: 'Query', members: { __typename?: 'MemberPagination', data: Array<{ __typename?: 'Member', id: string, name: string, surname: string, taxCode: string, address?: string | null, qualification: QualificationEnum, email?: string | null, socialCardNumber?: string | null, asiCardNumber?: string | null, csenCardNumber?: string | null, shiftIds: Array<string>, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null, courses: Array<{ __typename?: 'Course', id: string }>, medicalCertificate?: { __typename?: 'MedicalCertificate', base64?: string | null, expireAt: number } | null }> } };
+
 export type MemberCreateMutationVariables = Exact<{
   input: MemberCreateInput;
   years?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
@@ -1238,6 +1256,22 @@ export type MemberDeleteMutationVariables = Exact<{
 
 
 export type MemberDeleteMutation = { __typename?: 'Mutation', memberDelete: { __typename?: 'MemberDeletePayload', member: { __typename?: 'Member', name: string, surname: string, taxCode: string, address?: string | null, qualification: QualificationEnum, email?: string | null, registrationRequestDate?: number | null, registrationAcceptanceDate?: number | null, socialCardNumber?: string | null, asiCardNumber?: string | null, csenCardNumber?: string | null, shiftIds: Array<string>, canDelete: boolean, createdAt: number, updatedAt: number, id: string, fullName: string, parent?: { __typename?: 'Parent', name: string, surname: string, taxCode: string } | null, medicalCertificate?: { __typename?: 'MedicalCertificate', base64?: string | null, expireAt: number } | null, payments: Array<{ __typename?: 'Payment', id: string, month?: string | null, years?: Array<number> | null }>, attendances: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, course: { __typename?: 'Course', id: string } }>, courses: Array<{ __typename?: 'Course', id: string, name: string, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> }>, currentMonthReminderEmails: Array<{ __typename?: 'Email', id: string }> } } };
+
+export type EmailsQueryVariables = Exact<{
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<EmailFilter>;
+}>;
+
+
+export type EmailsQuery = { __typename?: 'Query', emails: { __typename?: 'EmailPagination', data: Array<{ __typename?: 'Email', id: string, type: EmailTypeEnum, to: string, subject: string, body: string, createdAt: number, course: { __typename?: 'Course', name: string } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+
+export type PaymentSendReminderMutationVariables = Exact<{
+  input: PaymentSendReminderInput;
+}>;
+
+
+export type PaymentSendReminderMutation = { __typename?: 'Mutation', paymentSendReminder: { __typename?: 'PaymentSendReminderPayload', email: { __typename?: 'Email', id: string } } };
 
 export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, type: PaymentTypeEnum, sent: boolean, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, course: { __typename?: 'Course', name: string } } };
 
@@ -2225,91 +2259,6 @@ export function useCourseDeleteMutation(baseOptions?: Apollo.MutationHookOptions
 export type CourseDeleteMutationHookResult = ReturnType<typeof useCourseDeleteMutation>;
 export type CourseDeleteMutationResult = Apollo.MutationResult<CourseDeleteMutation>;
 export type CourseDeleteMutationOptions = Apollo.BaseMutationOptions<CourseDeleteMutation, CourseDeleteMutationVariables>;
-export const EmailsDocument = gql`
-    query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {
-  emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
-    data {
-      id
-      course {
-        name
-      }
-      type
-      to
-      subject
-      body
-      createdAt
-    }
-    pageInfo {
-      total
-    }
-  }
-}
-    `;
-
-/**
- * __useEmailsQuery__
- *
- * To run a query within a React component, call `useEmailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEmailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEmailsQuery({
- *   variables: {
- *      pageIndex: // value for 'pageIndex'
- *      pageSize: // value for 'pageSize'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useEmailsQuery(baseOptions: Apollo.QueryHookOptions<EmailsQuery, EmailsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EmailsQuery, EmailsQueryVariables>(EmailsDocument, options);
-      }
-export function useEmailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmailsQuery, EmailsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EmailsQuery, EmailsQueryVariables>(EmailsDocument, options);
-        }
-export type EmailsQueryHookResult = ReturnType<typeof useEmailsQuery>;
-export type EmailsLazyQueryHookResult = ReturnType<typeof useEmailsLazyQuery>;
-export type EmailsQueryResult = Apollo.QueryResult<EmailsQuery, EmailsQueryVariables>;
-export const PaymentSendReminderDocument = gql`
-    mutation PaymentSendReminder($input: PaymentSendReminderInput!) {
-  paymentSendReminder(input: $input) {
-    email {
-      id
-    }
-  }
-}
-    `;
-export type PaymentSendReminderMutationFn = Apollo.MutationFunction<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>;
-
-/**
- * __usePaymentSendReminderMutation__
- *
- * To run a mutation, you first call `usePaymentSendReminderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePaymentSendReminderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [paymentSendReminderMutation, { data, loading, error }] = usePaymentSendReminderMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function usePaymentSendReminderMutation(baseOptions?: Apollo.MutationHookOptions<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>(PaymentSendReminderDocument, options);
-      }
-export type PaymentSendReminderMutationHookResult = ReturnType<typeof usePaymentSendReminderMutation>;
-export type PaymentSendReminderMutationResult = Apollo.MutationResult<PaymentSendReminderMutation>;
-export type PaymentSendReminderMutationOptions = Apollo.BaseMutationOptions<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>;
 export const FeesSearcherDocument = gql`
     query FeesSearcher($filter: FeeFilter) {
   fees(pageIndex: 0, pageSize: 20, filter: $filter) {
@@ -2735,7 +2684,7 @@ export type MemberLazyQueryHookResult = ReturnType<typeof useMemberLazyQuery>;
 export type MemberQueryResult = Apollo.QueryResult<MemberQuery, MemberQueryVariables>;
 export const MembersCsvDocument = gql`
     query MembersCsv($years: [Int!]!, $filter: MemberFilter) {
-  members(pageIndex: 0, pageSize: 0) {
+  members(pageIndex: 0, pageSize: 0, filter: $filter) {
     data {
       socialCardNumber
       registrationRequestDate
@@ -2781,6 +2730,65 @@ export function useMembersCsvLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type MembersCsvQueryHookResult = ReturnType<typeof useMembersCsvQuery>;
 export type MembersCsvLazyQueryHookResult = ReturnType<typeof useMembersCsvLazyQuery>;
 export type MembersCsvQueryResult = Apollo.QueryResult<MembersCsvQuery, MembersCsvQueryVariables>;
+export const MembersSyncDocument = gql`
+    query MembersSync($ids: [ID!]!) {
+  members(pageIndex: 0, pageSize: 0, filter: {ids: $ids}) {
+    data {
+      id
+      name
+      surname
+      taxCode
+      address
+      qualification
+      email
+      socialCardNumber
+      asiCardNumber
+      csenCardNumber
+      parent {
+        name
+        surname
+        taxCode
+      }
+      courses {
+        id
+      }
+      shiftIds
+      medicalCertificate {
+        base64
+        expireAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMembersSyncQuery__
+ *
+ * To run a query within a React component, call `useMembersSyncQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMembersSyncQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMembersSyncQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useMembersSyncQuery(baseOptions: Apollo.QueryHookOptions<MembersSyncQuery, MembersSyncQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MembersSyncQuery, MembersSyncQueryVariables>(MembersSyncDocument, options);
+      }
+export function useMembersSyncLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MembersSyncQuery, MembersSyncQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MembersSyncQuery, MembersSyncQueryVariables>(MembersSyncDocument, options);
+        }
+export type MembersSyncQueryHookResult = ReturnType<typeof useMembersSyncQuery>;
+export type MembersSyncLazyQueryHookResult = ReturnType<typeof useMembersSyncLazyQuery>;
+export type MembersSyncQueryResult = Apollo.QueryResult<MembersSyncQuery, MembersSyncQueryVariables>;
 export const MemberCreateDocument = gql`
     mutation MemberCreate($input: MemberCreateInput!, $years: [Int!]) {
   memberCreate(input: $input) {
@@ -2889,6 +2897,91 @@ export function useMemberDeleteMutation(baseOptions?: Apollo.MutationHookOptions
 export type MemberDeleteMutationHookResult = ReturnType<typeof useMemberDeleteMutation>;
 export type MemberDeleteMutationResult = Apollo.MutationResult<MemberDeleteMutation>;
 export type MemberDeleteMutationOptions = Apollo.BaseMutationOptions<MemberDeleteMutation, MemberDeleteMutationVariables>;
+export const EmailsDocument = gql`
+    query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {
+  emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
+    data {
+      id
+      course {
+        name
+      }
+      type
+      to
+      subject
+      body
+      createdAt
+    }
+    pageInfo {
+      total
+    }
+  }
+}
+    `;
+
+/**
+ * __useEmailsQuery__
+ *
+ * To run a query within a React component, call `useEmailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmailsQuery({
+ *   variables: {
+ *      pageIndex: // value for 'pageIndex'
+ *      pageSize: // value for 'pageSize'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useEmailsQuery(baseOptions: Apollo.QueryHookOptions<EmailsQuery, EmailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmailsQuery, EmailsQueryVariables>(EmailsDocument, options);
+      }
+export function useEmailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmailsQuery, EmailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmailsQuery, EmailsQueryVariables>(EmailsDocument, options);
+        }
+export type EmailsQueryHookResult = ReturnType<typeof useEmailsQuery>;
+export type EmailsLazyQueryHookResult = ReturnType<typeof useEmailsLazyQuery>;
+export type EmailsQueryResult = Apollo.QueryResult<EmailsQuery, EmailsQueryVariables>;
+export const PaymentSendReminderDocument = gql`
+    mutation PaymentSendReminder($input: PaymentSendReminderInput!) {
+  paymentSendReminder(input: $input) {
+    email {
+      id
+    }
+  }
+}
+    `;
+export type PaymentSendReminderMutationFn = Apollo.MutationFunction<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>;
+
+/**
+ * __usePaymentSendReminderMutation__
+ *
+ * To run a mutation, you first call `usePaymentSendReminderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePaymentSendReminderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [paymentSendReminderMutation, { data, loading, error }] = usePaymentSendReminderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePaymentSendReminderMutation(baseOptions?: Apollo.MutationHookOptions<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>(PaymentSendReminderDocument, options);
+      }
+export type PaymentSendReminderMutationHookResult = ReturnType<typeof usePaymentSendReminderMutation>;
+export type PaymentSendReminderMutationResult = Apollo.MutationResult<PaymentSendReminderMutation>;
+export type PaymentSendReminderMutationOptions = Apollo.BaseMutationOptions<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>;
 export const PaymentsDocument = gql`
     query Payments($pageIndex: Int!, $pageSize: Int!, $filter: PaymentFilter) {
   payments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {

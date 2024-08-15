@@ -114,7 +114,7 @@ export const MEMBER_QUERY = gql`
 
 export const MEMBERS_CSV_QUERY = gql`
   query MembersCsv($years: [Int!]!, $filter: MemberFilter) {
-    members(pageIndex: 0, pageSize: 0) {
+    members(pageIndex: 0, pageSize: 0, filter: $filter) {
       data {
         socialCardNumber
         registrationRequestDate
@@ -127,6 +127,38 @@ export const MEMBERS_CSV_QUERY = gql`
         paidMembershipFee(years: $years)
         csenCardNumber
         asiCardNumber
+      }
+    }
+  }
+`;
+
+export const MEMBERS_SYNC_QUERY = gql`
+  query MembersSync($ids: [ID!]!) {
+    members(pageIndex: 0, pageSize: 0, filter: { ids: $ids }) {
+      data {
+        id
+        name
+        surname
+        taxCode
+        address
+        qualification
+        email
+        socialCardNumber
+        asiCardNumber
+        csenCardNumber
+        parent {
+          name
+          surname
+          taxCode
+        }
+        courses {
+          id
+        }
+        shiftIds
+        medicalCertificate {
+          base64
+          expireAt
+        }
       }
     }
   }

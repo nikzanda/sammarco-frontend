@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertProps, Descriptions, DescriptionsProps, Space, Typography, theme } from 'antd';
+import { Alert, AlertProps, Descriptions, DescriptionsProps, Flex, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays, format, isSameMonth, isSameYear } from 'date-fns';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
@@ -114,7 +114,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
             ...(typeof paid === 'boolean' && !paid && { border: `1px solid ${token.colorError}` }),
           },
           children: (
-            <Space direction="vertical">
+            <Flex vertical>
               <span>
                 {t('members.table.expandable.paid')}: {icon}
               </span>
@@ -122,7 +122,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
                 {t('members.table.expandable.attendances')}:{' '}
                 <Typography.Text strong>{attendancesCount}</Typography.Text>
               </span>
-            </Space>
+            </Flex>
           ),
         };
       });
