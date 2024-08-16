@@ -3,13 +3,13 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Col, Flex, Input, Row, Space, Table, TableProps, Typography, theme } from 'antd';
+import { Button, Col, Input, Row, Space, Table, TableProps, theme } from 'antd';
 import Icon from '@ant-design/icons';
-import { FaPlus, FaBan, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaBan, FaCheck, FaTimes } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
 import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons } from '../../commons';
+import { ActionButtons, ListPageHeader } from '../../commons';
 import { toCurrency } from '../../utils';
 import { CourseTableFilter } from '../courses/components';
 
@@ -174,12 +174,7 @@ const FeeListPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Flex justify="space-between" align="center">
-        <Typography.Title level={2}>{t('fees.name')}</Typography.Title>
-        <Button type="primary" size="large" icon={<Icon component={FaPlus} />} onClick={() => navigate('/fees/new')}>
-          {t('fees.new')}
-        </Button>
-      </Flex>
+      <ListPageHeader entity="fees" />
 
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12}>

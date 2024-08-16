@@ -3,9 +3,9 @@ import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Badge, Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Typography } from 'antd';
+import { Badge, Button, Col, Input, Row, Space, Table, TableColumnsType, TableProps } from 'antd';
 import Icon from '@ant-design/icons';
-import { FaPlus, FaBan } from 'react-icons/fa';
+import { FaBan } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
 import {
   CourseFilter,
@@ -15,7 +15,7 @@ import {
   useCoursesQuery,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons } from '../../commons';
+import { ActionButtons, ListPageHeader } from '../../commons';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/course/';
@@ -141,12 +141,7 @@ const CourseListPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Flex justify="space-between" align="center">
-        <Typography.Title level={2}>{t('courses.name')}</Typography.Title>
-        <Button type="primary" size="large" icon={<Icon component={FaPlus} />} onClick={() => navigate('/courses/new')}>
-          {t('courses.new')}
-        </Button>
-      </Flex>
+      <ListPageHeader entity="courses" />
 
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12}>

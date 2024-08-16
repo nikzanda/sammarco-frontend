@@ -1,22 +1,9 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import {
-  Button,
-  Col,
-  Flex,
-  Input,
-  Row,
-  Space,
-  Table,
-  TableColumnsType,
-  TableProps,
-  Tooltip,
-  Typography,
-  theme,
-} from 'antd';
+import { Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -30,13 +17,14 @@ import {
 } from '../../generated/graphql';
 import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons, week } from '../../commons';
+import { ActionButtons, ListPageHeader, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getYears } from '../../utils';
-import { ExportMembersModal, MemberExpandable, SyncButton } from './components';
+import { ExportMembersModal, MemberExpandable } from './components';
 import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';
+import { useSyncMembers } from './hooks';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -115,6 +103,8 @@ const MemberListPage: React.FC = () => {
   });
 
   useDisplayGraphQLErrors(queryError);
+
+  const { loading: syncLoading, sync: syncMembers } = useSyncMembers();
 
   const members = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -315,7 +305,7 @@ const MemberListPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Flex justify="space-between" align="center">
+      {/* <Flex justify="space-between" align="center">
         <Typography.Title level={2}>{t('members.name')}</Typography.Title>
         <Flex gap={12}>
           {showSync && <SyncButton selectedIds={selectedIds} />}
@@ -331,7 +321,34 @@ const MemberListPage: React.FC = () => {
             {t('members.new')}
           </Button>
         </Flex>
-      </Flex>
+      </Flex> */}
+      <ListPageHeader
+        entity="members"
+        actions={[
+          {
+            key: 'export',
+            label: t('commons.export.button'),
+            icon: <Icon component={FaFileCsv} />,
+            onClick: () => setExportCsv(true),
+          },
+          ...(showSync
+            ? [
+                {
+                  key: 'sync',
+                  label: t('buttons.sync.label'),
+                  icon: <Icon component={FaSync} spin={syncLoading} />,
+                  disabled: selectedIds.length === 0,
+                  onClick: () =>
+                    syncMembers(selectedIds).then((success) => {
+                      if (success) {
+                        setSelectedIds([]);
+                      }
+                    }),
+                },
+              ]
+            : []),
+        ]}
+      />
 
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={10}>

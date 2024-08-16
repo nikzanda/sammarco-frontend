@@ -1,8 +1,6 @@
 import React from 'react';
-import { App, Button, Popconfirm } from 'antd';
+import { App } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FaSync } from 'react-icons/fa';
-import Icon from '@ant-design/icons';
 import { useMembersSyncLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
@@ -18,22 +16,18 @@ const getEndpoint = (uri: string, year: number) => {
   return result;
 };
 
-interface Props {
-  selectedIds: string[];
-}
-
-const SyncButton: React.FC<Props> = ({ selectedIds }) => {
+const useSyncMembers = () => {
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(false);
   const { message } = App.useApp();
+  const [loading, setLoading] = React.useState(false);
 
   const [getMembers, { error: queryError }] = useMembersSyncLazyQuery();
 
   useDisplayGraphQLErrors(queryError);
 
-  const sync = async () => {
+  const sync = async (selectedIds: string[]) => {
     if (selectedIds.length === 0) {
-      return;
+      return false;
     }
 
     setLoading(true);
@@ -46,7 +40,7 @@ const SyncButton: React.FC<Props> = ({ selectedIds }) => {
 
     if (!queryData || queryData.members.data.length === 0) {
       setLoading(false);
-      return;
+      return false;
     }
 
     const {
@@ -92,22 +86,22 @@ const SyncButton: React.FC<Props> = ({ selectedIds }) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
+    setLoading(false);
+
     if (data.data) {
       message.success(t('members.sync.success', { count: members.length }));
-    } else if (data.errors) {
-      message.error(t('members.sync.error'));
+      return true;
     }
 
-    setLoading(false);
+    if (data.errors) {
+      message.error(t('members.sync.error'));
+      return false;
+    }
+
+    return false;
   };
 
-  return (
-    <Popconfirm title={t('members.sync.title')} onConfirm={() => sync()}>
-      <Button size="large" icon={<Icon component={FaSync} />} disabled={selectedIds.length === 0} loading={loading}>
-        {t('buttons.sync.label')}
-      </Button>
-    </Popconfirm>
-  );
+  return { sync, loading };
 };
 
-export default SyncButton;
+export default useSyncMembers;

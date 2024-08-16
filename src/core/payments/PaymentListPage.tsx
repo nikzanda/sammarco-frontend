@@ -1,20 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import {
-  App,
-  Button,
-  Col,
-  Dropdown,
-  Flex,
-  Input,
-  Row,
-  Space,
-  Table,
-  TableColumnsType,
-  TableProps,
-  Typography,
-} from 'antd';
+import { App, Button, Col, Input, Row, Space, Table, TableColumnsType, TableProps } from 'antd';
 import { format, set } from 'date-fns';
 import { FaBan, FaFileCsv, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -33,7 +20,7 @@ import {
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { capitalize, toCurrency } from '../../utils';
-import { ActionButtons, MonthFilter, NumberFilter } from '../../commons';
+import { ActionButtons, ListPageHeader, MonthFilter, NumberFilter } from '../../commons';
 import { MemberTableFilter } from '../members/components';
 import { FeeTableFilter } from '../fees/components';
 import { ExportPaymentsModal, PrintPaymentsModal } from './components';
@@ -304,44 +291,44 @@ const PaymentListPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Flex justify="space-between" align="center">
-        <Typography.Title level={2}>{t('payments.name')}</Typography.Title>
-        <Flex gap={12}>
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  label: t('payments.print.all'),
-                  key: 'all',
-                },
-                {
-                  label: t('payments.print.selected'),
-                  key: 'selected',
-                  disabled: selectedIds.length === 0,
-                },
-              ],
-              onClick: ({ key }) => {
-                switch (key) {
-                  case 'all':
-                    setPrintAll(true);
-                    break;
-
-                  case 'selected':
-                    handlePrintMultiple();
-                    break;
-                }
+      <ListPageHeader
+        entity="payments"
+        actions={[
+          {
+            key: 'print',
+            label: t('buttons.print.label'),
+            icon: <Icon component={FaPrint} />,
+            children: [
+              {
+                label: t('payments.print.all'),
+                key: 'all',
               },
-            }}
-          >
-            <Button size="large" icon={<Icon component={FaPrint} />}>
-              {t('buttons.print.label')}
-            </Button>
-          </Dropdown>
-          <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
-            {t('commons.export.button')}
-          </Button>
-        </Flex>
-      </Flex>
+              {
+                label: t('payments.print.selected'),
+                key: 'selected',
+                disabled: selectedIds.length === 0,
+              },
+            ],
+            onClick: ({ key }) => {
+              switch (key) {
+                case 'all':
+                  setPrintAll(true);
+                  break;
+
+                case 'selected':
+                  handlePrintMultiple();
+                  break;
+              }
+            },
+          },
+          {
+            key: 'export',
+            label: t('commons.export.button'),
+            onClick: () => setExportCsv(true),
+            icon: <Icon component={FaFileCsv} />,
+          },
+        ]}
+      />
 
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12}>
