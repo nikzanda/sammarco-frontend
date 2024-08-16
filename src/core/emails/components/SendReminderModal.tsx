@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { usePaymentSendReminderMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { CourseSearcher } from '../../courses/components';
-import { dateToYearMonth } from '../../../utils/utils';
+import { dateToYearMonth } from '../../../utils';
 import { DatePicker } from '../../../components';
 
 interface Props {

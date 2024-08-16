@@ -6,7 +6,7 @@ import { CSVDownload } from 'react-csv';
 import { PaymentSortEnum, SortDirectionEnum, usePaymentsCsvLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { DatePicker } from '../../../components';
-import { capitalize, toCurrency } from '../../../utils/utils';
+import { capitalize, toCurrency } from '../../../utils';
 
 interface Props {
   onCancel: () => void;

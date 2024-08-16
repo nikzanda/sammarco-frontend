@@ -33,7 +33,7 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
-import { getMonths, getYears } from '../../utils/utils';
+import { getMonths, getYears } from '../../utils';
 import { ExportMembersModal, MemberExpandable, SyncButton } from './components';
 import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';

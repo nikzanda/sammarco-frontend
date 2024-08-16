@@ -5,7 +5,7 @@ import { differenceInDays, format, isSameMonth, isSameYear } from 'date-fns';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { MemberListItemFragment } from '../../../generated/graphql';
-import { getYears } from '../../../utils/utils';
+import { getYears } from '../../../utils';
 
 interface Props {
   member: MemberListItemFragment;

@@ -17,9 +17,8 @@ import {
 } from '../../../generated/graphql';
 import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
 import i18n from '../../../i18n';
-import { dateToYearMonth, toQuantity } from '../../../utils/utils';
-import { isMinor, getSex } from '../../../utils';
 import { municipalities, signature as signatureUri } from '../../../constants';
+import { dateToYearMonth, toQuantity, isMinor, getSex } from '../../../utils';
 
 const { t } = i18n;
 

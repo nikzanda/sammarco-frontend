@@ -14,7 +14,7 @@ import {
 } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-import { dateToYearMonth, getYears } from '../../../utils/utils';
+import { dateToYearMonth, getYears } from '../../../utils';
 import PDF from '../pdfs/receipt-pdf';
 import { FeeSearcher } from '../../fees/components';
 

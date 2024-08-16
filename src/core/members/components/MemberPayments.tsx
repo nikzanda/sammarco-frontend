@@ -18,7 +18,7 @@ import {
   usePaymentsQuery,
 } from '../../../generated/graphql';
 import PDF from '../../payments/pdfs/receipt-pdf';
-import { toCurrency } from '../../../utils/utils';
+import { toCurrency } from '../../../utils';
 import { FeeTableFilter } from '../../fees/components';
 import { ActionButtons, MonthFilter, NumberFilter } from '../../../commons';
 import { PaymentCreateModal } from '../../payments/components';

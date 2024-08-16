@@ -10,7 +10,7 @@ import Highlighter from 'react-highlight-words';
 import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons } from '../../commons';
-import { toCurrency } from '../../utils/utils';
+import { toCurrency } from '../../utils';
 import { CourseTableFilter } from '../courses/components';
 
 const PAGE_SIZE = 20;

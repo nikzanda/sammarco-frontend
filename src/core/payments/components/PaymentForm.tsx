@@ -3,7 +3,7 @@ import { Col, Form, Input, InputNumber, Radio, Row } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { PaymentTypeEnum, RecurrenceEnum, PaymentDetailFragment, FeeSearcherQuery } from '../../../generated/graphql';
-import { dateToYearMonth } from '../../../utils/utils';
+import { dateToYearMonth } from '../../../utils';
 import { DatePicker } from '../../../components';
 import { FeeSearcher } from '../../fees/components';
 import { MemberSearcher } from '../../members/components';

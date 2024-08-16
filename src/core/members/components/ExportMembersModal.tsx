@@ -5,8 +5,7 @@ import { CSVDownload } from 'react-csv';
 import { format } from 'date-fns';
 import { MemberSortEnum, SortDirectionEnum, useMembersCsvLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-import { getYears } from '../../../utils/utils';
-import { getBirthPlace } from '../../../utils';
+import { getYears, getBirthPlace } from '../../../utils';
 
 interface Props {
   onCancel: () => void;

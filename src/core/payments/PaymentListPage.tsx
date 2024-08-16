@@ -32,7 +32,7 @@ import {
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
-import { capitalize, toCurrency } from '../../utils/utils';
+import { capitalize, toCurrency } from '../../utils';
 import { ActionButtons, MonthFilter, NumberFilter } from '../../commons';
 import { MemberTableFilter } from '../members/components';
 import { FeeTableFilter } from '../fees/components';
