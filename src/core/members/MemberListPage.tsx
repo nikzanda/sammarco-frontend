@@ -5,7 +5,6 @@ import {
   Col,
   Flex,
   Input,
-  Popconfirm,
   Row,
   Space,
   Table,
@@ -17,7 +16,7 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus, FaSync } from 'react-icons/fa';
+import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaPlus } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -42,8 +41,8 @@ import { SendReminderModal } from '../emails/components';
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
-const { REACT_APP_BASENAME } = process.env;
-const showSync = parseInt(REACT_APP_BASENAME!, 10) - 1 < getYears()[0];
+const { REACT_APP_SOCIAL_YEAR } = process.env;
+const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) - 1 < getYears()[0];
 
 const MemberListPage: React.FC = () => {
   const { t } = useTranslation();

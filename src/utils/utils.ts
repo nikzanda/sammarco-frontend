@@ -1,5 +1,7 @@
 import { format } from 'date-fns';
 
+const { REACT_APP_SOCIAL_YEAR } = process.env;
+
 export const toCurrency = (
   amount: number,
   { minimumFractionDigits = 2, maximumFractionDigits = 2 }: Intl.NumberFormatOptions = {},
@@ -23,12 +25,8 @@ export const dateToYearMonth = (date: Date | number) => {
 };
 
 export const getYears = (): [number, number] => {
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  if (today.getMonth() < 8) {
-    return [currentYear - 1, currentYear];
-  }
-  return [currentYear, currentYear + 1];
+  const year = parseInt(REACT_APP_SOCIAL_YEAR!, 10);
+  return [year, year + 1];
 };
 
 export const getMonths = (): [Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date] => {

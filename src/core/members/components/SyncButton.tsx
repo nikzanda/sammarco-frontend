@@ -6,7 +6,7 @@ import Icon from '@ant-design/icons';
 import { useMembersSyncLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const { REACT_APP_GRAPHQLURI, REACT_APP_BASENAME } = process.env;
+const { REACT_APP_GRAPHQLURI, REACT_APP_SOCIAL_YEAR } = process.env;
 
 const getEndpoint = (uri: string, year: number) => {
   if (!uri.includes(year.toString())) {
@@ -53,7 +53,7 @@ const SyncButton: React.FC<Props> = ({ selectedIds }) => {
       members: { data: members },
     } = queryData;
 
-    const endpoint = getEndpoint(REACT_APP_GRAPHQLURI!, parseInt(REACT_APP_BASENAME!, 10));
+    const endpoint = getEndpoint(REACT_APP_GRAPHQLURI!, parseInt(REACT_APP_SOCIAL_YEAR!, 10));
     const headers = {
       'content-type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -85,7 +85,7 @@ const SyncButton: React.FC<Props> = ({ selectedIds }) => {
 
     const options = {
       method: 'POST',
-      headers: headers,
+      headers,
       body: JSON.stringify(graphqlQuery),
     };
 

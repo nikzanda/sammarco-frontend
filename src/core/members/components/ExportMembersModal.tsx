@@ -12,6 +12,12 @@ interface Props {
   onCancel: () => void;
 }
 
+const socialYear = (() => {
+  const [first, second] = getYears();
+  const result = `${first}/${second % 100}`;
+  return result;
+})();
+
 const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
 
@@ -53,7 +59,7 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
           birthday: format(birthday, 'dd/MM/yyyy'),
           registrationRequestDate: registrationRequestDate && format(registrationRequestDate, 'dd/MM/yyyy'),
           registrationAcceptanceDate: registrationAcceptanceDate && format(registrationAcceptanceDate, 'dd/MM/yyyy'),
-          socialYear: getYears()[0],
+          socialYear,
           qualification: t(`members.qualification.${qualification}`),
         })
       );
