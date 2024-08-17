@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Funzione per spostare i file dalla cartella di build a quella di destinazione
+move_files() {
+    local build_folder=$1
+    local dest_folder=$2
+
+    # Verifica se la cartella di build esiste
+    if [ -d "$build_folder" ]; then
+        echo "Spostamento dei file da $build_folder a $dest_folder..."
+
+        # Cambia il proprietario della cartella di destinazione
+        sudo chown -R ubuntu:ubuntu $dest_folder
+
+        # Rimuovi i vecchi file dalla cartella di destinazione
+        rm -rf "$dest_folder/"* || { echo "Errore durante la rimozione dei file in $dest_folder"; exit 1; }
+
+        # Sposta i nuovi file dalla cartella di build alla cartella di destinazione
+        mv -v "$build_folder/"* "$dest_folder" || { echo "Errore durante lo spostamento dei file"; exit 1; }
+
+        # Rimuovi la cartella di build vuota
+        rm -rf "$build_folder" || { echo "Errore durante la rimozione della cartella $build_folder"; exit 1; }
+
+        # Cambia il proprietario della cartella di destinazione al server web
+        sudo chown -R www-data:www-data $dest_folder
+    else
+        echo "Cartella $build_folder non trovata."
+    fi
+}
+
+for year in 2023 2024; do
+    echo "Inizio dello script per l'anno $year"
+    build_folder="$HOME/build-$year"
+    dest_folder="/var/www/html/$year"
+    move_files "$build_folder" "$dest_folder"
+done

@@ -31,7 +31,7 @@ const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
 const { REACT_APP_SOCIAL_YEAR } = process.env;
-const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) - 1 < getYears()[0];
+const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) < getYears()[0];
 
 const MemberListPage: React.FC = () => {
   const { validEmailSettings } = React.useContext(SettingsContext);

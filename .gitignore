@@ -10,6 +10,7 @@
 
 # production
 /build
+/build-[0-9]*
 
 # misc
 .DS_Store
@@ -19,6 +20,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.[0-9]*
 
 npm-debug.log*
 yarn-debug.log*
