@@ -24,6 +24,15 @@ export const dateToYearMonth = (date: Date | number) => {
   return result;
 };
 
+export const getRealCurrentYears = (): [number, number] => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  if (today.getMonth() < 8) {
+    return [currentYear - 1, currentYear];
+  }
+  return [currentYear, currentYear + 1];
+};
+
 export const getYears = (): [number, number] => {
   const year = parseInt(REACT_APP_SOCIAL_YEAR!, 10);
   return [year, year + 1];

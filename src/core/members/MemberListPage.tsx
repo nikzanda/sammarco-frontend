@@ -20,7 +20,7 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, ListPageHeader, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
-import { getMonths, getYears } from '../../utils';
+import { getMonths, getRealCurrentYears, getYears } from '../../utils';
 import { ExportMembersModal, MemberExpandable } from './components';
 import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';
@@ -31,7 +31,7 @@ const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
 const { REACT_APP_SOCIAL_YEAR } = process.env;
-const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) < getYears()[0];
+const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) - 1 < getRealCurrentYears()[0];
 
 const MemberListPage: React.FC = () => {
   const { validEmailSettings } = React.useContext(SettingsContext);
