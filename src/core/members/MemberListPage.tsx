@@ -305,26 +305,16 @@ const MemberListPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      {/* <Flex justify="space-between" align="center">
-        <Typography.Title level={2}>{t('members.name')}</Typography.Title>
-        <Flex gap={12}>
-          {showSync && <SyncButton selectedIds={selectedIds} />}
-          <Button size="large" icon={<Icon component={FaFileCsv} />} onClick={() => setExportCsv(true)}>
-            {t('commons.export.button')}
-          </Button>
-          <Button
-            type="primary"
-            size="large"
-            icon={<Icon component={FaPlus} />}
-            onClick={() => navigate('/members/new')}
-          >
-            {t('members.new')}
-          </Button>
-        </Flex>
-      </Flex> */}
       <ListPageHeader
         entity="members"
         actions={[
+          {
+            key: 'attendance',
+            label: t('attendances.new'),
+            icon: <Icon component={FaCalendarCheck} />,
+            disabled: selectedIds.length === 0,
+            onClick: () => setNewAttendance(true),
+          },
           {
             key: 'export',
             label: t('commons.export.button'),
@@ -385,16 +375,6 @@ const MemberListPage: React.FC = () => {
         </Col>
 
         <Col xs={24} sm={8} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            size="large"
-            icon={<Icon component={FaCalendarCheck} />}
-            onClick={() => {
-              setNewAttendance(true);
-            }}
-            disabled={selectedIds.length === 0}
-          >
-            {t('attendances.new')}
-          </Button>
           <Button
             danger
             size="large"
@@ -465,7 +445,7 @@ const MemberListPage: React.FC = () => {
         <AttendanceCreateModal
           memberIds={selectedIds}
           courseIds={[
-            ...members.reduce((acc: Set<string>, { id: memberId, courses }) => {
+            ...members.reduce((acc, { id: memberId, courses }) => {
               if (!selectedIds.includes(memberId)) {
                 return acc;
               }

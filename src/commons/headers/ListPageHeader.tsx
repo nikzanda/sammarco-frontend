@@ -19,25 +19,37 @@ interface Props {
 const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton, actions }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
 
   return (
     <Row justify="space-between" align="middle">
       <Typography.Title level={3}>{t(`${entity}.name`)}</Typography.Title>
 
-      <Flex gap={8}>
-        <Button
-          size="large"
-          type="primary"
-          icon={<Icon component={FaPlus} />}
-          onClick={() => navigate(`/${entity}/new`)}
-          hidden={hideCreateButton}
-        >
-          {t(`${entity}.new`)}
-        </Button>
+      <Flex gap={8} align="center">
+        {!hideCreateButton && (
+          <Button
+            size="large"
+            type="primary"
+            icon={<Icon component={FaPlus} />}
+            onClick={() => navigate(`/${entity}/new`)}
+          >
+            {t(`${entity}.new`)}
+          </Button>
+        )}
         {actions && actions.length > 0 && (
           <>
-            <Divider type="vertical" />
-            <Dropdown arrow trigger={['click']} menu={{ items: actions }}>
+            {!hideCreateButton && <Divider type="vertical" />}
+            <Dropdown
+              arrow
+              trigger={['click']}
+              open={open}
+              onOpenChange={(open, info) => {
+                if (info.source === 'trigger') {
+                  setOpen(open);
+                }
+              }}
+              menu={{ items: actions }}
+            >
               <Button icon={<MenuOutlined />} type="text" />
             </Dropdown>
           </>

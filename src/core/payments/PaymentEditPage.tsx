@@ -1,29 +1,15 @@
 import React from 'react';
-import {
-  App,
-  Button,
-  Col,
-  Form,
-  FormProps,
-  Popconfirm,
-  Result,
-  Row,
-  Skeleton,
-  Space,
-  Spin,
-  Tabs,
-  Typography,
-} from 'antd';
+import { App, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft, FaSave } from 'react-icons/fa';
+import { FaPrint, FaTrash } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { usePaymentDeleteMutation, usePaymentQuery, usePaymentUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { PaymentForm } from './components';
 import PDF from './pdfs/receipt-pdf';
-import { Updates } from '../../commons';
+import { EditPageHeader, Updates } from '../../commons';
 
 const DEFAULT_TAB = 'details';
 
@@ -31,7 +17,7 @@ const PaymentEditPage: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const [form] = Form.useForm();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -128,47 +114,35 @@ const PaymentEditPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Row justify="space-between" align="middle">
-        <Col xs={1} md={2}>
-          <Button
-            shape="circle"
-            size="middle"
-            icon={<Icon component={FaAngleLeft} />}
-            onClick={() => navigate('/payments')}
-          />
-        </Col>
-        <Col xs={12} md={20}>
-          <Typography.Title level={3}>{title}</Typography.Title>
-        </Col>
-        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Space>
-            {payment?.canDelete && (
-              <Popconfirm
-                title={t('payments.delete.confirm')}
-                description={t('payments.delete.description')}
-                onConfirm={handleDelete}
-              >
-                <Button type="primary" size="large" danger loading={deleteLoading}>
-                  {t('buttons.delete.label')}
-                </Button>
-              </Popconfirm>
-            )}
-            <Button size="large" loading={updateLoading} onClick={handlePrint}>
-              {t('buttons.print.label')}
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              form="form"
-              size="large"
-              loading={updateLoading}
-              icon={<Icon component={FaSave} />}
-            >
-              {t('buttons.save.label')}
-            </Button>
-          </Space>
-        </Col>
-      </Row>
+      <EditPageHeader
+        entity="payments"
+        title={title}
+        submitButtonProps={{
+          loading: updateLoading,
+        }}
+        actions={[
+          {
+            key: 'print',
+            label: t('buttons.print.label'),
+            icon: <Icon component={FaPrint} />,
+            onClick: () => handlePrint(),
+          },
+          {
+            key: 'delete',
+            label: t('buttons.delete.label'),
+            disabled: !payment?.canDelete,
+            icon: <Icon component={FaTrash} spin={deleteLoading} />,
+            danger: true,
+            onClick: () => {
+              modal.confirm({
+                title: t('payments.delete.description'),
+                content: t('payments.delete.confirm'),
+                onOk: () => handleDelete(),
+              });
+            },
+          },
+        ]}
+      />
 
       {queryLoading && <Skeleton active />}
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}

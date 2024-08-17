@@ -75,7 +75,7 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
   });
 
   const [deleteAttendance, { loading: mutationLoading, error: mutationError }] = useAttendanceDeleteMutation({
-    refetchQueries: ['Attendances'],
+    refetchQueries: ['Attendances', 'Member'],
     onCompleted: () => {
       message.success(t('attendances.deleted'));
     },

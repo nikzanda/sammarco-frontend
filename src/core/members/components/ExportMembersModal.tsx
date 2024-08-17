@@ -80,6 +80,7 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
         loading: queryLoading,
         onClick: handleExport,
       }}
+      zIndex={1100}
     >
       {csvData && <CSVDownload data={csvData} headers={headers} filename={format(Date.now(), 'yyyy-MM-dd_HH:mm:ss')} />}
     </Modal>

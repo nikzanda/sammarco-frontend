@@ -293,6 +293,7 @@ const PaymentListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <ListPageHeader
         entity="payments"
+        hideCreateButton
         actions={[
           {
             key: 'print',

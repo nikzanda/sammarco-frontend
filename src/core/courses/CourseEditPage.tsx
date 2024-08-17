@@ -1,28 +1,14 @@
 import React from 'react';
-import {
-  App,
-  Button,
-  Col,
-  Form,
-  FormProps,
-  Popconfirm,
-  Result,
-  Row,
-  Skeleton,
-  Space,
-  Spin,
-  Tabs,
-  Typography,
-} from 'antd';
+import { App, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaAngleLeft, FaSave } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import { set } from 'date-fns';
 import { ShiftInput, useCourseDeleteMutation, useCourseQuery, useCourseUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
-import { Updates } from '../../commons';
+import { EditPageHeader, Updates } from '../../commons';
 
 const DEFAULT_TAB = 'details';
 
@@ -30,7 +16,7 @@ const CourseEditPage: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
@@ -156,44 +142,29 @@ const CourseEditPage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Row justify="space-between" align="middle">
-        <Col xs={1} md={2}>
-          <Button
-            shape="circle"
-            size="middle"
-            icon={<Icon component={FaAngleLeft} />}
-            onClick={() => navigate('/courses')}
-          />
-        </Col>
-        <Col xs={12} md={20}>
-          <Typography.Title level={3}>{title}</Typography.Title>
-        </Col>
-        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Space>
-            {course?.canDelete && (
-              <Popconfirm
-                title={t('courses.delete.confirm')}
-                description={t('courses.delete.description', { name: course.name })}
-                onConfirm={handleDelete}
-              >
-                <Button type="primary" size="large" danger loading={deleteLoading}>
-                  {t('buttons.delete.label')}
-                </Button>
-              </Popconfirm>
-            )}
-            <Button
-              type="primary"
-              htmlType="submit"
-              form="form"
-              size="large"
-              loading={updateLoading}
-              icon={<Icon component={FaSave} />}
-            >
-              {t('buttons.save.label')}
-            </Button>
-          </Space>
-        </Col>
-      </Row>
+      <EditPageHeader
+        entity="courses"
+        title={title}
+        submitButtonProps={{
+          loading: updateLoading,
+        }}
+        actions={[
+          {
+            key: 'delete',
+            label: t('buttons.delete.label'),
+            disabled: !course?.canDelete,
+            icon: <Icon component={FaTrash} spin={deleteLoading} />,
+            danger: true,
+            onClick: () => {
+              modal.confirm({
+                title: t('courses.delete.description', { name: course?.name }),
+                content: t('courses.delete.confirm'),
+                onOk: () => handleDelete(),
+              });
+            },
+          },
+        ]}
+      />
 
       {queryLoading && <Skeleton active />}
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
@@ -221,11 +192,6 @@ const CourseEditPage: React.FC = () => {
                 </>
               ),
             },
-            // {
-            //   label: t('courses.tab.payments'),
-            //   key: 'payments',
-            //   children: <coursePayments course={course} />,
-            // },
           ]}
         />
       )}
