@@ -1,12 +1,11 @@
 import React from 'react';
-import Icon from '@ant-design/icons';
-import { App, Button, Col, Form, FormProps, Row, Space, Typography } from 'antd';
+import { App, Form, FormProps, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { MemberForm } from './components';
 import { useMemberCreateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
+import { CreatePageHeader } from '../../commons';
 
 const MemberCreatePage: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +13,7 @@ const MemberCreatePage: React.FC = () => {
   const { message } = App.useApp();
   const [form] = Form.useForm();
 
-  const [createMember, { loading, error }] = useMemberCreateMutation({
+  const [createMember, { loading: mutationLoading, error: mutationError }] = useMemberCreateMutation({
     refetchQueries: ['Members', 'MembersSearcher'],
     onCompleted: () => {
       message.success(t('members.created'));
@@ -22,7 +21,7 @@ const MemberCreatePage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(error);
+  useDisplayGraphQLErrors(mutationError);
 
   const handleFinish: FormProps['onFinish'] = (values) => {
     createMember({
@@ -34,31 +33,7 @@ const MemberCreatePage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Row justify="space-between" align="middle">
-        <Col xs={1} md={2}>
-          <Button
-            shape="circle"
-            size="middle"
-            icon={<Icon component={FaAngleLeft} />}
-            onClick={() => navigate('/members')}
-          />
-        </Col>
-        <Col xs={12} md={20}>
-          <Typography.Title level={3}>{t('members.new')}</Typography.Title>
-        </Col>
-        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            form="form"
-            size="large"
-            loading={loading}
-            icon={<Icon component={FaSave} />}
-          >
-            {t('buttons.save.label')}
-          </Button>
-        </Col>
-      </Row>
+      <CreatePageHeader entity="members" submitButtonProps={{ loading: mutationLoading }} />
 
       <Form id="form" form={form} layout="vertical" autoComplete="off" onFinish={handleFinish}>
         <MemberForm />

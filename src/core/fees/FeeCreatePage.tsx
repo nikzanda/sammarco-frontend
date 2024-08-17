@@ -1,12 +1,11 @@
 import React from 'react';
-import { App, Button, Col, Form, FormProps, Row, Space, Typography } from 'antd';
+import { App, Form, FormProps, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaAngleLeft, FaSave } from 'react-icons/fa';
-import Icon from '@ant-design/icons';
 import { useFeeCreateMutation, useFeeLazyQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { FeeForm } from './components';
+import { CreatePageHeader } from '../../commons';
 
 const FeeCreatePage: React.FC = () => {
   const { t } = useTranslation();
@@ -69,31 +68,7 @@ const FeeCreatePage: React.FC = () => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Row justify="space-between" align="middle">
-        <Col xs={1} md={2}>
-          <Button
-            shape="circle"
-            size="middle"
-            icon={<Icon component={FaAngleLeft} />}
-            onClick={() => navigate('/fees')}
-          />
-        </Col>
-        <Col xs={12} md={20}>
-          <Typography.Title level={3}>{t('fees.new')}</Typography.Title>
-        </Col>
-        <Col xs={5} md={2} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            form="form"
-            size="large"
-            loading={mutationLoading}
-            icon={<Icon component={FaSave} />}
-          >
-            {t('buttons.save.label')}
-          </Button>
-        </Col>
-      </Row>
+      <CreatePageHeader entity="fees" submitButtonProps={{ loading: mutationLoading }} />
 
       {showForm && (
         <Form id="form" initialValues={initialValues} layout="vertical" autoComplete="off" onFinish={handleFinish}>

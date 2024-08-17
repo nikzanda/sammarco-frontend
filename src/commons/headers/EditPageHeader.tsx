@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ButtonProps, Divider, Dropdown, Flex, GetProp, MenuProps, Row, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import Icon, { MenuOutlined } from '@ant-design/icons';
+import Icon, { MoreOutlined } from '@ant-design/icons';
 import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,12 +12,11 @@ const defaultProps = {
 
 interface Props {
   title: React.ReactNode;
-  entity: 'members' | 'courses' | 'fees' | 'payments';
   submitButtonProps?: Omit<ButtonProps, 'type' | 'htmlType' | 'form' | 'size' | 'icon'>;
   actions?: GetProp<MenuProps, 'items'>;
 }
 
-const EditPageHeader: React.FC<Props> = ({ title, entity, submitButtonProps, actions }) => {
+const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -25,12 +24,7 @@ const EditPageHeader: React.FC<Props> = ({ title, entity, submitButtonProps, act
   return (
     <Row justify="space-between">
       <Flex gap={8} align="center">
-        <Button
-          shape="circle"
-          size="middle"
-          icon={<Icon component={FaAngleLeft} />}
-          onClick={() => navigate(`/${entity}`)}
-        />
+        <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
 
         <Typography.Title level={3}>{title}</Typography.Title>
       </Flex>
@@ -60,7 +54,7 @@ const EditPageHeader: React.FC<Props> = ({ title, entity, submitButtonProps, act
               }}
               menu={{ items: actions }}
             >
-              <Button icon={<MenuOutlined />} type="text" />
+              <Button size="large" icon={<MoreOutlined />} />
             </Dropdown>
           </>
         )}

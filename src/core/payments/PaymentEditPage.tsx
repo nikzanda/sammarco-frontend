@@ -115,7 +115,6 @@ const PaymentEditPage: React.FC = () => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <EditPageHeader
-        entity="payments"
         title={title}
         submitButtonProps={{
           loading: updateLoading,

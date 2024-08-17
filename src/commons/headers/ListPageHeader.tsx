@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Divider, Dropdown, Flex, GetProp, MenuProps, Row, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import Icon, { MenuOutlined } from '@ant-design/icons';
+import Icon, { MoreOutlined } from '@ant-design/icons';
 import { FaPlus } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 
@@ -50,7 +50,7 @@ const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton, actions }) 
               }}
               menu={{ items: actions }}
             >
-              <Button icon={<MenuOutlined />} type="text" />
+              <Button size="large" icon={<MoreOutlined />} />
             </Dropdown>
           </>
         )}

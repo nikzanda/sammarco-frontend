@@ -105,7 +105,6 @@ const MemberEditPage: React.FC = () => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <EditPageHeader
-        entity="members"
         title={title}
         submitButtonProps={{
           loading: updateLoading,
