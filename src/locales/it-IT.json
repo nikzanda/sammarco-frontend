@@ -321,13 +321,25 @@
         "password": "Inserisci nuova password"
       },
       "emailText": {
-        "subject": {
-          "label": "Oggetto",
-          "help": "Utilizza i placeholder [MESE] e/o [ANNO] per sostituire rispettivamente mese del pagamento e/o anno d'iscrizione."
+        "receipt": {
+          "subject": {
+            "label": "Oggetto",
+            "help": "Utilizza i placeholder [MESE] e/o [ANNO] per sostituire rispettivamente mese del pagamento e/o anno d'iscrizione."
+          },
+          "body": {
+            "label": "Contenuto",
+            "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
+          }
         },
-        "body": {
-          "label": "Contenuto",
-          "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
+        "reminder": {
+          "subject": {
+            "label": "Oggetto",
+            "help": "Utilizza il placeholder [MESE] per sostituire rispettivamente il mese del pagamento."
+          },
+          "body": {
+            "label": "Contenuto",
+            "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
+          }
         }
       },
       "reminderEmailMonthDay": "Giorno del mese in cui inviare la mail di sollecito"

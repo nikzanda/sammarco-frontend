@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaSave } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
-import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps } from 'antd';
+import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps, Skeleton } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { SettingsContext } from '../contexts';
 import { EmailSettingsForm, EmailTextsForm, ReminderSendForm } from './components';
@@ -40,6 +40,10 @@ const SettingsPage: React.FC = () => {
       },
     });
   };
+
+  if (!settings) {
+    return <Skeleton active paragraph={{ rows: 4 }} />;
+  }
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
