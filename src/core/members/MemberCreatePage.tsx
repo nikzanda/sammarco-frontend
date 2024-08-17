@@ -3,7 +3,7 @@ import { App, Form, FormProps, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { MemberForm } from './components';
-import { useMemberCreateMutation } from '../../generated/graphql';
+import { QualificationEnum, useMemberCreateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CreatePageHeader } from '../../commons';
 
@@ -35,7 +35,14 @@ const MemberCreatePage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <CreatePageHeader entity="members" submitButtonProps={{ loading: mutationLoading }} />
 
-      <Form id="form" form={form} layout="vertical" autoComplete="off" onFinish={handleFinish}>
+      <Form
+        id="form"
+        form={form}
+        layout="vertical"
+        autoComplete="off"
+        onFinish={handleFinish}
+        initialValues={{ qualification: QualificationEnum.ORDINARY_MEMBER }}
+      >
         <MemberForm />
       </Form>
     </Space>

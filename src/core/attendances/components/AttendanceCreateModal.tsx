@@ -1,11 +1,13 @@
 import { App, Form, FormProps, Modal } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { isToday, set } from 'date-fns';
+import { isAfter, isBefore, isToday, set } from 'date-fns';
 import { CourseSearcher, ShiftPicker } from '../../courses/components';
 import { DatePicker } from '../../../components';
 import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
+
+const { REACT_APP_SOCIAL_YEAR } = process.env;
 
 interface Props {
   memberIds: string[];
@@ -160,6 +162,10 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
             format="DD/MM/YYYY"
             style={{ width: '100%' }}
             disabledDate={(date) => {
+              const socialYear = parseInt(REACT_APP_SOCIAL_YEAR!, 10);
+              if (isBefore(date, new Date(socialYear, 8, 1)) || isAfter(date, new Date(socialYear + 1, 8, 0))) {
+                return true;
+              }
               if (!selectedShift) {
                 return false;
               }

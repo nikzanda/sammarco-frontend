@@ -25,6 +25,7 @@ import { ExportMembersModal, MemberExpandable } from './components';
 import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';
 import { useSyncMembers } from './hooks';
+import { SettingsContext } from '../../contexts';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
@@ -33,6 +34,7 @@ const { REACT_APP_SOCIAL_YEAR } = process.env;
 const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) - 1 < getYears()[0];
 
 const MemberListPage: React.FC = () => {
+  const { validEmailSettings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { token } = theme.useToken();
@@ -256,7 +258,11 @@ const MemberListPage: React.FC = () => {
               'edit',
               'fee',
               'attendance',
-              { button: 'reminder', sentRemindersCount: currentMonthReminderEmails.length },
+              {
+                button: 'reminder',
+                sentRemindersCount: currentMonthReminderEmails.length,
+                disabled: !validEmailSettings,
+              },
             ]}
             onEdit={() => navigate(`/members/${id}`)}
             onFee={() => {
@@ -284,7 +290,16 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.courses, filterInfo.shifts, navigate, searchText, t, token.colorError, token.colorWarning]);
+  }, [
+    filterInfo.courses,
+    filterInfo.shifts,
+    navigate,
+    searchText,
+    t,
+    token.colorError,
+    token.colorWarning,
+    validEmailSettings,
+  ]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

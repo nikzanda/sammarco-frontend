@@ -1,7 +1,7 @@
 import React from 'react';
 import { App, Button, Flex, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaBell, FaTrash } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
@@ -9,24 +9,25 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { EditPageHeader, Updates } from '../../commons';
 import { EmailTable, SendReminderModal } from '../emails/components';
+import { SettingsContext } from '../../contexts';
+import { getURLTab, setURLTab } from '../../utils';
 
 const DEFAULT_TAB = 'details';
 
 const MemberEditPage: React.FC = () => {
+  const { validEmailSettings } = React.useContext(SettingsContext);
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { message, modal } = App.useApp();
   const [form] = Form.useForm();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+  const [tab, setTab] = React.useState(getURLTab() || DEFAULT_TAB);
   const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
 
   React.useEffect(() => {
-    searchParams.set('tab', tab);
-    setSearchParams(searchParams);
-  }, [searchParams, setSearchParams, tab]);
+    setURLTab(getURLTab() || DEFAULT_TAB);
+  }, []);
 
   const {
     data: queryData,
@@ -155,6 +156,7 @@ const MemberEditPage: React.FC = () => {
               {
                 label: t('members.tab.medicalCertificate'),
                 key: 'certificate',
+                destroyInactiveTabPane: true,
                 children: <MemberMedicalCertificate member={member} />,
               },
               {
@@ -175,6 +177,7 @@ const MemberEditPage: React.FC = () => {
                     <Flex justify="end">
                       <Button
                         size="large"
+                        disabled={!validEmailSettings}
                         icon={<Icon component={FaBell} />}
                         onClick={() => {
                           setSendReminderData({

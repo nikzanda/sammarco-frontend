@@ -1,7 +1,7 @@
 import React from 'react';
 import { App, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaPrint, FaTrash } from 'react-icons/fa';
 import { format } from 'date-fns';
@@ -10,6 +10,7 @@ import { useDisplayGraphQLErrors } from '../../hooks';
 import { PaymentForm } from './components';
 import PDF from './pdfs/receipt-pdf';
 import { EditPageHeader, Updates } from '../../commons';
+import { getURLTab, setURLTab } from '../../utils';
 
 const DEFAULT_TAB = 'details';
 
@@ -19,14 +20,12 @@ const PaymentEditPage: React.FC = () => {
   const navigate = useNavigate();
   const { message, modal } = App.useApp();
   const [form] = Form.useForm();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [tab, setTab] = React.useState<string>(searchParams.get('tab') || DEFAULT_TAB);
+  const [tab, setTab] = React.useState(getURLTab() || DEFAULT_TAB);
 
   React.useEffect(() => {
-    searchParams.set('tab', tab);
-    setSearchParams(searchParams);
-  }, [searchParams, setSearchParams, tab]);
+    setURLTab(getURLTab() || DEFAULT_TAB);
+  }, []);
 
   const {
     data: queryData,

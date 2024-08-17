@@ -47,3 +47,16 @@ export const getMonths = (): [Date, Date, Date, Date, Date, Date, Date, Date, Da
 };
 
 export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+export const getURLTab = () => {
+  const { search } = window.location;
+  const params = new URLSearchParams(search);
+  const result = params.get('tab');
+  return result;
+};
+
+export const setURLTab = (tabName: string) => {
+  const url = new URL(window.location.href);
+  url.searchParams.set('tab', tabName);
+  window.history.replaceState({}, '', url);
+};

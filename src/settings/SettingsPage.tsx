@@ -44,7 +44,7 @@ const SettingsPage: React.FC = () => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <Flex justify="space-between" align="center">
-        <Typography.Title level={2}>{t('settings.name')}</Typography.Title>
+        <Typography.Title level={3}>{t('settings.name')}</Typography.Title>
         <Button
           htmlType="submit"
           form="form"

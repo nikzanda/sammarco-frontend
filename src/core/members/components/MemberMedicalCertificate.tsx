@@ -56,6 +56,7 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
               }
               return null;
             }}
+            rules={[{ required: true }]}
           >
             <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
           </Form.Item>
@@ -76,6 +77,9 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
               );
               const result = info.fileList.map((_, index) => filesDataUri[index] as string);
               form.setFieldValue(['medicalCertificate', 'base64'], result[0]);
+            }}
+            onRemove={() => {
+              form.setFieldValue(['medicalCertificate', 'base64'], undefined);
             }}
           >
             <p className="ant-upload-drag-icon">

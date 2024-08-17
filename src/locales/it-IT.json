@@ -397,7 +397,13 @@
   "errors": {
     "somethingWentWrong": "Ops, qualcosa è andato storto.",
     "notFound_one": "{{type}} non trovato",
-    "notFound_other": "{{type}} non trovati"
+    "notFound_other": "{{type}} non trovati",
+    "setting": {
+      "emailNotConfigured": "Configurazioni email mancanti nelle impostazioni"
+    },
+    "member": {
+      "emailNotConfigured": "Compilare la mail del socio"
+    }
   },
   "days": {
     "monday": "Lunedì",

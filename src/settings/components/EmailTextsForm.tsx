@@ -25,7 +25,7 @@ const EmailTextsForm: React.FC = () => {
             <Col span={24}>
               <Form.Item
                 label={t('settings.form.emailText.body.label')}
-                help={<span className="break-line">{t('settings.form.emailTextList.body.help')}</span>}
+                help={<span className="break-line">{t('settings.form.emailText.body.help')}</span>}
                 name={['emailTextList', type, 'body']}
               >
                 <Input.TextArea rows={6} />
