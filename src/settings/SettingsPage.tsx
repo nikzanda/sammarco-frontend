@@ -5,7 +5,7 @@ import Icon from '@ant-design/icons';
 import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps, Skeleton } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { SettingsContext } from '../contexts';
-import { EmailSettingsForm, EmailTextsForm, ReminderSendForm } from './components';
+import { EmailSettingsForm, EmailTextsForm } from './components';
 import { useDisplayGraphQLErrors } from '../hooks';
 import { useSettingUpdateMutation } from '../generated/graphql';
 
@@ -75,11 +75,6 @@ const SettingsPage: React.FC = () => {
               label: t('settings.tab.emailTexts'),
               key: 'email-texts',
               children: <EmailTextsForm />,
-            },
-            {
-              label: t('settings.tab.reminderSend'),
-              key: 'reminder-send',
-              children: <ReminderSendForm />,
             },
           ]}
         />

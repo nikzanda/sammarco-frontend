@@ -28,7 +28,6 @@ export const SETTING_UPDATE_MUTATION = gql`
             body
           }
         }
-        reminderEmailMonthDay
       }
     }
   }

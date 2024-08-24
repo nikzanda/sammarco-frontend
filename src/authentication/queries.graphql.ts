@@ -36,7 +36,6 @@ export const SETTING_QUERY = gql`
           body
         }
       }
-      reminderEmailMonthDay
     }
   }
 `;

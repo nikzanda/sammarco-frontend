@@ -296,8 +296,7 @@
     "saved": "Impostazioni aggiornate correttamente",
     "tab": {
       "emailSettings": "Impostazioni email",
-      "emailTexts": "Testi email",
-      "reminderSend": "Invio sollecito"
+      "emailTexts": "Testi email"
     },
     "emailSettings": {
       "verify": {
