@@ -3,7 +3,7 @@ import useLocalStorageState from 'use-local-storage-state';
 import { Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
+import { FaBan, FaBell, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -21,7 +21,7 @@ import { ActionButtons, ListPageHeader, week } from '../../commons';
 import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getRealCurrentYears, getYears } from '../../utils';
-import { ExportMembersModal, MemberExpandable } from './components';
+import { ExportMembersModal, MemberExpandable, SendMonthlyRemindersModal } from './components';
 import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';
 import { useSyncMembers } from './hooks';
@@ -45,6 +45,7 @@ const MemberListPage: React.FC = () => {
   const [newPayment, setNewPayment] = React.useState(false);
   const [newAttendance, setNewAttendance] = React.useState(false);
   const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
+  const [sendMonthlyReminders, setSendMonthlyReminders] = React.useState(false);
   const [exportCsv, setExportCsv] = React.useState(false);
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
@@ -336,6 +337,12 @@ const MemberListPage: React.FC = () => {
             icon: <Icon component={FaFileCsv} />,
             onClick: () => setExportCsv(true),
           },
+          {
+            key: 'send-reminders',
+            label: t('members.actions.sendReminders'),
+            icon: <Icon component={FaBell} />,
+            onClick: () => setSendMonthlyReminders(true),
+          },
           ...(showSync
             ? [
                 {
@@ -487,6 +494,7 @@ const MemberListPage: React.FC = () => {
         />
       )}
       {exportCsv && <ExportMembersModal onCancel={() => setExportCsv(false)} />}
+      {sendMonthlyReminders && <SendMonthlyRemindersModal onCancel={() => setSendMonthlyReminders(false)} />}
     </Space>
   );
 };

@@ -30,3 +30,11 @@ export const SEND_REMINDER_MUTATION = gql`
     }
   }
 `;
+
+export const SEND_MONTHLY_REMINDERS_MUTATION = gql`
+  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {
+    sendMonthlyReminders(input: $input) {
+      sentReminders
+    }
+  }
+`;

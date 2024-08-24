@@ -1,34 +1,25 @@
-import React from 'react';
 import { App, Form, FormProps, Modal } from 'antd';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePaymentSendReminderMutation } from '../../../generated/graphql';
-import { useDisplayGraphQLErrors } from '../../../hooks';
-import { CourseSearcher } from '../../courses/components';
 import { dateToYearMonth } from '../../../utils';
 import { DatePicker } from '../../../components';
+import { useSendMonthlyRemindersMutation } from '../../../generated/graphql';
+import { useDisplayGraphQLErrors } from '../../../hooks';
+
+const FORM_ID = 'send-monthly-reminders-form';
 
 interface Props {
-  memberId: string;
-  courseIds: string[];
   onCancel: () => void;
 }
 
-const SendReminderModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
+const SendMonthlyRemindersModal: React.FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  const initialValues = {
-    courseId: courseIds.length === 1 && courseIds[0],
-    month: (() => {
-      const today = new Date();
-      return `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}`;
-    })(),
-  };
-
-  const [sendReminder, { loading: mutationLoading, error: mutationError }] = usePaymentSendReminderMutation({
-    refetchQueries: ['Members', 'Emails'],
-    onCompleted: () => {
-      message.success(t('emails.sent'));
+  const [sendMonthlyReminders, { loading: mutationLoading, error: mutationError }] = useSendMonthlyRemindersMutation({
+    refetchQueries: ['Members', 'Member', 'Emails'],
+    onCompleted: ({ sendMonthlyReminders: { sentReminders } }) => {
+      message.success(t('members.sentReminders', { sentReminders }));
       onCancel();
     },
   });
@@ -36,41 +27,40 @@ const SendReminderModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) =
   useDisplayGraphQLErrors(mutationError);
 
   const handleFinish: FormProps['onFinish'] = (values) => {
-    sendReminder({
+    sendMonthlyReminders({
       variables: {
-        input: {
-          memberId,
-          ...values,
-        },
+        input: values,
       },
     });
   };
 
   return (
     <Modal
-      title={t('emails.sendReminder')}
+      title={t('members.actions.sendReminders')}
       open
+      onCancel={onCancel}
+      okText={t('commons.send')}
       okButtonProps={{
         htmlType: 'submit',
-        form: 'send-reminder-form',
         loading: mutationLoading,
+        form: FORM_ID,
       }}
-      onCancel={onCancel}
-      zIndex={9999}
     >
       <Form
-        id="send-reminder-form"
+        id={FORM_ID}
         layout="vertical"
         autoComplete="off"
-        initialValues={initialValues}
         onFinish={handleFinish}
+        initialValues={{
+          month: (() => {
+            const today = new Date();
+            const result = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}`;
+            return result;
+          })(),
+        }}
       >
-        <Form.Item label={t('emails.form.course')} name="courseId" rules={[{ required: true }]}>
-          <CourseSearcher queryFilters={{ ids: courseIds }} allowClear={false} />
-        </Form.Item>
-
         <Form.Item
-          label={t('emails.form.month')}
+          label={t('payments.form.month')}
           name="month"
           rules={[{ required: true }]}
           getValueProps={(v: string) => {
@@ -94,4 +84,4 @@ const SendReminderModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) =
   );
 };
 
-export default SendReminderModal;
+export default SendMonthlyRemindersModal;

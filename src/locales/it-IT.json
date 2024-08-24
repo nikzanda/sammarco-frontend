@@ -16,6 +16,7 @@
     "lessons_one": "{{number}} lezione",
     "lessons_other": "{{number}} lezioni",
     "filterByMonthsNotPaid": "Cerca per mese non pagato",
+    "sentReminders": "Solleciti inviati: {{sentReminders}}",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare il socio?",
       "description": "Elimina {{fullName}}"
@@ -98,6 +99,9 @@
       "title": "Sei sicuro di voler sincronizzare i soci selezionati?",
       "success": "{{count}} soci sincronizzati correttamente!",
       "error": "Soci non sincronizzati"
+    },
+    "actions": {
+      "sendReminders": "Invia solleciti pagamenti"
     }
   },
   "courses": {
@@ -445,7 +449,8 @@
       "button": "Esporta",
       "title": "Esporta CSV"
     },
-    "checkAll": "Seleziona tutti"
+    "checkAll": "Seleziona tutti",
+    "send": "Invia"
   },
   "types": {
     "User_one": "Utente",

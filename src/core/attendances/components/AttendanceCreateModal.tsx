@@ -40,7 +40,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
 
   useDisplayGraphQLErrors(mutationError);
 
-  const handleSubmit: FormProps['onFinish'] = (values) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     const { courseId, date: inputDate, fromTo } = values;
 
     const [inputFrom, inputTo] = fromTo;
@@ -93,7 +93,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         initialValues={initialValues}
         layout="vertical"
         autoComplete="off"
-        onFinish={handleSubmit}
+        onFinish={handleFinish}
       >
         <Form.Item label={t('attendances.form.course')} name="courseId" rules={[{ required: true }]}>
           <CourseSearcher

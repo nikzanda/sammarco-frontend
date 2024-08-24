@@ -102,7 +102,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
 
   useDisplayGraphQLErrors(mutationError, memberError, sendError);
 
-  const handleSubmit: FormProps['onFinish'] = (values) => {
+  const handleFinish: FormProps['onFinish'] = (values) => {
     const { sendEmail: sendEmailFlag, ...input } = values;
 
     createPayment({
@@ -153,7 +153,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
         initialValues={initialValues}
         layout="vertical"
         autoComplete="off"
-        onFinish={handleSubmit}
+        onFinish={handleFinish}
       >
         <Form.Item label={t('payments.form.fee')} name="feeId" rules={[{ required: true }]}>
           <FeeSearcher
