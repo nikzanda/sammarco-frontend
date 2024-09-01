@@ -10,7 +10,7 @@ const AuthenticatedLayout = React.lazy(() => import('./layouts/AuthenticatedLayo
 const UnauthenticatedLayout = React.lazy(() => import('./layouts/UnauthenticatedLayout'));
 
 const { REACT_APP_SOCIAL_YEAR } = process.env;
-const showWatermark = parseInt(REACT_APP_SOCIAL_YEAR!, 10) - 1 < getRealCurrentYears()[0];
+const showWatermark = parseInt(REACT_APP_SOCIAL_YEAR!, 10) < getRealCurrentYears()[0];
 
 const App: React.FC = () => {
   const { currentUser, loading } = React.useContext(AuthenticationContext);
