@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Divider, Form, Input, Row, Select } from 'antd';
+import { Col, Divider, Form, Input, InputNumber, Row, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { DatePicker } from '../../../components';
 import { isTaxCodeValid, isMinor as isMinorFn } from '../../../utils';
@@ -164,7 +164,7 @@ const MemberForm: React.FC = () => {
 
       <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('members.form.socialCardNumber')} name="socialCardNumber">
-          <Input />
+          <InputNumber step={1} precision={0} min={1} style={{ width: '100%' }} />
         </Form.Item>
       </Col>
 

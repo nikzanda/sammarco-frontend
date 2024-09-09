@@ -143,7 +143,6 @@ export const MEMBERS_SYNC_QUERY = gql`
         address
         qualification
         email
-        socialCardNumber
         asiCardNumber
         csenCardNumber
         parent {

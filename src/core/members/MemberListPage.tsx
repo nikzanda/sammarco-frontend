@@ -76,7 +76,7 @@ const MemberListPage: React.FC = () => {
         sortBy = MemberSortEnum.NAME;
         break;
       default:
-        sortBy = MemberSortEnum.CREATED_AT;
+        sortBy = MemberSortEnum.SOCIAL_CARD_NUMBER;
     }
 
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;

@@ -67,7 +67,15 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
   }, [queryData, queryError, queryLoading, t]);
 
   const handleExport = () => {
-    getMembers();
+    getMembers({
+      variables: {
+        years: getYears(),
+        filter: {
+          sortBy: MemberSortEnum.SOCIAL_CARD_NUMBER,
+          sortDirection: SortDirectionEnum.ASC,
+        },
+      },
+    });
   };
 
   return (
