@@ -35,7 +35,13 @@ export const SETTING_QUERY = gql`
           subject
           body
         }
+        medicalCertificateExpiration {
+          subject
+          body
+        }
       }
+      attendancesPerMonthToSendReminder
+      daysBeforeMedicalCertificateExpiresToSendEmail
     }
   }
 `;

@@ -7,7 +7,7 @@ const EmailTextsForm: React.FC = () => {
 
   return (
     <Collapse
-      items={['receipt', 'reminder'].map((type) => ({
+      items={['receipt', 'reminder', 'medicalCertificateExpiration'].map((type) => ({
         label: t(`settings.emailTextList.type.${type}`),
         key: type,
         children: (

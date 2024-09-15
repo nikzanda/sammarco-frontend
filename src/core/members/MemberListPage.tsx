@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBan, FaBell, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { differenceInDays, format, isSameMonth, isSameYear, set } from 'date-fns';
+import { differenceInCalendarDays, format, isSameMonth, isSameYear, set } from 'date-fns';
 import Highlighter from 'react-highlight-words';
 import {
   MemberFilter,
@@ -135,7 +135,7 @@ const MemberListPage: React.FC = () => {
           let alertColor = token.colorError;
 
           const differenceDays = medicalCertificate?.expireAt
-            ? differenceInDays(medicalCertificate.expireAt, Date.now())
+            ? differenceInCalendarDays(medicalCertificate.expireAt, Date.now())
             : 0;
           if (!medicalCertificate || differenceDays <= 30) {
             showAlert = true;

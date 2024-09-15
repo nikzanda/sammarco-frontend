@@ -91,6 +91,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
           const color = {
             [EmailTypeEnum.RECEIPT]: token.colorSuccess,
             [EmailTypeEnum.REMINDER]: token.colorError,
+            [EmailTypeEnum.MEDICAL_CERTIFICATE_EXPIRATION]: token.colorWarning,
           }[type];
           return <Tag color={color}>{t(`emails.type.${type}`)}</Tag>;
         },
@@ -118,7 +119,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
       },
     ];
     return result;
-  }, [t, token.colorError, token.colorSuccess]);
+  }, [t, token.colorError, token.colorSuccess, token.colorWarning]);
 
   const handleTableChange: TableProps<TableData>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {

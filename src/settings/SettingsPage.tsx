@@ -5,11 +5,11 @@ import Icon from '@ant-design/icons';
 import { Space, Flex, Typography, Button, Tabs, Form, App, FormProps, Skeleton } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { SettingsContext } from '../contexts';
-import { EmailSettingsForm, EmailTextsForm } from './components';
+import { EmailSettingsForm, EmailTextsForm, SettingsForm } from './components';
 import { useDisplayGraphQLErrors } from '../hooks';
 import { useSettingUpdateMutation } from '../generated/graphql';
 
-const DEFAULT_TAB = 'email-settings';
+const DEFAULT_TAB = 'general';
 
 const SettingsPage: React.FC = () => {
   const { settings } = React.useContext(SettingsContext);
@@ -66,6 +66,11 @@ const SettingsPage: React.FC = () => {
           activeKey={tab}
           onChange={setTab}
           items={[
+            {
+              label: t('settings.tab.general'),
+              key: 'general',
+              children: <SettingsForm />,
+            },
             {
               label: t('settings.tab.emailSettings'),
               key: 'email-settings',

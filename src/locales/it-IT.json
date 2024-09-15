@@ -269,8 +269,9 @@
     "sendReminder": "Invia sollecito pagamento",
     "sent": "Email inviata",
     "type": {
-      "RECEIPT": "RICEVUTA",
-      "REMINDER": "SOLLECITO"
+      "RECEIPT": "RICEVUTA PAGAMENTO",
+      "REMINDER": "SOLLECITO PAGAMENTO",
+      "MEDICAL_CERTIFICATE_EXPIRATION": "SCADENZA CERTIFICATO MEDICO"
     },
     "table": {
       "course": "Corso",
@@ -299,6 +300,7 @@
     "name": "Impostazioni",
     "saved": "Impostazioni aggiornate correttamente",
     "tab": {
+      "general": "Generali",
       "emailSettings": "Impostazioni email",
       "emailTexts": "Testi email"
     },
@@ -311,8 +313,9 @@
     },
     "emailTextList": {
       "type": {
-        "receipt": "Testo per l'invio della ricevuta del pagamento",
-        "reminder": "Testo per l'invio del sollecito pagamento"
+        "receipt": "Ricevuta del pagamento",
+        "reminder": "Sollecito pagamento",
+        "medicalCertificateExpiration": "Scadenza certificato medico"
       }
     },
     "form": {
@@ -343,9 +346,25 @@
             "label": "Contenuto",
             "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [CORSO] per sostituire il nome del corso."
           }
+        },
+        "medicalCertificateExpiration": {
+          "subject": {
+            "label": "Oggetto",
+            "help": ""
+          },
+          "body": {
+            "label": "Contenuto",
+            "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [GIORNI] per indicare tra quanti giorni scadrà il certificato medico;\n- Utiliza il placeholder [DATA] per indicare la data di scadenza del certificato medico."
+          }
         }
       },
-      "reminderEmailMonthDay": "Giorno del mese in cui inviare la mail di sollecito"
+      "attendancesPerMonthToSendReminder": {
+        "label": "Numero minimo di presenze al mese per l'invio del sollecito di pagamento",
+        "tooltip": "Se il socio ha presenziato il numero di volte inserito qui e non ha ancora effettuato il pagamento, riceverà la mail di sollecito.\nSe impostato a zero, non verrà inviato alcun sollecito."
+      },
+      "daysBeforeMedicalCertificateExpiresToSendEmail": {
+        "label": "Giorni prima della data di scadenza del certificato medico per l'invio della mail"
+      }
     }
   },
   "buttons": {
@@ -430,6 +449,7 @@
     "sunday": "Domenica"
   },
   "commons": {
+    "add": "Aggiungi",
     "searchPlaceholder": "Cerca...",
     "search": "Cerca",
     "resetFilter": "Cancella",

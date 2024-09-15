@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, AlertProps, Descriptions, DescriptionsProps, Flex, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { differenceInDays, format, isSameMonth, isSameYear } from 'date-fns';
+import { differenceInCalendarDays, format, isSameMonth, isSameYear } from 'date-fns';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { MemberListItemFragment } from '../../../generated/graphql';
@@ -32,7 +32,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       };
     }
 
-    const differenceDays = differenceInDays(medicalCertificate.expireAt, Date.now());
+    const differenceDays = differenceInCalendarDays(medicalCertificate.expireAt, Date.now());
     if (differenceDays <= 0) {
       return {
         message: t('members.alerts.medicalCertificate.expired'),

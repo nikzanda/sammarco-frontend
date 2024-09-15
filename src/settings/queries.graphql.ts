@@ -27,7 +27,13 @@ export const SETTING_UPDATE_MUTATION = gql`
             subject
             body
           }
+          medicalCertificateExpiration {
+            subject
+            body
+          }
         }
+        attendancesPerMonthToSendReminder
+        daysBeforeMedicalCertificateExpiresToSendEmail
       }
     }
   }
