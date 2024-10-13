@@ -34,7 +34,7 @@ const { REACT_APP_SOCIAL_YEAR } = process.env;
 const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) < getRealCurrentYears()[0];
 
 const MemberListPage: React.FC = () => {
-  const { validEmailSettings } = React.useContext(SettingsContext);
+  const { settings, validEmailSettings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { token } = theme.useToken();
@@ -158,11 +158,10 @@ const MemberListPage: React.FC = () => {
             .filter((month) => month.valueOf() < Date.now())
             .some((month) => {
               const result = courses.some(({ id: courseId }) => {
-                if (
-                  attendances.some(
-                    ({ from, course }) => isSameYear(from, month) && isSameMonth(from, month) && course.id === courseId
-                  )
-                ) {
+                const courseMonthAttendances = attendances.filter(
+                  ({ from, course }) => isSameYear(from, month) && isSameMonth(from, month) && course.id === courseId
+                );
+                if (courseMonthAttendances.length >= (settings?.attendancesPerMonthToSendReminder || 0)) {
                   return !payments.some(
                     ({ month: paymentMonth }) => paymentMonth && format(month, 'yyyy-MM') === paymentMonth
                   );
@@ -292,10 +291,10 @@ const MemberListPage: React.FC = () => {
     ];
     return result;
   }, [
-    filterInfo.courses,
-    filterInfo.shifts,
+    filterInfo,
     navigate,
     searchText,
+    settings?.attendancesPerMonthToSendReminder,
     t,
     token.colorError,
     token.colorWarning,

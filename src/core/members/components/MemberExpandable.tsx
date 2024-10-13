@@ -6,16 +6,18 @@ import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { MemberListItemFragment } from '../../../generated/graphql';
 import { getYears } from '../../../utils';
+import { SettingsContext } from '../../../contexts';
 
 interface Props {
   member: MemberListItemFragment;
 }
 
 const MemberExpandable: React.FC<Props> = ({ member }) => {
+  const { settings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const { token } = theme.useToken();
 
-  const isCurrentEnrollemtPaid = React.useMemo(() => {
+  const isCurrentEnrollmentPaid = React.useMemo(() => {
     const currentYears = getYears();
     const result = member.payments.some(
       ({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1]
@@ -69,7 +71,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
           month,
           paid:
             member.payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth) ||
-            (attendancesCount === 0 ? undefined : false),
+            (attendancesCount >= (settings?.attendancesPerMonthToSendReminder || 0) ? false : undefined),
           attendancesCount,
         };
       };
@@ -128,12 +130,20 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       });
       return result;
     },
-    [member.attendances, member.payments, t, token.colorError, token.colorPrimary, token.colorSuccess]
+    [
+      member.attendances,
+      member.payments,
+      settings?.attendancesPerMonthToSendReminder,
+      t,
+      token.colorError,
+      token.colorPrimary,
+      token.colorSuccess,
+    ]
   );
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      {member.attendances.length > 0 && !isCurrentEnrollemtPaid && (
+      {member.attendances.length > 0 && !isCurrentEnrollmentPaid && (
         <Alert message={t('members.alerts.currentEnrollmentNotPaid')} type="error" showIcon />
       )}
       {isMedicalCertificateExpiring && (
