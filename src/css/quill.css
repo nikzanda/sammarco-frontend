@@ -1,0 +1,88 @@
+:root {
+  --quill-dark-color: #a2a2a2;
+  --quill-dark-pl-color: #737373c0;
+  --quill-dark-color-hover: #5393f9;
+}
+
+.ql-editor {
+  min-height: 150px;
+}
+
+/* Inject Ant style in toolbar and editor */
+.quill-dark-style,
+.quill-light-style {
+  background: var(--ant-color-bg-container);
+  .ql-toolbar.ql-snow {
+    border-width: var(--ant-line-width);
+    border-style: var(--ant-line-type);
+    border-color: var(--ant-color-border);
+    border-top-left-radius: var(--ant-border-radius);
+    border-top-right-radius: var(--ant-border-radius);
+    border-bottom: 0;
+    + .ql-container.ql-snow {
+      border-width: var(--ant-line-width);
+      border-style: var(--ant-line-type);
+      border-color: var(--ant-color-border);
+      border-bottom-left-radius: var(--ant-border-radius);
+      border-bottom-right-radius: var(--ant-border-radius);
+      transition: all var(--ant-motion-duration-mid);
+      &:hover {
+        border-color: var(--ant-color-primary-hover);
+      }
+      &:focus-within {
+        border-color: var(--ant-color-primary);
+      }
+    }
+  }
+}
+
+/* Validation error border color */
+.ant-form-item-has-error .quill-dark-style,
+.ant-form-item-has-error .quill-light-style {
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    border-color: var(--ant-color-error);
+    &:hover {
+      border-color: var(--ant-color-error-border-hover);
+    }
+  }
+}
+
+/* Dark Theme */
+.quill-dark-style {
+  /* Toolbar */
+  .ql-toolbar.ql-snow {
+    /* Toolbar actions */
+    .ql-formats {
+      span:not(.ql-active),
+      button:not(.ql-active) {
+        color: var(--quill-dark-color);
+        .ql-stroke {
+          stroke: var(--quill-dark-color);
+        }
+        .ql-fill {
+          fill: var(--quill-dark-color);
+        }
+        .ql-picker-options {
+          background: var(--ant-color-bg-container);
+        }
+        &:hover {
+          color: var(--quill-dark-color-hover);
+          .ql-stroke {
+            stroke: var(--quill-dark-color-hover);
+          }
+          .ql-fill {
+            fill: var(--quill-dark-color-hover);
+          }
+        }
+      }
+    }
+  }
+
+  /* Editor */
+  .ql-container.ql-snow {
+    /* Editor placeholder color */
+    .ql-editor.ql-blank::before {
+      color: var(--quill-dark-pl-color);
+    }
+  }
+}

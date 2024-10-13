@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Collapse, Form, Input, Row } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { QuillEditor } from '../../commons';
 
 const EmailTextsForm: React.FC = () => {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ const EmailTextsForm: React.FC = () => {
                 help={<span className="break-line">{t(`settings.form.emailText.${type}.body.help`)}</span>}
                 name={['emailTextList', type, 'body']}
               >
-                <Input.TextArea rows={6} />
+                <QuillEditor />
               </Form.Item>
             </Col>
           </Row>

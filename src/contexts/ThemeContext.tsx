@@ -14,7 +14,7 @@ export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={value}>
-      <ConfigProvider locale={itIT}>
+      <ConfigProvider locale={itIT} theme={{ cssVar: true }}>
         <AntdApp>{children}</AntdApp>
       </ConfigProvider>
     </ThemeContext.Provider>

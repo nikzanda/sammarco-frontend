@@ -5,7 +5,7 @@ import Icon from '@ant-design/icons';
 import { FaPaperPlane } from 'react-icons/fa';
 import { useSendCommunicationMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { AttachmentInput } from '../../commons';
+import { AttachmentInput, QuillEditor } from '../../commons';
 
 const CommunicationPage: React.FC = () => {
   const { t } = useTranslation();
@@ -54,7 +54,8 @@ const CommunicationPage: React.FC = () => {
         </Form.Item>
 
         <Form.Item name="body" label={t('communication.form.body')} rules={[{ required: true }]}>
-          <Input.TextArea rows={10} />
+          {/* <Input.TextArea rows={10} /> */}
+          <QuillEditor />
         </Form.Item>
 
         <Form.Item name="attachments" label={t('communication.form.attachments')}>
