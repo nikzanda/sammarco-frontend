@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaCalendarAlt, FaCog, FaMoneyBill, FaReceipt, FaUserFriends } from 'react-icons/fa';
+import { FaCalendarAlt, FaCog, FaMoneyBill, FaPaperPlane, FaReceipt, FaUserFriends } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
 import { AuthenticationContext, SettingsProvider } from '../contexts';
@@ -29,6 +29,9 @@ const PaymentListPage = React.lazy(() => import('../core/payments/PaymentListPag
 
 // Calendar
 const CalendarPage = React.lazy(() => import('../core/attendances/CalendarPage'));
+
+// Communication
+const CommunicationPage = React.lazy(() => import('../core/communications/CommunicationPage'));
 
 // Settings
 const SettingsPage = React.lazy(() => import('../settings/SettingsPage'));
@@ -70,6 +73,12 @@ const AuthenticatedLayout: React.FC = () => {
         key: 'calendar',
         icon: <Icon component={FaCalendarAlt} />,
         onClick: () => navigate('/calendar'),
+      },
+      {
+        label: t('communication.name'),
+        key: 'communication',
+        icon: <Icon component={FaPaperPlane} />,
+        onClick: () => navigate('/communication'),
       },
     ];
     return result;
@@ -158,6 +167,8 @@ const AuthenticatedLayout: React.FC = () => {
               </Route>
 
               <Route path="calendar" element={<CalendarPage />} />
+
+              <Route path="communication" element={<CommunicationPage />} />
 
               <Route path="settings" element={<Outlet />}>
                 <Route index element={<SettingsPage />} />

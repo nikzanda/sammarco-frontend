@@ -43,6 +43,7 @@ const MemberEditPage: React.FC = () => {
     refetchQueries: ['Members', 'Member', 'Payments', 'PaymentPdf', 'PaymentsPdf'],
     onCompleted: () => {
       message.success(t('members.edited'));
+      form.setFieldValue(['medicalCertificate', 'base64'], undefined);
     },
   });
 

@@ -1,18 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, Empty, Form, Row, Upload, Image, Input } from 'antd';
+import { Col, Empty, Form, Row, Image } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { MemberDetailFragment } from '../../../generated/graphql';
+import { EmailAttachmentInput, MemberDetailFragment } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
-
-const readFileAsDataURL = async (file: File) => {
-  const dataUri = await new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
-  return dataUri;
-};
+import { AttachmentInput } from '../../../commons';
 
 interface Props {
   member: MemberDetailFragment;
@@ -20,7 +12,6 @@ interface Props {
 
 const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
-  const form = Form.useFormInstance();
 
   const attachmentPreview = React.useMemo(() => {
     if (!member.medicalCertificate?.base64) {
@@ -42,7 +33,7 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
       <Row gutter={24}>
         <Col xs={24} md={12} xxl={8}>
           <Form.Item
-            label={t('members.form.expireAt')}
+            label={t('members.form.medicalCertificate.expireAt')}
             name={['medicalCertificate', 'expireAt']}
             getValueProps={(v: number) => {
               if (v) {
@@ -63,37 +54,32 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
         </Col>
 
         <Col span={24}>
-          <Upload.Dragger
-            accept="image/*, application/pdf"
-            maxCount={1}
-            customRequest={({ onSuccess }) => {
-              setTimeout(() => {
-                onSuccess!('ok');
-              }, 0);
-            }}
-            onChange={async (info) => {
-              const filesDataUri = await Promise.all(
-                info.fileList.map(({ originFileObj }) => readFileAsDataURL(originFileObj! as File))
-              );
-              const result = info.fileList.map((_, index) => filesDataUri[index] as string);
-              form.setFieldValue(['medicalCertificate', 'base64'], result[0]);
-            }}
-            onRemove={() => {
-              form.setFieldValue(['medicalCertificate', 'base64'], undefined);
+          <Form.Item
+            noStyle
+            name={['medicalCertificate', 'base64']}
+            getValueFromEvent={(e: EmailAttachmentInput[]) => {
+              if (e && e.length === 1) {
+                return e[0].path;
+              }
+              return undefined;
             }}
           >
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">{t('upload.clickOrDrag')}</p>
-            <p className="ant-upload-hint">{t('upload.hint')}</p>
-          </Upload.Dragger>
+            <AttachmentInput
+              dragger
+              accept="image/*, application/pdf"
+              maxCount={1}
+              multiple={false}
+              listType="picture-card"
+            >
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">{t('members.form.medicalCertificate.help.clickOrDrag')}</p>
+              <p className="ant-upload-hint">{t('members.form.medicalCertificate.help.hint')}</p>
+            </AttachmentInput>
+          </Form.Item>
         </Col>
       </Row>
-
-      <Form.Item noStyle name={['medicalCertificate', 'base64']}>
-        <Input type="hidden" />
-      </Form.Item>
 
       <br />
 

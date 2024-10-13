@@ -1,4 +1,6 @@
+import { UploadFile } from 'antd';
 import { format } from 'date-fns';
+import { EmailAttachmentInput } from '../generated/graphql';
 
 const { REACT_APP_SOCIAL_YEAR } = process.env;
 
@@ -68,4 +70,26 @@ export const setURLTab = (tabName: string) => {
   const url = new URL(window.location.href);
   url.searchParams.set('tab', tabName);
   window.history.replaceState({}, '', url);
+};
+
+export const readFileAsDataURL = async (file: File) => {
+  const dataUri = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+  return dataUri;
+};
+
+export const resolveAttachmentsUpload = async (files: UploadFile[]): Promise<EmailAttachmentInput[]> => {
+  const filesDataUri = await Promise.all(files.map(({ originFileObj }) => readFileAsDataURL(originFileObj! as File)));
+
+  const result = files.map(
+    ({ originFileObj }, index): EmailAttachmentInput => ({
+      path: filesDataUri[index] as string,
+      filename: originFileObj!.name,
+    })
+  );
+
+  return result;
 };

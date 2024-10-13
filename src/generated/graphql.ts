@@ -196,6 +196,11 @@ export type Email = {
   createdAt: Scalars['Float']['output'];
 };
 
+export type EmailAttachmentInput = {
+  path: Scalars['String']['input'];
+  filename: Scalars['String']['input'];
+};
+
 export type EmailFilter = {
   ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   search?: InputMaybe<Scalars['String']['input']>;
@@ -532,6 +537,7 @@ export type Mutation = {
   paymentSendReminder: PaymentSendReminderPayload;
   sendMonthlyReminders: SendMonthlyRemindersPayload;
   sendDailyMedicalCertificateExpiration: SendDailyMedicalCertificateExpirationPayload;
+  sendCommunication: SendCommunicationPayload;
   courseUpdate: CourseUpdatePayload;
   courseDelete: CourseDeletePayload;
   courseCreate: CourseCreatePayload;
@@ -620,6 +626,16 @@ export type MutationPaymentSendReminderArgs = {
 
 export type MutationSendMonthlyRemindersArgs = {
   input: SendMonthlyRemindersInput;
+};
+
+
+export type MutationSendDailyMedicalCertificateExpirationArgs = {
+  input: SendDailyMedicalCertificateExpirationInput;
+};
+
+
+export type MutationSendCommunicationArgs = {
+  input: SendCommunicationInput;
 };
 
 
@@ -933,6 +949,21 @@ export enum RecurrenceEnum {
   ANNUAL = 'ANNUAL'
 }
 
+export type SendCommunicationInput = {
+  subject: Scalars['String']['input'];
+  body: Scalars['String']['input'];
+  attachments?: InputMaybe<Array<EmailAttachmentInput>>;
+};
+
+export type SendCommunicationPayload = {
+  __typename?: 'SendCommunicationPayload';
+  result: Scalars['Boolean']['output'];
+};
+
+export type SendDailyMedicalCertificateExpirationInput = {
+  daysBeforeMedicalCertificateExpires?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
 export type SendDailyMedicalCertificateExpirationPayload = {
   __typename?: 'SendDailyMedicalCertificateExpirationPayload';
   sentEmails: Scalars['Int']['output'];
@@ -1013,23 +1044,6 @@ export type VerifyEmailSettingsPayload = {
   verified?: Maybe<Scalars['Boolean']['output']>;
 };
 
-export type LoginMutationVariables = Exact<{
-  input: LoginInput;
-}>;
-
-
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', token: string } };
-
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string } };
-
-export type SettingQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SettingQuery = { __typename?: 'Query', setting: { __typename?: 'Setting', attendancesPerMonthToSendReminder: number, daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>, emailSettings: { __typename?: 'EmailSettings', host: string, port: number, secure: boolean, email?: string | null }, emailTextList: { __typename?: 'EmailTextList', receipt: { __typename?: 'EmailText', subject?: string | null, body?: string | null }, reminder: { __typename?: 'EmailText', subject?: string | null, body?: string | null }, medicalCertificateExpiration: { __typename?: 'EmailText', subject?: string | null, body?: string | null } } } };
-
 export type VerifyEmailSettingsMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1042,49 +1056,12 @@ export type SettingUpdateMutationVariables = Exact<{
 
 export type SettingUpdateMutation = { __typename?: 'Mutation', settingUpdate: { __typename?: 'SettingUpdatePayload', setting: { __typename?: 'Setting', attendancesPerMonthToSendReminder: number, daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>, emailSettings: { __typename?: 'EmailSettings', host: string, port: number, secure: boolean, email?: string | null }, emailTextList: { __typename?: 'EmailTextList', receipt: { __typename?: 'EmailText', subject?: string | null, body?: string | null }, reminder: { __typename?: 'EmailText', subject?: string | null, body?: string | null }, medicalCertificateExpiration: { __typename?: 'EmailText', subject?: string | null, body?: string | null } } } } };
 
-export type AttendanceListItemFragment = { __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } };
-
-export type AttendancesQueryVariables = Exact<{
-  filter: AttendanceFilter;
+export type SendCommunicationMutationVariables = Exact<{
+  input: SendCommunicationInput;
 }>;
 
 
-export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendancePagination', data: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
-
-export type DayAttendancesQueryVariables = Exact<{
-  filter: DayAttendancesFilter;
-}>;
-
-
-export type DayAttendancesQuery = { __typename?: 'Query', dayAttendances: Array<{ __typename?: 'DayAttendances', ids: Array<string>, from: number, to: number, members: Array<{ __typename?: 'Member', fullName: string }>, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }> };
-
-export type DayExpireMedicalCertificatesQueryVariables = Exact<{
-  filter: DayExpireMedicalCertificatesFilter;
-}>;
-
-
-export type DayExpireMedicalCertificatesQuery = { __typename?: 'Query', dayExpireMedicalCertificates: Array<{ __typename?: 'DayExpireMedicalCertificates', expireAt: number, members: Array<{ __typename?: 'Member', fullName: string }> }> };
-
-export type AttendanceCreateManyMutationVariables = Exact<{
-  input: AttendanceCreateManyInput;
-}>;
-
-
-export type AttendanceCreateManyMutation = { __typename?: 'Mutation', attendanceCreateMany: { __typename?: 'AttendanceCreateManyPayload', attendances: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }> } };
-
-export type AttendanceDeleteMutationVariables = Exact<{
-  input: AttendanceDeleteInput;
-}>;
-
-
-export type AttendanceDeleteMutation = { __typename?: 'Mutation', attendanceDelete: { __typename?: 'AttendanceDeletePayload', attendance: { __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } } } };
-
-export type AttendanceDeleteManyMutationVariables = Exact<{
-  input: AttendanceDeleteManyInput;
-}>;
-
-
-export type AttendanceDeleteManyMutation = { __typename?: 'Mutation', attendanceDeleteMany: { __typename?: 'AttendanceDeleteManyPayload', success?: boolean | null } };
+export type SendCommunicationMutation = { __typename?: 'Mutation', sendCommunication: { __typename?: 'SendCommunicationPayload', result: boolean } };
 
 export type FeeListItemFragment = { __typename?: 'Fee', id: string, name: string, amount: number, enabled: boolean, course: { __typename?: 'Course', id: string, name: string } };
 
@@ -1140,68 +1117,6 @@ export type FeeDeleteMutationVariables = Exact<{
 
 
 export type FeeDeleteMutation = { __typename?: 'Mutation', feeDelete: { __typename?: 'FeeDeletePayload', fee: { __typename?: 'Fee', recurrence?: RecurrenceEnum | null, reason: string, createdAt: number, updatedAt: number, canDelete: boolean, id: string, name: string, amount: number, enabled: boolean, course: { __typename?: 'Course', id: string, name: string } } } };
-
-export type CourseListItemFragment = { __typename?: 'Course', id: string, name: string, color?: string | null };
-
-export type CourseDetailFragment = { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> };
-
-export type CoursesSearcherQueryVariables = Exact<{
-  filter?: InputMaybe<CourseFilter>;
-}>;
-
-
-export type CoursesSearcherQuery = { __typename?: 'Query', courses: { __typename?: 'CoursePagination', data: Array<{ __typename?: 'Course', id: string, name: string }> } };
-
-export type CourseSearcherQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type CourseSearcherQuery = { __typename?: 'Query', course: { __typename?: 'Course', id: string, name: string } };
-
-export type ShiftsQueryVariables = Exact<{
-  filter?: InputMaybe<ShiftFilter>;
-}>;
-
-
-export type ShiftsQuery = { __typename?: 'Query', shifts: Array<{ __typename?: 'ShiftDetail', id: string, weekDay: number, from: Array<number>, to: Array<number>, course: { __typename?: 'Course', id: string, name: string } }> };
-
-export type CoursesQueryVariables = Exact<{
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<CourseFilter>;
-}>;
-
-
-export type CoursesQuery = { __typename?: 'Query', courses: { __typename?: 'CoursePagination', data: Array<{ __typename?: 'Course', id: string, name: string, color?: string | null }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
-
-export type CourseQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type CourseQuery = { __typename?: 'Query', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } };
-
-export type CourseCreateMutationVariables = Exact<{
-  input: CourseCreateInput;
-}>;
-
-
-export type CourseCreateMutation = { __typename?: 'Mutation', courseCreate: { __typename?: 'CourseCreatePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
-
-export type CourseUpdateMutationVariables = Exact<{
-  input: CourseUpdateInput;
-}>;
-
-
-export type CourseUpdateMutation = { __typename?: 'Mutation', courseUpdate: { __typename?: 'CourseUpdatePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
-
-export type CourseDeleteMutationVariables = Exact<{
-  input: CourseDeleteInput;
-}>;
-
-
-export type CourseDeleteMutation = { __typename?: 'Mutation', courseDelete: { __typename?: 'CourseDeletePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
 
 export type MemberListItemFragment = { __typename?: 'Member', id: string, fullName: string, shiftIds: Array<string>, payments: Array<{ __typename?: 'Payment', id: string, month?: string | null, years?: Array<number> | null }>, attendances: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, course: { __typename?: 'Course', id: string } }>, courses: Array<{ __typename?: 'Course', id: string, name: string, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> }>, medicalCertificate?: { __typename?: 'MedicalCertificate', expireAt: number } | null, currentMonthReminderEmails: Array<{ __typename?: 'Email', id: string }> };
 
@@ -1301,6 +1216,129 @@ export type SendMonthlyRemindersMutationVariables = Exact<{
 
 export type SendMonthlyRemindersMutation = { __typename?: 'Mutation', sendMonthlyReminders: { __typename?: 'SendMonthlyRemindersPayload', sentReminders: number } };
 
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', token: string } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string } };
+
+export type SettingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SettingQuery = { __typename?: 'Query', setting: { __typename?: 'Setting', attendancesPerMonthToSendReminder: number, daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>, emailSettings: { __typename?: 'EmailSettings', host: string, port: number, secure: boolean, email?: string | null }, emailTextList: { __typename?: 'EmailTextList', receipt: { __typename?: 'EmailText', subject?: string | null, body?: string | null }, reminder: { __typename?: 'EmailText', subject?: string | null, body?: string | null }, medicalCertificateExpiration: { __typename?: 'EmailText', subject?: string | null, body?: string | null } } } };
+
+export type AttendanceListItemFragment = { __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } };
+
+export type AttendancesQueryVariables = Exact<{
+  filter: AttendanceFilter;
+}>;
+
+
+export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendancePagination', data: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+
+export type DayAttendancesQueryVariables = Exact<{
+  filter: DayAttendancesFilter;
+}>;
+
+
+export type DayAttendancesQuery = { __typename?: 'Query', dayAttendances: Array<{ __typename?: 'DayAttendances', ids: Array<string>, from: number, to: number, members: Array<{ __typename?: 'Member', fullName: string }>, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }> };
+
+export type DayExpireMedicalCertificatesQueryVariables = Exact<{
+  filter: DayExpireMedicalCertificatesFilter;
+}>;
+
+
+export type DayExpireMedicalCertificatesQuery = { __typename?: 'Query', dayExpireMedicalCertificates: Array<{ __typename?: 'DayExpireMedicalCertificates', expireAt: number, members: Array<{ __typename?: 'Member', fullName: string }> }> };
+
+export type AttendanceCreateManyMutationVariables = Exact<{
+  input: AttendanceCreateManyInput;
+}>;
+
+
+export type AttendanceCreateManyMutation = { __typename?: 'Mutation', attendanceCreateMany: { __typename?: 'AttendanceCreateManyPayload', attendances: Array<{ __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } }> } };
+
+export type AttendanceDeleteMutationVariables = Exact<{
+  input: AttendanceDeleteInput;
+}>;
+
+
+export type AttendanceDeleteMutation = { __typename?: 'Mutation', attendanceDelete: { __typename?: 'AttendanceDeletePayload', attendance: { __typename?: 'Attendance', id: string, from: number, to: number, member: { __typename?: 'Member', fullName: string }, course: { __typename?: 'Course', id: string, name: string, color?: string | null } } } };
+
+export type AttendanceDeleteManyMutationVariables = Exact<{
+  input: AttendanceDeleteManyInput;
+}>;
+
+
+export type AttendanceDeleteManyMutation = { __typename?: 'Mutation', attendanceDeleteMany: { __typename?: 'AttendanceDeleteManyPayload', success?: boolean | null } };
+
+export type CourseListItemFragment = { __typename?: 'Course', id: string, name: string, color?: string | null };
+
+export type CourseDetailFragment = { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> };
+
+export type CoursesSearcherQueryVariables = Exact<{
+  filter?: InputMaybe<CourseFilter>;
+}>;
+
+
+export type CoursesSearcherQuery = { __typename?: 'Query', courses: { __typename?: 'CoursePagination', data: Array<{ __typename?: 'Course', id: string, name: string }> } };
+
+export type CourseSearcherQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type CourseSearcherQuery = { __typename?: 'Query', course: { __typename?: 'Course', id: string, name: string } };
+
+export type ShiftsQueryVariables = Exact<{
+  filter?: InputMaybe<ShiftFilter>;
+}>;
+
+
+export type ShiftsQuery = { __typename?: 'Query', shifts: Array<{ __typename?: 'ShiftDetail', id: string, weekDay: number, from: Array<number>, to: Array<number>, course: { __typename?: 'Course', id: string, name: string } }> };
+
+export type CoursesQueryVariables = Exact<{
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<CourseFilter>;
+}>;
+
+
+export type CoursesQuery = { __typename?: 'Query', courses: { __typename?: 'CoursePagination', data: Array<{ __typename?: 'Course', id: string, name: string, color?: string | null }>, pageInfo: { __typename?: 'PageInfo', total: number } } };
+
+export type CourseQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type CourseQuery = { __typename?: 'Query', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } };
+
+export type CourseCreateMutationVariables = Exact<{
+  input: CourseCreateInput;
+}>;
+
+
+export type CourseCreateMutation = { __typename?: 'Mutation', courseCreate: { __typename?: 'CourseCreatePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
+
+export type CourseUpdateMutationVariables = Exact<{
+  input: CourseUpdateInput;
+}>;
+
+
+export type CourseUpdateMutation = { __typename?: 'Mutation', courseUpdate: { __typename?: 'CourseUpdatePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
+
+export type CourseDeleteMutationVariables = Exact<{
+  input: CourseDeleteInput;
+}>;
+
+
+export type CourseDeleteMutation = { __typename?: 'Mutation', courseDelete: { __typename?: 'CourseDeletePayload', course: { __typename?: 'Course', canDelete: boolean, createdAt: number, updatedAt: number, id: string, name: string, color?: string | null, shifts: Array<Array<{ __typename?: 'Shift', id: string, from: Array<number>, to: Array<number> }>> } } };
+
 export type PaymentListItemFragment = { __typename?: 'Payment', id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, type: PaymentTypeEnum, sent: boolean, member: { __typename?: 'Member', id: string, fullName: string }, fee: { __typename?: 'Fee', id: string, name: string, course: { __typename?: 'Course', name: string } } };
 
 export type PaymentDetailFragment = { __typename?: 'Payment', date: number, reason: string, canDelete: boolean, createdAt: number, updatedAt: number, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, type: PaymentTypeEnum, sent: boolean, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string, course: { __typename?: 'Course', name: string } }, member: { __typename?: 'Member', id: string, fullName: string } };
@@ -1379,21 +1417,6 @@ export type PaymentDeleteMutationVariables = Exact<{
 
 export type PaymentDeleteMutation = { __typename?: 'Mutation', paymentDelete: { __typename?: 'PaymentDeletePayload', payment: { __typename?: 'Payment', date: number, reason: string, canDelete: boolean, createdAt: number, updatedAt: number, id: string, counter: number, amount: number, month?: string | null, years?: Array<number> | null, type: PaymentTypeEnum, sent: boolean, fee: { __typename?: 'Fee', id: string, name: string, amount: number, recurrence?: RecurrenceEnum | null, reason: string, course: { __typename?: 'Course', name: string } }, member: { __typename?: 'Member', id: string, fullName: string } } } };
 
-export const AttendanceListItemFragmentDoc = gql`
-    fragment AttendanceListItem on Attendance {
-  id
-  member {
-    fullName
-  }
-  course {
-    id
-    name
-    color
-  }
-  from
-  to
-}
-    `;
 export const FeeListItemFragmentDoc = gql`
     fragment FeeListItem on Fee {
   id
@@ -1416,26 +1439,6 @@ export const FeeDetailFragmentDoc = gql`
   canDelete
 }
     ${FeeListItemFragmentDoc}`;
-export const CourseListItemFragmentDoc = gql`
-    fragment CourseListItem on Course {
-  id
-  name
-  color
-}
-    `;
-export const CourseDetailFragmentDoc = gql`
-    fragment CourseDetail on Course {
-  ...CourseListItem
-  shifts {
-    id
-    from
-    to
-  }
-  canDelete
-  createdAt
-  updatedAt
-}
-    ${CourseListItemFragmentDoc}`;
 export const MemberListItemFragmentDoc = gql`
     fragment MemberListItem on Member {
   id
@@ -1500,6 +1503,41 @@ export const MemberDetailFragmentDoc = gql`
   updatedAt
 }
     ${MemberListItemFragmentDoc}`;
+export const AttendanceListItemFragmentDoc = gql`
+    fragment AttendanceListItem on Attendance {
+  id
+  member {
+    fullName
+  }
+  course {
+    id
+    name
+    color
+  }
+  from
+  to
+}
+    `;
+export const CourseListItemFragmentDoc = gql`
+    fragment CourseListItem on Course {
+  id
+  name
+  color
+}
+    `;
+export const CourseDetailFragmentDoc = gql`
+    fragment CourseDetail on Course {
+  ...CourseListItem
+  shifts {
+    id
+    from
+    to
+  }
+  canDelete
+  createdAt
+  updatedAt
+}
+    ${CourseListItemFragmentDoc}`;
 export const PaymentListItemFragmentDoc = gql`
     fragment PaymentListItem on Payment {
   id
@@ -1562,129 +1600,6 @@ export const PaymentPdfFragmentDoc = gql`
   }
 }
     `;
-export const LoginDocument = gql`
-    mutation Login($input: LoginInput!) {
-  login(input: $input) {
-    token
-  }
-}
-    `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
-
-/**
- * __useLoginMutation__
- *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const MeDocument = gql`
-    query Me {
-  me {
-    id
-    username
-  }
-}
-    `;
-
-/**
- * __useMeQuery__
- *
- * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-      }
-export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-        }
-export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
-export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
-export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const SettingDocument = gql`
-    query Setting {
-  setting {
-    emailSettings {
-      host
-      port
-      secure
-      email
-    }
-    emailTextList {
-      receipt {
-        subject
-        body
-      }
-      reminder {
-        subject
-        body
-      }
-      medicalCertificateExpiration {
-        subject
-        body
-      }
-    }
-    attendancesPerMonthToSendReminder
-    daysBeforeMedicalCertificateExpiresToSendEmail
-  }
-}
-    `;
-
-/**
- * __useSettingQuery__
- *
- * To run a query within a React component, call `useSettingQuery` and pass it any options that fit your needs.
- * When your component renders, `useSettingQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSettingQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSettingQuery(baseOptions?: Apollo.QueryHookOptions<SettingQuery, SettingQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SettingQuery, SettingQueryVariables>(SettingDocument, options);
-      }
-export function useSettingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingQuery, SettingQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SettingQuery, SettingQueryVariables>(SettingDocument, options);
-        }
-export type SettingQueryHookResult = ReturnType<typeof useSettingQuery>;
-export type SettingLazyQueryHookResult = ReturnType<typeof useSettingLazyQuery>;
-export type SettingQueryResult = Apollo.QueryResult<SettingQuery, SettingQueryVariables>;
 export const VerifyEmailSettingsDocument = gql`
     mutation VerifyEmailSettings {
   verifyEmailSettings {
@@ -1773,232 +1688,39 @@ export function useSettingUpdateMutation(baseOptions?: Apollo.MutationHookOption
 export type SettingUpdateMutationHookResult = ReturnType<typeof useSettingUpdateMutation>;
 export type SettingUpdateMutationResult = Apollo.MutationResult<SettingUpdateMutation>;
 export type SettingUpdateMutationOptions = Apollo.BaseMutationOptions<SettingUpdateMutation, SettingUpdateMutationVariables>;
-export const AttendancesDocument = gql`
-    query Attendances($filter: AttendanceFilter!) {
-  attendances(pageIndex: 0, pageSize: 0, filter: $filter) {
-    data {
-      ...AttendanceListItem
-    }
-    pageInfo {
-      total
-    }
-  }
-}
-    ${AttendanceListItemFragmentDoc}`;
-
-/**
- * __useAttendancesQuery__
- *
- * To run a query within a React component, call `useAttendancesQuery` and pass it any options that fit your needs.
- * When your component renders, `useAttendancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAttendancesQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useAttendancesQuery(baseOptions: Apollo.QueryHookOptions<AttendancesQuery, AttendancesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AttendancesQuery, AttendancesQueryVariables>(AttendancesDocument, options);
-      }
-export function useAttendancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AttendancesQuery, AttendancesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AttendancesQuery, AttendancesQueryVariables>(AttendancesDocument, options);
-        }
-export type AttendancesQueryHookResult = ReturnType<typeof useAttendancesQuery>;
-export type AttendancesLazyQueryHookResult = ReturnType<typeof useAttendancesLazyQuery>;
-export type AttendancesQueryResult = Apollo.QueryResult<AttendancesQuery, AttendancesQueryVariables>;
-export const DayAttendancesDocument = gql`
-    query DayAttendances($filter: DayAttendancesFilter!) {
-  dayAttendances(pageIndex: 0, pageSize: 0, filter: $filter) {
-    ids
-    members {
-      fullName
-    }
-    course {
-      id
-      name
-      color
-    }
-    from
-    to
+export const SendCommunicationDocument = gql`
+    mutation SendCommunication($input: SendCommunicationInput!) {
+  sendCommunication(input: $input) {
+    result
   }
 }
     `;
+export type SendCommunicationMutationFn = Apollo.MutationFunction<SendCommunicationMutation, SendCommunicationMutationVariables>;
 
 /**
- * __useDayAttendancesQuery__
+ * __useSendCommunicationMutation__
  *
- * To run a query within a React component, call `useDayAttendancesQuery` and pass it any options that fit your needs.
- * When your component renders, `useDayAttendancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDayAttendancesQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useDayAttendancesQuery(baseOptions: Apollo.QueryHookOptions<DayAttendancesQuery, DayAttendancesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DayAttendancesQuery, DayAttendancesQueryVariables>(DayAttendancesDocument, options);
-      }
-export function useDayAttendancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DayAttendancesQuery, DayAttendancesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DayAttendancesQuery, DayAttendancesQueryVariables>(DayAttendancesDocument, options);
-        }
-export type DayAttendancesQueryHookResult = ReturnType<typeof useDayAttendancesQuery>;
-export type DayAttendancesLazyQueryHookResult = ReturnType<typeof useDayAttendancesLazyQuery>;
-export type DayAttendancesQueryResult = Apollo.QueryResult<DayAttendancesQuery, DayAttendancesQueryVariables>;
-export const DayExpireMedicalCertificatesDocument = gql`
-    query DayExpireMedicalCertificates($filter: DayExpireMedicalCertificatesFilter!) {
-  dayExpireMedicalCertificates(pageIndex: 0, pageSize: 0, filter: $filter) {
-    expireAt
-    members {
-      fullName
-    }
-  }
-}
-    `;
-
-/**
- * __useDayExpireMedicalCertificatesQuery__
- *
- * To run a query within a React component, call `useDayExpireMedicalCertificatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useDayExpireMedicalCertificatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDayExpireMedicalCertificatesQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useDayExpireMedicalCertificatesQuery(baseOptions: Apollo.QueryHookOptions<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>(DayExpireMedicalCertificatesDocument, options);
-      }
-export function useDayExpireMedicalCertificatesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>(DayExpireMedicalCertificatesDocument, options);
-        }
-export type DayExpireMedicalCertificatesQueryHookResult = ReturnType<typeof useDayExpireMedicalCertificatesQuery>;
-export type DayExpireMedicalCertificatesLazyQueryHookResult = ReturnType<typeof useDayExpireMedicalCertificatesLazyQuery>;
-export type DayExpireMedicalCertificatesQueryResult = Apollo.QueryResult<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>;
-export const AttendanceCreateManyDocument = gql`
-    mutation AttendanceCreateMany($input: AttendanceCreateManyInput!) {
-  attendanceCreateMany(input: $input) {
-    attendances {
-      ...AttendanceListItem
-    }
-  }
-}
-    ${AttendanceListItemFragmentDoc}`;
-export type AttendanceCreateManyMutationFn = Apollo.MutationFunction<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
-
-/**
- * __useAttendanceCreateManyMutation__
- *
- * To run a mutation, you first call `useAttendanceCreateManyMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAttendanceCreateManyMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSendCommunicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendCommunicationMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [attendanceCreateManyMutation, { data, loading, error }] = useAttendanceCreateManyMutation({
+ * const [sendCommunicationMutation, { data, loading, error }] = useSendCommunicationMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAttendanceCreateManyMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>) {
+export function useSendCommunicationMutation(baseOptions?: Apollo.MutationHookOptions<SendCommunicationMutation, SendCommunicationMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>(AttendanceCreateManyDocument, options);
+        return Apollo.useMutation<SendCommunicationMutation, SendCommunicationMutationVariables>(SendCommunicationDocument, options);
       }
-export type AttendanceCreateManyMutationHookResult = ReturnType<typeof useAttendanceCreateManyMutation>;
-export type AttendanceCreateManyMutationResult = Apollo.MutationResult<AttendanceCreateManyMutation>;
-export type AttendanceCreateManyMutationOptions = Apollo.BaseMutationOptions<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
-export const AttendanceDeleteDocument = gql`
-    mutation AttendanceDelete($input: AttendanceDeleteInput!) {
-  attendanceDelete(input: $input) {
-    attendance {
-      ...AttendanceListItem
-    }
-  }
-}
-    ${AttendanceListItemFragmentDoc}`;
-export type AttendanceDeleteMutationFn = Apollo.MutationFunction<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
-
-/**
- * __useAttendanceDeleteMutation__
- *
- * To run a mutation, you first call `useAttendanceDeleteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAttendanceDeleteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [attendanceDeleteMutation, { data, loading, error }] = useAttendanceDeleteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAttendanceDeleteMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>(AttendanceDeleteDocument, options);
-      }
-export type AttendanceDeleteMutationHookResult = ReturnType<typeof useAttendanceDeleteMutation>;
-export type AttendanceDeleteMutationResult = Apollo.MutationResult<AttendanceDeleteMutation>;
-export type AttendanceDeleteMutationOptions = Apollo.BaseMutationOptions<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
-export const AttendanceDeleteManyDocument = gql`
-    mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {
-  attendanceDeleteMany(input: $input) {
-    success
-  }
-}
-    `;
-export type AttendanceDeleteManyMutationFn = Apollo.MutationFunction<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>;
-
-/**
- * __useAttendanceDeleteManyMutation__
- *
- * To run a mutation, you first call `useAttendanceDeleteManyMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAttendanceDeleteManyMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [attendanceDeleteManyMutation, { data, loading, error }] = useAttendanceDeleteManyMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAttendanceDeleteManyMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>(AttendanceDeleteManyDocument, options);
-      }
-export type AttendanceDeleteManyMutationHookResult = ReturnType<typeof useAttendanceDeleteManyMutation>;
-export type AttendanceDeleteManyMutationResult = Apollo.MutationResult<AttendanceDeleteManyMutation>;
-export type AttendanceDeleteManyMutationOptions = Apollo.BaseMutationOptions<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>;
+export type SendCommunicationMutationHookResult = ReturnType<typeof useSendCommunicationMutation>;
+export type SendCommunicationMutationResult = Apollo.MutationResult<SendCommunicationMutation>;
+export type SendCommunicationMutationOptions = Apollo.BaseMutationOptions<SendCommunicationMutation, SendCommunicationMutationVariables>;
 export const FeesSearcherDocument = gql`
     query FeesSearcher($filter: FeeFilter) {
   fees(pageIndex: 0, pageSize: 20, filter: $filter) {
@@ -2267,304 +1989,6 @@ export function useFeeDeleteMutation(baseOptions?: Apollo.MutationHookOptions<Fe
 export type FeeDeleteMutationHookResult = ReturnType<typeof useFeeDeleteMutation>;
 export type FeeDeleteMutationResult = Apollo.MutationResult<FeeDeleteMutation>;
 export type FeeDeleteMutationOptions = Apollo.BaseMutationOptions<FeeDeleteMutation, FeeDeleteMutationVariables>;
-export const CoursesSearcherDocument = gql`
-    query CoursesSearcher($filter: CourseFilter) {
-  courses(pageIndex: 0, pageSize: 20, filter: $filter) {
-    data {
-      id
-      name
-    }
-  }
-}
-    `;
-
-/**
- * __useCoursesSearcherQuery__
- *
- * To run a query within a React component, call `useCoursesSearcherQuery` and pass it any options that fit your needs.
- * When your component renders, `useCoursesSearcherQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCoursesSearcherQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useCoursesSearcherQuery(baseOptions?: Apollo.QueryHookOptions<CoursesSearcherQuery, CoursesSearcherQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CoursesSearcherQuery, CoursesSearcherQueryVariables>(CoursesSearcherDocument, options);
-      }
-export function useCoursesSearcherLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CoursesSearcherQuery, CoursesSearcherQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CoursesSearcherQuery, CoursesSearcherQueryVariables>(CoursesSearcherDocument, options);
-        }
-export type CoursesSearcherQueryHookResult = ReturnType<typeof useCoursesSearcherQuery>;
-export type CoursesSearcherLazyQueryHookResult = ReturnType<typeof useCoursesSearcherLazyQuery>;
-export type CoursesSearcherQueryResult = Apollo.QueryResult<CoursesSearcherQuery, CoursesSearcherQueryVariables>;
-export const CourseSearcherDocument = gql`
-    query CourseSearcher($id: ID!) {
-  course(id: $id) {
-    id
-    name
-  }
-}
-    `;
-
-/**
- * __useCourseSearcherQuery__
- *
- * To run a query within a React component, call `useCourseSearcherQuery` and pass it any options that fit your needs.
- * When your component renders, `useCourseSearcherQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCourseSearcherQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useCourseSearcherQuery(baseOptions: Apollo.QueryHookOptions<CourseSearcherQuery, CourseSearcherQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CourseSearcherQuery, CourseSearcherQueryVariables>(CourseSearcherDocument, options);
-      }
-export function useCourseSearcherLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CourseSearcherQuery, CourseSearcherQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CourseSearcherQuery, CourseSearcherQueryVariables>(CourseSearcherDocument, options);
-        }
-export type CourseSearcherQueryHookResult = ReturnType<typeof useCourseSearcherQuery>;
-export type CourseSearcherLazyQueryHookResult = ReturnType<typeof useCourseSearcherLazyQuery>;
-export type CourseSearcherQueryResult = Apollo.QueryResult<CourseSearcherQuery, CourseSearcherQueryVariables>;
-export const ShiftsDocument = gql`
-    query Shifts($filter: ShiftFilter) {
-  shifts(filter: $filter) {
-    id
-    course {
-      id
-      name
-    }
-    weekDay
-    from
-    to
-  }
-}
-    `;
-
-/**
- * __useShiftsQuery__
- *
- * To run a query within a React component, call `useShiftsQuery` and pass it any options that fit your needs.
- * When your component renders, `useShiftsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useShiftsQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useShiftsQuery(baseOptions?: Apollo.QueryHookOptions<ShiftsQuery, ShiftsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ShiftsQuery, ShiftsQueryVariables>(ShiftsDocument, options);
-      }
-export function useShiftsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ShiftsQuery, ShiftsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ShiftsQuery, ShiftsQueryVariables>(ShiftsDocument, options);
-        }
-export type ShiftsQueryHookResult = ReturnType<typeof useShiftsQuery>;
-export type ShiftsLazyQueryHookResult = ReturnType<typeof useShiftsLazyQuery>;
-export type ShiftsQueryResult = Apollo.QueryResult<ShiftsQuery, ShiftsQueryVariables>;
-export const CoursesDocument = gql`
-    query Courses($pageIndex: Int!, $pageSize: Int!, $filter: CourseFilter) {
-  courses(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
-    data {
-      ...CourseListItem
-    }
-    pageInfo {
-      total
-    }
-  }
-}
-    ${CourseListItemFragmentDoc}`;
-
-/**
- * __useCoursesQuery__
- *
- * To run a query within a React component, call `useCoursesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCoursesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCoursesQuery({
- *   variables: {
- *      pageIndex: // value for 'pageIndex'
- *      pageSize: // value for 'pageSize'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useCoursesQuery(baseOptions: Apollo.QueryHookOptions<CoursesQuery, CoursesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CoursesQuery, CoursesQueryVariables>(CoursesDocument, options);
-      }
-export function useCoursesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CoursesQuery, CoursesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CoursesQuery, CoursesQueryVariables>(CoursesDocument, options);
-        }
-export type CoursesQueryHookResult = ReturnType<typeof useCoursesQuery>;
-export type CoursesLazyQueryHookResult = ReturnType<typeof useCoursesLazyQuery>;
-export type CoursesQueryResult = Apollo.QueryResult<CoursesQuery, CoursesQueryVariables>;
-export const CourseDocument = gql`
-    query Course($id: ID!) {
-  course(id: $id) {
-    ...CourseDetail
-  }
-}
-    ${CourseDetailFragmentDoc}`;
-
-/**
- * __useCourseQuery__
- *
- * To run a query within a React component, call `useCourseQuery` and pass it any options that fit your needs.
- * When your component renders, `useCourseQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCourseQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useCourseQuery(baseOptions: Apollo.QueryHookOptions<CourseQuery, CourseQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CourseQuery, CourseQueryVariables>(CourseDocument, options);
-      }
-export function useCourseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CourseQuery, CourseQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CourseQuery, CourseQueryVariables>(CourseDocument, options);
-        }
-export type CourseQueryHookResult = ReturnType<typeof useCourseQuery>;
-export type CourseLazyQueryHookResult = ReturnType<typeof useCourseLazyQuery>;
-export type CourseQueryResult = Apollo.QueryResult<CourseQuery, CourseQueryVariables>;
-export const CourseCreateDocument = gql`
-    mutation CourseCreate($input: CourseCreateInput!) {
-  courseCreate(input: $input) {
-    course {
-      ...CourseDetail
-    }
-  }
-}
-    ${CourseDetailFragmentDoc}`;
-export type CourseCreateMutationFn = Apollo.MutationFunction<CourseCreateMutation, CourseCreateMutationVariables>;
-
-/**
- * __useCourseCreateMutation__
- *
- * To run a mutation, you first call `useCourseCreateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCourseCreateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [courseCreateMutation, { data, loading, error }] = useCourseCreateMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCourseCreateMutation(baseOptions?: Apollo.MutationHookOptions<CourseCreateMutation, CourseCreateMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CourseCreateMutation, CourseCreateMutationVariables>(CourseCreateDocument, options);
-      }
-export type CourseCreateMutationHookResult = ReturnType<typeof useCourseCreateMutation>;
-export type CourseCreateMutationResult = Apollo.MutationResult<CourseCreateMutation>;
-export type CourseCreateMutationOptions = Apollo.BaseMutationOptions<CourseCreateMutation, CourseCreateMutationVariables>;
-export const CourseUpdateDocument = gql`
-    mutation CourseUpdate($input: CourseUpdateInput!) {
-  courseUpdate(input: $input) {
-    course {
-      ...CourseDetail
-    }
-  }
-}
-    ${CourseDetailFragmentDoc}`;
-export type CourseUpdateMutationFn = Apollo.MutationFunction<CourseUpdateMutation, CourseUpdateMutationVariables>;
-
-/**
- * __useCourseUpdateMutation__
- *
- * To run a mutation, you first call `useCourseUpdateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCourseUpdateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [courseUpdateMutation, { data, loading, error }] = useCourseUpdateMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCourseUpdateMutation(baseOptions?: Apollo.MutationHookOptions<CourseUpdateMutation, CourseUpdateMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CourseUpdateMutation, CourseUpdateMutationVariables>(CourseUpdateDocument, options);
-      }
-export type CourseUpdateMutationHookResult = ReturnType<typeof useCourseUpdateMutation>;
-export type CourseUpdateMutationResult = Apollo.MutationResult<CourseUpdateMutation>;
-export type CourseUpdateMutationOptions = Apollo.BaseMutationOptions<CourseUpdateMutation, CourseUpdateMutationVariables>;
-export const CourseDeleteDocument = gql`
-    mutation CourseDelete($input: CourseDeleteInput!) {
-  courseDelete(input: $input) {
-    course {
-      ...CourseDetail
-    }
-  }
-}
-    ${CourseDetailFragmentDoc}`;
-export type CourseDeleteMutationFn = Apollo.MutationFunction<CourseDeleteMutation, CourseDeleteMutationVariables>;
-
-/**
- * __useCourseDeleteMutation__
- *
- * To run a mutation, you first call `useCourseDeleteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCourseDeleteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [courseDeleteMutation, { data, loading, error }] = useCourseDeleteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCourseDeleteMutation(baseOptions?: Apollo.MutationHookOptions<CourseDeleteMutation, CourseDeleteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CourseDeleteMutation, CourseDeleteMutationVariables>(CourseDeleteDocument, options);
-      }
-export type CourseDeleteMutationHookResult = ReturnType<typeof useCourseDeleteMutation>;
-export type CourseDeleteMutationResult = Apollo.MutationResult<CourseDeleteMutation>;
-export type CourseDeleteMutationOptions = Apollo.BaseMutationOptions<CourseDeleteMutation, CourseDeleteMutationVariables>;
 export const MembersSearcherDocument = gql`
     query MembersSearcher($filter: MemberFilter) {
   members(pageIndex: 0, pageSize: 20, filter: $filter) {
@@ -3052,6 +2476,653 @@ export function useSendMonthlyRemindersMutation(baseOptions?: Apollo.MutationHoo
 export type SendMonthlyRemindersMutationHookResult = ReturnType<typeof useSendMonthlyRemindersMutation>;
 export type SendMonthlyRemindersMutationResult = Apollo.MutationResult<SendMonthlyRemindersMutation>;
 export type SendMonthlyRemindersMutationOptions = Apollo.BaseMutationOptions<SendMonthlyRemindersMutation, SendMonthlyRemindersMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    token
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const SettingDocument = gql`
+    query Setting {
+  setting {
+    emailSettings {
+      host
+      port
+      secure
+      email
+    }
+    emailTextList {
+      receipt {
+        subject
+        body
+      }
+      reminder {
+        subject
+        body
+      }
+      medicalCertificateExpiration {
+        subject
+        body
+      }
+    }
+    attendancesPerMonthToSendReminder
+    daysBeforeMedicalCertificateExpiresToSendEmail
+  }
+}
+    `;
+
+/**
+ * __useSettingQuery__
+ *
+ * To run a query within a React component, call `useSettingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSettingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSettingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSettingQuery(baseOptions?: Apollo.QueryHookOptions<SettingQuery, SettingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SettingQuery, SettingQueryVariables>(SettingDocument, options);
+      }
+export function useSettingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingQuery, SettingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SettingQuery, SettingQueryVariables>(SettingDocument, options);
+        }
+export type SettingQueryHookResult = ReturnType<typeof useSettingQuery>;
+export type SettingLazyQueryHookResult = ReturnType<typeof useSettingLazyQuery>;
+export type SettingQueryResult = Apollo.QueryResult<SettingQuery, SettingQueryVariables>;
+export const AttendancesDocument = gql`
+    query Attendances($filter: AttendanceFilter!) {
+  attendances(pageIndex: 0, pageSize: 0, filter: $filter) {
+    data {
+      ...AttendanceListItem
+    }
+    pageInfo {
+      total
+    }
+  }
+}
+    ${AttendanceListItemFragmentDoc}`;
+
+/**
+ * __useAttendancesQuery__
+ *
+ * To run a query within a React component, call `useAttendancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAttendancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAttendancesQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useAttendancesQuery(baseOptions: Apollo.QueryHookOptions<AttendancesQuery, AttendancesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AttendancesQuery, AttendancesQueryVariables>(AttendancesDocument, options);
+      }
+export function useAttendancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AttendancesQuery, AttendancesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AttendancesQuery, AttendancesQueryVariables>(AttendancesDocument, options);
+        }
+export type AttendancesQueryHookResult = ReturnType<typeof useAttendancesQuery>;
+export type AttendancesLazyQueryHookResult = ReturnType<typeof useAttendancesLazyQuery>;
+export type AttendancesQueryResult = Apollo.QueryResult<AttendancesQuery, AttendancesQueryVariables>;
+export const DayAttendancesDocument = gql`
+    query DayAttendances($filter: DayAttendancesFilter!) {
+  dayAttendances(pageIndex: 0, pageSize: 0, filter: $filter) {
+    ids
+    members {
+      fullName
+    }
+    course {
+      id
+      name
+      color
+    }
+    from
+    to
+  }
+}
+    `;
+
+/**
+ * __useDayAttendancesQuery__
+ *
+ * To run a query within a React component, call `useDayAttendancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDayAttendancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDayAttendancesQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useDayAttendancesQuery(baseOptions: Apollo.QueryHookOptions<DayAttendancesQuery, DayAttendancesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DayAttendancesQuery, DayAttendancesQueryVariables>(DayAttendancesDocument, options);
+      }
+export function useDayAttendancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DayAttendancesQuery, DayAttendancesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DayAttendancesQuery, DayAttendancesQueryVariables>(DayAttendancesDocument, options);
+        }
+export type DayAttendancesQueryHookResult = ReturnType<typeof useDayAttendancesQuery>;
+export type DayAttendancesLazyQueryHookResult = ReturnType<typeof useDayAttendancesLazyQuery>;
+export type DayAttendancesQueryResult = Apollo.QueryResult<DayAttendancesQuery, DayAttendancesQueryVariables>;
+export const DayExpireMedicalCertificatesDocument = gql`
+    query DayExpireMedicalCertificates($filter: DayExpireMedicalCertificatesFilter!) {
+  dayExpireMedicalCertificates(pageIndex: 0, pageSize: 0, filter: $filter) {
+    expireAt
+    members {
+      fullName
+    }
+  }
+}
+    `;
+
+/**
+ * __useDayExpireMedicalCertificatesQuery__
+ *
+ * To run a query within a React component, call `useDayExpireMedicalCertificatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDayExpireMedicalCertificatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDayExpireMedicalCertificatesQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useDayExpireMedicalCertificatesQuery(baseOptions: Apollo.QueryHookOptions<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>(DayExpireMedicalCertificatesDocument, options);
+      }
+export function useDayExpireMedicalCertificatesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>(DayExpireMedicalCertificatesDocument, options);
+        }
+export type DayExpireMedicalCertificatesQueryHookResult = ReturnType<typeof useDayExpireMedicalCertificatesQuery>;
+export type DayExpireMedicalCertificatesLazyQueryHookResult = ReturnType<typeof useDayExpireMedicalCertificatesLazyQuery>;
+export type DayExpireMedicalCertificatesQueryResult = Apollo.QueryResult<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>;
+export const AttendanceCreateManyDocument = gql`
+    mutation AttendanceCreateMany($input: AttendanceCreateManyInput!) {
+  attendanceCreateMany(input: $input) {
+    attendances {
+      ...AttendanceListItem
+    }
+  }
+}
+    ${AttendanceListItemFragmentDoc}`;
+export type AttendanceCreateManyMutationFn = Apollo.MutationFunction<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
+
+/**
+ * __useAttendanceCreateManyMutation__
+ *
+ * To run a mutation, you first call `useAttendanceCreateManyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAttendanceCreateManyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [attendanceCreateManyMutation, { data, loading, error }] = useAttendanceCreateManyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAttendanceCreateManyMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>(AttendanceCreateManyDocument, options);
+      }
+export type AttendanceCreateManyMutationHookResult = ReturnType<typeof useAttendanceCreateManyMutation>;
+export type AttendanceCreateManyMutationResult = Apollo.MutationResult<AttendanceCreateManyMutation>;
+export type AttendanceCreateManyMutationOptions = Apollo.BaseMutationOptions<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
+export const AttendanceDeleteDocument = gql`
+    mutation AttendanceDelete($input: AttendanceDeleteInput!) {
+  attendanceDelete(input: $input) {
+    attendance {
+      ...AttendanceListItem
+    }
+  }
+}
+    ${AttendanceListItemFragmentDoc}`;
+export type AttendanceDeleteMutationFn = Apollo.MutationFunction<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
+
+/**
+ * __useAttendanceDeleteMutation__
+ *
+ * To run a mutation, you first call `useAttendanceDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAttendanceDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [attendanceDeleteMutation, { data, loading, error }] = useAttendanceDeleteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAttendanceDeleteMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>(AttendanceDeleteDocument, options);
+      }
+export type AttendanceDeleteMutationHookResult = ReturnType<typeof useAttendanceDeleteMutation>;
+export type AttendanceDeleteMutationResult = Apollo.MutationResult<AttendanceDeleteMutation>;
+export type AttendanceDeleteMutationOptions = Apollo.BaseMutationOptions<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
+export const AttendanceDeleteManyDocument = gql`
+    mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {
+  attendanceDeleteMany(input: $input) {
+    success
+  }
+}
+    `;
+export type AttendanceDeleteManyMutationFn = Apollo.MutationFunction<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>;
+
+/**
+ * __useAttendanceDeleteManyMutation__
+ *
+ * To run a mutation, you first call `useAttendanceDeleteManyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAttendanceDeleteManyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [attendanceDeleteManyMutation, { data, loading, error }] = useAttendanceDeleteManyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAttendanceDeleteManyMutation(baseOptions?: Apollo.MutationHookOptions<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>(AttendanceDeleteManyDocument, options);
+      }
+export type AttendanceDeleteManyMutationHookResult = ReturnType<typeof useAttendanceDeleteManyMutation>;
+export type AttendanceDeleteManyMutationResult = Apollo.MutationResult<AttendanceDeleteManyMutation>;
+export type AttendanceDeleteManyMutationOptions = Apollo.BaseMutationOptions<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>;
+export const CoursesSearcherDocument = gql`
+    query CoursesSearcher($filter: CourseFilter) {
+  courses(pageIndex: 0, pageSize: 20, filter: $filter) {
+    data {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useCoursesSearcherQuery__
+ *
+ * To run a query within a React component, call `useCoursesSearcherQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCoursesSearcherQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCoursesSearcherQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useCoursesSearcherQuery(baseOptions?: Apollo.QueryHookOptions<CoursesSearcherQuery, CoursesSearcherQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CoursesSearcherQuery, CoursesSearcherQueryVariables>(CoursesSearcherDocument, options);
+      }
+export function useCoursesSearcherLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CoursesSearcherQuery, CoursesSearcherQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CoursesSearcherQuery, CoursesSearcherQueryVariables>(CoursesSearcherDocument, options);
+        }
+export type CoursesSearcherQueryHookResult = ReturnType<typeof useCoursesSearcherQuery>;
+export type CoursesSearcherLazyQueryHookResult = ReturnType<typeof useCoursesSearcherLazyQuery>;
+export type CoursesSearcherQueryResult = Apollo.QueryResult<CoursesSearcherQuery, CoursesSearcherQueryVariables>;
+export const CourseSearcherDocument = gql`
+    query CourseSearcher($id: ID!) {
+  course(id: $id) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useCourseSearcherQuery__
+ *
+ * To run a query within a React component, call `useCourseSearcherQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseSearcherQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseSearcherQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCourseSearcherQuery(baseOptions: Apollo.QueryHookOptions<CourseSearcherQuery, CourseSearcherQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CourseSearcherQuery, CourseSearcherQueryVariables>(CourseSearcherDocument, options);
+      }
+export function useCourseSearcherLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CourseSearcherQuery, CourseSearcherQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CourseSearcherQuery, CourseSearcherQueryVariables>(CourseSearcherDocument, options);
+        }
+export type CourseSearcherQueryHookResult = ReturnType<typeof useCourseSearcherQuery>;
+export type CourseSearcherLazyQueryHookResult = ReturnType<typeof useCourseSearcherLazyQuery>;
+export type CourseSearcherQueryResult = Apollo.QueryResult<CourseSearcherQuery, CourseSearcherQueryVariables>;
+export const ShiftsDocument = gql`
+    query Shifts($filter: ShiftFilter) {
+  shifts(filter: $filter) {
+    id
+    course {
+      id
+      name
+    }
+    weekDay
+    from
+    to
+  }
+}
+    `;
+
+/**
+ * __useShiftsQuery__
+ *
+ * To run a query within a React component, call `useShiftsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useShiftsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useShiftsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useShiftsQuery(baseOptions?: Apollo.QueryHookOptions<ShiftsQuery, ShiftsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ShiftsQuery, ShiftsQueryVariables>(ShiftsDocument, options);
+      }
+export function useShiftsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ShiftsQuery, ShiftsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ShiftsQuery, ShiftsQueryVariables>(ShiftsDocument, options);
+        }
+export type ShiftsQueryHookResult = ReturnType<typeof useShiftsQuery>;
+export type ShiftsLazyQueryHookResult = ReturnType<typeof useShiftsLazyQuery>;
+export type ShiftsQueryResult = Apollo.QueryResult<ShiftsQuery, ShiftsQueryVariables>;
+export const CoursesDocument = gql`
+    query Courses($pageIndex: Int!, $pageSize: Int!, $filter: CourseFilter) {
+  courses(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
+    data {
+      ...CourseListItem
+    }
+    pageInfo {
+      total
+    }
+  }
+}
+    ${CourseListItemFragmentDoc}`;
+
+/**
+ * __useCoursesQuery__
+ *
+ * To run a query within a React component, call `useCoursesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCoursesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCoursesQuery({
+ *   variables: {
+ *      pageIndex: // value for 'pageIndex'
+ *      pageSize: // value for 'pageSize'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useCoursesQuery(baseOptions: Apollo.QueryHookOptions<CoursesQuery, CoursesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CoursesQuery, CoursesQueryVariables>(CoursesDocument, options);
+      }
+export function useCoursesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CoursesQuery, CoursesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CoursesQuery, CoursesQueryVariables>(CoursesDocument, options);
+        }
+export type CoursesQueryHookResult = ReturnType<typeof useCoursesQuery>;
+export type CoursesLazyQueryHookResult = ReturnType<typeof useCoursesLazyQuery>;
+export type CoursesQueryResult = Apollo.QueryResult<CoursesQuery, CoursesQueryVariables>;
+export const CourseDocument = gql`
+    query Course($id: ID!) {
+  course(id: $id) {
+    ...CourseDetail
+  }
+}
+    ${CourseDetailFragmentDoc}`;
+
+/**
+ * __useCourseQuery__
+ *
+ * To run a query within a React component, call `useCourseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCourseQuery(baseOptions: Apollo.QueryHookOptions<CourseQuery, CourseQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CourseQuery, CourseQueryVariables>(CourseDocument, options);
+      }
+export function useCourseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CourseQuery, CourseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CourseQuery, CourseQueryVariables>(CourseDocument, options);
+        }
+export type CourseQueryHookResult = ReturnType<typeof useCourseQuery>;
+export type CourseLazyQueryHookResult = ReturnType<typeof useCourseLazyQuery>;
+export type CourseQueryResult = Apollo.QueryResult<CourseQuery, CourseQueryVariables>;
+export const CourseCreateDocument = gql`
+    mutation CourseCreate($input: CourseCreateInput!) {
+  courseCreate(input: $input) {
+    course {
+      ...CourseDetail
+    }
+  }
+}
+    ${CourseDetailFragmentDoc}`;
+export type CourseCreateMutationFn = Apollo.MutationFunction<CourseCreateMutation, CourseCreateMutationVariables>;
+
+/**
+ * __useCourseCreateMutation__
+ *
+ * To run a mutation, you first call `useCourseCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCourseCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [courseCreateMutation, { data, loading, error }] = useCourseCreateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCourseCreateMutation(baseOptions?: Apollo.MutationHookOptions<CourseCreateMutation, CourseCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CourseCreateMutation, CourseCreateMutationVariables>(CourseCreateDocument, options);
+      }
+export type CourseCreateMutationHookResult = ReturnType<typeof useCourseCreateMutation>;
+export type CourseCreateMutationResult = Apollo.MutationResult<CourseCreateMutation>;
+export type CourseCreateMutationOptions = Apollo.BaseMutationOptions<CourseCreateMutation, CourseCreateMutationVariables>;
+export const CourseUpdateDocument = gql`
+    mutation CourseUpdate($input: CourseUpdateInput!) {
+  courseUpdate(input: $input) {
+    course {
+      ...CourseDetail
+    }
+  }
+}
+    ${CourseDetailFragmentDoc}`;
+export type CourseUpdateMutationFn = Apollo.MutationFunction<CourseUpdateMutation, CourseUpdateMutationVariables>;
+
+/**
+ * __useCourseUpdateMutation__
+ *
+ * To run a mutation, you first call `useCourseUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCourseUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [courseUpdateMutation, { data, loading, error }] = useCourseUpdateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCourseUpdateMutation(baseOptions?: Apollo.MutationHookOptions<CourseUpdateMutation, CourseUpdateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CourseUpdateMutation, CourseUpdateMutationVariables>(CourseUpdateDocument, options);
+      }
+export type CourseUpdateMutationHookResult = ReturnType<typeof useCourseUpdateMutation>;
+export type CourseUpdateMutationResult = Apollo.MutationResult<CourseUpdateMutation>;
+export type CourseUpdateMutationOptions = Apollo.BaseMutationOptions<CourseUpdateMutation, CourseUpdateMutationVariables>;
+export const CourseDeleteDocument = gql`
+    mutation CourseDelete($input: CourseDeleteInput!) {
+  courseDelete(input: $input) {
+    course {
+      ...CourseDetail
+    }
+  }
+}
+    ${CourseDetailFragmentDoc}`;
+export type CourseDeleteMutationFn = Apollo.MutationFunction<CourseDeleteMutation, CourseDeleteMutationVariables>;
+
+/**
+ * __useCourseDeleteMutation__
+ *
+ * To run a mutation, you first call `useCourseDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCourseDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [courseDeleteMutation, { data, loading, error }] = useCourseDeleteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCourseDeleteMutation(baseOptions?: Apollo.MutationHookOptions<CourseDeleteMutation, CourseDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CourseDeleteMutation, CourseDeleteMutationVariables>(CourseDeleteDocument, options);
+      }
+export type CourseDeleteMutationHookResult = ReturnType<typeof useCourseDeleteMutation>;
+export type CourseDeleteMutationResult = Apollo.MutationResult<CourseDeleteMutation>;
+export type CourseDeleteMutationOptions = Apollo.BaseMutationOptions<CourseDeleteMutation, CourseDeleteMutationVariables>;
 export const PaymentsDocument = gql`
     query Payments($pageIndex: Int!, $pageSize: Int!, $filter: PaymentFilter) {
   payments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {

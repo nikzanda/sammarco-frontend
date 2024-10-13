@@ -75,7 +75,13 @@
       "csenCardNumber": "Numero tessera CSEN",
       "courses": "Corsi",
       "shifts": "Turni corsi",
-      "expireAt": "Data di scadenza del certificato medico"
+      "medicalCertificate": {
+        "expireAt": "Data di scadenza del certificato medico",
+        "help": {
+          "clickOrDrag": "Clicca o trascina il file in questa area per caricarlo",
+          "hint": "Puoi caricare un solo file nel formato PDF o immagine."
+        }
+      }
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
@@ -296,6 +302,17 @@
     },
     "deleted": "Presenze eliminate"
   },
+  "communication": {
+    "name": "Comunicazioni",
+    "page": {
+      "title": "Invia comunicazioni"
+    },
+    "form": {
+      "subject": "Oggetto",
+      "body": "Corpo",
+      "attachments": "Allegati"
+    }
+  },
   "settings": {
     "name": "Impostazioni",
     "saved": "Impostazioni aggiornate correttamente",
@@ -354,7 +371,7 @@
           },
           "body": {
             "label": "Contenuto",
-            "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [GIORNI] per indicare tra quanti giorni scadrà il certificato medico;\n- Utiliza il placeholder [DATA] per indicare la data di scadenza del certificato medico."
+            "help": "- Utilizza i placeholder [NOME] e [COGNOME] per sostituire rispettivamente nome e cognome del socio (se minorenne, verranno sostituiti con nome e cognome del genitore);\n- Utilizza il placeholder [GIORNI] per indicare tra quanti giorni scadrà il certificato medico;\n- Utilizza il placeholder [DATA] per indicare la data di scadenza del certificato medico."
           }
         }
       },
@@ -420,8 +437,8 @@
     }
   },
   "upload": {
-    "clickOrDrag": "Clicca o trascina il file in questa area per caricarlo",
-    "hint": "Puoi caricare un solo file nel formato PDF o immagine.",
+    "clickOrDrag": "Clicca o trascina i file in questa area per caricarli",
+    "hint": "Puoi inserire uno o più file per volta.",
     "success": "File caricato!"
   },
   "validations": {
@@ -470,7 +487,9 @@
       "title": "Esporta CSV"
     },
     "checkAll": "Seleziona tutti",
-    "send": "Invia"
+    "send": "Invia",
+    "pageNotFound": "Pagina non trovata",
+    "goBack": "Torna indietro"
   },
   "types": {
     "User_one": "Utente",
