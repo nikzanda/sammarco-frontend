@@ -147,7 +147,10 @@ const PaymentEditPage: React.FC = () => {
       {payment && (
         <Tabs
           activeKey={tab}
-          onChange={setTab}
+          onChange={(newTab) => {
+            setURLTab(newTab);
+            setTab(newTab);
+          }}
           items={[
             {
               label: t('payments.tab.details'),

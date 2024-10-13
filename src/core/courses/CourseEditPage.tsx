@@ -169,7 +169,10 @@ const CourseEditPage: React.FC = () => {
       {course && (
         <Tabs
           activeKey={tab}
-          onChange={setTab}
+          onChange={(newTab) => {
+            setURLTab(newTab);
+            setTab(newTab);
+          }}
           items={[
             {
               label: t('courses.tab.details'),

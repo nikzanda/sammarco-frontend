@@ -142,7 +142,10 @@ const MemberEditPage: React.FC = () => {
         >
           <Tabs
             activeKey={tab}
-            onChange={setTab}
+            onChange={(newTab) => {
+              setURLTab(newTab);
+              setTab(newTab);
+            }}
             items={[
               {
                 label: t('members.tab.details'),

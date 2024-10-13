@@ -140,7 +140,10 @@ const FeeEditPage: React.FC = () => {
       {fee && (
         <Tabs
           activeKey={tab}
-          onChange={setTab}
+          onChange={(newTab) => {
+            setURLTab(newTab);
+            setTab(newTab);
+          }}
           items={[
             {
               label: t('fees.tab.details'),
