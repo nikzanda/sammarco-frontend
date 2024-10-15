@@ -56,6 +56,16 @@ const EmailSettingsForm: React.FC = () => {
 
         <Col xs={24} md={12} xxl={8}>
           <Form.Item
+            label={t('settings.form.emailSettings.name.label')}
+            tooltip={t('settings.form.emailSettings.name.tooltip')}
+            name={['emailSettings', 'name']}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12} xxl={8}>
+          <Form.Item
             label={t('settings.form.emailSettings.email')}
             name={['emailSettings', 'email']}
             rules={[{ type: 'email' }]}

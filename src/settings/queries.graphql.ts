@@ -16,6 +16,7 @@ export const SETTING_UPDATE_MUTATION = gql`
           host
           port
           secure
+          name
           email
         }
         emailTextList {

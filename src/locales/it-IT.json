@@ -340,6 +340,10 @@
         "host": "Host",
         "port": "Porta",
         "secure": "Usa TLS",
+        "name": {
+          "label": "Nome",
+          "tooltip": "È il nome che i soci visualizzeranno come mittente della mail"
+        },
         "email": "Email",
         "password": "Inserisci nuova password"
       },

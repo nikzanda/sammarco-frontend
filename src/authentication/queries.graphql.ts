@@ -24,6 +24,7 @@ export const SETTING_QUERY = gql`
         host
         port
         secure
+        name
         email
       }
       emailTextList {
