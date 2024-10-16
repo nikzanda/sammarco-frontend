@@ -1,9 +1,9 @@
 import React from 'react';
-import { App, Button, Flex, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
+import { App, Form, FormProps, GetProp, MenuProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaBell, FaTrash } from 'react-icons/fa';
+import { FaBell, FaCalendarCheck, FaMoneyBill, FaTrash } from 'react-icons/fa';
 import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
@@ -11,6 +11,8 @@ import { EditPageHeader, Updates } from '../../commons';
 import { EmailTable, SendReminderModal } from '../emails/components';
 import { SettingsContext } from '../../contexts';
 import { getURLTab, setURLTab } from '../../utils';
+import { AttendanceCreateModal } from '../attendances/components';
+import { PaymentCreateModal } from '../payments/components';
 
 const DEFAULT_TAB = 'details';
 
@@ -23,6 +25,8 @@ const MemberEditPage: React.FC = () => {
   const [form] = Form.useForm();
 
   const [tab, setTab] = React.useState(getURLTab() || DEFAULT_TAB);
+  const [newPayment, setNewPayment] = React.useState(false);
+  const [newAttendance, setNewAttendance] = React.useState(false);
   const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
 
   React.useEffect(() => {
@@ -83,7 +87,7 @@ const MemberEditPage: React.FC = () => {
     return undefined;
   }, [member]);
 
-  const handleDelete = () => {
+  const handleDelete = React.useCallback(() => {
     deleteMember({
       variables: {
         input: {
@@ -91,7 +95,55 @@ const MemberEditPage: React.FC = () => {
         },
       },
     });
-  };
+  }, [deleteMember, id]);
+
+  const actions = React.useMemo(() => {
+    if (!member) {
+      return [];
+    }
+
+    const result: GetProp<MenuProps, 'items'> = [
+      {
+        key: 'payment',
+        label: t('payments.new'),
+        icon: <Icon component={FaMoneyBill} />,
+        onClick: () => setNewPayment(true),
+      },
+      {
+        key: 'attendance',
+        label: t('attendances.new'),
+        icon: <Icon component={FaCalendarCheck} />,
+        onClick: () => setNewAttendance(true),
+      },
+      {
+        key: 'reminder',
+        label: t('buttons.reminder.label'),
+        disabled: !validEmailSettings,
+        icon: <Icon component={FaBell} />,
+        onClick: () => {
+          setSendReminderData({
+            memberId: member.id,
+            courseIds: member.courses.map(({ id }) => id),
+          });
+        },
+      },
+      {
+        key: 'delete',
+        label: t('buttons.delete.label'),
+        disabled: !member?.canDelete,
+        icon: <Icon component={FaTrash} spin={deleteLoading} />,
+        danger: true,
+        onClick: () => {
+          modal.confirm({
+            title: t('members.delete.description', { fullName: member?.fullName }),
+            content: t('members.delete.confirm'),
+            onOk: () => handleDelete(),
+          });
+        },
+      },
+    ];
+    return result;
+  }, [deleteLoading, handleDelete, member, modal, t, validEmailSettings]);
 
   const handleFinish: FormProps['onFinish'] = (values) => {
     updateMember({
@@ -111,103 +163,87 @@ const MemberEditPage: React.FC = () => {
         submitButtonProps={{
           loading: updateLoading,
         }}
-        actions={[
-          {
-            key: 'delete',
-            label: t('buttons.delete.label'),
-            disabled: !member?.canDelete,
-            icon: <Icon component={FaTrash} spin={deleteLoading} />,
-            danger: true,
-            onClick: () => {
-              modal.confirm({
-                title: t('members.delete.description', { fullName: member?.fullName }),
-                content: t('members.delete.confirm'),
-                onOk: () => handleDelete(),
-              });
-            },
-          },
-        ]}
+        actions={actions}
       />
 
       {queryLoading && <Skeleton active />}
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {member && (
-        <Form
-          id="form"
-          form={form}
-          initialValues={initialValues}
-          layout="vertical"
-          autoComplete="off"
-          onFinish={handleFinish}
-        >
-          <Tabs
-            activeKey={tab}
-            onChange={(newTab) => {
-              setURLTab(newTab);
-              setTab(newTab);
-            }}
-            items={[
-              {
-                label: t('members.tab.details'),
-                key: 'details',
-                children: (
-                  <>
-                    <MemberForm />
-                    <Updates updates={member} />
-                  </>
-                ),
-              },
-              {
-                label: t('members.tab.medicalCertificate'),
-                key: 'certificate',
-                destroyInactiveTabPane: true,
-                children: <MemberMedicalCertificate member={member} />,
-              },
-              {
-                label: t('members.tab.payments'),
-                key: 'payments',
-                children: <MemberPayments member={member} />,
-              },
-              {
-                label: t('members.tab.calendar'),
-                key: 'calendar',
-                children: <MemberCalendar member={member} />,
-              },
-              {
-                label: t('members.tab.emails'),
-                key: 'emails',
-                children: (
-                  <Space direction="vertical" style={{ width: '100%' }}>
-                    <Flex justify="end">
-                      <Button
-                        size="large"
-                        disabled={!validEmailSettings}
-                        icon={<Icon component={FaBell} />}
-                        onClick={() => {
-                          setSendReminderData({
-                            memberId: member.id,
-                            courseIds: member.courses.map(({ id }) => id),
-                          });
-                        }}
-                      >
-                        {t('buttons.reminder.label')}
-                      </Button>
-                    </Flex>
-                    <EmailTable filters={{ memberIds: [id!] }} />
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Form>
-      )}
+        <>
+          <Form
+            id="form"
+            form={form}
+            initialValues={initialValues}
+            layout="vertical"
+            autoComplete="off"
+            onFinish={handleFinish}
+          >
+            <Tabs
+              activeKey={tab}
+              onChange={(newTab) => {
+                setURLTab(newTab);
+                setTab(newTab);
+              }}
+              items={[
+                {
+                  label: t('members.tab.details'),
+                  key: 'details',
+                  children: (
+                    <>
+                      <MemberForm />
+                      <Updates updates={member} />
+                    </>
+                  ),
+                },
+                {
+                  label: t('members.tab.medicalCertificate'),
+                  key: 'certificate',
+                  destroyInactiveTabPane: true,
+                  children: <MemberMedicalCertificate member={member} />,
+                },
+                {
+                  label: t('members.tab.payments'),
+                  key: 'payments',
+                  children: <MemberPayments member={member} />,
+                },
+                {
+                  label: t('members.tab.calendar'),
+                  key: 'calendar',
+                  children: <MemberCalendar member={member} />,
+                },
+                {
+                  label: t('members.tab.emails'),
+                  key: 'emails',
+                  children: <EmailTable filters={{ memberIds: [id!] }} />,
+                },
+              ]}
+            />
+          </Form>
 
-      {sendReminderData && (
-        <SendReminderModal
-          memberId={sendReminderData.memberId}
-          courseIds={sendReminderData.courseIds}
-          onCancel={() => setSendReminderData(undefined)}
-        />
+          {newPayment && (
+            <PaymentCreateModal
+              memberId={member.id}
+              courseIds={member.courses.map(({ id }) => id)}
+              onCancel={() => {
+                setNewPayment(false);
+              }}
+            />
+          )}
+          {newAttendance && (
+            <AttendanceCreateModal
+              memberIds={[member.id]}
+              courseIds={member.courses.map(({ id }) => id)}
+              onCancel={() => setNewAttendance(false)}
+            />
+          )}
+          {sendReminderData && (
+            <SendReminderModal
+              memberId={sendReminderData.memberId}
+              courseIds={sendReminderData.courseIds}
+              onCancel={() => setSendReminderData(undefined)}
+            />
+          )}
+        </>
       )}
     </Space>
   );

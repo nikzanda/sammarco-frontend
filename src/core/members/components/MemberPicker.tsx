@@ -8,6 +8,8 @@ const defaultProps = {
   value: undefined,
   disabled: false,
   allowClear: true,
+  placeholder: undefined,
+  size: 'middle' as SelectProps['size'],
   onChange: () => {},
   onClear: () => {},
 };
@@ -16,11 +18,13 @@ interface Props {
   value?: string[];
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
+  placeholder?: SelectProps['placeholder'];
+  size?: SelectProps['size'];
   onChange?: (value: string[], members: MembersSearcherQuery['members']['data']) => void;
   onClear?: SelectProps['onClear'];
 }
 
-const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, onClear }) => {
+const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, placeholder, size, onChange, onClear }) => {
   const {
     data: membersData,
     loading: membersLoading,
@@ -106,6 +110,8 @@ const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
       onSearch={handleSearch}
       loading={membersLoading || valuesLoading}
       showSearch
+      placeholder={placeholder}
+      size={size}
       style={{ width: '100%' }}
     />
   );
@@ -114,3 +120,5 @@ const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, onChange, 
 MemberPicker.defaultProps = defaultProps;
 
 export default MemberPicker;
+
+export type { Props as MemberPickerProps };

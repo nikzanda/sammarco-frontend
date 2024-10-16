@@ -3,9 +3,7 @@ import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Badge, Button, Col, Input, Row, Space, Table, TableColumnsType, TableProps } from 'antd';
-import Icon from '@ant-design/icons';
-import { FaBan } from 'react-icons/fa';
+import { Badge, Space, Table, TableColumnsType, TableProps } from 'antd';
 import Highlighter from 'react-highlight-words';
 import {
   CourseFilter,
@@ -15,7 +13,7 @@ import {
   useCoursesQuery,
 } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons, ListPageHeader } from '../../commons';
+import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/course/';
@@ -143,39 +141,17 @@ const CourseListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <ListPageHeader entity="courses" />
 
-      <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12}>
-          <Input.Search
-            placeholder={t('commons.searchPlaceholder')!}
-            allowClear
-            enterButton
-            size="large"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onSearch={(value) => {
-              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-              setFilterInfo({
-                search: [value],
-              });
-            }}
-          />
-        </Col>
-
-        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            danger
-            size="large"
-            icon={<Icon component={FaBan} />}
-            onClick={() => {
-              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-              setFilterInfo({});
-              setSearchText('');
-            }}
-          >
-            {t('buttons.resetFilter.label')}
-          </Button>
-        </Col>
-      </Row>
+      <Filters
+        topFilters={[]}
+        collapsableFilters={[]}
+        initialFilterInfo={filterInfo}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        onSearch={(newFilterInfo) => {
+          setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
+          setFilterInfo(newFilterInfo);
+        }}
+      />
 
       <Table
         dataSource={courses}

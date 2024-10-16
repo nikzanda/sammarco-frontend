@@ -8,15 +8,17 @@ import { useNavigate } from 'react-router-dom';
 const defaultProps = {
   submitButtonProps: {},
   actions: undefined,
+  extra: undefined,
 };
 
 interface Props {
   title: React.ReactNode;
   submitButtonProps?: Omit<ButtonProps, 'type' | 'htmlType' | 'form' | 'size' | 'icon'>;
   actions?: GetProp<MenuProps, 'items'>;
+  extra?: React.ReactNode;
 }
 
-const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions }) => {
+const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions, extra }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -30,6 +32,12 @@ const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions }) 
       </Flex>
 
       <Flex gap={8} align="center">
+        {extra && (
+          <>
+            {extra}
+            <Divider type="vertical" />
+          </>
+        )}
         <Button
           {...submitButtonProps}
           type="primary"

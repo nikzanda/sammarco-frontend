@@ -12,6 +12,8 @@ const defaultProps = {
   multiple: false,
   disabled: false,
   allowClear: true,
+  placeholder: undefined,
+  size: 'middle' as TreeSelectProps['size'],
   onChange: () => {},
   onClear: () => {},
 };
@@ -22,11 +24,23 @@ interface Props {
   multiple?: TreeSelectProps['multiple'];
   disabled?: TreeSelectProps['disabled'];
   allowClear?: TreeSelectProps['allowClear'];
+  placeholder?: TreeSelectProps['placeholder'];
+  size?: TreeSelectProps['size'];
   onChange?: (value: string[], shifts: ShiftsQuery['shifts']) => void;
   onClear?: TreeSelectProps['onClear'];
 }
 
-const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled, allowClear, onChange, onClear }) => {
+const ShiftPicker: React.FC<Props> = ({
+  value,
+  queryFilters,
+  multiple,
+  disabled,
+  allowClear,
+  placeholder,
+  size,
+  onChange,
+  onClear,
+}) => {
   const { t } = useTranslation();
 
   const {
@@ -108,6 +122,8 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled,
       loading={shiftsLoading}
       multiple={multiple}
       style={{ width: '100%' }}
+      size={size}
+      placeholder={placeholder}
     />
   );
 };
@@ -115,3 +131,5 @@ const ShiftPicker: React.FC<Props> = ({ value, queryFilters, multiple, disabled,
 ShiftPicker.defaultProps = defaultProps;
 
 export default ShiftPicker;
+
+export type { Props as ShiftPickerProps };

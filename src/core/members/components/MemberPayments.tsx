@@ -1,9 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Icon from '@ant-design/icons';
-import { TableColumnsType, Button, Result, Table, TableProps, Flex, Space, App } from 'antd';
+import { TableColumnsType, Result, Table, TableProps, Space, App } from 'antd';
 import { format, set } from 'date-fns';
-import { FaBan, FaMoneyBill } from 'react-icons/fa';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
 import { useDisplayGraphQLErrors } from '../../../hooks';
@@ -19,9 +17,7 @@ import {
 } from '../../../generated/graphql';
 import PDF from '../../payments/pdfs/receipt-pdf';
 import { toCurrency } from '../../../utils';
-import { FeeTableFilter } from '../../fees/components';
-import { ActionButtons, MonthFilter, NumberFilter } from '../../../commons';
-import { PaymentCreateModal } from '../../payments/components';
+import { ActionButtons, Filters } from '../../../commons';
 
 const PAGE_SIZE = 10;
 
@@ -34,13 +30,12 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
   const navigate = useNavigate();
   const { message } = App.useApp();
 
-  const [newPayment, setNewPayment] = React.useState(false);
   const [sendingIds, setSendingIds] = React.useState<string[]>([]);
-
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: PAGE_SIZE,
   });
+  const [searchText, setSearchText] = React.useState('');
   const [filterInfo, setFilterInfo] = React.useState<Record<string, FilterValue | null>>({});
   const [sortInfo, setSortInfo] = React.useState<SorterResult<PaymentListItemFragment>>({ order: 'descend' });
 
@@ -66,9 +61,11 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: [member.id],
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
-      months: filterInfo?.details?.length ? (filterInfo.details as string[]) : undefined,
+      months: filterInfo?.months?.length
+        ? filterInfo.months.map((month) => format(month as number, 'yyyy-MM'))
+        : undefined,
       type: filterInfo?.type?.length ? (filterInfo.type[0] as PaymentTypeEnum) : undefined,
-      sent: filterInfo?.actions?.length ? (filterInfo.actions[0] as boolean) : undefined,
+      sent: filterInfo?.sent?.length ? filterInfo.sent[0] === 'true' : undefined,
       sortBy,
       sortDirection,
     };
@@ -144,8 +141,6 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         title: t('payments.table.counter'),
         key: 'counter',
         dataIndex: 'counter',
-        filterDropdown: NumberFilter,
-        filteredValue: filterInfo.counter || null,
       },
       {
         title: t('payments.table.course'),
@@ -156,8 +151,6 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         title: t('payments.table.fee'),
         key: 'fee',
         dataIndex: ['fee', 'name'],
-        filterDropdown: FeeTableFilter,
-        filteredValue: filterInfo.fee || null,
       },
       {
         title: t('payments.table.amount'),
@@ -170,25 +163,11 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         title: t('payments.table.type'),
         key: 'type',
         dataIndex: 'type',
-        filterMultiple: false,
-        filters: [
-          {
-            text: t(`payments.type.${PaymentTypeEnum.CASH}`),
-            value: PaymentTypeEnum.CASH,
-          },
-          {
-            text: t(`payments.type.${PaymentTypeEnum.BANK_TRANSFER}`),
-            value: PaymentTypeEnum.BANK_TRANSFER,
-          },
-        ],
-        filteredValue: filterInfo.type || null,
         render: (type: PaymentListItemFragment['type']) => t(`payments.type.${type}`),
       },
       {
         title: t('payments.table.details'),
         key: 'details',
-        filterDropdown: MonthFilter,
-        filteredValue: filterInfo.details || null,
         render: (_, { month: rawMonth, years }) => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value: string) => parseInt(value, 10));
@@ -209,18 +188,6 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         dataIndex: 'id',
         align: 'right',
         fixed: 'right',
-        filterMultiple: false,
-        filters: [
-          {
-            text: t('payments.table.sent.true'),
-            value: true,
-          },
-          {
-            text: t('payments.table.sent.false'),
-            value: false,
-          },
-        ],
-        filteredValue: filterInfo.actions || null,
         render: (id, { sent }) => (
           <ActionButtons
             buttons={['edit', { button: 'print' }, { button: 'send', sent, disabled: sendingIds.includes(id) }]}
@@ -232,7 +199,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       },
     ];
     return result;
-  }, [filterInfo, handleSend, navigate, sendingIds, t]);
+  }, [handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
@@ -249,22 +216,83 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     <Space direction="vertical" style={{ width: '100%' }}>
       {queryError && <Result status="500" title="500" subTitle="Sorry, something went wrong." />}
 
-      <Flex justify="end" gap={12}>
-        <Button size="large" icon={<Icon component={FaMoneyBill} />} onClick={() => setNewPayment(true)}>
-          {t('payments.new')}
-        </Button>
-        <Button
-          danger
-          size="large"
-          icon={<Icon component={FaBan} />}
-          onClick={() => {
-            setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-            setFilterInfo({});
-          }}
-        >
-          {t('buttons.resetFilter.label')}
-        </Button>
-      </Flex>
+      <Filters
+        topFilters={[
+          {
+            key: 'counter',
+            type: 'numeric',
+            props: {
+              size: 'large',
+              placeholder: t('payments.table.counter'),
+            },
+          },
+          {
+            key: 'fee',
+            type: 'fees',
+            props: {
+              size: 'large',
+              placeholder: t('payments.form.fee'),
+              queryFilters: {
+                courseIds: member.courses.map(({ id }) => id),
+              },
+              showCourse: member.courses.length > 1,
+            },
+          },
+        ]}
+        collapsableFilters={[
+          {
+            key: 'type',
+            type: 'select',
+            props: {
+              placeholder: t('payments.form.paymentType'),
+              size: 'large',
+              options: [
+                {
+                  label: t(`payments.type.${PaymentTypeEnum.CASH}`),
+                  value: PaymentTypeEnum.CASH,
+                },
+                {
+                  label: t(`payments.type.${PaymentTypeEnum.BANK_TRANSFER}`),
+                  value: PaymentTypeEnum.BANK_TRANSFER,
+                },
+              ],
+            },
+          },
+          {
+            key: 'months',
+            type: 'month',
+            props: {
+              size: 'large',
+              placeholder: t('payments.form.month'),
+            },
+          },
+          {
+            key: 'sent',
+            type: 'select',
+            props: {
+              placeholder: t('payments.sent'),
+              size: 'large',
+              options: [
+                {
+                  label: t('payments.table.sent.true'),
+                  value: 'true',
+                },
+                {
+                  label: t('payments.table.sent.false'),
+                  value: 'false',
+                },
+              ],
+            },
+          },
+        ]}
+        initialFilterInfo={filterInfo}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        onSearch={(newFilterInfo) => {
+          setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
+          setFilterInfo(newFilterInfo);
+        }}
+      />
 
       <Table
         dataSource={payments}
@@ -286,16 +314,6 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         }}
         scroll={{ x: 1100 }}
       />
-
-      {newPayment && (
-        <PaymentCreateModal
-          memberId={member.id}
-          courseIds={member.courses.map(({ id }) => id)}
-          onCancel={() => {
-            setNewPayment(false);
-          }}
-        />
-      )}
     </Space>
   );
 };

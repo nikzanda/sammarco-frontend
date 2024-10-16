@@ -1,9 +1,9 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Col, Flex, Input, Row, Space, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
+import { Flex, Space, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBan, FaBell, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
+import { FaBell, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -17,12 +17,10 @@ import {
 } from '../../generated/graphql';
 import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons, ListPageHeader, week } from '../../commons';
-import { CourseTableFilter, ShiftTableFilter } from '../courses/components';
+import { ActionButtons, Filters, ListPageHeader, week } from '../../commons';
 import { AttendanceCreateModal } from '../attendances/components';
 import { getMonths, getRealCurrentYears, getYears } from '../../utils';
 import { ExportMembersModal, MemberExpandable, SendMonthlyRemindersModal } from './components';
-import { DatePicker } from '../../components';
 import { SendReminderModal } from '../emails/components';
 import { useSyncMembers } from './hooks';
 import { SettingsContext } from '../../contexts';
@@ -196,16 +194,12 @@ const MemberListPage: React.FC = () => {
         title: t('members.table.courses'),
         key: 'courses',
         dataIndex: 'courses',
-        filterDropdown: CourseTableFilter,
-        filteredValue: filterInfo.courses || null,
         render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
       },
       {
         title: t('members.table.shifts'),
         key: 'shifts',
         dataIndex: 'courses',
-        filterDropdown: ShiftTableFilter,
-        filteredValue: filterInfo.shifts || null,
         render: (courses: MemberListItemFragment['courses'], { shiftIds }) => {
           const shifts = courses.reduce(
             (
@@ -291,7 +285,6 @@ const MemberListPage: React.FC = () => {
     ];
     return result;
   }, [
-    filterInfo,
     navigate,
     searchText,
     settings?.attendancesPerMonthToSendReminder,
@@ -361,55 +354,47 @@ const MemberListPage: React.FC = () => {
         ]}
       />
 
-      <Row gutter={[12, 12]}>
-        <Col xs={24} sm={10}>
-          <Input.Search
-            placeholder={t('commons.searchPlaceholder')!}
-            allowClear
-            enterButton
-            size="large"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onSearch={(value) => {
-              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-              setFilterInfo({
-                search: [value],
-              });
-            }}
-          />
-        </Col>
-
-        <Col xs={24} sm={6}>
-          <DatePicker
-            value={filterInfo.monthsNotPaid && new Date(filterInfo.monthsNotPaid[0] as number)}
-            size="large"
-            picker="month"
-            style={{ width: '100%' }}
-            placeholder={t('members.filterByMonthsNotPaid')}
-            onChange={(value) => {
-              setFilterInfo({
-                ...filterInfo,
-                monthsNotPaid: value ? [value.getTime()] : null,
-              });
-            }}
-          />
-        </Col>
-
-        <Col xs={24} sm={8} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            danger
-            size="large"
-            icon={<Icon component={FaBan} />}
-            onClick={() => {
-              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-              setFilterInfo({});
-              setSearchText('');
-            }}
-          >
-            {t('buttons.resetFilter.label')}
-          </Button>
-        </Col>
-      </Row>
+      <Filters
+        topFilters={[
+          {
+            key: 'courses',
+            type: 'courses',
+            props: {
+              size: 'large',
+              placeholder: t('members.form.courses'),
+            },
+          },
+          {
+            key: 'shifts',
+            type: 'shift',
+            props: {
+              size: 'large',
+              placeholder: t('members.form.shifts'),
+              // ...(filterInfo.courses && filterInfo.courses.length > 0 && {
+              //   queryFilters: {
+              //     courseIds: filterInfo.courses as string[]
+              //   }
+              // })
+            },
+          },
+        ]}
+        collapsableFilters={[
+          {
+            key: 'monthsNotPaid',
+            type: 'month',
+            props: {
+              placeholder: t('members.filterByMonthsNotPaid'),
+            },
+          },
+        ]}
+        initialFilterInfo={filterInfo}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        onSearch={(newFilterInfo) => {
+          setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
+          setFilterInfo(newFilterInfo);
+        }}
+      />
 
       {selectedIds.length > 0 && <span>{t('commons.selected', { selected: selectedIds.length, total })}</span>}
       <Table

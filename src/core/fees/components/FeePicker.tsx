@@ -1,28 +1,44 @@
 import React from 'react';
 import { Select, SelectProps, Typography } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { FeesSearcherQuery, useFeesSearcherQuery } from '../../../generated/graphql';
+import { FeeFilter, FeesSearcherQuery, useFeesSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
   value: undefined,
+  queryFilters: {},
   showCourse: true,
   disabled: false,
   allowClear: true,
+  placeholder: undefined,
+  size: 'middle' as SelectProps['size'],
   onChange: () => {},
   onClear: () => {},
 };
 
 interface Props {
   value?: string[];
+  queryFilters?: FeeFilter;
   showCourse?: boolean;
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
+  placeholder?: SelectProps['placeholder'];
+  size?: SelectProps['size'];
   onChange?: (value: string[], fees: FeesSearcherQuery['fees']['data']) => void;
   onClear?: SelectProps['onClear'];
 }
 
-const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, onChange, onClear }) => {
+const FeePicker: React.FC<Props> = ({
+  value,
+  queryFilters,
+  showCourse,
+  disabled,
+  allowClear,
+  placeholder,
+  size,
+  onChange,
+  onClear,
+}) => {
   const {
     data: feesData,
     loading: feesLoading,
@@ -30,7 +46,7 @@ const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, o
     refetch: feesRefetch,
   } = useFeesSearcherQuery({
     variables: {
-      filter: {},
+      filter: queryFilters,
     },
   });
 
@@ -94,6 +110,7 @@ const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, o
     feesRefetch({
       filter: {
         name: search,
+        ...queryFilters,
       },
     });
   }, 500);
@@ -116,6 +133,8 @@ const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, o
       onSearch={handleSearch}
       loading={feesLoading || valuesLoading}
       showSearch
+      placeholder={placeholder}
+      size={size}
       style={{ width: '100%' }}
     />
   );
@@ -124,3 +143,5 @@ const FeePicker: React.FC<Props> = ({ value, showCourse, disabled, allowClear, o
 FeePicker.defaultProps = defaultProps;
 
 export default FeePicker;
+
+export type { Props as FeePickerProps };

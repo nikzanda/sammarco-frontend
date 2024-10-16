@@ -9,6 +9,7 @@ const defaultProps = {
   disabled: false,
   allowClear: true,
   placeholder: undefined,
+  size: 'middle' as SelectProps['size'],
   onChange: () => {},
   onClear: () => {},
 };
@@ -18,11 +19,12 @@ interface Props {
   disabled?: SelectProps['disabled'];
   allowClear?: SelectProps['allowClear'];
   placeholder?: SelectProps['placeholder'];
+  size?: SelectProps['size'];
   onChange?: (value: string[], courses: CoursesSearcherQuery['courses']['data']) => void;
   onClear?: SelectProps['onClear'];
 }
 
-const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholder, onChange, onClear }) => {
+const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholder, size, onChange, onClear }) => {
   const {
     data: coursesData,
     loading: coursesLoading,
@@ -100,6 +102,7 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholde
       mode="multiple"
       value={value}
       options={options}
+      size={size}
       allowClear={allowClear}
       placeholder={placeholder}
       disabled={disabled}
@@ -117,3 +120,5 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholde
 CoursePicker.defaultProps = defaultProps;
 
 export default CoursePicker;
+
+export type { Props as CoursePickerProps };

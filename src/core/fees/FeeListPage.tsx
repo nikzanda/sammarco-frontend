@@ -3,15 +3,14 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Button, Col, Input, Row, Space, Table, TableProps, theme } from 'antd';
+import { Space, Table, TableProps, theme } from 'antd';
 import Icon from '@ant-design/icons';
-import { FaBan, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
 import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { ActionButtons, ListPageHeader } from '../../commons';
+import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 import { toCurrency } from '../../utils';
-import { CourseTableFilter } from '../courses/components';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/fee/';
@@ -55,7 +54,7 @@ const FeeListPage: React.FC = () => {
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: FeeFilter = {
-      name: filterInfo.name?.length ? (filterInfo.name[0] as string).trim() : undefined,
+      name: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.course?.length ? (filterInfo.course as string[]) : undefined,
       sortBy,
       sortDirection,
@@ -110,8 +109,6 @@ const FeeListPage: React.FC = () => {
         title: t('fees.table.course'),
         key: 'course',
         dataIndex: ['course', 'name'],
-        filterDropdown: CourseTableFilter,
-        filteredValue: filterInfo.course || null,
       },
       {
         title: t('fees.table.amount'),
@@ -154,7 +151,7 @@ const FeeListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [filterInfo.course, navigate, searchText, t, token.colorError, token.colorSuccess]);
+  }, [navigate, searchText, t, token.colorError, token.colorSuccess]);
 
   const handleTableChange: TableProps<FeeListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
@@ -176,39 +173,26 @@ const FeeListPage: React.FC = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <ListPageHeader entity="fees" />
 
-      <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12}>
-          <Input.Search
-            placeholder={t('commons.searchPlaceholder')!}
-            allowClear
-            enterButton
-            size="large"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onSearch={(value) => {
-              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-              setFilterInfo({
-                name: [value],
-              });
-            }}
-          />
-        </Col>
-
-        <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'end', gap: 12 }}>
-          <Button
-            danger
-            size="large"
-            icon={<Icon component={FaBan} />}
-            onClick={() => {
-              setPagination({ pageIndex: 0, pageSize: PAGE_SIZE });
-              setFilterInfo({});
-              setSearchText('');
-            }}
-          >
-            {t('buttons.resetFilter.label')}
-          </Button>
-        </Col>
-      </Row>
+      <Filters
+        topFilters={[
+          {
+            key: 'course',
+            type: 'courses',
+            props: {
+              size: 'large',
+              placeholder: t('members.form.courses'),
+            },
+          },
+        ]}
+        collapsableFilters={[]}
+        initialFilterInfo={filterInfo}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        onSearch={(newFilterInfo) => {
+          setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
+          setFilterInfo(newFilterInfo);
+        }}
+      />
 
       <Table
         dataSource={fees}
