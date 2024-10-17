@@ -35,6 +35,14 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
     }
 
     const differenceDays = differenceInCalendarDays(medicalCertificate.expireAt, Date.now());
+    const maxExpirationDays =
+      settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
+        ? Math.max(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
+        : 30;
+    const minExpirationDays =
+      settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
+        ? Math.min(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
+        : 10;
     if (differenceDays <= 0) {
       return {
         message: t('members.alerts.medicalCertificate.expired'),
@@ -42,14 +50,14 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       };
     }
 
-    if (differenceDays <= 10) {
+    if (differenceDays <= minExpirationDays) {
       return {
         message: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
         type: 'error',
       };
     }
 
-    if (differenceDays <= 30) {
+    if (differenceDays <= maxExpirationDays) {
       return {
         message: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
         type: 'warning',
@@ -57,7 +65,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
     }
 
     return undefined;
-  }, [member, t]);
+  }, [member, settings, t]);
 
   const getDescriptionItems = React.useCallback(
     (courseId: string) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilterValue } from 'antd/es/table/interface';
-import { Affix, Badge, Button, Col, Collapse, GetProp, GetRef, Input, InputNumber, Row, Select, theme } from 'antd';
+import { Badge, Button, Col, Collapse, GetProp, GetRef, Input, InputNumber, Row, Select, theme } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaSearch, FaBan, FaChevronUp, FaChevronDown, FaCheck, FaTimes } from 'react-icons/fa';
 import { endOfDay, formatISO, startOfDay } from 'date-fns';
@@ -274,100 +274,100 @@ const Filters: React.FC<Props> = ({
   );
 
   return (
-    <Affix offsetTop={25}>
-      <Collapse
-        collapsible="disabled"
-        expandIcon={() => null}
-        bordered={false}
-        activeKey={isOpen ? ['1'] : undefined}
-        style={{ background: token.colorBgContainer }}
-        items={[
-          {
-            key: '1',
-            style: {
-              background: token.colorFillAlter,
-              borderRadius: token.borderRadius,
-            },
-            label: (
-              <Row gutter={[6, 6]} style={{ width: '100%' }}>
-                <Col xs={24} md={20}>
-                  <Row gutter={[12, 12]}>
-                    <Col key="search" xs={24} md={12} lg={8} xxl={6}>
-                      <Input
-                        size="large"
-                        allowClear
-                        value={searchText}
-                        placeholder={t('commons.searchPlaceholder')}
-                        onChange={(e) => {
-                          setSearchText(e.target.value);
-                          setFilterInfo({ ...filterInfo, search: [e.target.value] });
-                        }}
-                        onPressEnter={handlePressEnter}
-                        onClear={() => handleClear('search')}
-                      />
-                    </Col>
-                    {topFilters.map((filter) => (
-                      <Col key={filter.key} xs={24} md={12} lg={8} xxl={6}>
-                        {renderFilter(filter)}
-                      </Col>
-                    ))}
-                  </Row>
-                </Col>
-                <Col xs={24} md={4}>
-                  <Row gutter={[6, 6]} justify="end">
-                    <Col>
-                      <Button
-                        size="large"
-                        ref={searchButtonRef}
-                        type="primary"
-                        icon={<Icon component={FaSearch} />}
-                        onClick={() => onSearch(filterInfo)}
-                      />
-                    </Col>
-                    <Col>
-                      <Button
-                        size="large"
-                        danger
-                        icon={<Icon component={FaBan} />}
-                        onClick={() => {
-                          setSearchText('');
-                          setFilterInfo({});
-                          onSearch({});
-                        }}
-                      />
-                    </Col>
-                    <Col hidden={collapsableFilters.length === 0}>
-                      <Button
-                        size="large"
-                        icon={
-                          isOpen ? (
-                            <Icon component={FaChevronUp} />
-                          ) : (
-                            <Badge dot count={showBadge ? 1 : 0}>
-                              <Icon component={FaChevronDown} />
-                            </Badge>
-                          )
-                        }
-                        onClick={() => setIsOpen(!isOpen)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            ),
-            children: (
-              <Row gutter={[12, 12]}>
-                {collapsableFilters.map((filter) => (
-                  <Col key={filter.key} xs={24} md={12} lg={8} xxl={6}>
-                    {renderFilter(filter)}
-                  </Col>
-                ))}
-              </Row>
-            ),
+    // <Affix offsetTop={25}>
+    <Collapse
+      collapsible="disabled"
+      expandIcon={() => null}
+      bordered={false}
+      activeKey={isOpen ? ['1'] : undefined}
+      style={{ background: token.colorBgContainer }}
+      items={[
+        {
+          key: '1',
+          style: {
+            background: token.colorFillAlter,
+            borderRadius: token.borderRadius,
           },
-        ]}
-      />
-    </Affix>
+          label: (
+            <Row gutter={[6, 6]} style={{ width: '100%' }}>
+              <Col xs={24} md={20}>
+                <Row gutter={[12, 12]}>
+                  <Col key="search" xs={24} md={12} lg={8} xxl={6}>
+                    <Input
+                      size="large"
+                      allowClear
+                      value={searchText}
+                      placeholder={t('commons.searchPlaceholder')}
+                      onChange={(e) => {
+                        setSearchText(e.target.value);
+                        setFilterInfo({ ...filterInfo, search: [e.target.value] });
+                      }}
+                      onPressEnter={handlePressEnter}
+                      onClear={() => handleClear('search')}
+                    />
+                  </Col>
+                  {topFilters.map((filter) => (
+                    <Col key={filter.key} xs={24} md={12} lg={8} xxl={6}>
+                      {renderFilter(filter)}
+                    </Col>
+                  ))}
+                </Row>
+              </Col>
+              <Col xs={24} md={4}>
+                <Row gutter={[6, 6]} justify="end">
+                  <Col>
+                    <Button
+                      size="large"
+                      ref={searchButtonRef}
+                      type="primary"
+                      icon={<Icon component={FaSearch} />}
+                      onClick={() => onSearch(filterInfo)}
+                    />
+                  </Col>
+                  <Col>
+                    <Button
+                      size="large"
+                      danger
+                      icon={<Icon component={FaBan} />}
+                      onClick={() => {
+                        setSearchText('');
+                        setFilterInfo({});
+                        onSearch({});
+                      }}
+                    />
+                  </Col>
+                  <Col hidden={collapsableFilters.length === 0}>
+                    <Button
+                      size="large"
+                      icon={
+                        isOpen ? (
+                          <Icon component={FaChevronUp} />
+                        ) : (
+                          <Badge dot count={showBadge ? 1 : 0}>
+                            <Icon component={FaChevronDown} />
+                          </Badge>
+                        )
+                      }
+                      onClick={() => setIsOpen(!isOpen)}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          ),
+          children: (
+            <Row gutter={[12, 12]}>
+              {collapsableFilters.map((filter) => (
+                <Col key={filter.key} xs={24} md={12} lg={8} xxl={6}>
+                  {renderFilter(filter)}
+                </Col>
+              ))}
+            </Row>
+          ),
+        },
+      ]}
+    />
+    // </Affix>
   );
 };
 

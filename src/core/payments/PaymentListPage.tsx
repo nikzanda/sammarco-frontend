@@ -77,6 +77,7 @@ const PaymentListPage: React.FC = () => {
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: filterInfo?.member?.length ? (filterInfo.member as string[]) : undefined,
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
+      courseIds: filterInfo?.courseIds?.length ? (filterInfo.courseIds as string[]) : undefined,
       type: filterInfo?.type?.length ? (filterInfo.type[0] as PaymentTypeEnum) : undefined,
       months: filterInfo?.months?.length
         ? filterInfo.months.map((month) => format(month as number, 'yyyy-MM'))
@@ -319,6 +320,14 @@ const PaymentListPage: React.FC = () => {
           },
         ]}
         collapsableFilters={[
+          {
+            key: 'courseIds',
+            type: 'courses',
+            props: {
+              size: 'large',
+              placeholder: t('courses.name'),
+            },
+          },
           {
             key: 'fee',
             type: 'fees',

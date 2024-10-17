@@ -9,6 +9,7 @@ import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear, set } from 'date-fns';
 import Highlighter from 'react-highlight-words';
 import {
+  MedicalCertificateExpirationEnum,
   MemberFilter,
   MemberListItemFragment,
   MemberSortEnum,
@@ -83,7 +84,13 @@ const MemberListPage: React.FC = () => {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
+      unpaidRegistration: filterInfo.unpaidRegistration?.length
+        ? filterInfo.unpaidRegistration[0] === 'true'
+        : undefined,
       monthsNotPaid: filterInfo.monthsNotPaid?.length ? (filterInfo.monthsNotPaid as number[]) : undefined,
+      medicalCertificateExpiration: filterInfo.medicalCertificateExpiration?.length
+        ? (filterInfo.medicalCertificateExpiration as MedicalCertificateExpirationEnum[])
+        : undefined,
       sortBy,
       sortDirection,
     };
@@ -135,9 +142,17 @@ const MemberListPage: React.FC = () => {
           const differenceDays = medicalCertificate?.expireAt
             ? differenceInCalendarDays(medicalCertificate.expireAt, Date.now())
             : 0;
-          if (!medicalCertificate || differenceDays <= 30) {
+          const maxExpirationDays =
+            settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
+              ? Math.max(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
+              : 30;
+          const minExpirationDays =
+            settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
+              ? Math.min(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
+              : 10;
+          if (!medicalCertificate || differenceDays <= maxExpirationDays) {
             showAlert = true;
-            if (differenceDays > 10) {
+            if (differenceDays > minExpirationDays) {
               alertColor = token.colorWarning;
             }
           }
@@ -284,15 +299,7 @@ const MemberListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [
-    navigate,
-    searchText,
-    settings?.attendancesPerMonthToSendReminder,
-    t,
-    token.colorError,
-    token.colorWarning,
-    validEmailSettings,
-  ]);
+  }, [navigate, searchText, settings, t, token.colorError, token.colorWarning, validEmailSettings]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
     if (Object.values(filters).some((v) => v && v.length)) {
@@ -380,10 +387,40 @@ const MemberListPage: React.FC = () => {
         ]}
         collapsableFilters={[
           {
+            key: 'unpaidRegistration',
+            type: 'select',
+            props: {
+              size: 'large',
+              placeholder: t('members.filterByUnpaidRegistration'),
+              options: [
+                {
+                  label: t('members.registration.paid'),
+                  value: 'true',
+                },
+                {
+                  label: t('members.registration.unpaid'),
+                  value: 'false',
+                },
+              ],
+            },
+          },
+          {
             key: 'monthsNotPaid',
             type: 'month',
             props: {
               placeholder: t('members.filterByMonthsNotPaid'),
+            },
+          },
+          {
+            key: 'medicalCertificateExpiration',
+            type: 'select',
+            props: {
+              size: 'large',
+              placeholder: t('members.filterByMedicalCertificateExpiration'),
+              options: Object.values(MedicalCertificateExpirationEnum).map((value) => ({
+                label: t(`members.medicalCertificateExpiration.${value}`),
+                value,
+              })),
             },
           },
         ]}

@@ -15,7 +15,9 @@
     "deleted": "Socio eliminato",
     "lessons_one": "{{number}} lezione",
     "lessons_other": "{{number}} lezioni",
+    "filterByUnpaidRegistration": "Cerca per iscrizioni pagata / non pagata",
     "filterByMonthsNotPaid": "Cerca per mese non pagato",
+    "filterByMedicalCertificateExpiration": "Cerca per scadenza certificato medico",
     "sentReminders": "Solleciti inviati: {{sentReminders}}",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare il socio?",
@@ -30,6 +32,15 @@
         "expired": "Certificato medico scaduto.",
         "expire": "Scadenza certificato medico"
       }
+    },
+    "registration": {
+      "paid": "Pagata",
+      "unpaid": "Non pagata"
+    },
+    "medicalCertificateExpiration": {
+      "EXPIRED": "Scaduto",
+      "IS_EXPIRING": "In scadenza",
+      "NOT_ENTERED": "Non inserito"
     },
     "divider": {
       "memberData": "Dati socio"
