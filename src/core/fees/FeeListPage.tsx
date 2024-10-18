@@ -153,15 +153,7 @@ const FeeListPage: React.FC = () => {
     return result;
   }, [navigate, searchText, t, token.colorError, token.colorSuccess]);
 
-  const handleTableChange: TableProps<FeeListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
-    if (Object.values(filters).some((v) => v && v.length)) {
-      setSearchText('');
-      setFilterInfo(filters);
-    } else {
-      setFilterInfo({
-        ...(searchText && { name: [searchText] }),
-      });
-    }
+  const handleTableChange: TableProps<FeeListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<FeeListItemFragment>);
     setPagination({
       pageIndex: newPagination.current! - 1,

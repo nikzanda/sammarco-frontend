@@ -301,16 +301,7 @@ const MemberListPage: React.FC = () => {
     return result;
   }, [navigate, searchText, settings, t, token.colorError, token.colorWarning, validEmailSettings]);
 
-  const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
-    if (Object.values(filters).some((v) => v && v.length)) {
-      setSearchText('');
-      setFilterInfo(filters);
-    } else {
-      setFilterInfo({
-        ...(searchText && { search: [searchText] }),
-        ...(filterInfo.monthsNotPaid && { monthsNotPaid: filterInfo.monthsNotPaid }),
-      });
-    }
+  const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<MemberListItemFragment>);
     setPagination({
       pageIndex: newPagination.current! - 1,

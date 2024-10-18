@@ -242,15 +242,7 @@ const PaymentListPage: React.FC = () => {
     return result;
   }, [handleSend, navigate, searchText, sendingIds, t]);
 
-  const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
-    if (Object.values(filters).some((v) => v && v.length)) {
-      setSearchText('');
-      setFilterInfo(filters);
-    } else {
-      setFilterInfo({
-        ...(searchText && { search: [searchText] }),
-      });
-    }
+  const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<PaymentListItemFragment>);
     setPagination({
       pageIndex: newPagination.current! - 1,

@@ -121,15 +121,7 @@ const CourseListPage: React.FC = () => {
     return result;
   }, [navigate, searchText, t]);
 
-  const handleTableChange: TableProps<CourseListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
-    if (Object.values(filters).some((v) => v && v.length)) {
-      setSearchText('');
-      setFilterInfo(filters);
-    } else {
-      setFilterInfo({
-        ...(searchText && { search: [searchText] }),
-      });
-    }
+  const handleTableChange: TableProps<CourseListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<CourseListItemFragment>);
     setPagination({
       pageIndex: newPagination.current! - 1,

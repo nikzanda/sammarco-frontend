@@ -201,10 +201,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     return result;
   }, [handleSend, navigate, sendingIds, t]);
 
-  const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, filters, sorter) => {
-    if (Object.values(filters).some((v) => v && v.length)) {
-      setFilterInfo(filters);
-    }
+  const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<PaymentListItemFragment>);
     setPagination({
       pageIndex: newPagination.current! - 1,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, TableColumnsType, TableProps, Tag, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import { SorterResult } from 'antd/es/table/interface';
 import { format } from 'date-fns';
 import {
   EmailFilter,
@@ -29,9 +29,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
 
-  const [searchText, setSearchText] = React.useState('');
   const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: PAGE_SIZE });
-  const [filterInfo, setFilterInfo] = React.useState<Record<string, FilterValue | null>>({});
   const [sortInfo, setSortInfo] = React.useState<SorterResult<TableData>>({ order: 'descend' });
 
   const queryFilter = React.useMemo(() => {
@@ -83,7 +81,6 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
   const columns = React.useMemo(() => {
     const result: TableColumnsType<TableData> = [
       {
-        // title:
         key: 'type',
         dataIndex: 'type',
         align: 'center',
@@ -121,16 +118,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
     return result;
   }, [t, token.colorError, token.colorSuccess, token.colorWarning]);
 
-  const handleTableChange: TableProps<TableData>['onChange'] = (newPagination, filters, sorter) => {
-    if (Object.values(filters).some((v) => v && v.length)) {
-      setSearchText('');
-      setFilterInfo(filters);
-    } else {
-      setFilterInfo({
-        ...(searchText && { search: [searchText] }),
-        ...(filterInfo.monthsNotPaid && { monthsNotPaid: filterInfo.monthsNotPaid }),
-      });
-    }
+  const handleTableChange: TableProps<TableData>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<TableData>);
     setPagination({
       pageIndex: newPagination.current! - 1,
@@ -159,8 +147,12 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
       }}
       expandable={{
         // eslint-disable-next-line react/no-unstable-nested-components, react/no-danger
-        expandedRowRender: (email) => <div dangerouslySetInnerHTML={{ __html: email.body }} />,
-        // expandedRowRender: (email) => <p style={{ whiteSpace: 'pre-line' }}>{email.body}</p>,
+        expandedRowRender: (email) =>
+          /<\/?[a-z][\s\S]*>/i.test(email.body) ? (
+            <div dangerouslySetInnerHTML={{ __html: email.body }} />
+          ) : (
+            <p style={{ whiteSpace: 'pre-line' }}>{email.body}</p>
+          ),
       }}
       scroll={{ x: 600 }}
     />
