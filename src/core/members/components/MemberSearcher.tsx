@@ -5,39 +5,27 @@ import {
   MemberFilter,
   MemberSearcherQuery,
   useMemberSearcherQuery,
-  useMembersSearcherQuery,
+  useMembersSearcherLazyQuery,
 } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
-  value: undefined,
   queryFilters: {},
-  disabled: false,
-  allowClear: true,
   onChange: () => {},
-  onClear: () => {},
 };
 
-interface Props {
-  value?: string;
+interface Props extends Omit<SelectProps, 'onChange'> {
   queryFilters?: MemberFilter;
-  disabled?: SelectProps['disabled'];
-  allowClear?: SelectProps['allowClear'];
   onChange?: (value: string, member: MemberSearcherQuery['member']) => void;
-  onClear?: SelectProps['onClear'];
 }
 
-const MemberSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowClear, onChange, onClear }) => {
-  const {
-    data: membersData,
-    loading: membersLoading,
-    error: membersError,
-    refetch: membersRefetch,
-  } = useMembersSearcherQuery({
-    variables: {
-      filter: queryFilters,
-    },
-  });
+const MemberSearcher: React.FC<Props> = ({ value, queryFilters, onChange, ...selectProps }) => {
+  const [fetchMembers, { data: membersData, loading: membersLoading, error: membersError, refetch: membersRefetch }] =
+    useMembersSearcherLazyQuery({
+      variables: {
+        filter: queryFilters,
+      },
+    });
 
   const {
     data: memberData,
@@ -96,12 +84,11 @@ const MemberSearcher: React.FC<Props> = ({ value, queryFilters, disabled, allowC
 
   return (
     <Select
+      {...selectProps}
       value={value}
+      onFocus={() => fetchMembers()}
       options={options}
-      allowClear={allowClear}
-      disabled={disabled}
       onChange={handleChange}
-      onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
       loading={membersLoading || memberLoading}

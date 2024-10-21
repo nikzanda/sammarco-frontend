@@ -1,54 +1,35 @@
 import React from 'react';
 import { Select, SelectProps, Typography } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { FeeFilter, FeesSearcherQuery, useFeesSearcherQuery } from '../../../generated/graphql';
+import {
+  FeeFilter,
+  FeesSearcherQuery,
+  useFeesSearcherLazyQuery,
+  useFeesSearcherQuery,
+} from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
   value: undefined,
   queryFilters: {},
   showCourse: true,
-  disabled: false,
-  allowClear: true,
-  placeholder: undefined,
-  size: 'middle' as SelectProps['size'],
   onChange: () => {},
-  onClear: () => {},
 };
 
-interface Props {
+interface Props extends Omit<SelectProps, 'onChange'> {
   value?: string[];
   queryFilters?: FeeFilter;
   showCourse?: boolean;
-  disabled?: SelectProps['disabled'];
-  allowClear?: SelectProps['allowClear'];
-  placeholder?: SelectProps['placeholder'];
-  size?: SelectProps['size'];
   onChange?: (value: string[], fees: FeesSearcherQuery['fees']['data']) => void;
-  onClear?: SelectProps['onClear'];
 }
 
-const FeePicker: React.FC<Props> = ({
-  value,
-  queryFilters,
-  showCourse,
-  disabled,
-  allowClear,
-  placeholder,
-  size,
-  onChange,
-  onClear,
-}) => {
-  const {
-    data: feesData,
-    loading: feesLoading,
-    error: feesError,
-    refetch: feesRefetch,
-  } = useFeesSearcherQuery({
-    variables: {
-      filter: queryFilters,
-    },
-  });
+const FeePicker: React.FC<Props> = ({ value, queryFilters, showCourse, onChange, ...selectProps }) => {
+  const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
+    useFeesSearcherLazyQuery({
+      variables: {
+        filter: queryFilters,
+      },
+    });
 
   const {
     data: valuesData,
@@ -122,19 +103,16 @@ const FeePicker: React.FC<Props> = ({
 
   return (
     <Select
-      mode="multiple"
+      {...selectProps}
       value={value}
+      mode="multiple"
+      onFocus={() => fetchFees()}
       options={options}
-      allowClear={allowClear}
-      disabled={disabled}
       onChange={handleChange}
-      onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
       loading={feesLoading || valuesLoading}
       showSearch
-      placeholder={placeholder}
-      size={size}
       style={{ width: '100%' }}
     />
   );

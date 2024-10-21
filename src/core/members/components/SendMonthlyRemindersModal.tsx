@@ -77,7 +77,7 @@ const SendMonthlyRemindersModal: React.FC<Props> = ({ onCancel }) => {
             return null;
           }}
         >
-          <DatePicker picker="month" allowClear={false} style={{ width: '100%' }} />
+          <DatePicker picker="month" format="MMMM yyyy" allowClear={false} style={{ width: '100%' }} />
         </Form.Item>
       </Form>
     </Modal>

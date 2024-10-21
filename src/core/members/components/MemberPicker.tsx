@@ -1,40 +1,26 @@
 import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { MembersSearcherQuery, useMembersSearcherQuery } from '../../../generated/graphql';
+import { MembersSearcherQuery, useMembersSearcherLazyQuery, useMembersSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
   value: undefined,
-  disabled: false,
-  allowClear: true,
-  placeholder: undefined,
-  size: 'middle' as SelectProps['size'],
   onChange: () => {},
-  onClear: () => {},
 };
 
-interface Props {
+interface Props extends Omit<SelectProps, 'onChange'> {
   value?: string[];
-  disabled?: SelectProps['disabled'];
-  allowClear?: SelectProps['allowClear'];
-  placeholder?: SelectProps['placeholder'];
-  size?: SelectProps['size'];
   onChange?: (value: string[], members: MembersSearcherQuery['members']['data']) => void;
-  onClear?: SelectProps['onClear'];
 }
 
-const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, placeholder, size, onChange, onClear }) => {
-  const {
-    data: membersData,
-    loading: membersLoading,
-    error: membersError,
-    refetch: membersRefetch,
-  } = useMembersSearcherQuery({
-    variables: {
-      filter: {},
-    },
-  });
+const MemberPicker: React.FC<Props> = ({ value, onChange, ...selectProps }) => {
+  const [fetchMembers, { data: membersData, loading: membersLoading, error: membersError, refetch: membersRefetch }] =
+    useMembersSearcherLazyQuery({
+      variables: {
+        filter: {},
+      },
+    });
 
   const {
     data: valuesData,
@@ -99,19 +85,16 @@ const MemberPicker: React.FC<Props> = ({ value, disabled, allowClear, placeholde
 
   return (
     <Select
+      {...selectProps}
       mode="multiple"
       value={value}
+      onFocus={() => fetchMembers()}
       options={options}
-      allowClear={allowClear}
-      disabled={disabled}
       onChange={handleChange}
-      onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
       loading={membersLoading || valuesLoading}
       showSearch
-      placeholder={placeholder}
-      size={size}
       style={{ width: '100%' }}
     />
   );

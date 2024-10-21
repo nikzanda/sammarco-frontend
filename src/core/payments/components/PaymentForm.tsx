@@ -96,6 +96,7 @@ const PaymentForm: React.FC<Props> = ({ payment }) => {
                 >
                   <DatePicker
                     picker="month"
+                    format="MMMM yyyy"
                     allowClear={false}
                     style={{ width: '100%' }}
                     onChange={(date) => {

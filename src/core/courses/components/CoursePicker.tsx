@@ -1,40 +1,26 @@
 import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { CoursesSearcherQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
+import { CoursesSearcherQuery, useCoursesSearcherLazyQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
   value: undefined,
-  disabled: false,
-  allowClear: true,
-  placeholder: undefined,
-  size: 'middle' as SelectProps['size'],
   onChange: () => {},
-  onClear: () => {},
 };
 
-interface Props {
+interface Props extends Omit<SelectProps, 'value' | 'onChange' | 'mode'> {
   value?: string[];
-  disabled?: SelectProps['disabled'];
-  allowClear?: SelectProps['allowClear'];
-  placeholder?: SelectProps['placeholder'];
-  size?: SelectProps['size'];
   onChange?: (value: string[], courses: CoursesSearcherQuery['courses']['data']) => void;
-  onClear?: SelectProps['onClear'];
 }
 
-const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholder, size, onChange, onClear }) => {
-  const {
-    data: coursesData,
-    loading: coursesLoading,
-    error: coursesError,
-    refetch: coursesRefetch,
-  } = useCoursesSearcherQuery({
-    variables: {
-      filter: {},
-    },
-  });
+const CoursePicker: React.FC<Props> = ({ value, onChange, ...selectProps }) => {
+  const [fetchCourses, { data: coursesData, loading: coursesLoading, error: coursesError, refetch: coursesRefetch }] =
+    useCoursesSearcherLazyQuery({
+      variables: {
+        filter: {},
+      },
+    });
 
   const {
     data: valuesData,
@@ -43,7 +29,7 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholde
   } = useCoursesSearcherQuery({
     variables: {
       filter: {
-        ids: value!,
+        ids: value,
       },
     },
     skip: !value,
@@ -92,22 +78,19 @@ const CoursePicker: React.FC<Props> = ({ value, disabled, allowClear, placeholde
     });
   }, 500);
 
-  const handleChange = (values: string[]) => {
+  const handleChange: SelectProps['onChange'] = (values) => {
     const selectedCourses = courses.filter(({ id }) => values.includes(id));
     onChange!(values, selectedCourses);
   };
 
   return (
     <Select
-      mode="multiple"
+      {...selectProps}
       value={value}
+      mode="multiple"
+      onFocus={() => fetchCourses()}
       options={options}
-      size={size}
-      allowClear={allowClear}
-      placeholder={placeholder}
-      disabled={disabled}
       onChange={handleChange}
-      onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
       loading={coursesLoading || valuesLoading}

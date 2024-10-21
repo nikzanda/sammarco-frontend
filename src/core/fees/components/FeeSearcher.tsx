@@ -1,40 +1,28 @@
-import { Select, SelectProps, Typography } from 'antd';
 import React from 'react';
+import { Select, SelectProps, Typography } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import { FeeFilter, FeeSearcherQuery, useFeeSearcherQuery, useFeesSearcherQuery } from '../../../generated/graphql';
+import { FeeFilter, FeeSearcherQuery, useFeeSearcherQuery, useFeesSearcherLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const defaultProps = {
-  value: undefined,
   queryFilters: {},
   showCourse: true,
-  disabled: false,
-  allowClear: true,
   onChange: () => {},
-  onClear: () => {},
 };
 
-interface Props {
-  value?: string;
+interface Props extends Omit<SelectProps, 'onChange'> {
   queryFilters?: FeeFilter;
   showCourse?: boolean;
-  disabled?: SelectProps['disabled'];
-  allowClear?: SelectProps['allowClear'];
   onChange?: (value: string, fee: FeeSearcherQuery['fee']) => void;
-  onClear?: SelectProps['onClear'];
 }
 
-const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disabled, allowClear, onChange, onClear }) => {
-  const {
-    data: feesData,
-    loading: feesLoading,
-    error: feesError,
-    refetch: feesRefetch,
-  } = useFeesSearcherQuery({
-    variables: {
-      filter: queryFilters,
-    },
-  });
+const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, onChange, ...selectProps }) => {
+  const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
+    useFeesSearcherLazyQuery({
+      variables: {
+        filter: queryFilters,
+      },
+    });
 
   const {
     data: feeData,
@@ -101,12 +89,11 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, disable
 
   return (
     <Select
+      {...selectProps}
       value={value}
+      onFocus={() => fetchFees()}
       options={options}
-      allowClear={allowClear}
-      disabled={disabled}
       onChange={handleChange}
-      onClear={onClear}
       filterOption={false}
       onSearch={handleSearch}
       loading={feesLoading || feeLoading}

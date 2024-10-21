@@ -206,6 +206,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                 >
                   <DatePicker
                     picker="month"
+                    format="MMMM yyyy"
                     allowClear={false}
                     style={{ width: '100%' }}
                     onChange={(date) => {

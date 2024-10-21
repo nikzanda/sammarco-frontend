@@ -95,6 +95,7 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
       <DatePicker.RangePicker
         value={monthRange}
         picker="month"
+        format="MMMM yyyy"
         style={{ width: '100%' }}
         onChange={(values) => setMonthRange(values as any)}
         inputReadOnly
