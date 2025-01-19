@@ -11,8 +11,7 @@ const getEndpoint = (uri: string, year: number) => {
     return uri;
   }
 
-  const currentYear = new Date().getFullYear();
-  const result = uri.replace(year.toString(), currentYear.toString());
+  const result = uri.replace(year.toString(), (year + 1).toString());
   return result;
 };
 
