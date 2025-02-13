@@ -84,6 +84,9 @@ const MemberListPage: React.FC = () => {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
+      excludeFromCommunications: filterInfo.excludeFromCommunications?.length
+        ? filterInfo.excludeFromCommunications[0] === 'true'
+        : undefined,
       unpaidRegistration: filterInfo.unpaidRegistration?.length
         ? filterInfo.unpaidRegistration[0] === 'true'
         : undefined,
@@ -378,18 +381,36 @@ const MemberListPage: React.FC = () => {
         ]}
         collapsableFilters={[
           {
+            key: 'excludeFromCommunications',
+            type: 'select',
+            props: {
+              size: 'large',
+              placeholder: t('members.filters.byExcludeFromCommunications.label'),
+              options: [
+                {
+                  label: t('members.filters.byExcludeFromCommunications.options.true'),
+                  value: 'true',
+                },
+                {
+                  label: t('members.filters.byExcludeFromCommunications.options.false'),
+                  value: 'false',
+                },
+              ],
+            },
+          },
+          {
             key: 'unpaidRegistration',
             type: 'select',
             props: {
               size: 'large',
-              placeholder: t('members.filterByUnpaidRegistration'),
+              placeholder: t('members.filters.byUnpaidRegistration.label'),
               options: [
                 {
-                  label: t('members.registration.paid'),
+                  label: t('members.filters.byUnpaidRegistration.options.true'),
                   value: 'true',
                 },
                 {
-                  label: t('members.registration.unpaid'),
+                  label: t('members.filters.byUnpaidRegistration.options.false'),
                   value: 'false',
                 },
               ],
@@ -399,7 +420,7 @@ const MemberListPage: React.FC = () => {
             key: 'monthsNotPaid',
             type: 'month',
             props: {
-              placeholder: t('members.filterByMonthsNotPaid'),
+              placeholder: t('members.filters.byMonthsNotPaid'),
             },
           },
           {
@@ -407,9 +428,9 @@ const MemberListPage: React.FC = () => {
             type: 'select',
             props: {
               size: 'large',
-              placeholder: t('members.filterByMedicalCertificateExpiration'),
+              placeholder: t('members.filters.byMedicalCertificateExpiration.label'),
               options: Object.values(MedicalCertificateExpirationEnum).map((value) => ({
-                label: t(`members.medicalCertificateExpiration.${value}`),
+                label: t(`members.filters.byMedicalCertificateExpiration.options.${value}`),
                 value,
               })),
             },

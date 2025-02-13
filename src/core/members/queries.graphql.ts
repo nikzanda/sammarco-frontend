@@ -45,6 +45,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     address
     qualification
     email
+    excludeFromCommunications
     registrationRequestDate
     registrationAcceptanceDate
     socialCardNumber

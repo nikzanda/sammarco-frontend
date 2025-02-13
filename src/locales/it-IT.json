@@ -15,9 +15,6 @@
     "deleted": "Socio eliminato",
     "lessons_one": "{{number}} lezione",
     "lessons_other": "{{number}} lezioni",
-    "filterByUnpaidRegistration": "Cerca per iscrizioni pagata / non pagata",
-    "filterByMonthsNotPaid": "Cerca per mese non pagato",
-    "filterByMedicalCertificateExpiration": "Cerca per scadenza certificato medico",
     "sentReminders": "Solleciti inviati: {{sentReminders}}",
     "delete": {
       "confirm": "Sei sicuro di voler eliminare il socio?",
@@ -32,15 +29,6 @@
         "expired": "Certificato medico scaduto.",
         "expire": "Scadenza certificato medico"
       }
-    },
-    "registration": {
-      "paid": "Pagata",
-      "unpaid": "Non pagata"
-    },
-    "medicalCertificateExpiration": {
-      "EXPIRED": "Scaduto",
-      "IS_EXPIRING": "In scadenza",
-      "NOT_ENTERED": "Non inserito"
     },
     "divider": {
       "memberData": "Dati socio"
@@ -60,6 +48,31 @@
         "attendances": "Presenze"
       }
     },
+    "filters": {
+      "byExcludeFromCommunications": {
+        "label": "Cerca per esclusione dalle comunicazioni",
+        "options": {
+          "true": "Esclusi",
+          "false": "Non esclusi"
+        }
+      },
+      "byUnpaidRegistration": {
+        "label": "Cerca per iscrizione pagata / non pagata",
+        "options": {
+          "true": "Pagata",
+          "false": "Non pagata"
+        }
+      },
+      "byMonthsNotPaid": "Cerca per mese non pagato",
+      "byMedicalCertificateExpiration": {
+        "label": "Cerca per scadenza certificato medico",
+        "options": {
+          "EXPIRED": "Scaduto",
+          "IS_EXPIRING": "In scadenza",
+          "NOT_ENTERED": "Non inserito"
+        }
+      }
+    },
     "tab": {
       "details": "Dettagli",
       "payments": "Pagamenti",
@@ -73,6 +86,7 @@
       "taxCode": "Codice fiscale",
       "address": "Indirizzo",
       "email": "Email",
+      "excludeFromCommunications": "Escludi dalle comunicazioni",
       "parent": {
         "name": "Nome genitore",
         "surname": "Cognome genitore",
@@ -319,6 +333,13 @@
       "title": "Invia comunicazioni"
     },
     "form": {
+      "recipient": {
+        "label": "Destinatari",
+        "options": {
+          "all": "Invia a tutti i soci",
+          "exclude": "Escludi chi non ha aderito a ricevere le comunicazioni"
+        }
+      },
       "subject": "Oggetto",
       "body": "Corpo",
       "attachments": "Allegati"

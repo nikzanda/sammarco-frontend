@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Divider, Form, Input, InputNumber, Row, Select } from 'antd';
+import { Checkbox, Col, Divider, Form, Input, InputNumber, Row, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { DatePicker } from '../../../components';
 import { isTaxCodeValid, isMinor as isMinorFn } from '../../../utils';
@@ -103,6 +103,16 @@ const MemberForm: React.FC = () => {
       <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('members.form.email')} name="email" rules={[{ type: 'email' }]}>
           <Input />
+        </Form.Item>
+      </Col>
+
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item
+          label={t('members.form.excludeFromCommunications')}
+          name="excludeFromCommunications"
+          valuePropName="checked"
+        >
+          <Checkbox />
         </Form.Item>
       </Col>
 

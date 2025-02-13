@@ -1,9 +1,9 @@
 import React from 'react';
-import { App, Button, Form, FormProps, Input, Row, Space, Typography } from 'antd';
+import { App, Button, Form, FormProps, Input, Radio, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Icon from '@ant-design/icons';
 import { FaPaperPlane } from 'react-icons/fa';
-import { useSendCommunicationMutation } from '../../generated/graphql';
+import { CommunicationRecipientEnum, useSendCommunicationMutation } from '../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { AttachmentInput, QuillEditor } from '../../commons';
 
@@ -48,13 +48,28 @@ const CommunicationPage: React.FC = () => {
         </Button>
       </Row>
 
-      <Form id="form" form={form} layout="vertical" autoComplete="off" onFinish={handleSubmit}>
+      <Form
+        id="form"
+        form={form}
+        layout="vertical"
+        autoComplete="off"
+        initialValues={{ recipient: CommunicationRecipientEnum.EXCLUDE }}
+        onFinish={handleSubmit}
+      >
+        <Form.Item name="recipient" label={t('communication.form.recipient.label')} rules={[{ required: true }]}>
+          <Radio.Group
+            options={[
+              { label: t('communication.form.recipient.options.all'), value: CommunicationRecipientEnum.ALL },
+              { label: t('communication.form.recipient.options.exclude'), value: CommunicationRecipientEnum.EXCLUDE },
+            ]}
+          />
+        </Form.Item>
+
         <Form.Item name="subject" label={t('communication.form.subject')} rules={[{ required: true }]}>
           <Input />
         </Form.Item>
 
         <Form.Item name="body" label={t('communication.form.body')} rules={[{ required: true }]}>
-          {/* <Input.TextArea rows={10} /> */}
           <QuillEditor />
         </Form.Item>
 
