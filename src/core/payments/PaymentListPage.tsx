@@ -343,6 +343,10 @@ const PaymentListPage: React.FC = () => {
                   label: t(`payments.type.${PaymentTypeEnum.BANK_TRANSFER}`),
                   value: PaymentTypeEnum.BANK_TRANSFER,
                 },
+                {
+                  label: t(`payments.type.${PaymentTypeEnum.POS}`),
+                  value: PaymentTypeEnum.POS,
+                },
               ],
             },
           },

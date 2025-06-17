@@ -213,7 +213,8 @@
     },
     "type": {
       "CASH": "Contanti",
-      "BANK_TRANSFER": "Bonifico bancario"
+      "BANK_TRANSFER": "Bonifico bancario",
+      "POS": "POS"
     },
     "print": {
       "all": "Massiva",
