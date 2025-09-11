@@ -37,6 +37,7 @@
       "PRESIDENT": "Presidente",
       "VICE_PRESIDENT": "Vice presidente",
       "SECRETARY": "Segretario",
+      "COUNCILOR": "Consigliere",
       "ORDINARY_MEMBER": "Socio ordinario"
     },
     "table": {
