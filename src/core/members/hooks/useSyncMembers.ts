@@ -3,15 +3,18 @@ import { App } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useMembersSyncLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
+import { getRealCurrentYears } from '../../../utils';
 
 const { REACT_APP_GRAPHQLURI, REACT_APP_SOCIAL_YEAR } = process.env;
 
-const getEndpoint = (uri: string, year: number) => {
-  if (!uri.includes(year.toString())) {
+const getEndpoint = (uri: string, instanceSocialYear: number) => {
+  if (!uri.includes(instanceSocialYear.toString())) {
     return uri;
   }
 
-  const result = uri.replace(year.toString(), (year + 1).toString());
+  const [currentSocialYear] = getRealCurrentYears();
+
+  const result = uri.replace(instanceSocialYear.toString(), currentSocialYear.toString());
   return result;
 };
 
