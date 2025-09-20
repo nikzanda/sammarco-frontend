@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
+import { App, Flex, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
@@ -134,7 +134,12 @@ const PaymentEditPage: React.FC = () => {
             onClick: () => {
               modal.confirm({
                 title: t('payments.delete.description'),
-                content: t('payments.delete.confirm'),
+                content: (
+                  <Flex vertical>
+                    {t('payments.delete.confirm')}
+                    {t('payments.delete.warning')}
+                  </Flex>
+                ),
                 onOk: () => handleDelete(),
               });
             },
