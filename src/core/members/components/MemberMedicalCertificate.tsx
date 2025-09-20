@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, Empty, Form, Row, Image } from 'antd';
+import { Col, Empty, Form, Row, Image, Switch } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { EmailAttachmentInput, MemberDetailFragment } from '../../../generated/graphql';
 import { DatePicker } from '../../../components';
@@ -50,6 +50,16 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
             rules={[{ required: true }]}
           >
             <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12} xxl={8}>
+          <Form.Item
+            label={t('members.form.skipMedicalCertificateExpirationEmail')}
+            name="skipMedicalCertificateExpirationEmail"
+            valuePropName="checked"
+          >
+            <Switch />
           </Form.Item>
         </Col>
 

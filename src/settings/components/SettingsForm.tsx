@@ -2,14 +2,20 @@ import React from 'react';
 import { Button, ButtonProps, Col, Divider, Form, GetRef, InputNumber, Row, Select, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusOutlined } from '@ant-design/icons';
+import { SettingsContext } from '../../contexts';
 
 const DEFAULT_DAYS = [0, 5, 10, 15, 20, 25, 30];
 
 const SettingsForm: React.FC = () => {
+  const { settings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const form = Form.useFormInstance();
 
-  const [items, setItems] = React.useState<number[]>(DEFAULT_DAYS);
+  const [items, setItems] = React.useState<number[]>(
+    [...new Set<number>([...DEFAULT_DAYS, ...settings!.daysBeforeMedicalCertificateExpiresToSendEmail])].sort(
+      (a, b) => a - b
+    )
+  );
   const [number, setNumber] = React.useState<number | null>();
   const inputNumberRef = React.useRef<GetRef<typeof InputNumber>>(null);
 

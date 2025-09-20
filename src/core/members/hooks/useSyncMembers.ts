@@ -1,7 +1,7 @@
 import React from 'react';
 import { App } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useMembersSyncLazyQuery } from '../../../generated/graphql';
+import { useMembersSyncLazyQuery, useMemberUpdateManyMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { getRealCurrentYears } from '../../../utils';
 
@@ -24,6 +24,7 @@ const useSyncMembers = () => {
   const [loading, setLoading] = React.useState(false);
 
   const [getMembers, { error: queryError }] = useMembersSyncLazyQuery();
+  const [updateMembers] = useMemberUpdateManyMutation();
 
   useDisplayGraphQLErrors(queryError);
 
@@ -87,6 +88,15 @@ const useSyncMembers = () => {
 
     const response = await fetch(endpoint, options);
     const data = await response.json();
+
+    await updateMembers({
+      variables: {
+        input: {
+          ids: selectedIds,
+          skipMedicalCertificateExpirationEmail: true,
+        },
+      },
+    }).catch(() => {});
 
     setLoading(false);
 

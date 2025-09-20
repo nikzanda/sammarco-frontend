@@ -61,6 +61,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
       base64
       expireAt
     }
+    skipMedicalCertificateExpirationEmail
     canDelete
     createdAt
     updatedAt
@@ -182,6 +183,14 @@ export const MEMBER_UPDATE_MUTATION = gql`
     }
   }
   ${MEMBER_DETAIL_FRAGMENT}
+`;
+
+export const MEMBER_UPDATE_MANY_MUTATION = gql`
+  mutation MemberUpdateMany($input: MemberUpdateManyInput!) {
+    memberUpdateMany(input: $input) {
+      modifiedCount
+    }
+  }
 `;
 
 export const MEMBER_DELETE_MUTATION = gql`

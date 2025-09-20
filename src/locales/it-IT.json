@@ -107,7 +107,8 @@
           "clickOrDrag": "Clicca o trascina il file in questa area per caricarlo",
           "hint": "Puoi caricare un solo file nel formato PDF o immagine."
         }
-      }
+      },
+      "skipMedicalCertificateExpirationEmail": "Ignora socio nell'invio della mail \"Scadenza certificato medico\""
     },
     "payments": {
       "created": "Nuovo pagamento inserito"
