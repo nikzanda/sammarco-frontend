@@ -33,6 +33,7 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
       id
     }
     shiftIds
+    socialCardNumber
   }
 `;
 
@@ -48,7 +49,6 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     excludeFromCommunications
     registrationRequestDate
     registrationAcceptanceDate
-    socialCardNumber
     asiCardNumber
     csenCardNumber
     parent {

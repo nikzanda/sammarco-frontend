@@ -74,6 +74,11 @@ const MemberListPage: React.FC = () => {
       case 'fullName':
         sortBy = MemberSortEnum.NAME;
         break;
+
+      case 'socialCardNumber':
+        sortBy = MemberSortEnum.SOCIAL_CARD_NUMBER;
+        break;
+
       default:
         sortBy = MemberSortEnum.SOCIAL_CARD_NUMBER;
     }
@@ -257,6 +262,13 @@ const MemberListPage: React.FC = () => {
             </Flex>
           );
         },
+      },
+      {
+        title: t('members.table.socialCardNumber'),
+        key: 'socialCardNumber',
+        dataIndex: 'socialCardNumber',
+        align: 'center',
+        sorter: true,
       },
       {
         key: 'actions',

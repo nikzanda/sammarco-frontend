@@ -44,6 +44,7 @@
       "fullName": "Nome",
       "courses": "Corsi",
       "shifts": "Turni",
+      "socialCardNumber": "N° tessera sociale",
       "expandable": {
         "paid": "Pagamento",
         "attendances": "Presenze"
