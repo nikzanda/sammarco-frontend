@@ -213,7 +213,8 @@
     "delete": {
       "confirm": "Sei sicuro di voler eliminare il pagamento?",
       "warning": "ATTENZIONE: tutti i pagamenti successivi a quello cancellato verranno decrementati di 1.",
-      "description": "Elimina pagamento"
+      "description": "Elimina pagamento",
+      "sendEmail": "Reinvia mail dei pagamenti successivi aggiornati"
     },
     "type": {
       "CASH": "Contanti",

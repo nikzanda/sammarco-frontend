@@ -181,9 +181,11 @@ export const PAYMENT_DELETE_MUTATION = gql`
   mutation PaymentDelete($input: PaymentDeleteInput!) {
     paymentDelete(input: $input) {
       payment {
-        ...PaymentDetail
+        id
+      }
+      updatedPayments {
+        id
       }
     }
   }
-  ${PAYMENT_DETAIL_FRAGMENT}
 `;
