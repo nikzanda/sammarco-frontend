@@ -8,6 +8,7 @@ import { QualificationEnum } from '../../../generated/graphql';
 
 const MemberForm: React.FC = () => {
   const { t } = useTranslation();
+  const form = Form.useFormInstance();
 
   return (
     <Row gutter={24}>
@@ -174,7 +175,19 @@ const MemberForm: React.FC = () => {
 
       <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('members.form.socialCardNumber')} name="socialCardNumber">
-          <InputNumber step={1} precision={0} min={1} style={{ width: '100%' }} />
+          <InputNumber
+            step={1}
+            precision={0}
+            min={1}
+            style={{ width: '100%' }}
+            onChange={(value) => {
+              form.setFieldValue('emptySocialCardNumber', value == null);
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item noStyle hidden name="emptySocialCardNumber">
+          <Input />
         </Form.Item>
       </Col>
 
