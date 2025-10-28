@@ -6,7 +6,15 @@ import { isTaxCodeValid, isMinor as isMinorFn } from '../../../utils';
 import { CoursePicker, ShiftPicker } from '../../courses/components';
 import { QualificationEnum } from '../../../generated/graphql';
 
-const MemberForm: React.FC = () => {
+const defaultProps = {
+  updating: false,
+};
+
+interface Props {
+  updating?: boolean;
+}
+
+const MemberForm: React.FC<Props> = ({ updating = false }) => {
   const { t } = useTranslation();
   const form = Form.useFormInstance();
 
@@ -181,14 +189,18 @@ const MemberForm: React.FC = () => {
             min={1}
             style={{ width: '100%' }}
             onChange={(value) => {
-              form.setFieldValue('emptySocialCardNumber', value == null);
+              if (updating) {
+                form.setFieldValue('emptySocialCardNumber', value == null);
+              }
             }}
           />
         </Form.Item>
 
-        <Form.Item noStyle hidden name="emptySocialCardNumber">
-          <Input />
-        </Form.Item>
+        {updating && (
+          <Form.Item noStyle hidden name="emptySocialCardNumber">
+            <Input />
+          </Form.Item>
+        )}
       </Col>
 
       <Col xs={24} md={12} xxl={8}>
@@ -227,5 +239,7 @@ const MemberForm: React.FC = () => {
     </Row>
   );
 };
+
+MemberForm.defaultProps = defaultProps;
 
 export default MemberForm;

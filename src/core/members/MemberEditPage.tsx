@@ -190,7 +190,7 @@ const MemberEditPage: React.FC = () => {
                   key: 'details',
                   children: (
                     <>
-                      <MemberForm />
+                      <MemberForm updating />
                       <Updates updates={member} />
                     </>
                   ),
