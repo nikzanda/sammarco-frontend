@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TableColumnsType, Result, Table, TableProps, Space, App } from 'antd';
+import { TableColumnsType, Result, Table, TableProps, Flex, App } from 'antd';
 import { format, set } from 'date-fns';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
@@ -210,7 +210,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       {queryError && <Result status="500" title="500" subTitle="Sorry, something went wrong." />}
 
       <Filters
@@ -315,7 +315,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         }}
         scroll={{ x: 1100 }}
       />
-    </Space>
+    </Flex>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Badge, Button, CalendarProps, Col, Modal, Popconfirm, Row, Space, Spin, theme } from 'antd';
+import { App, Badge, Button, CalendarProps, Col, Flex, Modal, Popconfirm, Row, Spin, theme } from 'antd';
 import {
   set,
   lastDayOfMonth,
@@ -298,7 +298,7 @@ const CalendarPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical">
+    <Flex vertical gap="middle">
       <Row style={{ marginTop: 10 }}>
         <Col xs={24} sm={12} md={8}>
           <CoursePicker
@@ -320,7 +320,7 @@ const CalendarPage: React.FC = () => {
       </Spin>
 
       {contextHolder}
-    </Space>
+    </Flex>
   );
 };
 

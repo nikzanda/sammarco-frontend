@@ -9,13 +9,6 @@ import {
 } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const defaultProps = {
-  value: undefined,
-  queryFilters: {},
-  showCourse: true,
-  onChange: () => {},
-};
-
 interface Props extends Omit<SelectProps, 'onChange'> {
   value?: string[];
   queryFilters?: FeeFilter;
@@ -23,7 +16,13 @@ interface Props extends Omit<SelectProps, 'onChange'> {
   onChange?: (value: string[], fees: FeesSearcherQuery['fees']['data']) => void;
 }
 
-const FeePicker: React.FC<Props> = ({ value, queryFilters, showCourse, onChange, ...selectProps }) => {
+const FeePicker: React.FC<Props> = ({
+  value = undefined,
+  queryFilters = {},
+  showCourse = true,
+  onChange = () => {},
+  ...selectProps
+}) => {
   const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
     useFeesSearcherLazyQuery({
       variables: {
@@ -117,8 +116,6 @@ const FeePicker: React.FC<Props> = ({ value, queryFilters, showCourse, onChange,
     />
   );
 };
-
-FeePicker.defaultProps = defaultProps;
 
 export default FeePicker;
 

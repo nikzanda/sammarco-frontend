@@ -43,5 +43,6 @@ module.exports = {
     'no-shadow': 'off',
     'no-plusplus': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'react/require-default-props': ['error', { functions: 'defaultArguments' }],
   },
 };

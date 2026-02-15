@@ -33,19 +33,13 @@ const formats: ReactQuillProps['formats'] = [
 
 const filterEmpty = (value?: string) => (value !== '<p><br></p>' ? value : undefined);
 
-const defaultProps = {
-  placeholder: undefined,
-  value: '',
-  onChange: () => {},
-};
-
 interface Props {
   placeholder?: string;
   value?: string;
   onChange?: (value?: string) => void;
 }
 
-const QuillEditor: React.FC<Props> = ({ placeholder, value, onChange }) => (
+const QuillEditor: React.FC<Props> = ({ placeholder = undefined, value = '', onChange = () => {} }) => (
   <ReactQuill
     theme="snow"
     placeholder={placeholder}
@@ -56,7 +50,5 @@ const QuillEditor: React.FC<Props> = ({ placeholder, value, onChange }) => (
     onChange={(value) => onChange!(filterEmpty(value))}
   />
 );
-
-QuillEditor.defaultProps = defaultProps;
 
 export default QuillEditor;

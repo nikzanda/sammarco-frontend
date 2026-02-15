@@ -9,17 +9,12 @@ import {
 } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const defaultProps = {
-  queryFilters: {},
-  onChange: () => {},
-};
-
 interface Props extends Omit<SelectProps, 'onChange'> {
   queryFilters?: MemberFilter;
   onChange?: (value: string, member: MemberSearcherQuery['member']) => void;
 }
 
-const MemberSearcher: React.FC<Props> = ({ value, queryFilters, onChange, ...selectProps }) => {
+const MemberSearcher: React.FC<Props> = ({ value, queryFilters = {}, onChange = () => {}, ...selectProps }) => {
   const [fetchMembers, { data: membersData, loading: membersLoading, error: membersError, refetch: membersRefetch }] =
     useMembersSearcherLazyQuery({
       variables: {
@@ -96,7 +91,5 @@ const MemberSearcher: React.FC<Props> = ({ value, queryFilters, onChange, ...sel
     />
   );
 };
-
-MemberSearcher.defaultProps = defaultProps;
 
 export default MemberSearcher;

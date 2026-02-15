@@ -4,17 +4,12 @@ import { useDebouncedCallback } from 'use-debounce';
 import { CoursesSearcherQuery, useCoursesSearcherLazyQuery, useCoursesSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const defaultProps = {
-  value: undefined,
-  onChange: () => {},
-};
-
 interface Props extends Omit<SelectProps, 'value' | 'onChange' | 'mode'> {
   value?: string[];
   onChange?: (value: string[], courses: CoursesSearcherQuery['courses']['data']) => void;
 }
 
-const CoursePicker: React.FC<Props> = ({ value, onChange, ...selectProps }) => {
+const CoursePicker: React.FC<Props> = ({ value = undefined, onChange = () => {}, ...selectProps }) => {
   const [fetchCourses, { data: coursesData, loading: coursesLoading, error: coursesError, refetch: coursesRefetch }] =
     useCoursesSearcherLazyQuery({
       variables: {
@@ -99,8 +94,6 @@ const CoursePicker: React.FC<Props> = ({ value, onChange, ...selectProps }) => {
     />
   );
 };
-
-CoursePicker.defaultProps = defaultProps;
 
 export default CoursePicker;
 

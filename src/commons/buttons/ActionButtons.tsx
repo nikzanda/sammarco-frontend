@@ -13,16 +13,6 @@ export interface ActionButtonObject {
 }
 export type ActionButtonsType = (ActionButton | ActionButtonObject)[];
 
-const defaultProps = {
-  onEdit: () => {},
-  onClone: () => {},
-  onPrint: () => {},
-  onSend: () => {},
-  onFee: () => {},
-  onAttendance: () => {},
-  onReminder: () => {},
-};
-
 interface Props {
   buttons: ActionButtonsType;
   onEdit?: () => void;
@@ -36,13 +26,13 @@ interface Props {
 
 const ActionButtons: React.FC<Props> = ({
   buttons,
-  onEdit,
-  onClone,
-  onPrint,
-  onSend,
-  onFee,
-  onAttendance,
-  onReminder,
+  onEdit = () => {},
+  onClone = () => {},
+  onPrint = () => {},
+  onSend = () => {},
+  onFee = () => {},
+  onAttendance = () => {},
+  onReminder = () => {},
 }) => {
   const { t } = useTranslation();
 
@@ -173,7 +163,5 @@ const ActionButtons: React.FC<Props> = ({
     </Space>
   );
 };
-
-ActionButtons.defaultProps = defaultProps;
 
 export default ActionButtons;

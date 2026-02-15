@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import './App.css';
 import { Watermark } from 'antd';
 import { AuthenticationContext } from './contexts';
 import { LoadingPage } from './views';

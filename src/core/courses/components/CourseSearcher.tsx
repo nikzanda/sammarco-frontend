@@ -9,17 +9,12 @@ import {
 } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const defaultProps = {
-  queryFilters: {},
-  onChange: () => {},
-};
-
 interface Props extends Omit<SelectProps, 'onChange'> {
   queryFilters?: CourseFilter;
   onChange?: (value: string, course: CourseSearcherQuery['course']) => void;
 }
 
-const CourseSearcher: React.FC<Props> = ({ value, queryFilters, onChange, ...selectProps }) => {
+const CourseSearcher: React.FC<Props> = ({ value, queryFilters = {}, onChange = () => {}, ...selectProps }) => {
   const [fetchCourses, { data: coursesData, loading: coursesLoading, error: coursesError, refetch: coursesRefetch }] =
     useCoursesSearcherLazyQuery({
       variables: {
@@ -96,7 +91,5 @@ const CourseSearcher: React.FC<Props> = ({ value, queryFilters, onChange, ...sel
     />
   );
 };
-
-CourseSearcher.defaultProps = defaultProps;
 
 export default CourseSearcher;

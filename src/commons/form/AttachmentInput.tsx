@@ -9,11 +9,6 @@ import { resolveAttachmentsUpload } from '../../utils';
 
 type InputFormValue = EmailAttachmentInput | EmailAttachmentInput[];
 
-const defaultProps = {
-  value: undefined,
-  onChange: () => {},
-};
-
 interface BaseProps {
   value?: InputFormValue;
   onChange?: (newValue: InputFormValue) => void;
@@ -38,10 +33,10 @@ const AttachmentInput: React.FC<Props> = ({
       onSuccess!('ok');
     }, 0);
   },
-  children,
-  value,
+  children = undefined,
+  value = undefined,
   fileList: fileListProp,
-  onChange,
+  onChange = () => {},
   ...uploadOrDraggerProps
 }) => {
   const { t } = useTranslation();
@@ -104,7 +99,5 @@ const AttachmentInput: React.FC<Props> = ({
     </Upload>
   );
 };
-
-AttachmentInput.defaultProps = defaultProps;
 
 export default AttachmentInput;

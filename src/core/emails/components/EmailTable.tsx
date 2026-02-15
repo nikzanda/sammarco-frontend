@@ -15,17 +15,13 @@ import { useDisplayGraphQLErrors } from '../../../hooks';
 
 type TableData = EmailsQuery['emails']['data'][number];
 
-const defaultProps = {
-  filters: undefined,
-};
-
 interface Props {
   filters?: EmailFilter;
 }
 
 const PAGE_SIZE = 10;
 
-const EmailTable: React.FC<Props> = ({ filters }) => {
+const EmailTable: React.FC<Props> = ({ filters = undefined }) => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
 
@@ -84,6 +80,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
         key: 'type',
         dataIndex: 'type',
         align: 'center',
+        width: 160,
         render: (type: EmailTypeEnum) => {
           const color = {
             [EmailTypeEnum.RECEIPT]: token.colorSuccess,
@@ -97,21 +94,28 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
         title: t('emails.table.course'),
         key: 'course',
         dataIndex: ['course', 'name'],
+        width: 130,
+        ellipsis: true,
       },
       {
         title: t('emails.table.subject'),
         key: 'subject',
         dataIndex: 'subject',
+        width: 200,
+        ellipsis: true,
       },
       {
         title: t('emails.table.to'),
         key: 'to',
         dataIndex: 'to',
+        width: 180,
+        ellipsis: true,
       },
       {
         title: t('commons.table.createdAt'),
         key: 'createdAt',
         dataIndex: 'createdAt',
+        width: 150,
         render: (createdAt) => format(createdAt, 'dd/MM/yyyy HH:mm'),
       },
     ];
@@ -132,6 +136,7 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
       columns={columns}
       rowKey="id"
       loading={queryLoading}
+      size="small"
       onChange={handleTableChange}
       pagination={{
         total,
@@ -159,7 +164,5 @@ const EmailTable: React.FC<Props> = ({ filters }) => {
     />
   );
 };
-
-EmailTable.defaultProps = defaultProps;
 
 export default EmailTable;

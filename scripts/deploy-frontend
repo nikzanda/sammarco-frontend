@@ -28,7 +28,7 @@ move_files() {
     fi
 }
 
-for year in 2023 2024; do
+for year in 2023 2024 2025; do
     echo "Inizio dello script per l'anno $year"
     build_folder="$HOME/build-$year"
     dest_folder="/var/www/html/$year"

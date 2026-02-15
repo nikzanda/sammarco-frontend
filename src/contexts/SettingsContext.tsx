@@ -11,7 +11,7 @@ export const SettingsContext = React.createContext<ISettingsContext>({
   validEmailSettings: false,
 });
 
-export const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
+export const SettingsProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
   const { data: queryData, loading: queryLoading, error: queryError } = useSettingQuery();
 
   useDisplayGraphQLErrors(queryError);

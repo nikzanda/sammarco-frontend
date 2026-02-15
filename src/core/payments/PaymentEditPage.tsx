@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   App,
+  Card,
   Checkbox,
   Flex,
   Form,
@@ -8,7 +9,6 @@ import {
   Modal,
   Result,
   Skeleton,
-  Space,
   Spin,
   Tabs,
   theme,
@@ -191,7 +191,7 @@ const PaymentEditPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <EditPageHeader
         title={title}
         submitButtonProps={{
@@ -221,35 +221,37 @@ const PaymentEditPage: React.FC = () => {
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {payment && (
         <>
-          <Tabs
-            activeKey={tab}
-            onChange={(newTab) => {
-              setURLTab(newTab);
-              setTab(newTab);
-            }}
-            items={[
-              {
-                label: t('payments.tab.details'),
-                key: 'details',
-                children: (
-                  <>
-                    <Form
-                      id="form"
-                      form={form}
-                      initialValues={initialValues}
-                      layout="vertical"
-                      autoComplete="off"
-                      onFinish={handleFinish}
-                    >
-                      <PaymentForm payment={payment} />
-                    </Form>
+          <Card styles={{ body: { paddingTop: 0 } }}>
+            <Tabs
+              activeKey={tab}
+              onChange={(newTab) => {
+                setURLTab(newTab);
+                setTab(newTab);
+              }}
+              items={[
+                {
+                  label: t('payments.tab.details'),
+                  key: 'details',
+                  children: (
+                    <>
+                      <Form
+                        id="form"
+                        form={form}
+                        initialValues={initialValues}
+                        layout="vertical"
+                        autoComplete="off"
+                        onFinish={handleFinish}
+                      >
+                        <PaymentForm payment={payment} />
+                      </Form>
 
-                    <Updates updates={payment} />
-                  </>
-                ),
-              },
-            ]}
-          />
+                      <Updates updates={payment} />
+                    </>
+                  ),
+                },
+              ]}
+            />
+          </Card>
 
           <Modal
             title={
@@ -279,7 +281,7 @@ const PaymentEditPage: React.FC = () => {
           </Modal>
         </>
       )}
-    </Space>
+    </Flex>
   );
 };
 

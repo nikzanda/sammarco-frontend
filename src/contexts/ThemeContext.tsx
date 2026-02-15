@@ -1,20 +1,53 @@
 import React, { PropsWithChildren } from 'react';
-import { App as AntdApp, ConfigProvider } from 'antd';
+import { App as AntdApp, ConfigProvider, theme } from 'antd';
 import itIT from 'antd/es/locale/it_IT';
 
-interface IThemeContext {}
+const THEME_STORAGE_KEY = 'theme';
 
-export const ThemeContext = React.createContext<IThemeContext>({});
+interface IThemeContext {
+  isDarkMode: boolean;
+  toggleTheme: () => void;
+}
 
-export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const value = React.useMemo(() => {
-    const result: IThemeContext = {};
-    return result;
+export const ThemeContext = React.createContext<IThemeContext>({
+  isDarkMode: false,
+  toggleTheme: () => {},
+});
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
+  const [isDarkMode, setIsDarkMode] = React.useState(() => {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored) {
+      return stored === 'dark';
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  const toggleTheme = React.useCallback(() => {
+    setIsDarkMode((prev) => {
+      const next = !prev;
+      localStorage.setItem(THEME_STORAGE_KEY, next ? 'dark' : 'light');
+      return next;
+    });
   }, []);
+
+  const value = React.useMemo<IThemeContext>(
+    () => ({
+      isDarkMode,
+      toggleTheme,
+    }),
+    [isDarkMode, toggleTheme]
+  );
 
   return (
     <ThemeContext.Provider value={value}>
-      <ConfigProvider locale={itIT} theme={{ cssVar: true }}>
+      <ConfigProvider
+        locale={itIT}
+        theme={{
+          cssVar: true,
+          algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        }}
+      >
         <AntdApp>{children}</AntdApp>
       </ConfigProvider>
     </ThemeContext.Provider>

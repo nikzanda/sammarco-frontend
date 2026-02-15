@@ -5,12 +5,12 @@ import { MeQuery, useLoginMutation, useMeQuery } from '../generated/graphql';
 import { useDisplayGraphQLErrors } from '../hooks';
 
 interface IAuthenticationContext {
-  loading?: boolean;
+  loading: boolean;
   currentUser?: MeQuery['me'];
-  login?: (username: string, password: string) => Promise<void>;
-  loginLoading?: boolean;
+  login: (username: string, password: string) => Promise<void>;
+  loginLoading: boolean;
   loginError?: ApolloError;
-  logout?: () => void;
+  logout: () => void;
 }
 
 const isAuthenticated = () => {
@@ -21,23 +21,28 @@ const isAuthenticated = () => {
 
   const decoded = jwtDecode<JwtPayload>(token);
   const { exp } = decoded;
-  const expirationDate = new Date(exp! * 1000);
 
-  if (new Date() > expirationDate) {
+  if (!exp || new Date() > new Date(exp * 1000)) {
     return undefined;
   }
 
   return token;
 };
 
-export const AuthenticationContext = React.createContext<IAuthenticationContext>({});
+const noop = () => {};
 
-export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children }) => {
+export const AuthenticationContext = React.createContext<IAuthenticationContext>({
+  loading: false,
+  login: async () => {},
+  loginLoading: false,
+  logout: noop,
+});
+
+export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
   const [loginAction, { loading: mutationLoading, data: mutationData, error: mutationError }] = useLoginMutation();
 
   const client = useApolloClient();
 
-  // const [getMe, { loading: meLoading, data: meData }] = useMeLazyQuery();
   const {
     data: meData,
     loading: meLoading,
@@ -48,7 +53,7 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children }
 
   const login = React.useCallback(
     async (username: string, password: string) => {
-      loginAction({
+      await loginAction({
         variables: {
           input: {
             username,
@@ -62,16 +67,9 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children }
 
   const logout = React.useCallback(() => {
     window.localStorage.removeItem('token');
-    client.clearStore();
     client.resetStore();
-    window.location.replace('');
+    window.location.reload();
   }, [client]);
-
-  // React.useEffect(() => {
-  //   if (isAuthenticated()) {
-  //     getMe()
-  //   }
-  // }, [getMe])
 
   useDisplayGraphQLErrors(mutationError);
 
@@ -85,25 +83,17 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children }
     }
   }, [mutationLoading, mutationData, mutationError, meRefetch]);
 
-  const value = React.useMemo(() => {
-    if (meData) {
-      return {
-        login,
-        logout,
-        currentUser: meData.me,
-        loading: meLoading,
-        loginLoading: mutationLoading,
-        loginError: mutationError,
-      };
-    }
-    return {
+  const value = React.useMemo(
+    () => ({
       login,
       logout,
+      currentUser: meData?.me,
       loading: meLoading,
       loginLoading: mutationLoading,
       loginError: mutationError,
-    };
-  }, [login, logout, meData, meLoading, mutationError, mutationLoading]);
+    }),
+    [login, logout, meData, meLoading, mutationError, mutationLoading]
+  );
 
   return <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>;
 };

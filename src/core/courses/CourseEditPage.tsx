@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Form, FormProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
+import { App, Card, Flex, Form, FormProps, Result, Skeleton, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
@@ -140,7 +140,7 @@ const CourseEditPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <EditPageHeader
         title={title}
         submitButtonProps={{
@@ -167,36 +167,38 @@ const CourseEditPage: React.FC = () => {
       {queryLoading && <Skeleton active />}
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {course && (
-        <Tabs
-          activeKey={tab}
-          onChange={(newTab) => {
-            setURLTab(newTab);
-            setTab(newTab);
-          }}
-          items={[
-            {
-              label: t('courses.tab.details'),
-              key: 'details',
-              children: (
-                <>
-                  <Form
-                    id="form"
-                    initialValues={initialValues}
-                    layout="vertical"
-                    autoComplete="off"
-                    onFinish={handleFinish}
-                  >
-                    <CourseForm />
-                  </Form>
+        <Card styles={{ body: { paddingTop: 0 } }}>
+          <Tabs
+            activeKey={tab}
+            onChange={(newTab) => {
+              setURLTab(newTab);
+              setTab(newTab);
+            }}
+            items={[
+              {
+                label: t('courses.tab.details'),
+                key: 'details',
+                children: (
+                  <>
+                    <Form
+                      id="form"
+                      initialValues={initialValues}
+                      layout="vertical"
+                      autoComplete="off"
+                      onFinish={handleFinish}
+                    >
+                      <CourseForm />
+                    </Form>
 
-                  <Updates updates={course} />
-                </>
-              ),
-            },
-          ]}
-        />
+                    <Updates updates={course} />
+                  </>
+                ),
+              },
+            ]}
+          />
+        </Card>
       )}
-    </Space>
+    </Flex>
   );
 };
 

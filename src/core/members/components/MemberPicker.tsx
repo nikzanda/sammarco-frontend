@@ -4,17 +4,12 @@ import { useDebouncedCallback } from 'use-debounce';
 import { MembersSearcherQuery, useMembersSearcherLazyQuery, useMembersSearcherQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const defaultProps = {
-  value: undefined,
-  onChange: () => {},
-};
-
 interface Props extends Omit<SelectProps, 'onChange'> {
   value?: string[];
   onChange?: (value: string[], members: MembersSearcherQuery['members']['data']) => void;
 }
 
-const MemberPicker: React.FC<Props> = ({ value, onChange, ...selectProps }) => {
+const MemberPicker: React.FC<Props> = ({ value = undefined, onChange = () => {}, ...selectProps }) => {
   const [fetchMembers, { data: membersData, loading: membersLoading, error: membersError, refetch: membersRefetch }] =
     useMembersSearcherLazyQuery({
       variables: {
@@ -99,8 +94,6 @@ const MemberPicker: React.FC<Props> = ({ value, onChange, ...selectProps }) => {
     />
   );
 };
-
-MemberPicker.defaultProps = defaultProps;
 
 export default MemberPicker;
 

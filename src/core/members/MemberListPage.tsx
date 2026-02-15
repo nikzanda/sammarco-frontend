@@ -1,9 +1,9 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import { Flex, Space, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
+import { Flex, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBell, FaCalendarCheck, FaExclamationTriangle, FaFileCsv, FaSync } from 'react-icons/fa';
+import { FaBell, FaCalendarCheck, FaFileCsv, FaIdCard, FaMoneyBillWave, FaNotesMedical, FaSync } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -143,9 +143,13 @@ const MemberListPage: React.FC = () => {
         key: 'fullName',
         dataIndex: 'fullName',
         sorter: true,
+        width: 200,
+        ellipsis: true,
         render: (fullName, { attendances, payments, courses, medicalCertificate }) => {
-          let showAlert = false;
-          let alertColor = token.colorError;
+          // Medical certificate alert
+          let showMedicalAlert = false;
+          let medicalAlertColor = token.colorError;
+          let medicalAlertTooltip = '';
 
           const differenceDays = medicalCertificate?.expireAt
             ? differenceInCalendarDays(medicalCertificate.expireAt, Date.now())
@@ -158,24 +162,28 @@ const MemberListPage: React.FC = () => {
             settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
               ? Math.min(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
               : 10;
-          if (!medicalCertificate || differenceDays <= maxExpirationDays) {
-            showAlert = true;
+          if (!medicalCertificate) {
+            showMedicalAlert = true;
+            medicalAlertTooltip = t('members.alerts.medicalCertificate.empty');
+          } else if (differenceDays <= 0) {
+            showMedicalAlert = true;
+            medicalAlertTooltip = t('members.alerts.medicalCertificate.expired');
+          } else if (differenceDays <= maxExpirationDays) {
+            showMedicalAlert = true;
             if (differenceDays > minExpirationDays) {
-              alertColor = token.colorWarning;
+              medicalAlertColor = token.colorWarning;
             }
+            medicalAlertTooltip = t('members.alerts.medicalCertificate.expiring', { days: differenceDays });
           }
 
+          // Unpaid registration alert
           const currentYears = getYears();
-
-          if (
+          const showUnpaidRegistration =
             attendances.length > 0 &&
-            !payments.some(({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1])
-          ) {
-            showAlert = true;
-            alertColor = token.colorError;
-          }
+            !payments.some(({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1]);
 
-          const monthsPaid = getMonths()
+          // Unpaid months alert
+          const showMonthsNotPaid = getMonths()
             .filter((month) => month.valueOf() < Date.now())
             .some((month) => {
               const result = courses.some(({ id: courseId }) => {
@@ -192,21 +200,35 @@ const MemberListPage: React.FC = () => {
               return result;
             });
 
-          if (monthsPaid) {
-            showAlert = true;
-            alertColor = token.colorError;
-          }
-
           return (
             <>
               <Highlighter
                 searchWords={[searchText]}
                 textToHighlight={fullName}
                 highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-              />{' '}
-              {showAlert && (
-                <Tooltip title={t('members.alerts.warnings')}>
-                  <Icon component={FaExclamationTriangle} style={{ color: alertColor }} />
+              />
+              {showMedicalAlert && (
+                <Tooltip title={medicalAlertTooltip}>
+                  <Icon
+                    component={FaNotesMedical}
+                    style={{ color: medicalAlertColor, marginLeft: 4, verticalAlign: 'middle' }}
+                  />
+                </Tooltip>
+              )}
+              {showUnpaidRegistration && (
+                <Tooltip title={t('members.alerts.currentEnrollmentNotPaid')}>
+                  <Icon
+                    component={FaIdCard}
+                    style={{ color: token.colorError, marginLeft: 4, verticalAlign: 'middle' }}
+                  />
+                </Tooltip>
+              )}
+              {showMonthsNotPaid && (
+                <Tooltip title={t('members.alerts.monthsNotPaid')}>
+                  <Icon
+                    component={FaMoneyBillWave}
+                    style={{ color: token.colorError, marginLeft: 4, verticalAlign: 'middle' }}
+                  />
                 </Tooltip>
               )}
             </>
@@ -217,12 +239,15 @@ const MemberListPage: React.FC = () => {
         title: t('members.table.courses'),
         key: 'courses',
         dataIndex: 'courses',
+        width: 150,
+        ellipsis: true,
         render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
       },
       {
         title: t('members.table.shifts'),
         key: 'shifts',
         dataIndex: 'courses',
+        width: 200,
         render: (courses: MemberListItemFragment['courses'], { shiftIds }) => {
           const shifts = courses.reduce(
             (
@@ -269,6 +294,7 @@ const MemberListPage: React.FC = () => {
         dataIndex: 'socialCardNumber',
         align: 'center',
         sorter: true,
+        width: 120,
       },
       {
         key: 'actions',
@@ -325,7 +351,7 @@ const MemberListPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <ListPageHeader
         entity="members"
         actions={[
@@ -463,6 +489,7 @@ const MemberListPage: React.FC = () => {
         columns={columns}
         rowKey="id"
         loading={queryLoading}
+        size="small"
         onChange={handleTableChange}
         pagination={{
           total,
@@ -540,7 +567,7 @@ const MemberListPage: React.FC = () => {
       )}
       {exportCsv && <ExportMembersModal onCancel={() => setExportCsv(false)} />}
       {sendMonthlyReminders && <SendMonthlyRemindersModal onCancel={() => setSendMonthlyReminders(false)} />}
-    </Space>
+    </Flex>
   );
 };
 

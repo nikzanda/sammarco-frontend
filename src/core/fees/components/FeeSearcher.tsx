@@ -4,19 +4,19 @@ import { useDebouncedCallback } from 'use-debounce';
 import { FeeFilter, FeeSearcherQuery, useFeeSearcherQuery, useFeesSearcherLazyQuery } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const defaultProps = {
-  queryFilters: {},
-  showCourse: true,
-  onChange: () => {},
-};
-
 interface Props extends Omit<SelectProps, 'onChange'> {
   queryFilters?: FeeFilter;
   showCourse?: boolean;
   onChange?: (value: string, fee: FeeSearcherQuery['fee']) => void;
 }
 
-const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, onChange, ...selectProps }) => {
+const FeeSearcher: React.FC<Props> = ({
+  value,
+  queryFilters = {},
+  showCourse = true,
+  onChange = () => {},
+  ...selectProps
+}) => {
   const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
     useFeesSearcherLazyQuery({
       variables: {
@@ -101,7 +101,5 @@ const FeeSearcher: React.FC<Props> = ({ value, queryFilters, showCourse, onChang
     />
   );
 };
-
-FeeSearcher.defaultProps = defaultProps;
 
 export default FeeSearcher;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertProps, Descriptions, DescriptionsProps, Flex, Space, Typography, theme } from 'antd';
+import { Alert, AlertProps, Descriptions, DescriptionsProps, Flex, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear } from 'date-fns';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
@@ -150,7 +150,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
   );
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       {member.attendances.length > 0 && !isCurrentEnrollmentPaid && (
         <Alert message={t('members.alerts.currentEnrollmentNotPaid')} type="error" showIcon />
       )}
@@ -163,7 +163,7 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
           <Descriptions items={getDescriptionItems(courseId)} bordered />
         </React.Fragment>
       ))}
-    </Space>
+    </Flex>
   );
 };
 

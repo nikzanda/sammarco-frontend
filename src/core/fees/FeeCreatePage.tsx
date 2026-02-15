@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Form, FormProps, Space } from 'antd';
+import { App, Flex, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFeeCreateMutation, useFeeLazyQuery } from '../../generated/graphql';
@@ -67,7 +67,7 @@ const FeeCreatePage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <CreatePageHeader entity="fees" submitButtonProps={{ loading: mutationLoading }} />
 
       {showForm && (
@@ -75,7 +75,7 @@ const FeeCreatePage: React.FC = () => {
           <FeeForm />
         </Form>
       )}
-    </Space>
+    </Flex>
   );
 };
 

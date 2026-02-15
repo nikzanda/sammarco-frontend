@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Result, Skeleton, Space, Spin, Tabs, Form, FormProps } from 'antd';
+import { App, Card, Flex, Result, Skeleton, Spin, Tabs, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaPrint, FaTrash } from 'react-icons/fa';
@@ -105,7 +105,7 @@ const FeeEditPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <EditPageHeader
         title={title}
         submitButtonProps={{
@@ -138,36 +138,38 @@ const FeeEditPage: React.FC = () => {
       {queryLoading && <Skeleton active />}
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {fee && (
-        <Tabs
-          activeKey={tab}
-          onChange={(newTab) => {
-            setURLTab(newTab);
-            setTab(newTab);
-          }}
-          items={[
-            {
-              label: t('fees.tab.details'),
-              key: 'details',
-              children: (
-                <>
-                  <Form
-                    id="form"
-                    initialValues={initialValues}
-                    layout="vertical"
-                    autoComplete="off"
-                    onFinish={handleFinish}
-                  >
-                    <FeeForm fee={fee} />
-                  </Form>
+        <Card styles={{ body: { paddingTop: 0 } }}>
+          <Tabs
+            activeKey={tab}
+            onChange={(newTab) => {
+              setURLTab(newTab);
+              setTab(newTab);
+            }}
+            items={[
+              {
+                label: t('fees.tab.details'),
+                key: 'details',
+                children: (
+                  <>
+                    <Form
+                      id="form"
+                      initialValues={initialValues}
+                      layout="vertical"
+                      autoComplete="off"
+                      onFinish={handleFinish}
+                    >
+                      <FeeForm fee={fee} />
+                    </Form>
 
-                  <Updates updates={fee} />
-                </>
-              ),
-            },
-          ]}
-        />
+                    <Updates updates={fee} />
+                  </>
+                ),
+              },
+            ]}
+          />
+        </Card>
       )}
-    </Space>
+    </Flex>
   );
 };
 

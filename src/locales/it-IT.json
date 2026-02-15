@@ -23,6 +23,7 @@
     "alerts": {
       "warnings": "Attenzione, ci sono degli avvisi per questo socio",
       "currentEnrollmentNotPaid": "Iscrizione non pagata.",
+      "monthsNotPaid": "Mensilità non pagate.",
       "medicalCertificate": {
         "empty": "Data di scadenza del certificato medico non inserita.",
         "expiring": "Il certificato medico scadrà tra {{days}} giorni.",
@@ -550,5 +551,9 @@
     "Attendance_other": "Presenze",
     "Email_one": "Email",
     "Email_other": "Email"
+  },
+  "theme": {
+    "darkMode": "Modalità scura",
+    "lightMode": "Modalità chiara"
   }
 }

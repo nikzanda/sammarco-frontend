@@ -11,10 +11,6 @@ import { CoursePicker, ShiftPicker } from '../../core/courses/components';
 import { MemberPicker } from '../../core/members/components';
 import { FeePicker } from '../../core/fees/components';
 
-const defaultProps = {
-  initialFilterInfo: {},
-};
-
 type FilterInfo = Record<string, FilterValue | null>;
 
 interface Props {
@@ -29,7 +25,7 @@ interface Props {
 const Filters: React.FC<Props> = ({
   topFilters,
   collapsableFilters,
-  initialFilterInfo,
+  initialFilterInfo = {},
   searchText,
   setSearchText,
   onSearch,
@@ -370,7 +366,5 @@ const Filters: React.FC<Props> = ({
     // </Affix>
   );
 };
-
-Filters.defaultProps = defaultProps;
 
 export default Filters;

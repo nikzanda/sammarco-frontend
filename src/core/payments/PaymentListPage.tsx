@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { App, Space, Table, TableColumnsType, TableProps } from 'antd';
+import { App, Flex, Table, TableColumnsType, TableProps } from 'antd';
 import { format, set } from 'date-fns';
 import { FaFileCsv, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
@@ -163,11 +163,15 @@ const PaymentListPage: React.FC = () => {
         key: 'counter',
         dataIndex: 'counter',
         sorter: true,
+        width: 70,
+        align: 'center',
       },
       {
         title: t('payments.table.member'),
         key: 'member',
         dataIndex: ['member', 'fullName'],
+        width: 160,
+        ellipsis: true,
         render: (fullName) => (
           <Highlighter
             searchWords={[searchText]}
@@ -180,11 +184,15 @@ const PaymentListPage: React.FC = () => {
         title: t('payments.table.course'),
         key: 'course',
         dataIndex: ['fee', 'course', 'name'],
+        width: 130,
+        ellipsis: true,
       },
       {
         title: t('payments.table.fee'),
         key: 'fee',
         dataIndex: ['fee', 'name'],
+        width: 140,
+        ellipsis: true,
         render: (feeName) => (
           <Highlighter
             searchWords={[searchText]}
@@ -198,17 +206,20 @@ const PaymentListPage: React.FC = () => {
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
+        width: 100,
         render: (amount) => toCurrency(amount),
       },
       {
         title: t('payments.table.type'),
         key: 'type',
         dataIndex: 'type',
+        width: 120,
         render: (type: PaymentListItemFragment['type']) => t(`payments.type.${type}`),
       },
       {
         title: t('payments.table.details'),
         key: 'details',
+        width: 140,
         render: (_, { month: rawMonth, years }) => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value: string) => parseInt(value, 10));
@@ -251,7 +262,7 @@ const PaymentListPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <ListPageHeader
         entity="payments"
         hideCreateButton
@@ -392,6 +403,7 @@ const PaymentListPage: React.FC = () => {
         columns={columns}
         rowKey="id"
         loading={queryLoading}
+        size="small"
         onChange={handleTableChange}
         pagination={{
           total,
@@ -416,7 +428,7 @@ const PaymentListPage: React.FC = () => {
 
       {printAll && <PrintPaymentsModal onCancel={() => setPrintAll(false)} />}
       {exportCsv && <ExportPaymentsModal onCancel={() => setExportCsv(false)} />}
-    </Space>
+    </Flex>
   );
 };
 

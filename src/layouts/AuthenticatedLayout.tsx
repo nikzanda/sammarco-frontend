@@ -2,10 +2,19 @@ import React, { Suspense } from 'react';
 import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaCalendarAlt, FaCog, FaMoneyBill, FaPaperPlane, FaReceipt, FaUserFriends } from 'react-icons/fa';
+import {
+  FaCalendarAlt,
+  FaCog,
+  FaMoon,
+  FaMoneyBill,
+  FaPaperPlane,
+  FaReceipt,
+  FaSun,
+  FaUserFriends,
+} from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
-import { AuthenticationContext, SettingsProvider } from '../contexts';
+import { AuthenticationContext, SettingsProvider, ThemeContext } from '../contexts';
 import { LoadingPage, NotFoundPage } from '../views';
 
 // Members
@@ -38,6 +47,7 @@ const SettingsPage = React.lazy(() => import('../settings/SettingsPage'));
 
 const AuthenticatedLayout: React.FC = () => {
   const { logout } = React.useContext(AuthenticationContext);
+  const { isDarkMode, toggleTheme } = React.useContext(ThemeContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -88,18 +98,31 @@ const AuthenticatedLayout: React.FC = () => {
     const result: DropdownProps['menu'] = {
       items: [
         {
+          label: isDarkMode ? t('theme.lightMode') : t('theme.darkMode'),
+          key: 'theme',
+          icon: isDarkMode ? <Icon component={FaSun} /> : <Icon component={FaMoon} />,
+        },
+        {
           label: t('settings.name'),
           key: 'settings',
           icon: <Icon component={FaCog} />,
         },
         {
+          type: 'divider',
+        },
+        {
           label: t('authentication.logout'),
           key: 'logout',
           icon: <LogoutOutlined />,
+          danger: true,
         },
       ],
       onClick: ({ key }) => {
         switch (key) {
+          case 'theme':
+            toggleTheme();
+            break;
+
           case 'settings':
             navigate('/settings');
             break;
@@ -111,7 +134,7 @@ const AuthenticatedLayout: React.FC = () => {
       },
     };
     return result;
-  }, [logout, navigate, t]);
+  }, [isDarkMode, logout, navigate, t, toggleTheme]);
 
   const selectedKey = React.useMemo(() => {
     const item = menuItems.find(({ key }: any) => location.pathname.includes(key));
@@ -134,12 +157,18 @@ const AuthenticatedLayout: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <Menu theme="dark" mode="horizontal" selectedKeys={selectedKey} items={menuItems} style={{ width: '100%' }} />
+        <Menu theme="dark" mode="horizontal" selectedKeys={selectedKey} items={menuItems} style={{ flex: 1 }} />
         <Dropdown menu={dropdownMenu} placement="bottomRight" trigger={['click']}>
-          <Button shape="circle" size="large" icon={<Icon component={FaCog} />} ghost />
+          <Button
+            shape="circle"
+            size="large"
+            icon={<Icon component={FaCog} />}
+            ghost
+            style={{ color: 'rgba(255, 255, 255, 0.85)' }}
+          />
         </Dropdown>
       </Layout.Header>
-      <Layout.Content style={{ padding: '0 15px 15px 15px', overflowY: 'scroll' }}>
+      <Layout.Content style={{ padding: 16, overflowY: 'auto' }}>
         <SettingsProvider>
           <Suspense fallback={<LoadingPage />}>
             <Routes>

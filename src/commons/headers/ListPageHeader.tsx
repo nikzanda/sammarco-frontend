@@ -1,14 +1,9 @@
 import React from 'react';
-import { Button, Divider, Dropdown, Flex, GetProp, MenuProps, Row, Typography } from 'antd';
+import { Button, Divider, Dropdown, Flex, Typography, type GetProp, type MenuProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Icon, { MoreOutlined } from '@ant-design/icons';
 import { FaPlus } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-
-const defaultProps = {
-  hideCreateButton: false,
-  actions: undefined,
-};
 
 interface Props {
   entity: 'members' | 'courses' | 'fees' | 'payments';
@@ -16,14 +11,16 @@ interface Props {
   actions?: GetProp<MenuProps, 'items'>;
 }
 
-const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton, actions }) => {
+const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton = false, actions = [] }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Row justify="space-between" align="middle">
-      <Typography.Title level={3}>{t(`${entity}.name`)}</Typography.Title>
+    <Flex justify="space-between" align="center">
+      <Typography.Title level={3} style={{ margin: 0 }}>
+        {t(`${entity}.name`)}
+      </Typography.Title>
 
       <Flex gap={8} align="center">
         {!hideCreateButton && (
@@ -43,9 +40,9 @@ const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton, actions }) 
               arrow
               trigger={['click']}
               open={open}
-              onOpenChange={(open, info) => {
+              onOpenChange={(newOpen, info) => {
                 if (info.source === 'trigger') {
-                  setOpen(open);
+                  setOpen(newOpen);
                 }
               }}
               menu={{ items: actions }}
@@ -55,10 +52,10 @@ const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton, actions }) 
           </>
         )}
       </Flex>
-    </Row>
+    </Flex>
   );
 };
 
-ListPageHeader.defaultProps = defaultProps;
-
 export default ListPageHeader;
+
+export type { Props as ListPageHeaderProps };

@@ -1,15 +1,9 @@
 import React from 'react';
-import { Button, ButtonProps, Divider, Dropdown, Flex, GetProp, MenuProps, Row, Typography } from 'antd';
+import { Button, type ButtonProps, Divider, Dropdown, Flex, type GetProp, type MenuProps, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Icon, { MoreOutlined } from '@ant-design/icons';
 import { FaAngleLeft, FaSave } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-
-const defaultProps = {
-  submitButtonProps: {},
-  actions: undefined,
-  extra: undefined,
-};
 
 interface Props {
   title: React.ReactNode;
@@ -18,17 +12,24 @@ interface Props {
   extra?: React.ReactNode;
 }
 
-const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions, extra }) => {
+const EditPageHeader: React.FC<Props> = ({
+  title,
+  submitButtonProps = undefined,
+  actions = undefined,
+  extra = undefined,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Row justify="space-between">
+    <Flex justify="space-between" align="center">
       <Flex gap={8} align="center">
         <Button shape="circle" size="middle" icon={<Icon component={FaAngleLeft} />} onClick={() => navigate(-1)} />
 
-        <Typography.Title level={3}>{title}</Typography.Title>
+        <Typography.Title level={3} style={{ margin: 0 }}>
+          {title}
+        </Typography.Title>
       </Flex>
 
       <Flex gap={8} align="center">
@@ -55,9 +56,9 @@ const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions, ex
               arrow
               trigger={['click']}
               open={open}
-              onOpenChange={(open, info) => {
+              onOpenChange={(newOpen, info) => {
                 if (info.source === 'trigger') {
-                  setOpen(open);
+                  setOpen(newOpen);
                 }
               }}
               menu={{ items: actions }}
@@ -67,10 +68,10 @@ const EditPageHeader: React.FC<Props> = ({ title, submitButtonProps, actions, ex
           </>
         )}
       </Flex>
-    </Row>
+    </Flex>
   );
 };
 
-EditPageHeader.defaultProps = defaultProps;
-
 export default EditPageHeader;
+
+export type { Props as EditPageHeaderProps };

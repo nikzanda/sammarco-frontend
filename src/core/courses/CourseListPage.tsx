@@ -3,7 +3,7 @@ import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Badge, Space, Table, TableColumnsType, TableProps } from 'antd';
+import { Badge, Flex, Table, TableColumnsType, TableProps } from 'antd';
 import Highlighter from 'react-highlight-words';
 import {
   CourseFilter,
@@ -99,6 +99,7 @@ const CourseListPage: React.FC = () => {
         key: 'name',
         dataIndex: 'name',
         sorter: true,
+        ellipsis: true,
         render: (name, { color }) => (
           <>
             <Highlighter
@@ -130,7 +131,7 @@ const CourseListPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <ListPageHeader entity="courses" />
 
       <Filters
@@ -150,6 +151,8 @@ const CourseListPage: React.FC = () => {
         columns={columns}
         rowKey="id"
         loading={queryLoading}
+        size="small"
+        scroll={{ x: 400 }}
         onChange={handleTableChange}
         pagination={{
           total,
@@ -164,7 +167,7 @@ const CourseListPage: React.FC = () => {
           },
         }}
       />
-    </Space>
+    </Flex>
   );
 };
 

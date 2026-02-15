@@ -8,15 +8,11 @@ import { DatePicker } from '../../../components';
 import { FeeSearcher } from '../../fees/components';
 import { MemberSearcher } from '../../members/components';
 
-const defaultProps = {
-  payment: undefined,
-};
-
 interface Props {
   payment?: PaymentDetailFragment;
 }
 
-const PaymentForm: React.FC<Props> = ({ payment }) => {
+const PaymentForm: React.FC<Props> = ({ payment = undefined }) => {
   const { t } = useTranslation();
   const form = Form.useFormInstance();
 
@@ -215,7 +211,5 @@ const PaymentForm: React.FC<Props> = ({ payment }) => {
     </Row>
   );
 };
-
-PaymentForm.defaultProps = defaultProps;
 
 export default PaymentForm;

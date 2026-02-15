@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Form, FormProps, GetProp, MenuProps, Result, Skeleton, Space, Spin, Tabs } from 'antd';
+import { App, Card, Flex, Form, FormProps, GetProp, MenuProps, Result, Skeleton, Spin, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
@@ -157,7 +157,7 @@ const MemberEditPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <EditPageHeader
         title={title}
         submitButtonProps={{
@@ -170,55 +170,57 @@ const MemberEditPage: React.FC = () => {
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {member && (
         <>
-          <Form
-            id="form"
-            form={form}
-            initialValues={initialValues}
-            layout="vertical"
-            autoComplete="off"
-            onFinish={handleFinish}
-          >
-            <Tabs
-              activeKey={tab}
-              onChange={(newTab) => {
-                setURLTab(newTab);
-                setTab(newTab);
-              }}
-              items={[
-                {
-                  label: t('members.tab.details'),
-                  key: 'details',
-                  children: (
-                    <>
-                      <MemberForm updating />
-                      <Updates updates={member} />
-                    </>
-                  ),
-                },
-                {
-                  label: t('members.tab.medicalCertificate'),
-                  key: 'certificate',
-                  destroyInactiveTabPane: true,
-                  children: <MemberMedicalCertificate member={member} />,
-                },
-                {
-                  label: t('members.tab.payments'),
-                  key: 'payments',
-                  children: <MemberPayments member={member} />,
-                },
-                {
-                  label: t('members.tab.calendar'),
-                  key: 'calendar',
-                  children: <MemberCalendar member={member} />,
-                },
-                {
-                  label: t('members.tab.emails'),
-                  key: 'emails',
-                  children: <EmailTable filters={{ memberIds: [id!] }} />,
-                },
-              ]}
-            />
-          </Form>
+          <Card styles={{ body: { paddingTop: 0 } }}>
+            <Form
+              id="form"
+              form={form}
+              initialValues={initialValues}
+              layout="vertical"
+              autoComplete="off"
+              onFinish={handleFinish}
+            >
+              <Tabs
+                activeKey={tab}
+                onChange={(newTab) => {
+                  setURLTab(newTab);
+                  setTab(newTab);
+                }}
+                items={[
+                  {
+                    label: t('members.tab.details'),
+                    key: 'details',
+                    children: (
+                      <>
+                        <MemberForm updating />
+                        <Updates updates={member} />
+                      </>
+                    ),
+                  },
+                  {
+                    label: t('members.tab.medicalCertificate'),
+                    key: 'certificate',
+                    destroyOnHidden: true,
+                    children: <MemberMedicalCertificate member={member} />,
+                  },
+                  {
+                    label: t('members.tab.payments'),
+                    key: 'payments',
+                    children: <MemberPayments member={member} />,
+                  },
+                  {
+                    label: t('members.tab.calendar'),
+                    key: 'calendar',
+                    children: <MemberCalendar member={member} />,
+                  },
+                  {
+                    label: t('members.tab.emails'),
+                    key: 'emails',
+                    children: <EmailTable filters={{ memberIds: [id!] }} />,
+                  },
+                ]}
+              />
+            </Form>
+          </Card>
 
           {newPayment && (
             <PaymentCreateModal
@@ -245,7 +247,7 @@ const MemberEditPage: React.FC = () => {
           )}
         </>
       )}
-    </Space>
+    </Flex>
   );
 };
 

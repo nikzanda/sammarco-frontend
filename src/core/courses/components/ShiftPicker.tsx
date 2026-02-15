@@ -6,18 +6,6 @@ import { ShiftFilter, ShiftsQuery, useShiftsQuery } from '../../../generated/gra
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { week } from '../../../commons';
 
-const defaultProps = {
-  value: undefined,
-  queryFilters: undefined,
-  multiple: false,
-  disabled: false,
-  allowClear: true,
-  placeholder: undefined,
-  size: 'middle' as TreeSelectProps['size'],
-  onChange: () => {},
-  onClear: () => {},
-};
-
 interface Props {
   value?: string[];
   queryFilters?: ShiftFilter;
@@ -31,15 +19,15 @@ interface Props {
 }
 
 const ShiftPicker: React.FC<Props> = ({
-  value,
-  queryFilters,
-  multiple,
-  disabled,
-  allowClear,
-  placeholder,
-  size,
-  onChange,
-  onClear,
+  value = undefined,
+  queryFilters = undefined,
+  multiple = false,
+  disabled = false,
+  allowClear = true,
+  placeholder = undefined,
+  size = 'middle' as TreeSelectProps['size'],
+  onChange = () => {},
+  onClear = () => {},
 }) => {
   const { t } = useTranslation();
 
@@ -127,8 +115,6 @@ const ShiftPicker: React.FC<Props> = ({
     />
   );
 };
-
-ShiftPicker.defaultProps = defaultProps;
 
 export default ShiftPicker;
 

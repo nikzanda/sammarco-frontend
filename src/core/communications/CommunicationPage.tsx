@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Button, Form, FormProps, Input, Radio, Row, Space, Typography } from 'antd';
+import { App, Button, Flex, Form, FormProps, Input, Radio, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Icon from '@ant-design/icons';
 import { FaPaperPlane } from 'react-icons/fa';
@@ -32,9 +32,11 @@ const CommunicationPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
-      <Row justify="space-between" align="middle">
-        <Typography.Title level={3}>{t('communication.page.title')}</Typography.Title>
+    <Flex vertical gap="middle">
+      <Flex justify="space-between" align="center">
+        <Typography.Title level={3} style={{ margin: 0 }}>
+          {t('communication.page.title')}
+        </Typography.Title>
 
         <Button
           type="primary"
@@ -46,7 +48,7 @@ const CommunicationPage: React.FC = () => {
         >
           {t('commons.send')}
         </Button>
-      </Row>
+      </Flex>
 
       <Form
         id="form"
@@ -77,7 +79,7 @@ const CommunicationPage: React.FC = () => {
           <AttachmentInput dragger listType="picture-card" />
         </Form.Item>
       </Form>
-    </Space>
+    </Flex>
   );
 };
 

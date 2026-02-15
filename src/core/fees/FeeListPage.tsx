@@ -3,7 +3,7 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
-import { Space, Table, TableProps, theme } from 'antd';
+import { Flex, Table, TableProps, theme } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
@@ -97,6 +97,8 @@ const FeeListPage: React.FC = () => {
         key: 'name',
         dataIndex: 'name',
         sorter: true,
+        width: 200,
+        ellipsis: true,
         render: (name) => (
           <Highlighter
             searchWords={[searchText]}
@@ -109,12 +111,15 @@ const FeeListPage: React.FC = () => {
         title: t('fees.table.course'),
         key: 'course',
         dataIndex: ['course', 'name'],
+        width: 160,
+        ellipsis: true,
       },
       {
         title: t('fees.table.amount'),
         key: 'amount',
         dataIndex: 'amount',
         align: 'right',
+        width: 100,
         render: (amount) => toCurrency(amount),
       },
       {
@@ -122,6 +127,7 @@ const FeeListPage: React.FC = () => {
         key: 'enabled',
         dataIndex: 'enabled',
         align: 'center',
+        width: 80,
         render: (enabled) =>
           enabled ? (
             <Icon component={FaCheck} style={{ color: token.colorSuccess }} />
@@ -162,7 +168,7 @@ const FeeListPage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <ListPageHeader entity="fees" />
 
       <Filters
@@ -191,6 +197,7 @@ const FeeListPage: React.FC = () => {
         columns={columns}
         rowKey="id"
         loading={queryLoading}
+        size="small"
         onChange={handleTableChange}
         pagination={{
           total,
@@ -204,9 +211,9 @@ const FeeListPage: React.FC = () => {
             return t('commons.table.pagination', { start, end, total });
           },
         }}
-        scroll={{ x: 1000 }}
+        scroll={{ x: 700 }}
       />
-    </Space>
+    </Flex>
   );
 };
 

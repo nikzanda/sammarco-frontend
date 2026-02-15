@@ -6,10 +6,6 @@ import { isTaxCodeValid, isMinor as isMinorFn } from '../../../utils';
 import { CoursePicker, ShiftPicker } from '../../courses/components';
 import { QualificationEnum } from '../../../generated/graphql';
 
-const defaultProps = {
-  updating: false,
-};
-
 interface Props {
   updating?: boolean;
 }
@@ -239,7 +235,5 @@ const MemberForm: React.FC<Props> = ({ updating = false }) => {
     </Row>
   );
 };
-
-MemberForm.defaultProps = defaultProps;
 
 export default MemberForm;

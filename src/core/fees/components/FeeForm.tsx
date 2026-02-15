@@ -4,15 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { CourseSearcher } from '../../courses/components';
 import { FeeDetailFragment, RecurrenceEnum } from '../../../generated/graphql';
 
-const defaultProps = {
-  fee: undefined,
-};
-
 interface Props {
   fee?: FeeDetailFragment;
 }
 
-const FeeForm: React.FC<Props> = ({ fee }) => {
+const FeeForm: React.FC<Props> = ({ fee = undefined }) => {
   const { t } = useTranslation();
 
   const recurrenceOptions = React.useMemo(() => {
@@ -70,7 +66,5 @@ const FeeForm: React.FC<Props> = ({ fee }) => {
     </Row>
   );
 };
-
-FeeForm.defaultProps = defaultProps;
 
 export default FeeForm;

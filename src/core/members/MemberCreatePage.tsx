@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Form, FormProps, Space } from 'antd';
+import { App, Flex, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { MemberForm } from './components';
@@ -32,7 +32,7 @@ const MemberCreatePage: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex vertical gap="middle">
       <CreatePageHeader entity="members" submitButtonProps={{ loading: mutationLoading }} />
 
       <Form
@@ -45,7 +45,7 @@ const MemberCreatePage: React.FC = () => {
       >
         <MemberForm />
       </Form>
-    </Space>
+    </Flex>
   );
 };
 
