@@ -157,14 +157,20 @@ const AuthenticatedLayout: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <Menu theme="dark" mode="horizontal" selectedKeys={selectedKey} items={menuItems} style={{ flex: 1 }} />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          selectedKeys={selectedKey}
+          items={menuItems}
+          style={{ flex: 1, minWidth: 0 }}
+        />
         <Dropdown menu={dropdownMenu} placement="bottomRight" trigger={['click']}>
           <Button
             shape="circle"
             size="large"
             icon={<Icon component={FaCog} />}
             ghost
-            style={{ color: 'rgba(255, 255, 255, 0.85)' }}
+            style={{ color: 'rgba(255, 255, 255, 0.85)', flexShrink: 0 }}
           />
         </Dropdown>
       </Layout.Header>
