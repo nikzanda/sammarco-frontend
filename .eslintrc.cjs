@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'prettier', 'react-app', 'react-app/jest'],
+  extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -21,6 +21,10 @@ module.exports = {
     },
   },
   rules: {
+    'react/react-in-jsx-scope': 'off',
+    'default-case': 'off',
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+    'no-restricted-syntax': 'off',
     'no-debugger': 'warn',
     'react/function-component-definition': [
       2,

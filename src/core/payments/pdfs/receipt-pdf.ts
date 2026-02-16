@@ -2,7 +2,8 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+// @ts-ignore - vfs_fonts is a CJS module, namespace import needed for Vite compatibility
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
 import { cardinalConverter } from 'italian-numbers';

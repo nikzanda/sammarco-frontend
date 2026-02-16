@@ -2,7 +2,7 @@ import { UploadFile } from 'antd';
 import { format } from 'date-fns';
 import { EmailAttachmentInput } from '../generated/graphql';
 
-const { REACT_APP_SOCIAL_YEAR } = process.env;
+const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
 
 export const toCurrency = (
   amount: number,

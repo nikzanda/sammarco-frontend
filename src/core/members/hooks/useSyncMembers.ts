@@ -5,7 +5,8 @@ import { useMembersSyncLazyQuery, useMemberUpdateManyMutation } from '../../../g
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { getRealCurrentYears } from '../../../utils';
 
-const { REACT_APP_GRAPHQLURI, REACT_APP_SOCIAL_YEAR } = process.env;
+const REACT_APP_GRAPHQLURI = import.meta.env.VITE_GRAPHQLURI;
+const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
 
 const getEndpoint = (uri: string, instanceSocialYear: number) => {
   if (!uri.includes(instanceSocialYear.toString())) {

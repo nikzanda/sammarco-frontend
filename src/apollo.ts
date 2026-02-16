@@ -53,7 +53,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
-const httpLink = createHttpLink({ uri: process.env.REACT_APP_GRAPHQLURI });
+const httpLink = createHttpLink({ uri: import.meta.env.VITE_GRAPHQLURI });
 
 const httpCompositeLink = ApolloLink.from([cleanTypeName, errorLink, authLink, httpLink]);
 

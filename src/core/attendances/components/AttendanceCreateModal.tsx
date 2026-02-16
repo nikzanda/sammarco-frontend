@@ -7,7 +7,7 @@ import { DatePicker } from '../../../components';
 import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
-const { REACT_APP_SOCIAL_YEAR } = process.env;
+const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
 
 interface Props {
   memberIds: string[];

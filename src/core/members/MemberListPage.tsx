@@ -29,7 +29,7 @@ import { SettingsContext } from '../../contexts';
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
-const { REACT_APP_SOCIAL_YEAR } = process.env;
+const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
 const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) < getRealCurrentYears()[0];
 
 const MemberListPage: React.FC = () => {
