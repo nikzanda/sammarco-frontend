@@ -667,7 +667,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.1", "@babel/runtime@^7.11.1", "@babel/runtime@^7.18.0", "@babel/runtime@^7.20.0", "@babel/runtime@^7.22.5":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.1", "@babel/runtime@^7.11.1", "@babel/runtime@^7.18.0", "@babel/runtime@^7.20.0":
   version "7.23.1"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.1.tgz#72741dc4d413338a91dcb044a86f3c0bc402646d"
   integrity sha512-hC2v6p8ZSI/W0HUzh3V8C5g+NwSKzKPtJwSpTjwl0o297GP9+ZLQSkdvHz46CM3LqyoXxq+5G9komY+eSqSO0g==
@@ -2226,10 +2226,10 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.8.tgz#805eae6e8f41bd19e88917d2ea200dc992f405d3"
   integrity sha512-kMpQpfZKSCBqltAJwskgePRaYRFukDkm1oItcAbC3gNELR20XIBcN9VRgg4+m8DKsTfkWeA4m4Imp4DDuWy7FQ==
 
-"@types/react-csv@^1.1.9":
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/@types/react-csv/-/react-csv-1.1.9.tgz#32e8e4a9cf892efa1eba061ff5007d68d05d67b9"
-  integrity sha512-DKAuokuxxR7EGdIVBafvNDvTJuq4Dn7BQpdm6JzdMGJqcC8mOdEGloZNf2umpiNgQ/3iN/yttoEvdXgM3TDZOQ==
+"@types/react-csv@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@types/react-csv/-/react-csv-1.1.10.tgz#b4e292d7330d2fa12062c579c752f254f559bf56"
+  integrity sha512-PESAyASL7Nfi/IyBR3ufd8qZkyoS+7jOylKmJxRZUZLFASLo4NZaRsJ8rNP8pCcbIziADyWBbLPD1nPddhsL4g==
   dependencies:
     "@types/react" "*"
 
@@ -2238,10 +2238,10 @@
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-19.2.3.tgz#c1e305d15a52a3e508d54dca770d202cb63abf2c"
   integrity sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==
 
-"@types/react-highlight-words@^0.16.7":
-  version "0.16.7"
-  resolved "https://registry.yarnpkg.com/@types/react-highlight-words/-/react-highlight-words-0.16.7.tgz#82fdd2d2abe4c4a5c0da44be749660f6ec42f0c2"
-  integrity sha512-+upXTIaRd3rGvh1aDQSs9z5X+sV3UM6Jrmjk03GN2GXl4v/+iOJKQj2LZHo6Vp2IoTvMdtxgME26feqo12xXLg==
+"@types/react-highlight-words@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@types/react-highlight-words/-/react-highlight-words-0.20.1.tgz#f84a47b36d5e571afc7da47f273aaabf366b71a0"
+  integrity sha512-EgF6RaoibBurIhxk3X3d5xL0uMqjD7KtShvZ8S+d7/o6xZ+mQ4rct1a2E49vWA9r63OzrHCIyghqvQHASb/ERw==
   dependencies:
     "@types/react" "*"
 
@@ -3955,10 +3955,10 @@ graphql-ws@^5.14.0:
   resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-5.14.1.tgz#d05dba9c2cbf1582c990a2dfec4b8f6a55d99da4"
   integrity sha512-aqkls1espsygP1PfkAuuLIV96IbztQ6EaADse97pw8wRIMT3+AL/OYfS8V2iCRkc0gzckitoDRGCQEdnySggiA==
 
-graphql@^16.9.0:
-  version "16.9.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.9.0.tgz#1c310e63f16a49ce1fbb230bd0a000e99f6f115f"
-  integrity sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==
+graphql@^16.12.0:
+  version "16.12.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.12.0.tgz#28cc2462435b1ac3fdc6976d030cef83a0c13ac7"
+  integrity sha512-DKKrynuQRne0PNpEbzuEdHlYOMksHSUI8Zc9Unei5gTsMNA2/vMpoMz/yKba50pejK56qj98qM0SjYxAKi13gQ==
 
 has-flag@^3.0.0:
   version "3.0.0"
@@ -4059,19 +4059,19 @@ husky@^9.1.7:
   resolved "https://registry.yarnpkg.com/husky/-/husky-9.1.7.tgz#d46a38035d101b46a70456a850ff4201344c0b2d"
   integrity sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==
 
-i18next-browser-languagedetector@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.0.0.tgz#b6fdd9b43af67c47f2c26c9ba27710a1eaf31e2f"
-  integrity sha512-zhXdJXTTCoG39QsrOCiOabnWj2jecouOqbchu3EfhtSHxIB5Uugnm9JaizenOy39h7ne3+fLikIjeW88+rgszw==
+i18next-browser-languagedetector@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.2.1.tgz#f17a918d376a97aa12a5b63fd8ea559a6231935b"
+  integrity sha512-bZg8+4bdmaOiApD7N7BPT9W8MLZG+nPTOFlLiJiT8uzKXFjhxw4v2ierCXOwB5sFDMtuA5G4kgYZ0AznZxQ/cw==
   dependencies:
     "@babel/runtime" "^7.23.2"
 
-i18next@^23.11.5:
-  version "23.11.5"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-23.11.5.tgz#d71eb717a7e65498d87d0594f2664237f9e361ef"
-  integrity sha512-41pvpVbW9rhZPk5xjCX2TPJi2861LEig/YRhUkY+1FQ2IQPS0bKUDYnEqY8XPPbB48h1uIwLnP9iiEfuSl20CA==
+i18next@^25.8.11:
+  version "25.8.11"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-25.8.11.tgz#c7d4d876181f63d76248da44e0e92a55a65fe2d2"
+  integrity sha512-LZ32llTLGludnddjLoijHV7TbmVubU5eJnsWf8taiuM3jmSfUuvBLuyDeubJKS1yBjLBgb7As124M4KWNcBvpw==
   dependencies:
-    "@babel/runtime" "^7.23.2"
+    "@babel/runtime" "^7.28.4"
 
 iconv-lite@^0.4.24:
   version "0.4.24"
@@ -5130,13 +5130,14 @@ react-highlight-words@^0.21.0:
     highlight-words-core "^1.2.0"
     memoize-one "^4.0.0"
 
-react-i18next@^13.2.2:
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-13.2.2.tgz#b1e78ed66a54f4bc819616f68b98221e1b1a1936"
-  integrity sha512-+nFUkbRByFwnrfDcYqvzBuaeZb+nACHx+fAWN/pZMddWOCJH5hoc21+Sa/N/Lqi6ne6/9wC/qRGOoQhJa6IkEQ==
+react-i18next@^16.5.4:
+  version "16.5.4"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-16.5.4.tgz#4f458b1baab274dca439ab67629c854203bf97c6"
+  integrity sha512-6yj+dcfMncEC21QPhOTsW8mOSO+pzFmT6uvU7XXdvM/Cp38zJkmTeMeKmTrmCMD5ToT79FmiE/mRWiYWcJYW4g==
   dependencies:
-    "@babel/runtime" "^7.22.5"
+    "@babel/runtime" "^7.28.4"
     html-parse-stringify "^3.0.1"
+    use-sync-external-store "^1.6.0"
 
 react-icons@^4.11.0:
   version "4.11.0"
@@ -5153,7 +5154,7 @@ react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
-react-quill-new@^3.3.0:
+react-quill-new@^3.8.3:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/react-quill-new/-/react-quill-new-3.8.3.tgz#c9642428ebb1c8eb6cb98b7c347fc6d0c1ca3b95"
   integrity sha512-c96PYqFTo0pI4R3e79B3rH9LUIce1kIQbmTBu/imJQZk8305ogyLyBqKKjG2UoInDlquXqePSzmBo2aVia3ttw==
@@ -5944,15 +5945,20 @@ urlpattern-polyfill@^9.0.0:
   resolved "https://registry.yarnpkg.com/urlpattern-polyfill/-/urlpattern-polyfill-9.0.0.tgz#bc7e386bb12fd7898b58d1509df21d3c29ab3460"
   integrity sha512-WHN8KDQblxd32odxeIgo83rdVDE2bvdkb86it7bMhYZwWKJz0+O0RK/eZiHYnM+zgt/U7hAHOlCQGfjjvSkw2g==
 
-use-debounce@^9.0.4:
-  version "9.0.4"
-  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-9.0.4.tgz#51d25d856fbdfeb537553972ce3943b897f1ac85"
-  integrity sha512-6X8H/mikbrt0XE8e+JXRtZ8yYVvKkdYRfmIhWZYsP8rcNs9hk3APV8Ua2mFkKRLcJKVdnX2/Vwrmg2GWKUQEaQ==
+use-debounce@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-10.1.0.tgz#966a6da947ca027705dc1f317f8e3ad163416330"
+  integrity sha512-lu87Za35V3n/MyMoEpD5zJv0k7hCn0p+V/fK2kWD+3k2u3kOCwO593UArbczg1fhfs2rqPEnHpULJ3KmGdDzvg==
 
-use-local-storage-state@^19.1.0:
-  version "19.1.0"
-  resolved "https://registry.yarnpkg.com/use-local-storage-state/-/use-local-storage-state-19.1.0.tgz#9424981fd95dd37d253aad982f0a959ef5542fe2"
-  integrity sha512-3Ea6uRtRaSwpZYD9maZPKoEEGRuHmVA7zGrV/Uh9s5NTj9K1x/MB4IOQoywjUesQyhXmJq6bqjC5cAqlsXoOTw==
+use-local-storage-state@^19.5.0:
+  version "19.5.0"
+  resolved "https://registry.yarnpkg.com/use-local-storage-state/-/use-local-storage-state-19.5.0.tgz#25bf46dd45b491020c03db516b46a4ff93b3a923"
+  integrity sha512-sUJAyFvsmqMpBhdwaRr7GTKkkoxb6PWeNVvpBDrLuwQF1PpbJRKIbOYeLLeqJI7B3wdfFlLLCBbmOdopiSTBOw==
+
+use-sync-external-store@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.6.0.tgz#b174bfa65cb2b526732d9f2ac0a408027876f32d"
+  integrity sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"
