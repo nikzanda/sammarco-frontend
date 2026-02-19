@@ -1,10 +1,12 @@
-import { ApolloClient, ApolloLink, InMemoryCache, createHttpLink } from '@apollo/client';
+import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { setContext } from '@apollo/client/link/context';
+import { SetContextLink } from '@apollo/client/link/context';
+import { HttpLink } from '@apollo/client/link/http';
 import { OperationDefinitionNode } from 'graphql';
-import { onError } from '@apollo/client/link/error';
+import { ErrorLink } from '@apollo/client/link/error';
+import { CombinedGraphQLErrors } from '@apollo/client/errors';
 
-const authLink = setContext((_, { headers }) => {
+const authLink = new SetContextLink(({ headers }) => {
   const token = window.localStorage.getItem('token');
   const authHeaders: {
     authorization: string | undefined;
@@ -31,12 +33,12 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
     operation.variables = JSON.parse(JSON.stringify(operation.variables), omitTypename);
   }
 
-  return forward ? forward(operation) : null;
+  return forward(operation);
 });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, extensions, locations, path }) => {
+const errorLink = new ErrorLink(({ error }) => {
+  if (CombinedGraphQLErrors.is(error)) {
+    error.errors.forEach(({ message, extensions, locations, path }) => {
       if (extensions?.code === 'UNAUTHORIZED') {
         window.localStorage.removeItem('token');
         window.location.replace('/');
@@ -44,13 +46,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
       console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
     });
-  }
-  if (networkError) {
-    console.error(networkError);
+  } else {
+    console.error(error);
   }
 });
 
-const httpLink = createHttpLink({ uri: import.meta.env.VITE_GRAPHQLURI });
+const httpLink = new HttpLink({ uri: import.meta.env.VITE_GRAPHQLURI });
 
 const httpCompositeLink = ApolloLink.from([cleanTypeName, errorLink, authLink, httpLink]);
 

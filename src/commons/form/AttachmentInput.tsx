@@ -4,7 +4,7 @@ import { FaUpload } from 'react-icons/fa';
 import Icon, { InboxOutlined } from '@ant-design/icons';
 import { DraggerProps } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';
-import { EmailAttachmentInput } from '../../generated/graphql';
+import { EmailAttachmentInput } from '../../gql/graphql';
 import { resolveAttachmentsUpload } from '../../utils';
 
 type InputFormValue = EmailAttachmentInput | EmailAttachmentInput[];

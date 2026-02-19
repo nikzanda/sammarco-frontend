@@ -1,5 +1,4 @@
 import pdfMake from 'pdfmake/build/pdfmake';
-// @ts-ignore - vfs_fonts is a CJS module, namespace import needed for Vite compatibility
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
@@ -8,12 +7,11 @@ import apolloClient from '../../../apollo';
 import {
   FeeDetailFragment,
   PaymentFilter,
+  PaymentPdfDocument,
   PaymentPdfFragment,
-  PaymentPdfQuery,
-  PaymentPdfQueryVariables,
+  PaymentsPdfDocument,
   RecurrenceEnum,
-} from '../../../generated/graphql';
-import { PAYMENTS_PDF_QUERY, PAYMENT_PDF_QUERY } from '../queries.graphql';
+} from '../../../gql/graphql';
 import i18n from '../../../i18n';
 import { municipalities, signature as signatureUri } from '../../../constants';
 import { dateToYearMonth, toQuantity, isMinor, getSex } from '../../../utils';
@@ -47,8 +45,8 @@ class PDF {
   }
 
   public static async print(paymentId: string, action: 'open' | 'data-url' = 'open'): Promise<string | undefined> {
-    const { data, error } = await apolloClient.query<PaymentPdfQuery, PaymentPdfQueryVariables>({
-      query: PAYMENT_PDF_QUERY,
+    const { data, error } = await apolloClient.query({
+      query: PaymentPdfDocument,
       variables: {
         id: paymentId,
       },
@@ -58,7 +56,7 @@ class PDF {
       throw new Error(error.message);
     }
 
-    const pdfDef = new PDF(data.payment).generatePDF();
+    const pdfDef = new PDF(data!.payment).generatePDF();
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 
     switch (action) {
@@ -139,7 +137,7 @@ class PDF {
 
   public static async printMultiple(paymentFilter: PaymentFilter) {
     const { data, error } = await apolloClient.query({
-      query: PAYMENTS_PDF_QUERY,
+      query: PaymentsPdfDocument,
       variables: {
         filter: paymentFilter,
       },
@@ -151,7 +149,7 @@ class PDF {
 
     const {
       payments: { data: payments },
-    } = data;
+    } = data!;
 
     const pdfDef = PDF.generatePDFMultiple(payments);
     const pdfGenerated = pdfMake.createPdf(pdfDef);

@@ -3,7 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { dateToYearMonth } from '../../../utils';
 import { DatePicker } from '../../../components';
-import { useSendMonthlyRemindersMutation } from '../../../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { SendMonthlyRemindersDocument } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const FORM_ID = 'send-monthly-reminders-form';
@@ -16,13 +17,16 @@ const SendMonthlyRemindersModal: React.FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  const [sendMonthlyReminders, { loading: mutationLoading, error: mutationError }] = useSendMonthlyRemindersMutation({
-    refetchQueries: ['Members', 'Member', 'Emails'],
-    onCompleted: ({ sendMonthlyReminders: { sentReminders } }) => {
-      message.success(t('members.sentReminders', { sentReminders }));
-      onCancel();
-    },
-  });
+  const [sendMonthlyReminders, { loading: mutationLoading, error: mutationError }] = useMutation(
+    SendMonthlyRemindersDocument,
+    {
+      refetchQueries: ['Members', 'Member', 'Emails'],
+      onCompleted: ({ sendMonthlyReminders: { sentReminders } }) => {
+        message.success(t('members.sentReminders', { sentReminders }));
+        onCancel();
+      },
+    }
+  );
 
   useDisplayGraphQLErrors(mutationError);
 

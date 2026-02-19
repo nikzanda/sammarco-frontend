@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { isAfter, isBefore, isToday, set } from 'date-fns';
 import { CourseSearcher, ShiftPicker } from '../../courses/components';
 import { DatePicker } from '../../../components';
-import { ShiftsQuery, useAttendanceCreateManyMutation } from '../../../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { AttendanceCreateManyDocument, ShiftsQuery } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
@@ -30,13 +31,16 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
     return result;
   }, [courseIds]);
 
-  const [createAttendances, { loading: mutationLoading, error: mutationError }] = useAttendanceCreateManyMutation({
-    refetchQueries: ['Attendances'],
-    onCompleted: () => {
-      message.success(t('attendances.created'));
-      onCancel(true);
-    },
-  });
+  const [createAttendances, { loading: mutationLoading, error: mutationError }] = useMutation(
+    AttendanceCreateManyDocument,
+    {
+      refetchQueries: ['Attendances'],
+      onCompleted: () => {
+        message.success(t('attendances.created'));
+        onCancel(true);
+      },
+    }
+  );
 
   useDisplayGraphQLErrors(mutationError);
 

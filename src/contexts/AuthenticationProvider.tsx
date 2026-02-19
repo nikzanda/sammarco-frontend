@@ -1,17 +1,9 @@
 import React, { PropsWithChildren } from 'react';
-import { ApolloError, useApolloClient } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client/react';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { MeQuery, useLoginMutation, useMeQuery } from '../generated/graphql';
+import { LoginDocument, MeDocument } from '../gql/graphql';
 import { useDisplayGraphQLErrors } from '../hooks';
-
-interface IAuthenticationContext {
-  loading: boolean;
-  currentUser?: MeQuery['me'];
-  login: (username: string, password: string) => Promise<void>;
-  loginLoading: boolean;
-  loginError?: ApolloError;
-  logout: () => void;
-}
+import { AuthenticationContext } from './AuthenticationContext';
 
 const isAuthenticated = () => {
   const token = window.localStorage.getItem('token');
@@ -29,17 +21,9 @@ const isAuthenticated = () => {
   return token;
 };
 
-const noop = () => {};
-
-export const AuthenticationContext = React.createContext<IAuthenticationContext>({
-  loading: false,
-  login: async () => {},
-  loginLoading: false,
-  logout: noop,
-});
-
 export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
-  const [loginAction, { loading: mutationLoading, data: mutationData, error: mutationError }] = useLoginMutation();
+  const [loginAction, { loading: mutationLoading, data: mutationData, error: mutationError }] =
+    useMutation(LoginDocument);
 
   const client = useApolloClient();
 
@@ -47,7 +31,7 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children =
     data: meData,
     loading: meLoading,
     refetch: meRefetch,
-  } = useMeQuery({
+  } = useQuery(MeDocument, {
     skip: !isAuthenticated(),
   });
 
@@ -97,5 +81,3 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children =
 
   return <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>;
 };
-
-export const { Consumer: AuthenticationConsumer } = AuthenticationContext;

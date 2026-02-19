@@ -3,14 +3,15 @@ import { Table, TableColumnsType, TableProps, Tag, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { SorterResult } from 'antd/es/table/interface';
 import { format } from 'date-fns';
+import { useQuery } from '@apollo/client/react';
 import {
   EmailFilter,
+  EmailsDocument,
   EmailSortEnum,
   EmailsQuery,
   EmailTypeEnum,
   SortDirectionEnum,
-  useEmailsQuery,
-} from '../../../generated/graphql';
+} from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 type TableData = EmailsQuery['emails']['data'][number];
@@ -50,7 +51,7 @@ const EmailTable: React.FC<Props> = ({ filters = undefined }) => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useEmailsQuery({
+  } = useQuery(EmailsDocument, {
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,

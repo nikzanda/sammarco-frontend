@@ -3,7 +3,8 @@ import { App, Button, Flex, Form, FormProps, Input, Radio, Typography } from 'an
 import { useTranslation } from 'react-i18next';
 import Icon from '@ant-design/icons';
 import { FaPaperPlane } from 'react-icons/fa';
-import { CommunicationRecipientEnum, useSendCommunicationMutation } from '../../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { CommunicationRecipientEnum, SendCommunicationDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { AttachmentInput, QuillEditor } from '../../commons';
 
@@ -12,14 +13,17 @@ const CommunicationPage: React.FC = () => {
   const [form] = Form.useForm();
   const { message } = App.useApp();
 
-  const [sendCommunication, { loading: mutationLoading, error: mutationError }] = useSendCommunicationMutation({
-    onCompleted: ({ sendCommunication: { result } }) => {
-      if (result) {
-        message.success(t('emails.sent'));
-        form.resetFields();
-      }
-    },
-  });
+  const [sendCommunication, { loading: mutationLoading, error: mutationError }] = useMutation(
+    SendCommunicationDocument,
+    {
+      onCompleted: ({ sendCommunication: { result } }) => {
+        if (result) {
+          message.success(t('emails.sent'));
+          form.resetFields();
+        }
+      },
+    }
+  );
 
   useDisplayGraphQLErrors(mutationError);
 

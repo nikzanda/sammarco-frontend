@@ -2,7 +2,8 @@ import React from 'react';
 import { App, Flex, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useFeeCreateMutation, useFeeLazyQuery } from '../../generated/graphql';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { FeeCreateDocument, FeeDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { FeeForm } from './components';
 import { CreatePageHeader } from '../../commons';
@@ -13,9 +14,9 @@ const FeeCreatePage: React.FC = () => {
   const location = useLocation();
   const { message } = App.useApp();
 
-  const [getFee, { data: queryData, loading: queryLoading, error: queryError }] = useFeeLazyQuery();
+  const [getFee, { data: queryData, loading: queryLoading, error: queryError }] = useLazyQuery(FeeDocument);
 
-  const [createFee, { loading: mutationLoading, error: mutationError }] = useFeeCreateMutation({
+  const [createFee, { loading: mutationLoading, error: mutationError }] = useMutation(FeeCreateDocument, {
     refetchQueries: ['Fees', 'FeesSearcher'],
     onCompleted: () => {
       message.success(t('fees.created'));

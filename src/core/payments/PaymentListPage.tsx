@@ -8,15 +8,16 @@ import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
   PaymentFilter,
   PaymentListItemFragment,
+  PaymentSendReceiptDocument,
   PaymentSortEnum,
   PaymentTypeEnum,
+  PaymentsDocument,
   SortDirectionEnum,
-  usePaymentSendReceiptMutation,
-  usePaymentsQuery,
-} from '../../generated/graphql';
+} from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { capitalize, toCurrency } from '../../utils';
@@ -93,7 +94,7 @@ const PaymentListPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = usePaymentsQuery({
+  } = useQuery(PaymentsDocument, {
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
@@ -101,7 +102,7 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
+  const [sendEmail, { error: sendError }] = useMutation(PaymentSendReceiptDocument, {
     refetchQueries: ['Payments', 'Payment', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));

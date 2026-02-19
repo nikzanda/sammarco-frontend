@@ -2,7 +2,8 @@ import React from 'react';
 import { TreeSelect, TreeSelectProps, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { format, set } from 'date-fns';
-import { ShiftFilter, ShiftsQuery, useShiftsQuery } from '../../../generated/graphql';
+import { useQuery } from '@apollo/client/react';
+import { ShiftFilter, ShiftsDocument, ShiftsQuery } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { week } from '../../../commons';
 
@@ -35,7 +36,7 @@ const ShiftPicker: React.FC<Props> = ({
     data: shiftsData,
     loading: shiftsLoading,
     error: shiftsError,
-  } = useShiftsQuery({
+  } = useQuery(ShiftsDocument, {
     variables: {
       ...(queryFilters && {
         filter: queryFilters,

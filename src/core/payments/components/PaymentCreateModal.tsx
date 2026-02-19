@@ -2,16 +2,17 @@ import React from 'react';
 import { App, Checkbox, Form, FormProps, Input, InputNumber, Modal, Radio, Spin } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import {
   FeeSearcherQuery,
   FeeSortEnum,
+  MemberSearcherDocument,
+  PaymentCreateDocument,
+  PaymentSendReceiptDocument,
   PaymentTypeEnum,
   RecurrenceEnum,
   SortDirectionEnum,
-  useMemberSearcherLazyQuery,
-  usePaymentCreateMutation,
-  usePaymentSendReceiptMutation,
-} from '../../../generated/graphql';
+} from '../../../gql/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { dateToYearMonth, getYears } from '../../../utils';
@@ -42,7 +43,8 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   const paymentReason = React.useRef<string>(undefined);
   const [selectedFee, setSelectedFee] = React.useState<FeeSearcherQuery['fee']>();
 
-  const [getMember, { data: memberData, loading: memberLoading, error: memberError }] = useMemberSearcherLazyQuery();
+  const [getMember, { data: memberData, loading: memberLoading, error: memberError }] =
+    useLazyQuery(MemberSearcherDocument);
 
   React.useEffect(() => {
     if (memberId) {
@@ -85,7 +87,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     return texts.join(', ');
   }, [member, t, validEmailSettings]);
 
-  const [createPayment, { loading: mutationLoading, error: mutationError }] = usePaymentCreateMutation({
+  const [createPayment, { loading: mutationLoading, error: mutationError }] = useMutation(PaymentCreateDocument, {
     refetchQueries: ['Payments', 'Members'],
     onCompleted: () => {
       message.success(t('members.payments.created'));
@@ -93,7 +95,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
     },
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
+  const [sendEmail, { error: sendError }] = useMutation(PaymentSendReceiptDocument, {
     refetchQueries: ['Payments', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));

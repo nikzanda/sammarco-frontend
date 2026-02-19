@@ -3,7 +3,8 @@ import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { endOfDay, format, lastDayOfMonth, set, startOfDay } from 'date-fns';
 import { CSVDownload } from 'react-csv';
-import { PaymentSortEnum, SortDirectionEnum, usePaymentsCsvLazyQuery } from '../../../generated/graphql';
+import { useLazyQuery } from '@apollo/client/react';
+import { PaymentsCsvDocument, PaymentSortEnum, SortDirectionEnum } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { DatePicker } from '../../../components';
 import { capitalize, toCurrency } from '../../../utils';
@@ -28,7 +29,8 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
 
   const [monthRange, setMonthRange] = React.useState<[Date, Date]>();
 
-  const [getPayments, { data: queryData, loading: queryLoading, error: queryError }] = usePaymentsCsvLazyQuery();
+  const [getPayments, { data: queryData, loading: queryLoading, error: queryError }] =
+    useLazyQuery(PaymentsCsvDocument);
 
   useDisplayGraphQLErrors(queryError);
 

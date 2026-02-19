@@ -2,7 +2,7 @@ import { Col, Form, Input, InputNumber, Row, Select, Switch } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { CourseSearcher } from '../../courses/components';
-import { FeeDetailFragment, RecurrenceEnum } from '../../../generated/graphql';
+import { FeeDetailFragment, RecurrenceEnum } from '../../../gql/graphql';
 
 interface Props {
   fee?: FeeDetailFragment;

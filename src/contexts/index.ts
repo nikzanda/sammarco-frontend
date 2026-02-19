@@ -1,3 +1,6 @@
-export { AuthenticationContext, AuthenticationProvider, AuthenticationConsumer } from './AuthenticationContext';
-export { SettingsContext, SettingsProvider, SettingsConsumer } from './SettingsContext';
-export { ThemeContext, ThemeProvider, ThemeConsumer } from './ThemeContext';
+export { AuthenticationContext } from './AuthenticationContext';
+export { AuthenticationProvider } from './AuthenticationProvider';
+export { SettingsContext } from './SettingsContext';
+export { SettingsProvider } from './SettingsProvider';
+export { ThemeContext } from './ThemeContext';
+export { ThemeProvider } from './ThemeProvider';

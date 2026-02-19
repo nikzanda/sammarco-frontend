@@ -7,7 +7,8 @@ import { useSearchParams } from 'react-router-dom';
 import { SettingsContext } from '../contexts';
 import { EmailSettingsForm, EmailTextsForm, SettingsForm } from './components';
 import { useDisplayGraphQLErrors } from '../hooks';
-import { useSettingUpdateMutation } from '../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { SettingUpdateDocument } from '../gql/graphql';
 
 const DEFAULT_TAB = 'general';
 
@@ -24,7 +25,7 @@ const SettingsPage: React.FC = () => {
     setSearchParams(searchParams);
   }, [searchParams, setSearchParams, tab]);
 
-  const [updateUser, { loading: mutationLoading, error: mutationError }] = useSettingUpdateMutation({
+  const [updateUser, { loading: mutationLoading, error: mutationError }] = useMutation(SettingUpdateDocument, {
     refetchQueries: ['Me'],
     onCompleted: () => {
       message.success(t('settings.saved'));

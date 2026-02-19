@@ -1,6 +1,6 @@
 import { UploadFile } from 'antd';
 import { format } from 'date-fns';
-import { EmailAttachmentInput } from '../generated/graphql';
+import { EmailAttachmentInput } from '../gql/graphql';
 
 const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
 

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DatePicker } from '../../../components';
 import { isTaxCodeValid, isMinor as isMinorFn } from '../../../utils';
 import { CoursePicker, ShiftPicker } from '../../courses/components';
-import { QualificationEnum } from '../../../generated/graphql';
+import { QualificationEnum } from '../../../gql/graphql';
 
 interface Props {
   updating?: boolean;

@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaPrint, FaTrash } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
-import { useFeeDeleteMutation, useFeeQuery, useFeeUpdateMutation } from '../../generated/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { FeeDeleteDocument, FeeDocument, FeeUpdateDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { FeeForm } from './components';
 import PDF from '../payments/pdfs/receipt-pdf';
@@ -29,20 +30,20 @@ const FeeEditPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useFeeQuery({
+  } = useQuery(FeeDocument, {
     variables: {
       id: id!,
     },
   });
 
-  const [updateFee, { loading: updateLoading, error: updateError }] = useFeeUpdateMutation({
+  const [updateFee, { loading: updateLoading, error: updateError }] = useMutation(FeeUpdateDocument, {
     refetchQueries: ['Fees', 'Fee'],
     onCompleted: () => {
       message.success(t('fees.edited'));
     },
   });
 
-  const [deleteFee, { loading: deleteLoading, error: deleteError }] = useFeeDeleteMutation({
+  const [deleteFee, { loading: deleteLoading, error: deleteError }] = useMutation(FeeDeleteDocument, {
     refetchQueries: ['Fees'],
     onCompleted: () => {
       message.success(t('fees.deleted'));
@@ -92,6 +93,7 @@ const FeeEditPage: React.FC = () => {
   };
 
   const handleFinish: FormProps['onFinish'] = (values) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { courseId, ...input } = values;
 
     updateFee({

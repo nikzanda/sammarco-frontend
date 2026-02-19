@@ -1,30 +1,31 @@
 import React from 'react';
 import { App, Badge, Button, CalendarProps, Col, Flex, Modal, Popconfirm, Row, Spin, theme } from 'antd';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
-  set,
-  lastDayOfMonth,
-  lastDayOfYear,
-  isSameMonth,
-  format,
-  isSameDay,
-  endOfDay,
-  subDays,
-  addDays,
-} from 'date-fns';
-import { useTranslation } from 'react-i18next';
-import { FaExpand } from 'react-icons/fa';
-import Icon from '@ant-design/icons';
-import {
+  AttendanceDeleteManyDocument,
+  DayAttendancesDocument,
   DayAttendancesFilter,
   DayAttendancesQuery,
+  DayExpireMedicalCertificatesDocument,
   DayExpireMedicalCertificatesFilter,
-  useAttendanceDeleteManyMutation,
-  useDayAttendancesQuery,
-  useDayExpireMedicalCertificatesQuery,
-} from '../../generated/graphql';
+} from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { Calendar } from '../../components';
 import { CoursePicker } from '../courses/components';
+import { useTranslation } from 'react-i18next';
+import {
+  addDays,
+  endOfDay,
+  format,
+  isSameDay,
+  isSameMonth,
+  lastDayOfMonth,
+  lastDayOfYear,
+  set,
+  subDays,
+} from 'date-fns';
+import Icon from '@ant-design/icons';
+import { FaExpand } from 'react-icons/fa';
 
 const CalendarPage: React.FC = () => {
   const { t } = useTranslation();
@@ -66,7 +67,7 @@ const CalendarPage: React.FC = () => {
     data: dayAttendancesQueryData,
     loading: dayAttendancesQueryLoading,
     error: dayAttendancesQueryError,
-  } = useDayAttendancesQuery({
+  } = useQuery(DayAttendancesDocument, {
     variables: {
       filter: queryFilter,
     },
@@ -76,19 +77,22 @@ const CalendarPage: React.FC = () => {
     data: dayExpireMedicalCertificatesQueryData,
     loading: dayExpireMedicalCertificatesQueryLoading,
     error: dayExpireMedicalCertificatesQueryError,
-  } = useDayExpireMedicalCertificatesQuery({
+  } = useQuery(DayExpireMedicalCertificatesDocument, {
     variables: {
       filter: queryFilter,
     },
   });
 
-  const [deleteAttendances, { loading: mutationLoading, error: mutationError }] = useAttendanceDeleteManyMutation({
-    refetchQueries: ['Attendances', 'DayAttendances', 'DayExpireMedicalCertificates'],
-    onCompleted: () => {
-      message.success(t('calendar.deleted'));
-      Modal.destroyAll();
-    },
-  });
+  const [deleteAttendances, { loading: mutationLoading, error: mutationError }] = useMutation(
+    AttendanceDeleteManyDocument,
+    {
+      refetchQueries: ['Attendances', 'DayAttendances', 'DayExpireMedicalCertificates'],
+      onCompleted: () => {
+        message.success(t('calendar.deleted'));
+        Modal.destroyAll();
+      },
+    }
+  );
 
   useDisplayGraphQLErrors(dayAttendancesQueryError, dayExpireMedicalCertificatesQueryError, mutationError);
 

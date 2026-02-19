@@ -5,7 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaTrash } from 'react-icons/fa';
 import { set } from 'date-fns';
-import { ShiftInput, useCourseDeleteMutation, useCourseQuery, useCourseUpdateMutation } from '../../generated/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { CourseDeleteDocument, CourseDocument, CourseUpdateDocument, ShiftInput } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
 import { EditPageHeader, Updates } from '../../commons';
@@ -29,20 +30,20 @@ const CourseEditPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useCourseQuery({
+  } = useQuery(CourseDocument, {
     variables: {
       id: id!,
     },
   });
 
-  const [updateCourse, { loading: updateLoading, error: updateError }] = useCourseUpdateMutation({
+  const [updateCourse, { loading: updateLoading, error: updateError }] = useMutation(CourseUpdateDocument, {
     refetchQueries: ['Courses', 'Course'],
     onCompleted: () => {
       message.success(t('courses.edited'));
     },
   });
 
-  const [deleteCourse, { loading: deleteLoading, error: deleteError }] = useCourseDeleteMutation({
+  const [deleteCourse, { loading: deleteLoading, error: deleteError }] = useMutation(CourseDeleteDocument, {
     refetchQueries: ['Courses'],
     onCompleted: () => {
       message.success(t('courses.deleted'));

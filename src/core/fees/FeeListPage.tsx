@@ -7,7 +7,8 @@ import { Flex, Table, TableProps, theme } from 'antd';
 import Icon from '@ant-design/icons';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
-import { FeeFilter, FeeListItemFragment, FeeSortEnum, SortDirectionEnum, useFeesQuery } from '../../generated/graphql';
+import { useQuery } from '@apollo/client/react';
+import { FeeFilter, FeeListItemFragment, FeesDocument, FeeSortEnum, SortDirectionEnum } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 import { toCurrency } from '../../utils';
@@ -66,7 +67,7 @@ const FeeListPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useFeesQuery({
+  } = useQuery(FeesDocument, {
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,

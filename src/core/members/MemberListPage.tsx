@@ -8,14 +8,15 @@ import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear, set } from 'date-fns';
 import Highlighter from 'react-highlight-words';
+import { useQuery } from '@apollo/client/react';
 import {
   MedicalCertificateExpirationEnum,
   MemberFilter,
   MemberListItemFragment,
+  MembersDocument,
   MemberSortEnum,
   SortDirectionEnum,
-  useMembersQuery,
-} from '../../generated/graphql';
+} from '../../gql/graphql';
 import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader, week } from '../../commons';
@@ -109,7 +110,7 @@ const MemberListPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useMembersQuery({
+  } = useQuery(MembersDocument, {
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,

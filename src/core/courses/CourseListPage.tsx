@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state';
 import { Badge, Flex, Table, TableColumnsType, TableProps } from 'antd';
 import Highlighter from 'react-highlight-words';
+import { useQuery } from '@apollo/client/react';
 import {
   CourseFilter,
   CourseListItemFragment,
+  CoursesDocument,
   CourseSortEnum,
   SortDirectionEnum,
-  useCoursesQuery,
-} from '../../generated/graphql';
+} from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 
@@ -68,7 +69,7 @@ const CourseListPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useCoursesQuery({
+  } = useQuery(CoursesDocument, {
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,

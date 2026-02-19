@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Empty, Form, Row, Image, Switch } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { EmailAttachmentInput, MemberDetailFragment } from '../../../generated/graphql';
+import { EmailAttachmentInput, MemberDetailFragment } from '../../../gql/graphql';
 import { DatePicker } from '../../../components';
 import { AttachmentInput } from '../../../commons';
 

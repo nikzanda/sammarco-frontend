@@ -1,18 +1,11 @@
 import React, { PropsWithChildren } from 'react';
-import { SettingQuery, useSettingQuery } from '../generated/graphql';
+import { useQuery } from '@apollo/client/react';
+import { SettingDocument } from '../gql/graphql';
 import { useDisplayGraphQLErrors } from '../hooks';
-
-interface ISettingsContext {
-  settings?: SettingQuery['setting'];
-  validEmailSettings: boolean;
-}
-
-export const SettingsContext = React.createContext<ISettingsContext>({
-  validEmailSettings: false,
-});
+import { SettingsContext } from './SettingsContext';
 
 export const SettingsProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
-  const { data: queryData, loading: queryLoading, error: queryError } = useSettingQuery();
+  const { data: queryData, loading: queryLoading, error: queryError } = useQuery(SettingDocument);
 
   useDisplayGraphQLErrors(queryError);
 
@@ -46,5 +39,3 @@ export const SettingsProvider: React.FC<PropsWithChildren> = ({ children = undef
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 };
-
-export const { Consumer: SettingsConsumer } = SettingsContext;

@@ -1,18 +1,9 @@
 import React, { PropsWithChildren } from 'react';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';
 import itIT from 'antd/es/locale/it_IT';
+import { IThemeContext, ThemeContext } from './ThemeContext';
 
 const THEME_STORAGE_KEY = 'theme';
-
-interface IThemeContext {
-  isDarkMode: boolean;
-  toggleTheme: () => void;
-}
-
-export const ThemeContext = React.createContext<IThemeContext>({
-  isDarkMode: false,
-  toggleTheme: () => {},
-});
 
 export const ThemeProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
   const [isDarkMode, setIsDarkMode] = React.useState(() => {
@@ -53,5 +44,3 @@ export const ThemeProvider: React.FC<PropsWithChildren> = ({ children = undefine
     </ThemeContext.Provider>
   );
 };
-
-export const { Consumer: ThemeConsumer } = ThemeContext;

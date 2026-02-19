@@ -2,7 +2,8 @@ import React from 'react';
 import { App, Flex, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ShiftInput, useCourseCreateMutation } from '../../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { CourseCreateDocument, ShiftInput } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CourseForm } from './components';
 import { CreatePageHeader } from '../../commons';
@@ -12,7 +13,7 @@ const CourseCreatePage: React.FC = () => {
   const navigate = useNavigate();
   const { message } = App.useApp();
 
-  const [createCourse, { loading, error }] = useCourseCreateMutation({
+  const [createCourse, { loading, error }] = useMutation(CourseCreateDocument, {
     refetchQueries: ['Courses', 'CoursesSearcher'],
     onCompleted: () => {
       message.success(t('courses.created'));

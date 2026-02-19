@@ -1,12 +1,13 @@
 import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
 import {
   CourseFilter,
+  CourseSearcherDocument,
   CourseSearcherQuery,
-  useCourseSearcherQuery,
-  useCoursesSearcherLazyQuery,
-} from '../../../generated/graphql';
+  CoursesSearcherDocument,
+} from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 interface Props extends Omit<SelectProps, 'onChange'> {
@@ -16,17 +17,13 @@ interface Props extends Omit<SelectProps, 'onChange'> {
 
 const CourseSearcher: React.FC<Props> = ({ value, queryFilters = {}, onChange = () => {}, ...selectProps }) => {
   const [fetchCourses, { data: coursesData, loading: coursesLoading, error: coursesError, refetch: coursesRefetch }] =
-    useCoursesSearcherLazyQuery({
-      variables: {
-        filter: queryFilters,
-      },
-    });
+    useLazyQuery(CoursesSearcherDocument);
 
   const {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useCourseSearcherQuery({
+  } = useQuery(CourseSearcherDocument, {
     variables: {
       id: value!,
     },
@@ -81,13 +78,11 @@ const CourseSearcher: React.FC<Props> = ({ value, queryFilters = {}, onChange = 
     <Select
       {...selectProps}
       value={value}
-      onFocus={() => fetchCourses()}
+      onFocus={() => fetchCourses({ variables: { filter: queryFilters } })}
       options={options}
       onChange={handleChange}
-      filterOption={false}
-      onSearch={handleSearch}
+      showSearch={{ filterOption: false, onSearch: handleSearch }}
       loading={coursesLoading || courseLoading}
-      showSearch
     />
   );
 };

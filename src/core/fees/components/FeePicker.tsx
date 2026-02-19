@@ -1,12 +1,8 @@
 import React from 'react';
 import { Select, SelectProps, Typography } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
-import {
-  FeeFilter,
-  FeesSearcherQuery,
-  useFeesSearcherLazyQuery,
-  useFeesSearcherQuery,
-} from '../../../generated/graphql';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
+import { FeeFilter, FeesSearcherDocument, FeesSearcherQuery } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 interface Props extends Omit<SelectProps, 'onChange'> {
@@ -24,17 +20,13 @@ const FeePicker: React.FC<Props> = ({
   ...selectProps
 }) => {
   const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
-    useFeesSearcherLazyQuery({
-      variables: {
-        filter: queryFilters,
-      },
-    });
+    useLazyQuery(FeesSearcherDocument);
 
   const {
     data: valuesData,
     loading: valuesLoading,
     error: valuesError,
-  } = useFeesSearcherQuery({
+  } = useQuery(FeesSearcherDocument, {
     variables: {
       filter: {
         ids: value!,
@@ -105,13 +97,11 @@ const FeePicker: React.FC<Props> = ({
       {...selectProps}
       value={value}
       mode="multiple"
-      onFocus={() => fetchFees()}
+      onFocus={() => fetchFees({ variables: { filter: queryFilters } })}
       options={options}
       onChange={handleChange}
-      filterOption={false}
-      onSearch={handleSearch}
+      showSearch={{ filterOption: false, onSearch: handleSearch }}
       loading={feesLoading || valuesLoading}
-      showSearch
       style={{ width: '100%' }}
     />
   );

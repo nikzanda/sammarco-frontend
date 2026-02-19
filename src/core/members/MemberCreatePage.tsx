@@ -3,7 +3,8 @@ import { App, Flex, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { MemberForm } from './components';
-import { QualificationEnum, useMemberCreateMutation } from '../../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { MemberCreateDocument, QualificationEnum } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { CreatePageHeader } from '../../commons';
 
@@ -13,7 +14,7 @@ const MemberCreatePage: React.FC = () => {
   const { message } = App.useApp();
   const [form] = Form.useForm();
 
-  const [createMember, { loading: mutationLoading, error: mutationError }] = useMemberCreateMutation({
+  const [createMember, { loading: mutationLoading, error: mutationError }] = useMutation(MemberCreateDocument, {
     refetchQueries: ['Members', 'MembersSearcher'],
     onCompleted: () => {
       message.success(t('members.created'));

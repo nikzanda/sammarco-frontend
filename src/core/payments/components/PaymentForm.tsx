@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Form, Input, InputNumber, Radio, Row } from 'antd';
 import { format, set } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { PaymentTypeEnum, RecurrenceEnum, PaymentDetailFragment, FeeSearcherQuery } from '../../../generated/graphql';
+import { PaymentTypeEnum, RecurrenceEnum, PaymentDetailFragment, FeeSearcherQuery } from '../../../gql/graphql';
 import { dateToYearMonth } from '../../../utils';
 import { DatePicker } from '../../../components';
 import { FeeSearcher } from '../../fees/components';

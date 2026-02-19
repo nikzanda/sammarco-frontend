@@ -14,13 +14,14 @@ import { App, Badge, Button, CalendarProps, Popconfirm, Spin, theme } from 'antd
 import { useTranslation } from 'react-i18next';
 import { FaTrash } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
+  AttendanceDeleteDocument,
   AttendanceFilter,
   AttendanceListItemFragment,
+  AttendancesDocument,
   MemberDetailFragment,
-  useAttendanceDeleteMutation,
-  useAttendancesQuery,
-} from '../../../generated/graphql';
+} from '../../../gql/graphql';
 import { Calendar } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
@@ -66,13 +67,13 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useAttendancesQuery({
+  } = useQuery(AttendancesDocument, {
     variables: {
       filter: queryFilter,
     },
   });
 
-  const [deleteAttendance, { loading: mutationLoading, error: mutationError }] = useAttendanceDeleteMutation({
+  const [deleteAttendance, { loading: mutationLoading, error: mutationError }] = useMutation(AttendanceDeleteDocument, {
     refetchQueries: ['Attendances', 'Member'],
     onCompleted: () => {
       message.success(t('attendances.deleted'));

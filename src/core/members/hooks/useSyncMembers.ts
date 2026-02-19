@@ -1,7 +1,9 @@
 import React from 'react';
 import { App } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useMembersSyncLazyQuery, useMemberUpdateManyMutation } from '../../../generated/graphql';
+import { useLazyQuery } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
+import { MembersSyncDocument, MemberUpdateManyDocument } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { getRealCurrentYears } from '../../../utils';
 
@@ -24,8 +26,8 @@ const useSyncMembers = () => {
   const { message } = App.useApp();
   const [loading, setLoading] = React.useState(false);
 
-  const [getMembers, { error: queryError }] = useMembersSyncLazyQuery();
-  const [updateMembers] = useMemberUpdateManyMutation();
+  const [getMembers, { error: queryError }] = useLazyQuery(MembersSyncDocument);
+  const [updateMembers] = useMutation(MemberUpdateManyDocument);
 
   useDisplayGraphQLErrors(queryError);
 

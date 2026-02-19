@@ -1,12 +1,13 @@
 import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { useDebouncedCallback } from 'use-debounce';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
 import {
   MemberFilter,
+  MemberSearcherDocument,
   MemberSearcherQuery,
-  useMemberSearcherQuery,
-  useMembersSearcherLazyQuery,
-} from '../../../generated/graphql';
+  MembersSearcherDocument,
+} from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 interface Props extends Omit<SelectProps, 'onChange'> {
@@ -16,17 +17,13 @@ interface Props extends Omit<SelectProps, 'onChange'> {
 
 const MemberSearcher: React.FC<Props> = ({ value, queryFilters = {}, onChange = () => {}, ...selectProps }) => {
   const [fetchMembers, { data: membersData, loading: membersLoading, error: membersError, refetch: membersRefetch }] =
-    useMembersSearcherLazyQuery({
-      variables: {
-        filter: queryFilters,
-      },
-    });
+    useLazyQuery(MembersSearcherDocument);
 
   const {
     data: memberData,
     loading: memberLoading,
     error: memberError,
-  } = useMemberSearcherQuery({
+  } = useQuery(MemberSearcherDocument, {
     variables: {
       id: value!,
     },
@@ -81,13 +78,11 @@ const MemberSearcher: React.FC<Props> = ({ value, queryFilters = {}, onChange = 
     <Select
       {...selectProps}
       value={value}
-      onFocus={() => fetchMembers()}
+      onFocus={() => fetchMembers({ variables: { filter: queryFilters } })}
       options={options}
       onChange={handleChange}
-      filterOption={false}
-      onSearch={handleSearch}
+      showSearch={{ filterOption: false, onSearch: handleSearch }}
       loading={membersLoading || memberLoading}
-      showSearch
     />
   );
 };

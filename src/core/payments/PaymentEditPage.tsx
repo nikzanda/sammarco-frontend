@@ -19,12 +19,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Icon, { ExclamationCircleFilled } from '@ant-design/icons';
 import { FaPrint, FaTrash } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
-  usePaymentDeleteMutation,
-  usePaymentQuery,
-  usePaymentSendReceiptMutation,
-  usePaymentUpdateMutation,
-} from '../../generated/graphql';
+  PaymentDeleteDocument,
+  PaymentDocument,
+  PaymentSendReceiptDocument,
+  PaymentUpdateDocument,
+} from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { PaymentForm } from './components';
 import PDF from './pdfs/receipt-pdf';
@@ -56,27 +57,27 @@ const PaymentEditPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = usePaymentQuery({
+  } = useQuery(PaymentDocument, {
     variables: {
       id: id!,
     },
   });
 
-  const [updatePayment, { loading: updateLoading, error: updateError }] = usePaymentUpdateMutation({
+  const [updatePayment, { loading: updateLoading, error: updateError }] = useMutation(PaymentUpdateDocument, {
     refetchQueries: ['Payments', 'Payment', 'Members', 'Member', 'PaymentsPdf', 'PaymentPdf'],
     onCompleted: () => {
       message.success(t('payments.edited'));
     },
   });
 
-  const [deletePayment, { loading: deleteLoading, error: deleteError }] = usePaymentDeleteMutation({
+  const [deletePayment, { loading: deleteLoading, error: deleteError }] = useMutation(PaymentDeleteDocument, {
     refetchQueries: ['Payments'],
     onCompleted: () => {
       message.success(t('payments.deleted'));
     },
   });
 
-  const [sendEmail, { loading: sendLoading, error: sendError }] = usePaymentSendReceiptMutation({
+  const [sendEmail, { loading: sendLoading, error: sendError }] = useMutation(PaymentSendReceiptDocument, {
     refetchQueries: ['Payments', 'Emails'],
     onCompleted: () => {
       message.success(t('payments.sent'));

@@ -1,14 +1,15 @@
 import React from 'react';
 import { Row, Col, Input, InputNumber, Switch, Tooltip, Button, Form, App } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useVerifyEmailSettingsMutation } from '../../generated/graphql';
+import { useMutation } from '@apollo/client/react';
+import { VerifyEmailSettingsDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 
 const EmailSettingsForm: React.FC = () => {
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  const [verifyEmailSettings, { loading, error }] = useVerifyEmailSettingsMutation({
+  const [verifyEmailSettings, { loading, error }] = useMutation(VerifyEmailSettingsDocument, {
     onCompleted: () => {
       message.success(t('settings.emailSettings.verified'));
     },

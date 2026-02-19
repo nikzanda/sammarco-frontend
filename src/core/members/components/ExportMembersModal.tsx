@@ -3,7 +3,8 @@ import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { CSVDownload } from 'react-csv';
 import { format } from 'date-fns';
-import { MemberSortEnum, SortDirectionEnum, useMembersCsvLazyQuery } from '../../../generated/graphql';
+import { useLazyQuery } from '@apollo/client/react';
+import { MembersCsvDocument, MemberSortEnum, SortDirectionEnum } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 import { getYears, getBirthPlace } from '../../../utils';
 
@@ -36,15 +37,7 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
     { label: t('members.csv.asiCardNumber'), key: 'asiCardNumber' },
   ];
 
-  const [getMembers, { data: queryData, loading: queryLoading, error: queryError }] = useMembersCsvLazyQuery({
-    variables: {
-      years: getYears(),
-      filter: {
-        sortBy: MemberSortEnum.REGISTRATION_REQUEST_DATE,
-        sortDirection: SortDirectionEnum.ASC,
-      },
-    },
-  });
+  const [getMembers, { data: queryData, loading: queryLoading, error: queryError }] = useLazyQuery(MembersCsvDocument);
 
   useDisplayGraphQLErrors(queryError);
 

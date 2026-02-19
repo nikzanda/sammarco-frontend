@@ -5,16 +5,17 @@ import { format, set } from 'date-fns';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
 import { useDisplayGraphQLErrors } from '../../../hooks';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
   MemberDetailFragment,
   PaymentFilter,
   PaymentListItemFragment,
+  PaymentSendReceiptDocument,
   PaymentSortEnum,
   PaymentTypeEnum,
+  PaymentsDocument,
   SortDirectionEnum,
-  usePaymentSendReceiptMutation,
-  usePaymentsQuery,
-} from '../../../generated/graphql';
+} from '../../../gql/graphql';
 import PDF from '../../payments/pdfs/receipt-pdf';
 import { toCurrency } from '../../../utils';
 import { ActionButtons, Filters } from '../../../commons';
@@ -76,7 +77,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = usePaymentsQuery({
+  } = useQuery(PaymentsDocument, {
     variables: {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
@@ -84,7 +85,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     },
   });
 
-  const [sendEmail, { error: sendError }] = usePaymentSendReceiptMutation({
+  const [sendEmail, { error: sendError }] = useMutation(PaymentSendReceiptDocument, {
     refetchQueries: ['Payments', 'Emails', 'Member'],
     onCompleted: () => {
       message.success(t('payments.sent'));

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import { Alert } from 'antd';
 import itIT from 'antd/es/locale/it_IT';
 import { setDefaultOptions } from 'date-fns';

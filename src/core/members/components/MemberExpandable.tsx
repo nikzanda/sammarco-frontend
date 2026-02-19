@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear } from 'date-fns';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
-import { MemberListItemFragment } from '../../../generated/graphql';
+import { MemberListItemFragment } from '../../../gql/graphql';
 import { getYears } from '../../../utils';
 import { SettingsContext } from '../../../contexts';
 

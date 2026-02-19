@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
 import { FaBell, FaCalendarCheck, FaMoneyBill, FaTrash } from 'react-icons/fa';
-import { useMemberDeleteMutation, useMemberQuery, useMemberUpdateMutation } from '../../generated/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { MemberDeleteDocument, MemberDocument, MemberUpdateDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
 import { EditPageHeader, Updates } from '../../commons';
@@ -37,13 +38,13 @@ const MemberEditPage: React.FC = () => {
     data: queryData,
     loading: queryLoading,
     error: queryError,
-  } = useMemberQuery({
+  } = useQuery(MemberDocument, {
     variables: {
       id: id!,
     },
   });
 
-  const [updateMember, { loading: updateLoading, error: updateError }] = useMemberUpdateMutation({
+  const [updateMember, { loading: updateLoading, error: updateError }] = useMutation(MemberUpdateDocument, {
     refetchQueries: ['Members', 'Member', 'Payments', 'PaymentPdf', 'PaymentsPdf'],
     onCompleted: () => {
       message.success(t('members.edited'));
@@ -51,7 +52,7 @@ const MemberEditPage: React.FC = () => {
     },
   });
 
-  const [deleteMember, { loading: deleteLoading, error: deleteError }] = useMemberDeleteMutation({
+  const [deleteMember, { loading: deleteLoading, error: deleteError }] = useMutation(MemberDeleteDocument, {
     refetchQueries: ['Members'],
     onCompleted: () => {
       message.success(t('members.deleted'));
