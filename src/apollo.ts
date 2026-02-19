@@ -28,7 +28,6 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
 
   if (def && (def as OperationDefinitionNode).operation === 'mutation') {
     const omitTypename = (key: string, value: any) => (key === '__typename' ? undefined : value);
-    // eslint-disable-next-line no-param-reassign
     operation.variables = JSON.parse(JSON.stringify(operation.variables), omitTypename);
   }
 
@@ -38,17 +37,15 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, extensions, locations, path }) => {
-      if (extensions.code === 'UNAUTHORIZED') {
+      if (extensions?.code === 'UNAUTHORIZED') {
         window.localStorage.removeItem('token');
         window.location.replace('/');
       }
 
-      // eslint-disable-next-line no-console
       console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
     });
   }
   if (networkError) {
-    // eslint-disable-next-line no-console
     console.error(networkError);
   }
 });

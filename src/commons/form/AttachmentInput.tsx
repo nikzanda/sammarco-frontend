@@ -10,6 +10,7 @@ import { resolveAttachmentsUpload } from '../../utils';
 type InputFormValue = EmailAttachmentInput | EmailAttachmentInput[];
 
 interface BaseProps {
+  children?: React.ReactNode;
   value?: InputFormValue;
   onChange?: (newValue: InputFormValue) => void;
 }

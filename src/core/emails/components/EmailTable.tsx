@@ -151,10 +151,8 @@ const EmailTable: React.FC<Props> = ({ filters = undefined }) => {
         },
       }}
       expandable={{
-        // eslint-disable-next-line react/no-unstable-nested-components
         expandedRowRender: (email) =>
           /<\/?[a-z][\s\S]*>/i.test(email.body) ? (
-            // eslint-disable-next-line react/no-danger
             <div dangerouslySetInnerHTML={{ __html: email.body }} />
           ) : (
             <p style={{ whiteSpace: 'pre-line' }}>{email.body}</p>

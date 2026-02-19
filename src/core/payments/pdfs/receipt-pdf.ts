@@ -1,6 +1,3 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore - vfs_fonts is a CJS module, namespace import needed for Vite compatibility
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';

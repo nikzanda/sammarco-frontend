@@ -249,7 +249,6 @@ const CalendarPage: React.FC = () => {
                         okButtonProps: {
                           type: 'default',
                         },
-                        // eslint-disable-next-line react/no-unstable-nested-components
                         footer: (_, { OkBtn }) => (
                           <>
                             <Popconfirm

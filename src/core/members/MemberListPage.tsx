@@ -510,7 +510,6 @@ const MemberListPage: React.FC = () => {
           onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys as string[]),
         }}
         expandable={{
-          // eslint-disable-next-line react/no-unstable-nested-components
           expandedRowRender: (member) => <MemberExpandable member={member} />,
         }}
         scroll={{ x: 600 }}

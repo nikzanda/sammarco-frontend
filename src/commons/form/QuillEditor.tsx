@@ -1,8 +1,8 @@
 import React from 'react';
-import ReactQuill, { ReactQuillProps } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
-const modules: ReactQuillProps['modules'] = {
+const modules: React.ComponentProps<typeof ReactQuill>['modules'] = {
   toolbar: [
     [{ header: [1, 2, 3, false] }],
     ['bold', 'italic', 'underline', 'strike'],
@@ -16,7 +16,7 @@ const modules: ReactQuillProps['modules'] = {
   },
 };
 
-const formats: ReactQuillProps['formats'] = [
+const formats: React.ComponentProps<typeof ReactQuill>['formats'] = [
   'header',
   'bold',
   'italic',

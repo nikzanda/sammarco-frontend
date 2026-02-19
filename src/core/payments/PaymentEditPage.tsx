@@ -153,15 +153,12 @@ const PaymentEditPage: React.FC = () => {
         } = data;
 
         for (const updatedPayment of updatedPayments) {
-          // eslint-disable-next-line no-await-in-loop
           const attachmentUri = await PDF.print(updatedPayment.id, 'data-url');
           if (!attachmentUri) {
             message.error(t('payments.printError'));
-            // eslint-disable-next-line no-continue
             continue;
           }
 
-          // eslint-disable-next-line no-await-in-loop
           await sendEmail({
             variables: {
               input: {

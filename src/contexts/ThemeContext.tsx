@@ -44,7 +44,7 @@ export const ThemeProvider: React.FC<PropsWithChildren> = ({ children = undefine
       <ConfigProvider
         locale={itIT}
         theme={{
-          cssVar: true,
+          cssVar: {},
           algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
         }}
       >

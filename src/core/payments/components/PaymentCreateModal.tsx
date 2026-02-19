@@ -39,7 +39,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
   const { t } = useTranslation();
   const { message } = App.useApp();
 
-  const paymentReason = React.useRef<string>();
+  const paymentReason = React.useRef<string>(undefined);
   const [selectedFee, setSelectedFee] = React.useState<FeeSearcherQuery['fee']>();
 
   const [getMember, { data: memberData, loading: memberLoading, error: memberError }] = useMemberSearcherLazyQuery();

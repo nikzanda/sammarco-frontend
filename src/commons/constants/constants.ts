@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const week = [
   { label: 'monday', weekDay: 1 },
   { label: 'tuesday', weekDay: 2 },

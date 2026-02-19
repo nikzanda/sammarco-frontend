@@ -17,7 +17,7 @@ const useDisplayGraphQLErrors = (...errors: (ApolloError | undefined)[]) => {
         message.error(
           error.graphQLErrors
             .map((e) => {
-              const errorResponse = e.extensions.response as any;
+              const errorResponse = e.extensions?.response as any;
               if (!errorResponse) {
                 return t(`errors.${e.message}`);
               }

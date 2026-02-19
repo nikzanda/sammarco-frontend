@@ -65,7 +65,6 @@ const SettingsForm: React.FC = () => {
               label: day,
               value: day,
             }))}
-            // eslint-disable-next-line react/no-unstable-nested-components
             dropdownRender={(menu) => (
               <>
                 {menu}

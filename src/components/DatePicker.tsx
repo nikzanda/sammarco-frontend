@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import dateFnsGenerateConfig from 'rc-picker/lib/generate/dateFns';
+import dateFnsGenerateConfig from '@rc-component/picker/generate/dateFns';
 import generatePicker from 'antd/es/date-picker/generatePicker';
 import 'antd/es/date-picker/style/index';
 
