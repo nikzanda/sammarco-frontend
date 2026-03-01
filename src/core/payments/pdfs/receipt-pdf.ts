@@ -1,8 +1,7 @@
-import pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { format } from 'date-fns';
 import { cardinalConverter } from 'italian-numbers';
+import pdfMake from '../../../commons/pdf/pdfmake';
 import apolloClient from '../../../apollo';
 import {
   FeeDetailFragment,
@@ -17,8 +16,6 @@ import { municipalities, signature as signatureUri } from '../../../constants';
 import { dateToYearMonth, toQuantity, isMinor, getSex } from '../../../utils';
 
 const { t } = i18n;
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const defaultColor = '#116B92';
 
