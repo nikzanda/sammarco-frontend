@@ -65,6 +65,7 @@ const apolloClient = new ApolloClient({
     watchQuery: {
       nextFetchPolicy: 'network-only',
       fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: false,
     },
   },
   cache: new InMemoryCache({
