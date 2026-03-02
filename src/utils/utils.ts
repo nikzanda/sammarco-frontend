@@ -2,8 +2,6 @@ import { UploadFile } from 'antd';
 import { format } from 'date-fns';
 import { EmailAttachmentInput } from '../gql/graphql';
 
-const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
-
 export const toCurrency = (
   amount: number,
   { minimumFractionDigits = 2, maximumFractionDigits = 2 }: Intl.NumberFormatOptions = {},
@@ -35,23 +33,11 @@ export const getRealCurrentYears = (): [number, number] => {
   return [currentYear, currentYear + 1];
 };
 
-export const getRealYears = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  if (month < 8) {
-    return [year - 1, year];
-  }
-  return [year, year + 1];
-};
-
-export const getYears = (): [number, number] => {
-  const year = parseInt(REACT_APP_SOCIAL_YEAR!, 10);
-  return [year, year + 1];
-};
-
-export const getMonths = (): [Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date] => {
-  const result = getYears().reduce((acc: Date[], year, index) => {
+export const getMonths = (
+  socialYear: number
+): [Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date, Date] => {
+  const years: [number, number] = [socialYear, socialYear + 1];
+  const result = years.reduce((acc: Date[], year, index) => {
     switch (index) {
       case 0:
         acc.push(...[8, 9, 10, 11].map((monthNumber) => new Date(year, monthNumber)));

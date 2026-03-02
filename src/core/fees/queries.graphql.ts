@@ -4,12 +4,14 @@ export const FEE_LIST_ITEM_FRAGMENT = gql`
   fragment FeeListItem on Fee {
     id
     name
+    type
     course {
       id
       name
     }
     amount
     enabled
+    socialYear
   }
 `;
 
@@ -31,6 +33,7 @@ export const FEES_SEARCH_QUERY = gql`
       data {
         id
         name
+        type
         amount
         recurrence
         reason
@@ -47,6 +50,7 @@ export const FEE_SEARCH_QUERY = gql`
     fee(id: $id) {
       id
       name
+      type
       amount
       recurrence
       reason

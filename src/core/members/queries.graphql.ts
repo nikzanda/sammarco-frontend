@@ -4,36 +4,24 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
   fragment MemberListItem on Member {
     id
     fullName
-    payments(years: $years) {
+    currentEnrollment {
       id
-      month
-      years
-    }
-    attendances(years: $years) {
-      id
-      course {
+      status
+      courses {
         id
+        name
+        shifts {
+          id
+          from
+          to
+        }
       }
-      from
-      to
+      shiftIds
+      socialCardNumber
+      medicalCertificateExpireAt
+      qualification
+      excludeFromCommunications
     }
-    courses {
-      id
-      name
-      shifts {
-        id
-        from
-        to
-      }
-    }
-    medicalCertificate {
-      expireAt
-    }
-    currentMonthReminderEmails {
-      id
-    }
-    shiftIds
-    socialCardNumber
   }
 `;
 
@@ -44,24 +32,44 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     surname
     taxCode
     address
-    qualification
     email
-    excludeFromCommunications
-    registrationRequestDate
-    registrationAcceptanceDate
-    asiCardNumber
-    csenCardNumber
+    phone
+    isUnderage
     parent {
       name
       surname
       taxCode
+      email
+      phone
     }
-    shiftIds
-    medicalCertificate {
-      base64
-      expireAt
+    currentEnrollment {
+      id
+      status
+      courses {
+        id
+        name
+        shifts {
+          id
+          from
+          to
+        }
+      }
+      shiftIds
+      qualification
+      socialCardNumber
+      asiCardNumber
+      csenCardNumber
+      registrationRequestDate
+      registrationAcceptanceDate
+      medicalCertificateExpireAt
+      medicalCertificateType
+      medicalCertificateKey
+      excludeFromCommunications
+      consents {
+        type
+        acceptedAt
+      }
     }
-    skipMedicalCertificateExpirationEmail
     canDelete
     createdAt
     updatedAt
@@ -92,7 +100,7 @@ export const MEMBER_SEARCH_QUERY = gql`
 `;
 
 export const MEMBERS_QUERY = gql`
-  query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter, $years: [Int!]) {
+  query Members($pageIndex: Int!, $pageSize: Int!, $filter: MemberFilter) {
     members(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {
       data {
         ...MemberListItem
@@ -106,7 +114,7 @@ export const MEMBERS_QUERY = gql`
 `;
 
 export const MEMBER_QUERY = gql`
-  query Member($id: ID!, $years: [Int!]) {
+  query Member($id: ID!) {
     member(id: $id) {
       ...MemberDetail
     }
@@ -115,48 +123,20 @@ export const MEMBER_QUERY = gql`
 `;
 
 export const MEMBERS_CSV_QUERY = gql`
-  query MembersCsv($years: [Int!]!, $filter: MemberFilter) {
+  query MembersCsv($filter: MemberFilter) {
     members(pageIndex: 0, pageSize: 0, filter: $filter) {
       data {
-        socialCardNumber
-        registrationRequestDate
-        registrationAcceptanceDate
         fullName
         birthday
         taxCode
         address
-        qualification
-        paidMembershipFee(years: $years)
-        csenCardNumber
-        asiCardNumber
-      }
-    }
-  }
-`;
-
-export const MEMBERS_SYNC_QUERY = gql`
-  query MembersSync($ids: [ID!]!) {
-    members(pageIndex: 0, pageSize: 0, filter: { ids: $ids }) {
-      data {
-        id
-        name
-        surname
-        taxCode
-        address
-        qualification
-        email
-        parent {
-          name
-          surname
-          taxCode
-        }
-        courses {
-          id
-        }
-        shiftIds
-        medicalCertificate {
-          base64
-          expireAt
+        currentEnrollment {
+          socialCardNumber
+          registrationRequestDate
+          registrationAcceptanceDate
+          qualification
+          csenCardNumber
+          asiCardNumber
         }
       }
     }
@@ -164,7 +144,7 @@ export const MEMBERS_SYNC_QUERY = gql`
 `;
 
 export const MEMBER_CREATE_MUTATION = gql`
-  mutation MemberCreate($input: MemberCreateInput!, $years: [Int!]) {
+  mutation MemberCreate($input: MemberCreateInput!) {
     memberCreate(input: $input) {
       member {
         ...MemberDetail
@@ -175,7 +155,7 @@ export const MEMBER_CREATE_MUTATION = gql`
 `;
 
 export const MEMBER_UPDATE_MUTATION = gql`
-  mutation MemberUpdate($input: MemberUpdateInput!, $years: [Int!]) {
+  mutation MemberUpdate($input: MemberUpdateInput!) {
     memberUpdate(input: $input) {
       member {
         ...MemberDetail
@@ -185,16 +165,8 @@ export const MEMBER_UPDATE_MUTATION = gql`
   ${MEMBER_DETAIL_FRAGMENT}
 `;
 
-export const MEMBER_UPDATE_MANY_MUTATION = gql`
-  mutation MemberUpdateMany($input: MemberUpdateManyInput!) {
-    memberUpdateMany(input: $input) {
-      modifiedCount
-    }
-  }
-`;
-
 export const MEMBER_DELETE_MUTATION = gql`
-  mutation MemberDelete($input: MemberDeleteInput!, $years: [Int!]) {
+  mutation MemberDelete($input: MemberDeleteInput!) {
     memberDelete(input: $input) {
       member {
         ...MemberDetail

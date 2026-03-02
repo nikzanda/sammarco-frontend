@@ -17,7 +17,7 @@ export const PAYMENT_LIST_ITEM_FRAGMENT = gql`
     }
     amount
     month
-    years
+    socialYear
     type
     sent
   }
@@ -126,7 +126,7 @@ export const PAYMENTS_CSV_QUERY = gql`
         amount
         date
         month
-        years
+        socialYear
         type
       }
     }

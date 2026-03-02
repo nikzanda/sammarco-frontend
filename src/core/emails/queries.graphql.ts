@@ -35,6 +35,7 @@ export const SEND_MONTHLY_REMINDERS_MUTATION = gql`
   mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {
     sendMonthlyReminders(input: $input) {
       sentReminders
+      failedReminders
     }
   }
 `;
