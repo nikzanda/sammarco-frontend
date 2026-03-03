@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, Empty, Form, Row, Image, Switch } from 'antd';
+import { Col, Empty, Form, Row, Image, Select } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { EmailAttachmentInput, MemberDetailFragment } from '../../../gql/graphql';
+import { EmailAttachmentInput, MedicalCertificateTypeEnum, MemberDetailFragment } from '../../../gql/graphql';
 import { DatePicker } from '../../../components';
 import { AttachmentInput } from '../../../commons';
 
@@ -14,19 +14,19 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
 
   const attachmentPreview = React.useMemo(() => {
-    if (!member.medicalCertificate?.base64) {
+    if (!member.currentEnrollment?.medicalCertificateKey) {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
     }
 
-    const { base64 } = member.medicalCertificate;
-    const fileType = base64.slice(5, base64.indexOf(';base64,'));
+    const { medicalCertificateKey } = member.currentEnrollment;
+    const fileType = medicalCertificateKey.slice(5, medicalCertificateKey.indexOf(';base64,'));
 
     if (fileType === 'application/pdf') {
-      return <embed src={member.medicalCertificate.base64} width="1000" height="1000" />;
+      return <embed src={medicalCertificateKey} width="1000" height="1000" />;
     }
 
-    return <Image src={base64} />;
-  }, [member.medicalCertificate]);
+    return <Image src={medicalCertificateKey} />;
+  }, [member.currentEnrollment]);
 
   return (
     <>
@@ -34,7 +34,7 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
         <Col xs={24} md={12} xxl={8}>
           <Form.Item
             label={t('members.form.medicalCertificate.expireAt')}
-            name={['medicalCertificate', 'expireAt']}
+            name={['enrollment', 'medicalCertificateExpireAt']}
             getValueProps={(v: number) => {
               if (v) {
                 return { value: new Date(v) };
@@ -54,19 +54,21 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
         </Col>
 
         <Col xs={24} md={12} xxl={8}>
-          <Form.Item
-            label={t('members.form.skipMedicalCertificateExpirationEmail')}
-            name="skipMedicalCertificateExpirationEmail"
-            valuePropName="checked"
-          >
-            <Switch />
+          <Form.Item label={t('members.form.medicalCertificate.type')} name={['enrollment', 'medicalCertificateType']}>
+            <Select
+              allowClear
+              options={Object.keys(MedicalCertificateTypeEnum).map((type) => ({
+                label: t(`members.medicalCertificateType.${type}`),
+                value: type,
+              }))}
+            />
           </Form.Item>
         </Col>
 
         <Col span={24}>
           <Form.Item
             noStyle
-            name={['medicalCertificate', 'base64']}
+            name={['enrollment', 'medicalCertificateKey']}
             getValueFromEvent={(e: EmailAttachmentInput[]) => {
               if (e && e.length === 1) {
                 return e[0].path;

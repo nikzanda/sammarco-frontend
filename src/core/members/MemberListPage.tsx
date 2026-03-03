@@ -3,7 +3,7 @@ import useLocalStorageState from 'use-local-storage-state';
 import { Flex, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { FaBell, FaCalendarCheck, FaFileCsv, FaIdCard, FaMoneyBillWave, FaNotesMedical, FaSync } from 'react-icons/fa';
+import { FaBell, FaCalendarCheck, FaFileCsv, FaIdCard, FaMoneyBillWave, FaNotesMedical } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { differenceInCalendarDays, format, isSameMonth, isSameYear, set } from 'date-fns';
@@ -21,19 +21,16 @@ import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader, week } from '../../commons';
 import { AttendanceCreateModal } from '../attendances/components';
-import { getMonths, getRealCurrentYears, getYears } from '../../utils';
+import { getMonths } from '../../utils';
 import { ExportMembersModal, MemberExpandable, SendMonthlyRemindersModal } from './components';
 import { SendReminderModal } from '../emails/components';
-import { useSyncMembers } from './hooks';
-import { SettingsContext } from '../../contexts';
+import { SettingsContext, SocialYearContext } from '../../contexts';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/member/';
 
-const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
-const showSync = parseInt(REACT_APP_SOCIAL_YEAR!, 10) < getRealCurrentYears()[0];
-
 const MemberListPage: React.FC = () => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { settings, validEmailSettings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -115,13 +112,10 @@ const MemberListPage: React.FC = () => {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
       filter: queryFilter,
-      years: getYears(),
     },
   });
 
   useDisplayGraphQLErrors(queryError);
-
-  const { loading: syncLoading, sync: syncMembers } = useSyncMembers();
 
   const members = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -137,6 +131,8 @@ const MemberListPage: React.FC = () => {
     return undefined;
   }, [queryData, queryError, queryLoading]);
 
+  const months = React.useMemo(() => getMonths(socialYear), [socialYear]);
+
   const columns = React.useMemo(() => {
     const result: TableColumnsType<MemberListItemFragment> = [
       {
@@ -146,14 +142,18 @@ const MemberListPage: React.FC = () => {
         sorter: true,
         width: 200,
         ellipsis: true,
-        render: (fullName, { attendances, payments, courses, medicalCertificate }) => {
+        render: (fullName, { currentEnrollment }) => {
+          const payments = currentEnrollment?.payments ?? [];
+          const attendances = currentEnrollment?.attendances ?? [];
+          const medicalCertificateExpireAt = currentEnrollment?.medicalCertificateExpireAt;
+
           // Medical certificate alert
           let showMedicalAlert = false;
           let medicalAlertColor = token.colorError;
           let medicalAlertTooltip = '';
 
-          const differenceDays = medicalCertificate?.expireAt
-            ? differenceInCalendarDays(medicalCertificate.expireAt, Date.now())
+          const differenceDays = medicalCertificateExpireAt
+            ? differenceInCalendarDays(medicalCertificateExpireAt, Date.now())
             : 0;
           const maxExpirationDays =
             settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
@@ -163,7 +163,7 @@ const MemberListPage: React.FC = () => {
             settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
               ? Math.min(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
               : 10;
-          if (!medicalCertificate) {
+          if (!medicalCertificateExpireAt) {
             showMedicalAlert = true;
             medicalAlertTooltip = t('members.alerts.medicalCertificate.empty');
           } else if (differenceDays <= 0) {
@@ -178,13 +178,11 @@ const MemberListPage: React.FC = () => {
           }
 
           // Unpaid registration alert
-          const currentYears = getYears();
-          const showUnpaidRegistration =
-            attendances.length > 0 &&
-            !payments.some(({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1]);
+          const showUnpaidRegistration = attendances.length > 0 && !payments.some(({ month }) => !month);
 
           // Unpaid months alert
-          const showMonthsNotPaid = getMonths()
+          const courses = currentEnrollment?.courses ?? [];
+          const showMonthsNotPaid = months
             .filter((month) => month.valueOf() < Date.now())
             .some((month) => {
               const result = courses.some(({ id: courseId }) => {
@@ -239,17 +237,17 @@ const MemberListPage: React.FC = () => {
       {
         title: t('members.table.courses'),
         key: 'courses',
-        dataIndex: 'courses',
         width: 150,
         ellipsis: true,
-        render: (courses: MemberListItemFragment['courses']) => courses.map(({ name }) => name).join(', '),
+        render: (_, { currentEnrollment }) => currentEnrollment?.courses.map(({ name }) => name).join(', ') ?? '',
       },
       {
         title: t('members.table.shifts'),
         key: 'shifts',
-        dataIndex: 'courses',
         width: 200,
-        render: (courses: MemberListItemFragment['courses'], { shiftIds }) => {
+        render: (_, { currentEnrollment }) => {
+          const courses = currentEnrollment?.courses ?? [];
+          const shiftIds = currentEnrollment?.shiftIds ?? [];
           const shifts = courses.reduce(
             (
               acc: { id: string; courseName: string; weekDay: number; from: [number, number]; to: [number, number] }[],
@@ -292,10 +290,10 @@ const MemberListPage: React.FC = () => {
       {
         title: t('members.table.socialCardNumber'),
         key: 'socialCardNumber',
-        dataIndex: 'socialCardNumber',
         align: 'center',
         sorter: true,
         width: 120,
+        render: (_, { currentEnrollment }) => currentEnrollment?.socialCardNumber,
       },
       {
         key: 'actions',
@@ -303,45 +301,47 @@ const MemberListPage: React.FC = () => {
         align: 'right',
         fixed: 'right',
         width: 180,
-        render: (id: string, { courses, currentMonthReminderEmails }) => (
-          <ActionButtons
-            buttons={[
-              'edit',
-              'fee',
-              'attendance',
-              {
-                button: 'reminder',
-                sentRemindersCount: currentMonthReminderEmails.length,
-                disabled: !validEmailSettings,
-              },
-            ]}
-            onEdit={() => navigate(`/members/${id}`)}
-            onFee={() => {
-              setMemberInfo({
-                memberId: id,
-                courseIds: courses.map((course) => course.id),
-              });
-              setNewPayment(true);
-            }}
-            onAttendance={() => {
-              setMemberInfo({
-                memberId: id,
-                courseIds: courses.map((course) => course.id),
-              });
-              setNewAttendance(true);
-            }}
-            onReminder={() => {
-              setSendReminderData({
-                memberId: id,
-                courseIds: courses.map(({ id }) => id),
-              });
-            }}
-          />
-        ),
+        render: (id: string, { currentEnrollment }) => {
+          const courses = currentEnrollment?.courses ?? [];
+          return (
+            <ActionButtons
+              buttons={[
+                'edit',
+                'fee',
+                'attendance',
+                {
+                  button: 'reminder',
+                  disabled: !validEmailSettings,
+                },
+              ]}
+              onEdit={() => navigate(`/members/${id}`)}
+              onFee={() => {
+                setMemberInfo({
+                  memberId: id,
+                  courseIds: courses.map((course) => course.id),
+                });
+                setNewPayment(true);
+              }}
+              onAttendance={() => {
+                setMemberInfo({
+                  memberId: id,
+                  courseIds: courses.map((course) => course.id),
+                });
+                setNewAttendance(true);
+              }}
+              onReminder={() => {
+                setSendReminderData({
+                  memberId: id,
+                  courseIds: courses.map(({ id }) => id),
+                });
+              }}
+            />
+          );
+        },
       },
     ];
     return result;
-  }, [navigate, searchText, settings, t, token.colorError, token.colorWarning, validEmailSettings]);
+  }, [months, navigate, searchText, settings, t, token.colorError, token.colorWarning, validEmailSettings]);
 
   const handleTableChange: TableProps<MemberListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<MemberListItemFragment>);
@@ -375,22 +375,6 @@ const MemberListPage: React.FC = () => {
             icon: <Icon component={FaBell} />,
             onClick: () => setSendMonthlyReminders(true),
           },
-          ...(showSync
-            ? [
-                {
-                  key: 'sync',
-                  label: t('buttons.sync.label'),
-                  icon: <Icon component={FaSync} spin={syncLoading} />,
-                  disabled: selectedIds.length === 0,
-                  onClick: () =>
-                    syncMembers(selectedIds).then((success) => {
-                      if (success) {
-                        setSelectedIds([]);
-                      }
-                    }),
-                },
-              ]
-            : []),
         ]}
       />
 
@@ -410,11 +394,6 @@ const MemberListPage: React.FC = () => {
             props: {
               size: 'large',
               placeholder: t('members.form.shifts'),
-              // ...(filterInfo.courses && filterInfo.courses.length > 0 && {
-              //   queryFilters: {
-              //     courseIds: filterInfo.courses as string[]
-              //   }
-              // })
             },
           },
         ]}
@@ -539,11 +518,11 @@ const MemberListPage: React.FC = () => {
         <AttendanceCreateModal
           memberIds={selectedIds}
           courseIds={[
-            ...members.reduce((acc, { id: memberId, courses }) => {
+            ...members.reduce((acc, { id: memberId, currentEnrollment }) => {
               if (!selectedIds.includes(memberId)) {
                 return acc;
               }
-              courses.forEach(({ id }) => {
+              (currentEnrollment?.courses ?? []).forEach(({ id }) => {
                 acc.add(id);
               });
               return acc;

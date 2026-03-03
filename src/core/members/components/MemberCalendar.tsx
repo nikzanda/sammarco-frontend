@@ -123,11 +123,12 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
 
     return (
       <ul className="events">
-        {member.medicalCertificate && isSameMonth(member.medicalCertificate.expireAt, current) && (
-          <li>
-            <Badge color="gold" text={t('members.alerts.medicalCertificate.expire')} />
-          </li>
-        )}
+        {member.currentEnrollment?.medicalCertificateExpireAt &&
+          isSameMonth(member.currentEnrollment.medicalCertificateExpireAt, current) && (
+            <li>
+              <Badge color="gold" text={t('members.alerts.medicalCertificate.expire')} />
+            </li>
+          )}
         {lessonsByCourse.map(({ course, count }) => (
           <li key={course.id}>
             <Badge color={course.color || token.colorSuccess} text={t('members.lessons', { number: count, count })} />
@@ -144,11 +145,12 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
 
     return (
       <ul className="events">
-        {member.medicalCertificate && isSameDay(member.medicalCertificate.expireAt, current) && (
-          <li>
-            <Badge color="gold" text={t('members.alerts.medicalCertificate.expire')} />
-          </li>
-        )}
+        {member.currentEnrollment?.medicalCertificateExpireAt &&
+          isSameDay(member.currentEnrollment.medicalCertificateExpireAt, current) && (
+            <li>
+              <Badge color="gold" text={t('members.alerts.medicalCertificate.expire')} />
+            </li>
+          )}
         {currentAttendances.map(({ id, course, from, to }) => {
           const text = [format(from, 'HH:mm'), format(to, 'HH:mm')].join(' - ');
 

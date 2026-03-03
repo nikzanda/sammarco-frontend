@@ -169,7 +169,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       {
         title: t('payments.table.details'),
         key: 'details',
-        render: (_, { month: rawMonth, years }) => {
+        render: (_, { month: rawMonth, socialYear }) => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value: string) => parseInt(value, 10));
 
@@ -177,8 +177,8 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
             return str.charAt(0).toUpperCase() + str.slice(1);
           }
 
-          if (years) {
-            return years.join(' - ');
+          if (socialYear) {
+            return `${socialYear}/${(socialYear + 1) % 100}`;
           }
 
           return undefined;
@@ -231,9 +231,9 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
               size: 'large',
               placeholder: t('payments.form.fee'),
               queryFilters: {
-                courseIds: member.courses.map(({ id }) => id),
+                courseIds: member.currentEnrollment?.courses.map(({ id }) => id) ?? [],
               },
-              showCourse: member.courses.length > 1,
+              showCourse: (member.currentEnrollment?.courses.length ?? 0) > 1,
             },
           },
         ]}

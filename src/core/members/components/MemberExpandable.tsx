@@ -5,36 +5,41 @@ import { differenceInCalendarDays, format, isSameMonth, isSameYear } from 'date-
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { MemberListItemFragment } from '../../../gql/graphql';
-import { getYears } from '../../../utils';
-import { SettingsContext } from '../../../contexts';
+import { getMonths } from '../../../utils';
+import { SettingsContext, SocialYearContext } from '../../../contexts';
 
 interface Props {
   member: MemberListItemFragment;
 }
 
 const MemberExpandable: React.FC<Props> = ({ member }) => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { settings } = React.useContext(SettingsContext);
   const { t } = useTranslation();
   const { token } = theme.useToken();
 
-  const isCurrentEnrollmentPaid = React.useMemo(() => {
-    const currentYears = getYears();
-    const result = member.payments.some(
-      ({ years }) => years && years[0] === currentYears[0] && years[1] === currentYears[1]
-    );
-    return result;
-  }, [member.payments]);
+  const payments = React.useMemo(() => member.currentEnrollment?.payments ?? [], [member.currentEnrollment?.payments]);
+  const attendances = React.useMemo(
+    () => member.currentEnrollment?.attendances ?? [],
+    [member.currentEnrollment?.attendances]
+  );
+  const courses = React.useMemo(() => member.currentEnrollment?.courses ?? [], [member.currentEnrollment?.courses]);
+  const medicalCertificateExpireAt = member.currentEnrollment?.medicalCertificateExpireAt;
 
-  const isMedicalCertificateExpiring = React.useMemo((): AlertProps | undefined => {
-    const { medicalCertificate } = member;
-    if (!medicalCertificate) {
+  const isCurrentEnrollmentPaid = React.useMemo(() => {
+    const result = payments.some(({ month }) => !month);
+    return result;
+  }, [payments]);
+
+  const isMedicalCertificateExpiring = React.useMemo((): { text: string; type: AlertProps['type'] } | undefined => {
+    if (!medicalCertificateExpireAt) {
       return {
-        message: t('members.alerts.medicalCertificate.empty'),
+        text: t('members.alerts.medicalCertificate.empty'),
         type: 'error',
       };
     }
 
-    const differenceDays = differenceInCalendarDays(medicalCertificate.expireAt, Date.now());
+    const differenceDays = differenceInCalendarDays(medicalCertificateExpireAt, Date.now());
     const maxExpirationDays =
       settings && settings.daysBeforeMedicalCertificateExpiresToSendEmail.length > 0
         ? Math.max(...settings.daysBeforeMedicalCertificateExpiresToSendEmail)
@@ -45,63 +50,49 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
         : 10;
     if (differenceDays <= 0) {
       return {
-        message: t('members.alerts.medicalCertificate.expired'),
+        text: t('members.alerts.medicalCertificate.expired'),
         type: 'error',
       };
     }
 
     if (differenceDays <= minExpirationDays) {
       return {
-        message: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
+        text: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
         type: 'error',
       };
     }
 
     if (differenceDays <= maxExpirationDays) {
       return {
-        message: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
+        text: t('members.alerts.medicalCertificate.expiring', { days: differenceDays }),
         type: 'warning',
       };
     }
 
     return undefined;
-  }, [member, settings, t]);
+  }, [medicalCertificateExpireAt, settings, t]);
+
+  const months = React.useMemo(() => getMonths(socialYear), [socialYear]);
 
   const getDescriptionItems = React.useCallback(
     (courseId: string) => {
-      const mapFn = (monthNumber: number, year: number): { month: Date; paid?: boolean; attendancesCount: number } => {
-        const month = new Date(year, monthNumber, 1);
-        const attendancesCount = member.attendances.filter(
+      const mapFn = (month: Date): { month: Date; paid?: boolean; attendancesCount: number } => {
+        const attendancesCount = attendances.filter(
           ({ from, course }) => isSameYear(from, month) && isSameMonth(from, month) && course.id === courseId
         ).length;
 
         return {
           month,
           paid:
-            member.payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth) ||
+            payments.some(({ month: paymentMonth }) => format(month, 'yyyy-MM') === paymentMonth) ||
             (attendancesCount >= (settings?.attendancesPerMonthToSendReminder || 0) ? false : undefined),
           attendancesCount,
         };
       };
 
-      const months = getYears().reduce(
-        (acc: { month: Date; paid?: boolean; attendancesCount: number }[], year, index) => {
-          switch (index) {
-            case 0:
-              acc.push(...[8, 9, 10, 11].map((monthNumber) => mapFn(monthNumber, year)));
-              break;
+      const monthItems = months.map((month) => mapFn(month));
 
-            case 1:
-              acc.push(...[0, 1, 2, 3, 4, 5, 6, 7].map((monthNumber) => mapFn(monthNumber, year)));
-              break;
-          }
-
-          return acc;
-        },
-        []
-      );
-
-      const result: DescriptionsProps['items'] = months.map(({ month, paid, attendancesCount }) => {
+      const result: DescriptionsProps['items'] = monthItems.map(({ month, paid, attendancesCount }) => {
         let icon: React.ReactNode = '-';
         if (typeof paid === 'boolean') {
           icon = (
@@ -139,8 +130,9 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
       return result;
     },
     [
-      member.attendances,
-      member.payments,
+      attendances,
+      months,
+      payments,
       settings?.attendancesPerMonthToSendReminder,
       t,
       token.colorError,
@@ -151,15 +143,15 @@ const MemberExpandable: React.FC<Props> = ({ member }) => {
 
   return (
     <Flex vertical gap="middle">
-      {member.attendances.length > 0 && !isCurrentEnrollmentPaid && (
-        <Alert message={t('members.alerts.currentEnrollmentNotPaid')} type="error" showIcon />
+      {attendances.length > 0 && !isCurrentEnrollmentPaid && (
+        <Alert title={t('members.alerts.currentEnrollmentNotPaid')} type="error" showIcon />
       )}
       {isMedicalCertificateExpiring && (
-        <Alert message={isMedicalCertificateExpiring.message} type={isMedicalCertificateExpiring.type} showIcon />
+        <Alert title={isMedicalCertificateExpiring.text} type={isMedicalCertificateExpiring.type} showIcon />
       )}
-      {member.courses.map(({ id: courseId, name }) => (
+      {courses.map(({ id: courseId, name }) => (
         <React.Fragment key={courseId}>
-          {member.courses.length > 1 && name}
+          {courses.length > 1 && name}
           <Descriptions items={getDescriptionItems(courseId)} bordered />
         </React.Fragment>
       ))}

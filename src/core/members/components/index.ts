@@ -1,4 +1,5 @@
-export { default as MemberForm } from './MemberForm';
+export { default as MemberPersonalForm } from './MemberPersonalForm';
+export { default as EnrollmentForm } from './EnrollmentForm';
 export { default as MemberMedicalCertificate } from './MemberMedicalCertificate';
 export { default as MemberPayments } from './MemberPayments';
 export { default as MemberCalendar } from './MemberCalendar';

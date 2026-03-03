@@ -6,19 +6,15 @@ import { format } from 'date-fns';
 import { useLazyQuery } from '@apollo/client/react';
 import { MembersCsvDocument, MemberSortEnum, SortDirectionEnum } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-import { getYears, getBirthPlace } from '../../../utils';
+import { getBirthPlace } from '../../../utils';
+import { SocialYearContext } from '../../../contexts';
 
 interface Props {
   onCancel: () => void;
 }
 
-const socialYear = (() => {
-  const [first, second] = getYears();
-  const result = `${first}/${second % 100}`;
-  return result;
-})();
-
 const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
+  const { socialYearLabel } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
 
   const headers = [
@@ -32,7 +28,6 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
     { label: t('members.csv.address'), key: 'address' },
     { label: t('members.csv.qualification'), key: 'qualification' },
     { label: t('members.csv.socialYear'), key: 'socialYear' },
-    { label: t('members.csv.paidMembershipFee'), key: 'paidMembershipFee' },
     { label: t('members.csv.csenCardNumber'), key: 'csenCardNumber' },
     { label: t('members.csv.asiCardNumber'), key: 'asiCardNumber' },
   ];
@@ -43,26 +38,32 @@ const ExportMembersModal: React.FC<Props> = ({ onCancel }) => {
 
   const csvData = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
-      return queryData.members.data.map(
-        ({ registrationRequestDate, registrationAcceptanceDate, birthday, taxCode, qualification, ...member }) => ({
-          ...member,
-          taxCode,
-          birthPlace: getBirthPlace(taxCode),
-          birthday: format(birthday, 'dd/MM/yyyy'),
-          registrationRequestDate: registrationRequestDate && format(registrationRequestDate, 'dd/MM/yyyy'),
-          registrationAcceptanceDate: registrationAcceptanceDate && format(registrationAcceptanceDate, 'dd/MM/yyyy'),
-          socialYear,
-          qualification: t(`members.qualification.${qualification}`),
-        })
-      );
+      return queryData.members.data.map(({ fullName, birthday, taxCode, address, currentEnrollment }) => ({
+        fullName,
+        taxCode,
+        address,
+        birthPlace: getBirthPlace(taxCode),
+        birthday: format(birthday, 'dd/MM/yyyy'),
+        registrationRequestDate:
+          currentEnrollment?.registrationRequestDate && format(currentEnrollment.registrationRequestDate, 'dd/MM/yyyy'),
+        registrationAcceptanceDate:
+          currentEnrollment?.registrationAcceptanceDate &&
+          format(currentEnrollment.registrationAcceptanceDate, 'dd/MM/yyyy'),
+        socialYear: socialYearLabel,
+        qualification: currentEnrollment?.qualification
+          ? t(`members.qualification.${currentEnrollment.qualification}`)
+          : '',
+        socialCardNumber: currentEnrollment?.socialCardNumber,
+        csenCardNumber: currentEnrollment?.csenCardNumber,
+        asiCardNumber: currentEnrollment?.asiCardNumber,
+      }));
     }
     return undefined;
-  }, [queryData, queryError, queryLoading, t]);
+  }, [queryData, queryError, queryLoading, socialYearLabel, t]);
 
   const handleExport = () => {
     getMembers({
       variables: {
-        years: getYears(),
         filter: {
           sortBy: MemberSortEnum.SOCIAL_CARD_NUMBER,
           sortDirection: SortDirectionEnum.ASC,

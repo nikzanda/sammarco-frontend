@@ -17,149 +17,105 @@ export type Scalars = {
   YearMonth: { input: string; output: string };
 };
 
-export type Query = {
-  __typename?: 'Query';
-  me: User;
-  setting: Setting;
-  members: MemberPagination;
+export type Attendance = {
+  __typename?: 'Attendance';
+  id: Scalars['ID']['output'];
   member: Member;
-  enrollments: EnrollmentPagination;
-  enrollment: Enrollment;
-  courses: CoursePagination;
   course: Course;
-  shifts: Array<ShiftDetail>;
-  payments: PaymentPagination;
-  payment: Payment;
-  fees: FeePagination;
-  fee: Fee;
-  attendances: AttendancePagination;
+  from: Scalars['Float']['output'];
+  to: Scalars['Float']['output'];
+};
+
+export type AttendanceCreateInput = {
+  memberId: Scalars['ID']['input'];
+  courseId: Scalars['ID']['input'];
+  from: Scalars['Float']['input'];
+  to: Scalars['Float']['input'];
+};
+
+export type AttendanceCreateManyInput = {
+  memberIds: Array<Scalars['ID']['input']>;
+  courseId: Scalars['ID']['input'];
+  from: Scalars['Float']['input'];
+  to: Scalars['Float']['input'];
+};
+
+export type AttendanceCreateManyPayload = {
+  __typename?: 'AttendanceCreateManyPayload';
+  attendances: Array<Attendance>;
+};
+
+export type AttendanceCreatePayload = {
+  __typename?: 'AttendanceCreatePayload';
   attendance: Attendance;
-  emails: EmailPagination;
-  email: Email;
-  dayAttendances: Array<DayAttendances>;
-  dayExpireMedicalCertificates: Array<DayExpireMedicalCertificates>;
 };
 
-export type QueryMembersArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<MemberFilter>;
-};
-
-export type QueryMemberArgs = {
+export type AttendanceDeleteInput = {
   id: Scalars['ID']['input'];
 };
 
-export type QueryEnrollmentsArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<EnrollmentFilter>;
+export type AttendanceDeleteManyInput = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
-export type QueryEnrollmentArgs = {
+export type AttendanceDeleteManyPayload = {
+  __typename?: 'AttendanceDeleteManyPayload';
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type AttendanceDeletePayload = {
+  __typename?: 'AttendanceDeletePayload';
+  attendance: Attendance;
+};
+
+export type AttendanceFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  from?: InputMaybe<Scalars['Float']['input']>;
+  to?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type AttendancePagination = {
+  __typename?: 'AttendancePagination';
+  data: Array<Attendance>;
+  pageInfo: PageInfo;
+};
+
+export type AttendanceUpdateInput = {
   id: Scalars['ID']['input'];
+  from?: InputMaybe<Scalars['Float']['input']>;
+  to?: InputMaybe<Scalars['Float']['input']>;
 };
 
-export type QueryCoursesArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<CourseFilter>;
+export type AttendanceUpdatePayload = {
+  __typename?: 'AttendanceUpdatePayload';
+  attendance: Attendance;
 };
 
-export type QueryCourseArgs = {
-  id: Scalars['ID']['input'];
+export enum CommunicationRecipientEnum {
+  ALL = 'ALL',
+  EXCLUDE = 'EXCLUDE',
+}
+
+export type Consent = {
+  __typename?: 'Consent';
+  type: Scalars['String']['output'];
+  acceptedAt: Scalars['Float']['output'];
 };
 
-export type QueryShiftsArgs = {
-  filter?: InputMaybe<ShiftFilter>;
+export type ConsentInput = {
+  type: Scalars['String']['input'];
+  acceptedAt: Scalars['Float']['input'];
 };
 
-export type QueryPaymentsArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<PaymentFilter>;
-};
-
-export type QueryPaymentArgs = {
-  id: Scalars['ID']['input'];
-};
-
-export type QueryFeesArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<FeeFilter>;
-};
-
-export type QueryFeeArgs = {
-  id: Scalars['ID']['input'];
-};
-
-export type QueryAttendancesArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<AttendanceFilter>;
-};
-
-export type QueryAttendanceArgs = {
-  id: Scalars['ID']['input'];
-};
-
-export type QueryEmailsArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<EmailFilter>;
-};
-
-export type QueryEmailArgs = {
-  id: Scalars['ID']['input'];
-};
-
-export type QueryDayAttendancesArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<DayAttendancesFilter>;
-};
-
-export type QueryDayExpireMedicalCertificatesArgs = {
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<DayExpireMedicalCertificatesFilter>;
-};
-
-export type VerifyEmailSettingsPayload = {
-  __typename?: 'VerifyEmailSettingsPayload';
-  verified?: Maybe<Scalars['Boolean']['output']>;
-};
-
-export type LoginInput = {
-  username: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
-
-export type LoginPayload = {
-  __typename?: 'LoginPayload';
-  token: Scalars['String']['output'];
-};
-
-export type SettingUpdateInput = {
-  emailSettings?: InputMaybe<EmailSettingsInput>;
-  emailTextList?: InputMaybe<EmailTextListInput>;
-  attendancesPerMonthToSendReminder?: InputMaybe<Scalars['Int']['input']>;
-  daysBeforeMedicalCertificateExpiresToSendEmail?: InputMaybe<Array<Scalars['Int']['input']>>;
-};
-
-export type SettingUpdatePayload = {
-  __typename?: 'SettingUpdatePayload';
-  setting: Setting;
-};
-
-export type SeasonRenewInput = {
-  enrollmentIds: Array<Scalars['ID']['input']>;
+export type CopyCoursesInput = {
+  courseIds: Array<Scalars['ID']['input']>;
   toYear: Scalars['Int']['input'];
 };
 
-export type SeasonRenewPayload = {
-  __typename?: 'SeasonRenewPayload';
+export type CopyCoursesPayload = {
+  __typename?: 'CopyCoursesPayload';
   createdCount: Scalars['Int']['output'];
 };
 
@@ -173,207 +129,214 @@ export type CopyFeesPayload = {
   createdCount: Scalars['Int']['output'];
 };
 
-export type CopyCoursesInput = {
-  courseIds: Array<Scalars['ID']['input']>;
-  toYear: Scalars['Int']['input'];
+export type Course = {
+  __typename?: 'Course';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  color?: Maybe<Scalars['String']['output']>;
+  shifts: Array<Array<Shift>>;
+  emails: Array<Email>;
+  canDelete: Scalars['Boolean']['output'];
+  createdAt: Scalars['Float']['output'];
+  updatedAt: Scalars['Float']['output'];
 };
 
-export type CopyCoursesPayload = {
-  __typename?: 'CopyCoursesPayload';
-  createdCount: Scalars['Int']['output'];
+export type CourseCreateInput = {
+  name: Scalars['String']['input'];
+  color?: InputMaybe<Scalars['String']['input']>;
+  shifts?: InputMaybe<Array<Array<ShiftInput>>>;
 };
 
-export type PaymentUpdateManyInput = {
-  ids: Array<Scalars['ID']['input']>;
-  sent?: InputMaybe<Scalars['Boolean']['input']>;
+export type CourseCreatePayload = {
+  __typename?: 'CourseCreatePayload';
+  course: Course;
 };
 
-export type PaymentUpdateManyPayload = {
-  __typename?: 'PaymentUpdateManyPayload';
+export type CourseDeleteInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type CourseDeletePayload = {
+  __typename?: 'CourseDeletePayload';
+  course: Course;
+};
+
+export type CourseFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<CourseSortEnum>;
+  sortDirection?: InputMaybe<SortDirectionEnum>;
+};
+
+export type CoursePagination = {
+  __typename?: 'CoursePagination';
+  data: Array<Course>;
+  pageInfo: PageInfo;
+};
+
+export enum CourseSortEnum {
+  NAME = 'NAME',
+  CREATED_AT = 'CREATED_AT',
+}
+
+export type CourseUpdateInput = {
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  color?: InputMaybe<Scalars['String']['input']>;
+  shifts?: InputMaybe<Array<Array<ShiftInput>>>;
+};
+
+export type CourseUpdatePayload = {
+  __typename?: 'CourseUpdatePayload';
+  course: Course;
+};
+
+export type DayAttendances = {
+  __typename?: 'DayAttendances';
+  ids: Array<Scalars['ID']['output']>;
+  members: Array<Member>;
+  course: Course;
+  from: Scalars['Float']['output'];
+  to: Scalars['Float']['output'];
+};
+
+export type DayAttendancesFilter = {
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  startFrom?: InputMaybe<Scalars['Float']['input']>;
+  endFrom?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type DayExpireMedicalCertificates = {
+  __typename?: 'DayExpireMedicalCertificates';
+  expireAt: Scalars['Float']['output'];
+  members: Array<Member>;
+};
+
+export type DayExpireMedicalCertificatesFilter = {
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  startFrom?: InputMaybe<Scalars['Float']['input']>;
+  endFrom?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type Email = {
+  __typename?: 'Email';
+  id: Scalars['ID']['output'];
+  member: Member;
+  course?: Maybe<Course>;
+  type: EmailTypeEnum;
+  to: Scalars['String']['output'];
+  subject: Scalars['String']['output'];
+  body: Scalars['String']['output'];
+  createdAt: Scalars['Float']['output'];
+};
+
+export type EmailAttachmentInput = {
+  path: Scalars['String']['input'];
+  filename: Scalars['String']['input'];
+};
+
+export type EmailFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  type?: InputMaybe<EmailTypeEnum>;
+  to?: InputMaybe<Array<Scalars['String']['input']>>;
+  sortBy?: InputMaybe<EmailSortEnum>;
+  sortDirection?: InputMaybe<SortDirectionEnum>;
+};
+
+export type EmailPagination = {
+  __typename?: 'EmailPagination';
+  data: Array<Email>;
+  pageInfo: PageInfo;
+};
+
+export type EmailSettings = {
+  __typename?: 'EmailSettings';
+  host: Scalars['String']['output'];
+  port: Scalars['Int']['output'];
+  secure: Scalars['Boolean']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+};
+
+export type EmailSettingsInput = {
+  host?: InputMaybe<Scalars['String']['input']>;
+  port?: InputMaybe<Scalars['Int']['input']>;
+  secure?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum EmailSortEnum {
+  CREATED_AT = 'CREATED_AT',
+}
+
+export type EmailText = {
+  __typename?: 'EmailText';
+  subject?: Maybe<Scalars['String']['output']>;
+  body?: Maybe<Scalars['String']['output']>;
+};
+
+export type EmailTextInput = {
+  subject?: InputMaybe<Scalars['String']['input']>;
+  body?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type EmailTextList = {
+  __typename?: 'EmailTextList';
+  receipt: EmailText;
+  reminder: EmailText;
+  medicalCertificateExpiration: EmailText;
+};
+
+export type EmailTextListInput = {
+  receipt?: InputMaybe<EmailTextInput>;
+  reminder?: InputMaybe<EmailTextInput>;
+  medicalCertificateExpiration?: InputMaybe<EmailTextInput>;
+};
+
+export enum EmailTypeEnum {
+  RECEIPT = 'RECEIPT',
+  REMINDER = 'REMINDER',
+  MEDICAL_CERTIFICATE_EXPIRATION = 'MEDICAL_CERTIFICATE_EXPIRATION',
+}
+
+export type Enrollment = {
+  __typename?: 'Enrollment';
+  id: Scalars['ID']['output'];
+  member: Member;
+  socialYear: Scalars['Int']['output'];
+  status: EnrollmentStatusEnum;
+  courses: Array<Course>;
+  shiftIds: Array<Scalars['ID']['output']>;
+  qualification: QualificationEnum;
+  socialCardNumber?: Maybe<Scalars['Int']['output']>;
+  asiCardNumber?: Maybe<Scalars['String']['output']>;
+  csenCardNumber?: Maybe<Scalars['String']['output']>;
+  registrationRequestDate?: Maybe<Scalars['Float']['output']>;
+  registrationAcceptanceDate?: Maybe<Scalars['Float']['output']>;
+  medicalCertificateExpireAt?: Maybe<Scalars['Float']['output']>;
+  medicalCertificateType?: Maybe<MedicalCertificateTypeEnum>;
+  medicalCertificateKey?: Maybe<Scalars['String']['output']>;
+  consents: Array<Consent>;
+  excludeFromCommunications: Scalars['Boolean']['output'];
   payments: Array<Payment>;
+  attendances: Array<Attendance>;
+  createdAt: Scalars['Float']['output'];
+  updatedAt: Scalars['Float']['output'];
 };
 
-export type PaymentUpdateInput = {
-  id: Scalars['ID']['input'];
-  memberId?: InputMaybe<Scalars['ID']['input']>;
-  feeId?: InputMaybe<Scalars['ID']['input']>;
-  amount?: InputMaybe<Scalars['Float']['input']>;
-  date?: InputMaybe<Scalars['Float']['input']>;
-  type?: InputMaybe<PaymentTypeEnum>;
-  month?: InputMaybe<Scalars['YearMonth']['input']>;
-  reason?: InputMaybe<Scalars['String']['input']>;
-  sent?: InputMaybe<Scalars['Boolean']['input']>;
+export type EnrollmentConfirmInput = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
-export type PaymentUpdatePayload = {
-  __typename?: 'PaymentUpdatePayload';
-  payment: Payment;
-};
-
-export type PaymentSendReceiptInput = {
-  id: Scalars['ID']['input'];
-  attachmentUri: Scalars['String']['input'];
-};
-
-export type PaymentSendReceiptPayload = {
-  __typename?: 'PaymentSendReceiptPayload';
-  email: Email;
-};
-
-export type PaymentDeleteInput = {
-  id: Scalars['ID']['input'];
-};
-
-export type PaymentDeletePayload = {
-  __typename?: 'PaymentDeletePayload';
-  payment: Payment;
-  updatedPayments: Array<Payment>;
-};
-
-export type PaymentCreateInput = {
-  memberId: Scalars['ID']['input'];
-  feeId: Scalars['ID']['input'];
-  amount: Scalars['Float']['input'];
-  date: Scalars['Float']['input'];
-  type: PaymentTypeEnum;
-  month?: InputMaybe<Scalars['YearMonth']['input']>;
-  reason: Scalars['String']['input'];
-  socialYear: Scalars['Int']['input'];
-};
-
-export type PaymentCreatePayload = {
-  __typename?: 'PaymentCreatePayload';
-  payment: Payment;
-};
-
-export type MemberUpdateInput = {
-  id: Scalars['ID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-  surname?: InputMaybe<Scalars['String']['input']>;
-  taxCode?: InputMaybe<Scalars['String']['input']>;
-  address?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-  parent?: InputMaybe<ParentInput>;
-};
-
-export type MemberUpdatePayload = {
-  __typename?: 'MemberUpdatePayload';
-  member: Member;
-};
-
-export type MemberDeleteInput = {
-  id: Scalars['ID']['input'];
-};
-
-export type MemberDeletePayload = {
-  __typename?: 'MemberDeletePayload';
-  member: Member;
-};
-
-export type MemberCreateInput = {
-  name: Scalars['String']['input'];
-  surname: Scalars['String']['input'];
-  taxCode: Scalars['String']['input'];
-  address?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-  parent?: InputMaybe<ParentInput>;
-};
-
-export type MemberCreatePayload = {
-  __typename?: 'MemberCreatePayload';
-  member: Member;
-};
-
-export type FeeUpdateInput = {
-  id: Scalars['ID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-  amount?: InputMaybe<Scalars['Float']['input']>;
-  recurrence?: InputMaybe<RecurrenceEnum>;
-  reason?: InputMaybe<Scalars['String']['input']>;
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type FeeUpdatePayload = {
-  __typename?: 'FeeUpdatePayload';
-  fee: Fee;
-};
-
-export type FeeDeleteInput = {
-  id: Scalars['ID']['input'];
-};
-
-export type FeeDeletePayload = {
-  __typename?: 'FeeDeletePayload';
-  fee: Fee;
-};
-
-export type FeeCreateInput = {
-  name: Scalars['String']['input'];
-  type: FeeTypeEnum;
-  courseId?: InputMaybe<Scalars['ID']['input']>;
-  amount: Scalars['Float']['input'];
-  recurrence?: InputMaybe<RecurrenceEnum>;
-  reason: Scalars['String']['input'];
-};
-
-export type FeeCreatePayload = {
-  __typename?: 'FeeCreatePayload';
-  fee: Fee;
-};
-
-export type EnrollmentUpdateInput = {
-  id: Scalars['ID']['input'];
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  qualification?: InputMaybe<QualificationEnum>;
-  registrationRequestDate?: InputMaybe<Scalars['Float']['input']>;
-  registrationAcceptanceDate?: InputMaybe<Scalars['Float']['input']>;
-  socialCardNumber?: InputMaybe<Scalars['Int']['input']>;
-  emptySocialCardNumber?: InputMaybe<Scalars['Boolean']['input']>;
-  asiCardNumber?: InputMaybe<Scalars['String']['input']>;
-  csenCardNumber?: InputMaybe<Scalars['String']['input']>;
-  medicalCertificateExpireAt?: InputMaybe<Scalars['Float']['input']>;
-  medicalCertificateType?: InputMaybe<MedicalCertificateTypeEnum>;
-  medicalCertificateKey?: InputMaybe<Scalars['String']['input']>;
-  consents?: InputMaybe<Array<ConsentInput>>;
-  excludeFromCommunications?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type EnrollmentUpdatePayload = {
-  __typename?: 'EnrollmentUpdatePayload';
-  enrollment: Enrollment;
-};
-
-export type RegistrationRequestInput = {
-  name: Scalars['String']['input'];
-  surname: Scalars['String']['input'];
-  taxCode: Scalars['String']['input'];
-  address?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-  parent?: InputMaybe<ParentInput>;
-  socialYear: Scalars['Int']['input'];
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  qualification?: InputMaybe<QualificationEnum>;
-  consents?: InputMaybe<Array<ConsentInput>>;
-  captchaToken?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type RegistrationRequestPayload = {
-  __typename?: 'RegistrationRequestPayload';
-  enrollment: Enrollment;
-};
-
-export type EnrollmentDeleteInput = {
-  id: Scalars['ID']['input'];
-};
-
-export type EnrollmentDeletePayload = {
-  __typename?: 'EnrollmentDeletePayload';
-  enrollment: Enrollment;
+export type EnrollmentConfirmPayload = {
+  __typename?: 'EnrollmentConfirmPayload';
+  modifiedCount: Scalars['Int']['output'];
 };
 
 export type EnrollmentCreateInput = {
@@ -398,270 +361,179 @@ export type EnrollmentCreatePayload = {
   enrollment: Enrollment;
 };
 
-export type EnrollmentConfirmInput = {
-  ids: Array<Scalars['ID']['input']>;
+export type EnrollmentDeleteInput = {
+  id: Scalars['ID']['input'];
 };
 
-export type EnrollmentConfirmPayload = {
-  __typename?: 'EnrollmentConfirmPayload';
-  modifiedCount: Scalars['Int']['output'];
+export type EnrollmentDeletePayload = {
+  __typename?: 'EnrollmentDeletePayload';
+  enrollment: Enrollment;
 };
 
-export type PaymentSendReminderInput = {
-  memberId: Scalars['ID']['input'];
-  month: Scalars['YearMonth']['input'];
-  courseId: Scalars['ID']['input'];
+export type EnrollmentFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  socialYear?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<EnrollmentStatusEnum>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  qualification?: InputMaybe<QualificationEnum>;
+  sortBy?: InputMaybe<EnrollmentSortEnum>;
+  sortDirection?: InputMaybe<SortDirectionEnum>;
 };
 
-export type PaymentSendReminderPayload = {
-  __typename?: 'PaymentSendReminderPayload';
-  email: Email;
+export type EnrollmentPagination = {
+  __typename?: 'EnrollmentPagination';
+  data: Array<Enrollment>;
+  pageInfo: PageInfo;
 };
 
-export type SendMonthlyRemindersInput = {
-  month: Scalars['YearMonth']['input'];
+export enum EnrollmentSortEnum {
+  SOCIAL_YEAR = 'SOCIAL_YEAR',
+  STATUS = 'STATUS',
+  REGISTRATION_REQUEST_DATE = 'REGISTRATION_REQUEST_DATE',
+  REGISTRATION_ACCEPTANCE_DATE = 'REGISTRATION_ACCEPTANCE_DATE',
+  CREATED_AT = 'CREATED_AT',
+}
+
+export enum EnrollmentStatusEnum {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+}
+
+export type EnrollmentUpdateInput = {
+  id: Scalars['ID']['input'];
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  qualification?: InputMaybe<QualificationEnum>;
+  registrationRequestDate?: InputMaybe<Scalars['Float']['input']>;
+  registrationAcceptanceDate?: InputMaybe<Scalars['Float']['input']>;
+  socialCardNumber?: InputMaybe<Scalars['Int']['input']>;
+  emptySocialCardNumber?: InputMaybe<Scalars['Boolean']['input']>;
+  asiCardNumber?: InputMaybe<Scalars['String']['input']>;
+  csenCardNumber?: InputMaybe<Scalars['String']['input']>;
+  medicalCertificateExpireAt?: InputMaybe<Scalars['Float']['input']>;
+  medicalCertificateType?: InputMaybe<MedicalCertificateTypeEnum>;
+  medicalCertificateKey?: InputMaybe<Scalars['String']['input']>;
+  consents?: InputMaybe<Array<ConsentInput>>;
+  excludeFromCommunications?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type SendMonthlyRemindersPayload = {
-  __typename?: 'SendMonthlyRemindersPayload';
-  sentReminders: Scalars['Int']['output'];
-  failedReminders: Scalars['Int']['output'];
+export type EnrollmentUpdatePayload = {
+  __typename?: 'EnrollmentUpdatePayload';
+  enrollment: Enrollment;
 };
 
-export type SendDailyMedicalCertificateExpirationInput = {
-  daysBeforeMedicalCertificateExpires?: InputMaybe<Array<Scalars['Int']['input']>>;
+export type Fee = {
+  __typename?: 'Fee';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  type: FeeTypeEnum;
+  course?: Maybe<Course>;
+  amount: Scalars['Float']['output'];
+  recurrence?: Maybe<RecurrenceEnum>;
+  reason: Scalars['String']['output'];
+  enabled: Scalars['Boolean']['output'];
+  socialYear: Scalars['Int']['output'];
+  canDelete: Scalars['Boolean']['output'];
+  createdAt: Scalars['Float']['output'];
+  updatedAt: Scalars['Float']['output'];
 };
 
-export type SendDailyMedicalCertificateExpirationPayload = {
-  __typename?: 'SendDailyMedicalCertificateExpirationPayload';
-  sentEmails: Scalars['Int']['output'];
-  failedEmails: Scalars['Int']['output'];
+export type FeeCreateInput = {
+  name: Scalars['String']['input'];
+  type: FeeTypeEnum;
+  courseId?: InputMaybe<Scalars['ID']['input']>;
+  amount: Scalars['Float']['input'];
+  recurrence?: InputMaybe<RecurrenceEnum>;
+  reason: Scalars['String']['input'];
 };
 
-export type SendCommunicationInput = {
-  recipient: CommunicationRecipientEnum;
-  subject: Scalars['String']['input'];
-  body: Scalars['String']['input'];
-  attachments?: InputMaybe<Array<EmailAttachmentInput>>;
+export type FeeCreatePayload = {
+  __typename?: 'FeeCreatePayload';
+  fee: Fee;
 };
 
-export type SendCommunicationPayload = {
-  __typename?: 'SendCommunicationPayload';
-  sentBatches: Scalars['Int']['output'];
-  failedBatches: Scalars['Int']['output'];
-  totalRecipients: Scalars['Int']['output'];
+export type FeeDeleteInput = {
+  id: Scalars['ID']['input'];
 };
 
-export type CourseUpdateInput = {
+export type FeeDeletePayload = {
+  __typename?: 'FeeDeletePayload';
+  fee: Fee;
+};
+
+export type FeeFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  reason?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  sortBy?: InputMaybe<FeeSortEnum>;
+  sortDirection?: InputMaybe<SortDirectionEnum>;
+};
+
+export type FeePagination = {
+  __typename?: 'FeePagination';
+  data: Array<Fee>;
+  pageInfo: PageInfo;
+};
+
+export enum FeeSortEnum {
+  NAME = 'NAME',
+  CREATED_AT = 'CREATED_AT',
+}
+
+export enum FeeTypeEnum {
+  MEMBERSHIP = 'MEMBERSHIP',
+  COURSE = 'COURSE',
+  INSURANCE = 'INSURANCE',
+}
+
+export type FeeUpdateInput = {
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
-  color?: InputMaybe<Scalars['String']['input']>;
-  shifts?: InputMaybe<Array<Array<ShiftInput>>>;
+  amount?: InputMaybe<Scalars['Float']['input']>;
+  recurrence?: InputMaybe<RecurrenceEnum>;
+  reason?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type CourseUpdatePayload = {
-  __typename?: 'CourseUpdatePayload';
-  course: Course;
+export type FeeUpdatePayload = {
+  __typename?: 'FeeUpdatePayload';
+  fee: Fee;
 };
 
-export type CourseDeleteInput = {
-  id: Scalars['ID']['input'];
+export type LoginInput = {
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
-export type CourseDeletePayload = {
-  __typename?: 'CourseDeletePayload';
-  course: Course;
+export type LoginPayload = {
+  __typename?: 'LoginPayload';
+  token: Scalars['String']['output'];
 };
 
-export type CourseCreateInput = {
-  name: Scalars['String']['input'];
-  color?: InputMaybe<Scalars['String']['input']>;
-  shifts?: InputMaybe<Array<Array<ShiftInput>>>;
+export type MedicalCertificate = {
+  __typename?: 'MedicalCertificate';
+  base64?: Maybe<Scalars['String']['output']>;
+  expireAt: Scalars['Float']['output'];
 };
 
-export type CourseCreatePayload = {
-  __typename?: 'CourseCreatePayload';
-  course: Course;
-};
-
-export type AttendanceUpdateInput = {
-  id: Scalars['ID']['input'];
-  from?: InputMaybe<Scalars['Float']['input']>;
-  to?: InputMaybe<Scalars['Float']['input']>;
-};
-
-export type AttendanceUpdatePayload = {
-  __typename?: 'AttendanceUpdatePayload';
-  attendance: Attendance;
-};
-
-export type AttendanceDeleteManyInput = {
-  ids: Array<Scalars['ID']['input']>;
-};
-
-export type AttendanceDeleteManyPayload = {
-  __typename?: 'AttendanceDeleteManyPayload';
-  success?: Maybe<Scalars['Boolean']['output']>;
-};
-
-export type AttendanceDeleteInput = {
-  id: Scalars['ID']['input'];
-};
-
-export type AttendanceDeletePayload = {
-  __typename?: 'AttendanceDeletePayload';
-  attendance: Attendance;
-};
-
-export type AttendanceCreateManyInput = {
-  memberIds: Array<Scalars['ID']['input']>;
-  courseId: Scalars['ID']['input'];
-  from: Scalars['Float']['input'];
-  to: Scalars['Float']['input'];
-};
-
-export type AttendanceCreateManyPayload = {
-  __typename?: 'AttendanceCreateManyPayload';
-  attendances: Array<Attendance>;
-};
-
-export type AttendanceCreateInput = {
-  memberId: Scalars['ID']['input'];
-  courseId: Scalars['ID']['input'];
-  from: Scalars['Float']['input'];
-  to: Scalars['Float']['input'];
-};
-
-export type AttendanceCreatePayload = {
-  __typename?: 'AttendanceCreatePayload';
-  attendance: Attendance;
-};
-
-export type ShiftInput = {
-  id?: InputMaybe<Scalars['ID']['input']>;
-  from: Array<Scalars['Int']['input']>;
-  to: Array<Scalars['Int']['input']>;
-};
-
-export type ParentInput = {
-  name: Scalars['String']['input'];
-  surname: Scalars['String']['input'];
-  taxCode: Scalars['String']['input'];
-  email?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-};
+export enum MedicalCertificateExpirationEnum {
+  EXPIRED = 'EXPIRED',
+  IS_EXPIRING = 'IS_EXPIRING',
+  NOT_ENTERED = 'NOT_ENTERED',
+}
 
 export type MedicalCertificateInput = {
   base64?: InputMaybe<Scalars['String']['input']>;
   expireAt?: InputMaybe<Scalars['Float']['input']>;
 };
 
-export type EmailTextListInput = {
-  receipt?: InputMaybe<EmailTextInput>;
-  reminder?: InputMaybe<EmailTextInput>;
-  medicalCertificateExpiration?: InputMaybe<EmailTextInput>;
-};
-
-export type EmailTextInput = {
-  subject?: InputMaybe<Scalars['String']['input']>;
-  body?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type EmailSettingsInput = {
-  host?: InputMaybe<Scalars['String']['input']>;
-  port?: InputMaybe<Scalars['Int']['input']>;
-  secure?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  password?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type EmailAttachmentInput = {
-  path: Scalars['String']['input'];
-  filename: Scalars['String']['input'];
-};
-
-export type ConsentInput = {
-  type: Scalars['String']['input'];
-  acceptedAt: Scalars['Float']['input'];
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID']['output'];
-  username: Scalars['String']['output'];
-  createdAt: Scalars['Float']['output'];
-  updatedAt: Scalars['Float']['output'];
-};
-
-export type ShiftDetail = {
-  __typename?: 'ShiftDetail';
-  id: Scalars['ID']['output'];
-  course: Course;
-  weekDay: Scalars['Int']['output'];
-  from: Array<Scalars['Int']['output']>;
-  to: Array<Scalars['Int']['output']>;
-};
-
-export type Shift = {
-  __typename?: 'Shift';
-  id: Scalars['ID']['output'];
-  from: Array<Scalars['Int']['output']>;
-  to: Array<Scalars['Int']['output']>;
-};
-
-export type Setting = {
-  __typename?: 'Setting';
-  emailSettings: EmailSettings;
-  emailTextList: EmailTextList;
-  attendancesPerMonthToSendReminder: Scalars['Int']['output'];
-  daysBeforeMedicalCertificateExpiresToSendEmail: Array<Scalars['Int']['output']>;
-};
-
-export type PaymentPagination = {
-  __typename?: 'PaymentPagination';
-  data: Array<Payment>;
-  pageInfo: PageInfo;
-};
-
-export type Payment = {
-  __typename?: 'Payment';
-  id: Scalars['ID']['output'];
-  counter: Scalars['Int']['output'];
-  member: Member;
-  fee: Fee;
-  amount: Scalars['Float']['output'];
-  date: Scalars['Float']['output'];
-  month?: Maybe<Scalars['YearMonth']['output']>;
-  socialYear: Scalars['Int']['output'];
-  type: PaymentTypeEnum;
-  reason: Scalars['String']['output'];
-  sent: Scalars['Boolean']['output'];
-  canDelete: Scalars['Boolean']['output'];
-  createdAt: Scalars['Float']['output'];
-  updatedAt: Scalars['Float']['output'];
-};
-
-export type Parent = {
-  __typename?: 'Parent';
-  name: Scalars['String']['output'];
-  surname: Scalars['String']['output'];
-  fullName: Scalars['String']['output'];
-  taxCode: Scalars['String']['output'];
-  email?: Maybe<Scalars['String']['output']>;
-  phone?: Maybe<Scalars['String']['output']>;
-};
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  total: Scalars['Int']['output'];
-};
-
-export type MemberPagination = {
-  __typename?: 'MemberPagination';
-  data: Array<Member>;
-  pageInfo: PageInfo;
-};
+export enum MedicalCertificateTypeEnum {
+  AGONISTIC = 'AGONISTIC',
+  NON_AGONISTIC = 'NON_AGONISTIC',
+}
 
 export type Member = {
   __typename?: 'Member';
@@ -687,181 +559,45 @@ export type MemberEnrollmentsArgs = {
   socialYear?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type MedicalCertificate = {
-  __typename?: 'MedicalCertificate';
-  base64?: Maybe<Scalars['String']['output']>;
-  expireAt: Scalars['Float']['output'];
-};
-
-export type FeePagination = {
-  __typename?: 'FeePagination';
-  data: Array<Fee>;
-  pageInfo: PageInfo;
-};
-
-export type Fee = {
-  __typename?: 'Fee';
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  type: FeeTypeEnum;
-  course?: Maybe<Course>;
-  amount: Scalars['Float']['output'];
-  recurrence?: Maybe<RecurrenceEnum>;
-  reason: Scalars['String']['output'];
-  enabled: Scalars['Boolean']['output'];
-  socialYear: Scalars['Int']['output'];
-  canDelete: Scalars['Boolean']['output'];
-  createdAt: Scalars['Float']['output'];
-  updatedAt: Scalars['Float']['output'];
-};
-
-export type EnrollmentPagination = {
-  __typename?: 'EnrollmentPagination';
-  data: Array<Enrollment>;
-  pageInfo: PageInfo;
-};
-
-export type Enrollment = {
-  __typename?: 'Enrollment';
-  id: Scalars['ID']['output'];
-  member: Member;
-  socialYear: Scalars['Int']['output'];
-  status: EnrollmentStatusEnum;
-  courses: Array<Course>;
-  shiftIds: Array<Scalars['ID']['output']>;
-  qualification: QualificationEnum;
-  socialCardNumber?: Maybe<Scalars['Int']['output']>;
-  asiCardNumber?: Maybe<Scalars['String']['output']>;
-  csenCardNumber?: Maybe<Scalars['String']['output']>;
-  registrationRequestDate?: Maybe<Scalars['Float']['output']>;
-  registrationAcceptanceDate?: Maybe<Scalars['Float']['output']>;
-  medicalCertificateExpireAt?: Maybe<Scalars['Float']['output']>;
-  medicalCertificateType?: Maybe<MedicalCertificateTypeEnum>;
-  medicalCertificateKey?: Maybe<Scalars['String']['output']>;
-  consents: Array<Consent>;
-  excludeFromCommunications: Scalars['Boolean']['output'];
-  createdAt: Scalars['Float']['output'];
-  updatedAt: Scalars['Float']['output'];
-};
-
-export type EmailTextList = {
-  __typename?: 'EmailTextList';
-  receipt: EmailText;
-  reminder: EmailText;
-  medicalCertificateExpiration: EmailText;
-};
-
-export type EmailText = {
-  __typename?: 'EmailText';
-  subject?: Maybe<Scalars['String']['output']>;
-  body?: Maybe<Scalars['String']['output']>;
-};
-
-export type EmailSettings = {
-  __typename?: 'EmailSettings';
-  host: Scalars['String']['output'];
-  port: Scalars['Int']['output'];
-  secure: Scalars['Boolean']['output'];
-  name?: Maybe<Scalars['String']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
-};
-
-export type EmailPagination = {
-  __typename?: 'EmailPagination';
-  data: Array<Email>;
-  pageInfo: PageInfo;
-};
-
-export type Email = {
-  __typename?: 'Email';
-  id: Scalars['ID']['output'];
-  member: Member;
-  course?: Maybe<Course>;
-  type: EmailTypeEnum;
-  to: Scalars['String']['output'];
-  subject: Scalars['String']['output'];
-  body: Scalars['String']['output'];
-  createdAt: Scalars['Float']['output'];
-};
-
-export type DayExpireMedicalCertificates = {
-  __typename?: 'DayExpireMedicalCertificates';
-  expireAt: Scalars['Float']['output'];
-  members: Array<Member>;
-};
-
-export type DayAttendances = {
-  __typename?: 'DayAttendances';
-  ids: Array<Scalars['ID']['output']>;
-  members: Array<Member>;
-  course: Course;
-  from: Scalars['Float']['output'];
-  to: Scalars['Float']['output'];
-};
-
-export type CoursePagination = {
-  __typename?: 'CoursePagination';
-  data: Array<Course>;
-  pageInfo: PageInfo;
-};
-
-export type Course = {
-  __typename?: 'Course';
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  color?: Maybe<Scalars['String']['output']>;
-  shifts: Array<Array<Shift>>;
-  emails: Array<Email>;
-  canDelete: Scalars['Boolean']['output'];
-  createdAt: Scalars['Float']['output'];
-  updatedAt: Scalars['Float']['output'];
-};
-
-export type Consent = {
-  __typename?: 'Consent';
-  type: Scalars['String']['output'];
-  acceptedAt: Scalars['Float']['output'];
-};
-
-export type AttendancePagination = {
-  __typename?: 'AttendancePagination';
-  data: Array<Attendance>;
-  pageInfo: PageInfo;
-};
-
-export type Attendance = {
-  __typename?: 'Attendance';
-  id: Scalars['ID']['output'];
-  member: Member;
-  course: Course;
-  from: Scalars['Float']['output'];
-  to: Scalars['Float']['output'];
-};
-
-export type ShiftFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+export type MemberCreateEnrollmentInput = {
+  socialYear: Scalars['Int']['input'];
   courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  weekDay?: InputMaybe<Scalars['Int']['input']>;
+  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  qualification?: InputMaybe<QualificationEnum>;
+  registrationRequestDate?: InputMaybe<Scalars['Float']['input']>;
+  registrationAcceptanceDate?: InputMaybe<Scalars['Float']['input']>;
+  socialCardNumber?: InputMaybe<Scalars['Int']['input']>;
+  asiCardNumber?: InputMaybe<Scalars['String']['input']>;
+  csenCardNumber?: InputMaybe<Scalars['String']['input']>;
+  medicalCertificateExpireAt?: InputMaybe<Scalars['Float']['input']>;
+  medicalCertificateType?: InputMaybe<MedicalCertificateTypeEnum>;
+  consents?: InputMaybe<Array<ConsentInput>>;
+  excludeFromCommunications?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type PaymentFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  search?: InputMaybe<Scalars['String']['input']>;
-  counter?: InputMaybe<Scalars['Int']['input']>;
-  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  feeIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  months?: InputMaybe<Array<Scalars['YearMonth']['input']>>;
-  socialYear?: InputMaybe<Scalars['Int']['input']>;
-  dateFrom?: InputMaybe<Scalars['Float']['input']>;
-  dateTo?: InputMaybe<Scalars['Float']['input']>;
-  type?: InputMaybe<PaymentTypeEnum>;
-  reason?: InputMaybe<Scalars['String']['input']>;
-  sent?: InputMaybe<Scalars['Boolean']['input']>;
-  createdAtFrom?: InputMaybe<Scalars['Float']['input']>;
-  createdAtTo?: InputMaybe<Scalars['Float']['input']>;
-  sortBy?: InputMaybe<PaymentSortEnum>;
-  sortDirection?: InputMaybe<SortDirectionEnum>;
+export type MemberCreateInput = {
+  name: Scalars['String']['input'];
+  surname: Scalars['String']['input'];
+  taxCode: Scalars['String']['input'];
+  address?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  parent?: InputMaybe<ParentInput>;
+  enrollment?: InputMaybe<MemberCreateEnrollmentInput>;
+};
+
+export type MemberCreatePayload = {
+  __typename?: 'MemberCreatePayload';
+  member: Member;
+};
+
+export type MemberDeleteInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type MemberDeletePayload = {
+  __typename?: 'MemberDeletePayload';
+  member: Member;
 };
 
 export type MemberFilter = {
@@ -882,96 +618,11 @@ export type MemberFilter = {
   sortDirection?: InputMaybe<SortDirectionEnum>;
 };
 
-export type FeeFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  reason?: InputMaybe<Scalars['String']['input']>;
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  sortBy?: InputMaybe<FeeSortEnum>;
-  sortDirection?: InputMaybe<SortDirectionEnum>;
+export type MemberPagination = {
+  __typename?: 'MemberPagination';
+  data: Array<Member>;
+  pageInfo: PageInfo;
 };
-
-export type EnrollmentFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  socialYear?: InputMaybe<Scalars['Int']['input']>;
-  status?: InputMaybe<EnrollmentStatusEnum>;
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  qualification?: InputMaybe<QualificationEnum>;
-  sortBy?: InputMaybe<EnrollmentSortEnum>;
-  sortDirection?: InputMaybe<SortDirectionEnum>;
-};
-
-export type EmailFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  search?: InputMaybe<Scalars['String']['input']>;
-  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  type?: InputMaybe<EmailTypeEnum>;
-  to?: InputMaybe<Array<Scalars['String']['input']>>;
-  sortBy?: InputMaybe<EmailSortEnum>;
-  sortDirection?: InputMaybe<SortDirectionEnum>;
-};
-
-export type DayExpireMedicalCertificatesFilter = {
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  startFrom?: InputMaybe<Scalars['Float']['input']>;
-  endFrom?: InputMaybe<Scalars['Float']['input']>;
-};
-
-export type DayAttendancesFilter = {
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  startFrom?: InputMaybe<Scalars['Float']['input']>;
-  endFrom?: InputMaybe<Scalars['Float']['input']>;
-};
-
-export type CourseFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  search?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  sortBy?: InputMaybe<CourseSortEnum>;
-  sortDirection?: InputMaybe<SortDirectionEnum>;
-};
-
-export type AttendanceFilter = {
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  from?: InputMaybe<Scalars['Float']['input']>;
-  to?: InputMaybe<Scalars['Float']['input']>;
-};
-
-export enum SortDirectionEnum {
-  ASC = 'asc',
-  DESC = 'desc',
-}
-
-export enum RecurrenceEnum {
-  MONTHLY = 'MONTHLY',
-  ANNUAL = 'ANNUAL',
-}
-
-export enum QualificationEnum {
-  PRESIDENT = 'PRESIDENT',
-  VICE_PRESIDENT = 'VICE_PRESIDENT',
-  SECRETARY = 'SECRETARY',
-  COUNCILOR = 'COUNCILOR',
-  ORDINARY_MEMBER = 'ORDINARY_MEMBER',
-}
-
-export enum PaymentTypeEnum {
-  CASH = 'CASH',
-  BANK_TRANSFER = 'BANK_TRANSFER',
-  POS = 'POS',
-}
-
-export enum PaymentSortEnum {
-  COUNTER = 'COUNTER',
-  MONTH = 'MONTH',
-  AMOUNT = 'AMOUNT',
-  CREATED_AT = 'CREATED_AT',
-}
 
 export enum MemberSortEnum {
   NAME = 'NAME',
@@ -983,60 +634,40 @@ export enum MemberSortEnum {
   CREATED_AT = 'CREATED_AT',
 }
 
-export enum MedicalCertificateTypeEnum {
-  AGONISTIC = 'AGONISTIC',
-  NON_AGONISTIC = 'NON_AGONISTIC',
-}
+export type MemberUpdateEnrollmentInput = {
+  id: Scalars['ID']['input'];
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  qualification?: InputMaybe<QualificationEnum>;
+  registrationRequestDate?: InputMaybe<Scalars['Float']['input']>;
+  registrationAcceptanceDate?: InputMaybe<Scalars['Float']['input']>;
+  socialCardNumber?: InputMaybe<Scalars['Int']['input']>;
+  emptySocialCardNumber?: InputMaybe<Scalars['Boolean']['input']>;
+  asiCardNumber?: InputMaybe<Scalars['String']['input']>;
+  csenCardNumber?: InputMaybe<Scalars['String']['input']>;
+  medicalCertificateExpireAt?: InputMaybe<Scalars['Float']['input']>;
+  medicalCertificateType?: InputMaybe<MedicalCertificateTypeEnum>;
+  medicalCertificateKey?: InputMaybe<Scalars['String']['input']>;
+  consents?: InputMaybe<Array<ConsentInput>>;
+  excludeFromCommunications?: InputMaybe<Scalars['Boolean']['input']>;
+};
 
-export enum MedicalCertificateExpirationEnum {
-  EXPIRED = 'EXPIRED',
-  IS_EXPIRING = 'IS_EXPIRING',
-  NOT_ENTERED = 'NOT_ENTERED',
-}
+export type MemberUpdateInput = {
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  surname?: InputMaybe<Scalars['String']['input']>;
+  taxCode?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  parent?: InputMaybe<ParentInput>;
+  enrollment?: InputMaybe<MemberUpdateEnrollmentInput>;
+};
 
-export enum FeeTypeEnum {
-  MEMBERSHIP = 'MEMBERSHIP',
-  COURSE = 'COURSE',
-  INSURANCE = 'INSURANCE',
-}
-
-export enum FeeSortEnum {
-  NAME = 'NAME',
-  CREATED_AT = 'CREATED_AT',
-}
-
-export enum EnrollmentStatusEnum {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-}
-
-export enum EnrollmentSortEnum {
-  SOCIAL_YEAR = 'SOCIAL_YEAR',
-  STATUS = 'STATUS',
-  REGISTRATION_REQUEST_DATE = 'REGISTRATION_REQUEST_DATE',
-  REGISTRATION_ACCEPTANCE_DATE = 'REGISTRATION_ACCEPTANCE_DATE',
-  CREATED_AT = 'CREATED_AT',
-}
-
-export enum EmailTypeEnum {
-  RECEIPT = 'RECEIPT',
-  REMINDER = 'REMINDER',
-  MEDICAL_CERTIFICATE_EXPIRATION = 'MEDICAL_CERTIFICATE_EXPIRATION',
-}
-
-export enum EmailSortEnum {
-  CREATED_AT = 'CREATED_AT',
-}
-
-export enum CourseSortEnum {
-  NAME = 'NAME',
-  CREATED_AT = 'CREATED_AT',
-}
-
-export enum CommunicationRecipientEnum {
-  ALL = 'ALL',
-  EXCLUDE = 'EXCLUDE',
-}
+export type MemberUpdatePayload = {
+  __typename?: 'MemberUpdatePayload';
+  member: Member;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -1208,6 +839,464 @@ export type MutationAttendanceCreateArgs = {
   input: AttendanceCreateInput;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  total: Scalars['Int']['output'];
+};
+
+export type Parent = {
+  __typename?: 'Parent';
+  name: Scalars['String']['output'];
+  surname: Scalars['String']['output'];
+  fullName: Scalars['String']['output'];
+  taxCode: Scalars['String']['output'];
+  email?: Maybe<Scalars['String']['output']>;
+  phone?: Maybe<Scalars['String']['output']>;
+};
+
+export type ParentInput = {
+  name: Scalars['String']['input'];
+  surname: Scalars['String']['input'];
+  taxCode: Scalars['String']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Payment = {
+  __typename?: 'Payment';
+  id: Scalars['ID']['output'];
+  counter: Scalars['Int']['output'];
+  member: Member;
+  fee: Fee;
+  amount: Scalars['Float']['output'];
+  date: Scalars['Float']['output'];
+  month?: Maybe<Scalars['YearMonth']['output']>;
+  socialYear: Scalars['Int']['output'];
+  type: PaymentTypeEnum;
+  reason: Scalars['String']['output'];
+  sent: Scalars['Boolean']['output'];
+  canDelete: Scalars['Boolean']['output'];
+  createdAt: Scalars['Float']['output'];
+  updatedAt: Scalars['Float']['output'];
+};
+
+export type PaymentCreateInput = {
+  memberId: Scalars['ID']['input'];
+  feeId: Scalars['ID']['input'];
+  amount: Scalars['Float']['input'];
+  date: Scalars['Float']['input'];
+  type: PaymentTypeEnum;
+  month?: InputMaybe<Scalars['YearMonth']['input']>;
+  reason: Scalars['String']['input'];
+  socialYear: Scalars['Int']['input'];
+};
+
+export type PaymentCreatePayload = {
+  __typename?: 'PaymentCreatePayload';
+  payment: Payment;
+};
+
+export type PaymentDeleteInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type PaymentDeletePayload = {
+  __typename?: 'PaymentDeletePayload';
+  payment: Payment;
+  updatedPayments: Array<Payment>;
+};
+
+export type PaymentFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  counter?: InputMaybe<Scalars['Int']['input']>;
+  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  feeIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  months?: InputMaybe<Array<Scalars['YearMonth']['input']>>;
+  socialYear?: InputMaybe<Scalars['Int']['input']>;
+  dateFrom?: InputMaybe<Scalars['Float']['input']>;
+  dateTo?: InputMaybe<Scalars['Float']['input']>;
+  type?: InputMaybe<PaymentTypeEnum>;
+  reason?: InputMaybe<Scalars['String']['input']>;
+  sent?: InputMaybe<Scalars['Boolean']['input']>;
+  createdAtFrom?: InputMaybe<Scalars['Float']['input']>;
+  createdAtTo?: InputMaybe<Scalars['Float']['input']>;
+  sortBy?: InputMaybe<PaymentSortEnum>;
+  sortDirection?: InputMaybe<SortDirectionEnum>;
+};
+
+export type PaymentPagination = {
+  __typename?: 'PaymentPagination';
+  data: Array<Payment>;
+  pageInfo: PageInfo;
+};
+
+export type PaymentSendReceiptInput = {
+  id: Scalars['ID']['input'];
+  attachmentUri: Scalars['String']['input'];
+};
+
+export type PaymentSendReceiptPayload = {
+  __typename?: 'PaymentSendReceiptPayload';
+  email: Email;
+};
+
+export type PaymentSendReminderInput = {
+  memberId: Scalars['ID']['input'];
+  month: Scalars['YearMonth']['input'];
+  courseId: Scalars['ID']['input'];
+};
+
+export type PaymentSendReminderPayload = {
+  __typename?: 'PaymentSendReminderPayload';
+  email: Email;
+};
+
+export enum PaymentSortEnum {
+  COUNTER = 'COUNTER',
+  MONTH = 'MONTH',
+  AMOUNT = 'AMOUNT',
+  CREATED_AT = 'CREATED_AT',
+}
+
+export enum PaymentTypeEnum {
+  CASH = 'CASH',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+  POS = 'POS',
+}
+
+export type PaymentUpdateInput = {
+  id: Scalars['ID']['input'];
+  memberId?: InputMaybe<Scalars['ID']['input']>;
+  feeId?: InputMaybe<Scalars['ID']['input']>;
+  amount?: InputMaybe<Scalars['Float']['input']>;
+  date?: InputMaybe<Scalars['Float']['input']>;
+  type?: InputMaybe<PaymentTypeEnum>;
+  month?: InputMaybe<Scalars['YearMonth']['input']>;
+  reason?: InputMaybe<Scalars['String']['input']>;
+  sent?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PaymentUpdateManyInput = {
+  ids: Array<Scalars['ID']['input']>;
+  sent?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PaymentUpdateManyPayload = {
+  __typename?: 'PaymentUpdateManyPayload';
+  payments: Array<Payment>;
+};
+
+export type PaymentUpdatePayload = {
+  __typename?: 'PaymentUpdatePayload';
+  payment: Payment;
+};
+
+export enum QualificationEnum {
+  PRESIDENT = 'PRESIDENT',
+  VICE_PRESIDENT = 'VICE_PRESIDENT',
+  SECRETARY = 'SECRETARY',
+  COUNCILOR = 'COUNCILOR',
+  ORDINARY_MEMBER = 'ORDINARY_MEMBER',
+}
+
+export type Query = {
+  __typename?: 'Query';
+  me: User;
+  setting: Setting;
+  members: MemberPagination;
+  member: Member;
+  enrollments: EnrollmentPagination;
+  enrollment: Enrollment;
+  courses: CoursePagination;
+  course: Course;
+  shifts: Array<ShiftDetail>;
+  payments: PaymentPagination;
+  payment: Payment;
+  fees: FeePagination;
+  fee: Fee;
+  attendances: AttendancePagination;
+  attendance: Attendance;
+  emails: EmailPagination;
+  email: Email;
+  dayAttendances: Array<DayAttendances>;
+  dayExpireMedicalCertificates: Array<DayExpireMedicalCertificates>;
+};
+
+export type QueryMembersArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<MemberFilter>;
+};
+
+export type QueryMemberArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryEnrollmentsArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<EnrollmentFilter>;
+};
+
+export type QueryEnrollmentArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryCoursesArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<CourseFilter>;
+};
+
+export type QueryCourseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryShiftsArgs = {
+  filter?: InputMaybe<ShiftFilter>;
+};
+
+export type QueryPaymentsArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<PaymentFilter>;
+};
+
+export type QueryPaymentArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryFeesArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<FeeFilter>;
+};
+
+export type QueryFeeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryAttendancesArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<AttendanceFilter>;
+};
+
+export type QueryAttendanceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryEmailsArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<EmailFilter>;
+};
+
+export type QueryEmailArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryDayAttendancesArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<DayAttendancesFilter>;
+};
+
+export type QueryDayExpireMedicalCertificatesArgs = {
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<DayExpireMedicalCertificatesFilter>;
+};
+
+export enum RecurrenceEnum {
+  MONTHLY = 'MONTHLY',
+  ANNUAL = 'ANNUAL',
+}
+
+export type RegistrationRequestInput = {
+  name: Scalars['String']['input'];
+  surname: Scalars['String']['input'];
+  taxCode: Scalars['String']['input'];
+  address?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  parent?: InputMaybe<ParentInput>;
+  socialYear: Scalars['Int']['input'];
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  qualification?: InputMaybe<QualificationEnum>;
+  consents?: InputMaybe<Array<ConsentInput>>;
+  captchaToken?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RegistrationRequestPayload = {
+  __typename?: 'RegistrationRequestPayload';
+  enrollment: Enrollment;
+};
+
+export type SeasonRenewInput = {
+  enrollmentIds: Array<Scalars['ID']['input']>;
+  toYear: Scalars['Int']['input'];
+};
+
+export type SeasonRenewPayload = {
+  __typename?: 'SeasonRenewPayload';
+  createdCount: Scalars['Int']['output'];
+};
+
+export type SendCommunicationInput = {
+  recipient: CommunicationRecipientEnum;
+  subject: Scalars['String']['input'];
+  body: Scalars['String']['input'];
+  attachments?: InputMaybe<Array<EmailAttachmentInput>>;
+};
+
+export type SendCommunicationPayload = {
+  __typename?: 'SendCommunicationPayload';
+  sentBatches: Scalars['Int']['output'];
+  failedBatches: Scalars['Int']['output'];
+  totalRecipients: Scalars['Int']['output'];
+};
+
+export type SendDailyMedicalCertificateExpirationInput = {
+  daysBeforeMedicalCertificateExpires?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type SendDailyMedicalCertificateExpirationPayload = {
+  __typename?: 'SendDailyMedicalCertificateExpirationPayload';
+  sentEmails: Scalars['Int']['output'];
+  failedEmails: Scalars['Int']['output'];
+};
+
+export type SendMonthlyRemindersInput = {
+  month: Scalars['YearMonth']['input'];
+};
+
+export type SendMonthlyRemindersPayload = {
+  __typename?: 'SendMonthlyRemindersPayload';
+  sentReminders: Scalars['Int']['output'];
+  failedReminders: Scalars['Int']['output'];
+};
+
+export type Setting = {
+  __typename?: 'Setting';
+  emailSettings: EmailSettings;
+  emailTextList: EmailTextList;
+  attendancesPerMonthToSendReminder: Scalars['Int']['output'];
+  daysBeforeMedicalCertificateExpiresToSendEmail: Array<Scalars['Int']['output']>;
+};
+
+export type SettingUpdateInput = {
+  emailSettings?: InputMaybe<EmailSettingsInput>;
+  emailTextList?: InputMaybe<EmailTextListInput>;
+  attendancesPerMonthToSendReminder?: InputMaybe<Scalars['Int']['input']>;
+  daysBeforeMedicalCertificateExpiresToSendEmail?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type SettingUpdatePayload = {
+  __typename?: 'SettingUpdatePayload';
+  setting: Setting;
+};
+
+export type Shift = {
+  __typename?: 'Shift';
+  id: Scalars['ID']['output'];
+  from: Array<Scalars['Int']['output']>;
+  to: Array<Scalars['Int']['output']>;
+};
+
+export type ShiftDetail = {
+  __typename?: 'ShiftDetail';
+  id: Scalars['ID']['output'];
+  course: Course;
+  weekDay: Scalars['Int']['output'];
+  from: Array<Scalars['Int']['output']>;
+  to: Array<Scalars['Int']['output']>;
+};
+
+export type ShiftFilter = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  weekDay?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type ShiftInput = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  from: Array<Scalars['Int']['input']>;
+  to: Array<Scalars['Int']['input']>;
+};
+
+export enum SortDirectionEnum {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID']['output'];
+  username: Scalars['String']['output'];
+  createdAt: Scalars['Float']['output'];
+  updatedAt: Scalars['Float']['output'];
+};
+
+export type VerifyEmailSettingsPayload = {
+  __typename?: 'VerifyEmailSettingsPayload';
+  verified?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type VerifyEmailSettingsMutationVariables = Exact<{ [key: string]: never }>;
+
+export type VerifyEmailSettingsMutation = {
+  __typename?: 'Mutation';
+  verifyEmailSettings: { __typename?: 'VerifyEmailSettingsPayload'; verified?: boolean | null };
+};
+
+export type SettingUpdateMutationVariables = Exact<{
+  input: SettingUpdateInput;
+}>;
+
+export type SettingUpdateMutation = {
+  __typename?: 'Mutation';
+  settingUpdate: {
+    __typename?: 'SettingUpdatePayload';
+    setting: {
+      __typename?: 'Setting';
+      attendancesPerMonthToSendReminder: number;
+      daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>;
+      emailSettings: {
+        __typename?: 'EmailSettings';
+        host: string;
+        port: number;
+        secure: boolean;
+        name?: string | null;
+        email?: string | null;
+      };
+      emailTextList: {
+        __typename?: 'EmailTextList';
+        receipt: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
+        reminder: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
+        medicalCertificateExpiration: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
+      };
+    };
+  };
+};
+
+export type SendCommunicationMutationVariables = Exact<{
+  input: SendCommunicationInput;
+}>;
+
+export type SendCommunicationMutation = {
+  __typename?: 'Mutation';
+  sendCommunication: {
+    __typename?: 'SendCommunicationPayload';
+    sentBatches: number;
+    failedBatches: number;
+    totalRecipients: number;
+  };
+};
+
 export type AttendanceListItemFragment = {
   __typename?: 'Attendance';
   id: string;
@@ -1346,99 +1435,6 @@ export type SettingQuery = {
       medicalCertificateExpiration: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
     };
   };
-};
-
-export type VerifyEmailSettingsMutationVariables = Exact<{ [key: string]: never }>;
-
-export type VerifyEmailSettingsMutation = {
-  __typename?: 'Mutation';
-  verifyEmailSettings: { __typename?: 'VerifyEmailSettingsPayload'; verified?: boolean | null };
-};
-
-export type SettingUpdateMutationVariables = Exact<{
-  input: SettingUpdateInput;
-}>;
-
-export type SettingUpdateMutation = {
-  __typename?: 'Mutation';
-  settingUpdate: {
-    __typename?: 'SettingUpdatePayload';
-    setting: {
-      __typename?: 'Setting';
-      attendancesPerMonthToSendReminder: number;
-      daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>;
-      emailSettings: {
-        __typename?: 'EmailSettings';
-        host: string;
-        port: number;
-        secure: boolean;
-        name?: string | null;
-        email?: string | null;
-      };
-      emailTextList: {
-        __typename?: 'EmailTextList';
-        receipt: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
-        reminder: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
-        medicalCertificateExpiration: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
-      };
-    };
-  };
-};
-
-export type SendCommunicationMutationVariables = Exact<{
-  input: SendCommunicationInput;
-}>;
-
-export type SendCommunicationMutation = {
-  __typename?: 'Mutation';
-  sendCommunication: {
-    __typename?: 'SendCommunicationPayload';
-    sentBatches: number;
-    failedBatches: number;
-    totalRecipients: number;
-  };
-};
-
-export type EmailsQueryVariables = Exact<{
-  pageIndex: Scalars['Int']['input'];
-  pageSize: Scalars['Int']['input'];
-  filter?: InputMaybe<EmailFilter>;
-}>;
-
-export type EmailsQuery = {
-  __typename?: 'Query';
-  emails: {
-    __typename?: 'EmailPagination';
-    data: Array<{
-      __typename?: 'Email';
-      id: string;
-      type: EmailTypeEnum;
-      to: string;
-      subject: string;
-      body: string;
-      createdAt: number;
-      course?: { __typename?: 'Course'; name: string } | null;
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; total: number };
-  };
-};
-
-export type PaymentSendReminderMutationVariables = Exact<{
-  input: PaymentSendReminderInput;
-}>;
-
-export type PaymentSendReminderMutation = {
-  __typename?: 'Mutation';
-  paymentSendReminder: { __typename?: 'PaymentSendReminderPayload'; email: { __typename?: 'Email'; id: string } };
-};
-
-export type SendMonthlyRemindersMutationVariables = Exact<{
-  input: SendMonthlyRemindersInput;
-}>;
-
-export type SendMonthlyRemindersMutation = {
-  __typename?: 'Mutation';
-  sendMonthlyReminders: { __typename?: 'SendMonthlyRemindersPayload'; sentReminders: number; failedReminders: number };
 };
 
 export type CourseListItemFragment = { __typename?: 'Course'; id: string; name: string; color?: string | null };
@@ -1777,6 +1773,48 @@ export type EnrollmentConfirmMutationVariables = Exact<{
 export type EnrollmentConfirmMutation = {
   __typename?: 'Mutation';
   enrollmentConfirm: { __typename?: 'EnrollmentConfirmPayload'; modifiedCount: number };
+};
+
+export type EmailsQueryVariables = Exact<{
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+  filter?: InputMaybe<EmailFilter>;
+}>;
+
+export type EmailsQuery = {
+  __typename?: 'Query';
+  emails: {
+    __typename?: 'EmailPagination';
+    data: Array<{
+      __typename?: 'Email';
+      id: string;
+      type: EmailTypeEnum;
+      to: string;
+      subject: string;
+      body: string;
+      createdAt: number;
+      course?: { __typename?: 'Course'; name: string } | null;
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; total: number };
+  };
+};
+
+export type PaymentSendReminderMutationVariables = Exact<{
+  input: PaymentSendReminderInput;
+}>;
+
+export type PaymentSendReminderMutation = {
+  __typename?: 'Mutation';
+  paymentSendReminder: { __typename?: 'PaymentSendReminderPayload'; email: { __typename?: 'Email'; id: string } };
+};
+
+export type SendMonthlyRemindersMutationVariables = Exact<{
+  input: SendMonthlyRemindersInput;
+}>;
+
+export type SendMonthlyRemindersMutation = {
+  __typename?: 'Mutation';
+  sendMonthlyReminders: { __typename?: 'SendMonthlyRemindersPayload'; sentReminders: number; failedReminders: number };
 };
 
 export type PaymentListItemFragment = {
@@ -2283,6 +2321,14 @@ export type MemberListItemFragment = {
       name: string;
       shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
     }>;
+    payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+    attendances: Array<{
+      __typename?: 'Attendance';
+      id: string;
+      from: number;
+      to: number;
+      course: { __typename?: 'Course'; id: string };
+    }>;
   } | null;
 };
 
@@ -2330,6 +2376,14 @@ export type MemberDetailFragment = {
       shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
     }>;
     consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
+    payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+    attendances: Array<{
+      __typename?: 'Attendance';
+      id: string;
+      from: number;
+      to: number;
+      course: { __typename?: 'Course'; id: string };
+    }>;
   } | null;
 };
 
@@ -2382,6 +2436,14 @@ export type MembersQuery = {
           id: string;
           name: string;
           shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+        }>;
+        payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+        attendances: Array<{
+          __typename?: 'Attendance';
+          id: string;
+          from: number;
+          to: number;
+          course: { __typename?: 'Course'; id: string };
         }>;
       } | null;
     }>;
@@ -2439,6 +2501,14 @@ export type MemberQuery = {
         shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
       }>;
       consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
+      payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+      attendances: Array<{
+        __typename?: 'Attendance';
+        id: string;
+        from: number;
+        to: number;
+        course: { __typename?: 'Course'; id: string };
+      }>;
     } | null;
   };
 };
@@ -2522,6 +2592,14 @@ export type MemberCreateMutation = {
           shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
         }>;
         consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
+        payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+        attendances: Array<{
+          __typename?: 'Attendance';
+          id: string;
+          from: number;
+          to: number;
+          course: { __typename?: 'Course'; id: string };
+        }>;
       } | null;
     };
   };
@@ -2579,6 +2657,14 @@ export type MemberUpdateMutation = {
           shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
         }>;
         consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
+        payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+        attendances: Array<{
+          __typename?: 'Attendance';
+          id: string;
+          from: number;
+          to: number;
+          course: { __typename?: 'Course'; id: string };
+        }>;
       } | null;
     };
   };
@@ -2636,6 +2722,14 @@ export type MemberDeleteMutation = {
           shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
         }>;
         consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
+        payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+        attendances: Array<{
+          __typename?: 'Attendance';
+          id: string;
+          from: number;
+          to: number;
+          course: { __typename?: 'Course'; id: string };
+        }>;
       } | null;
     };
   };
@@ -3174,6 +3268,37 @@ export const MemberListItemFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -3321,6 +3446,37 @@ export const MemberDetailFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -3329,6 +3485,184 @@ export const MemberDetailFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<MemberDetailFragment, unknown>;
+export const VerifyEmailSettingsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'VerifyEmailSettings' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'verifyEmailSettings' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'verified' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<VerifyEmailSettingsMutation, VerifyEmailSettingsMutationVariables>;
+export const SettingUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'SettingUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SettingUpdateInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'settingUpdate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'setting' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'emailSettings' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'host' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'port' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'secure' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'emailTextList' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'receipt' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'reminder' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'medicalCertificateExpiration' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'attendancesPerMonthToSendReminder' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'daysBeforeMedicalCertificateExpiresToSendEmail' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SettingUpdateMutation, SettingUpdateMutationVariables>;
+export const SendCommunicationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'SendCommunication' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SendCommunicationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'sendCommunication' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'sentBatches' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'failedBatches' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'totalRecipients' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SendCommunicationMutation, SendCommunicationMutationVariables>;
 export const AttendancesDocument = {
   kind: 'Document',
   definitions: [
@@ -3885,365 +4219,6 @@ export const SettingDocument = {
     },
   ],
 } as unknown as DocumentNode<SettingQuery, SettingQueryVariables>;
-export const VerifyEmailSettingsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'VerifyEmailSettings' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'verifyEmailSettings' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'verified' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<VerifyEmailSettingsMutation, VerifyEmailSettingsMutationVariables>;
-export const SettingUpdateDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'SettingUpdate' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SettingUpdateInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'settingUpdate' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'setting' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailSettings' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'host' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'port' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'secure' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailTextList' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'receipt' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'reminder' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'medicalCertificateExpiration' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      { kind: 'Field', name: { kind: 'Name', value: 'attendancesPerMonthToSendReminder' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'daysBeforeMedicalCertificateExpiresToSendEmail' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SettingUpdateMutation, SettingUpdateMutationVariables>;
-export const SendCommunicationDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'SendCommunication' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SendCommunicationInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'sendCommunication' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'sentBatches' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'failedBatches' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'totalRecipients' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SendCommunicationMutation, SendCommunicationMutationVariables>;
-export const EmailsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'Emails' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pageIndex' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pageSize' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'EmailFilter' } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'emails' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'pageIndex' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'pageIndex' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'pageSize' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'pageSize' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'filter' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'data' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'course' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
-                        },
-                      },
-                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'pageInfo' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'total' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<EmailsQuery, EmailsQueryVariables>;
-export const PaymentSendReminderDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'PaymentSendReminder' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'PaymentSendReminderInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentSendReminder' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'email' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>;
-export const SendMonthlyRemindersDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'SendMonthlyReminders' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SendMonthlyRemindersInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'sendMonthlyReminders' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'sentReminders' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'failedReminders' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SendMonthlyRemindersMutation, SendMonthlyRemindersMutationVariables>;
 export const CoursesSearcherDocument = {
   kind: 'Document',
   definitions: [
@@ -5431,6 +5406,187 @@ export const EnrollmentConfirmDocument = {
     },
   ],
 } as unknown as DocumentNode<EnrollmentConfirmMutation, EnrollmentConfirmMutationVariables>;
+export const EmailsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Emails' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pageIndex' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pageSize' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'EmailFilter' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'emails' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pageIndex' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pageIndex' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pageSize' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pageSize' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'total' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<EmailsQuery, EmailsQueryVariables>;
+export const PaymentSendReminderDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'PaymentSendReminder' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'PaymentSendReminderInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'paymentSendReminder' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'email' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PaymentSendReminderMutation, PaymentSendReminderMutationVariables>;
+export const SendMonthlyRemindersDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'SendMonthlyReminders' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SendMonthlyRemindersInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'sendMonthlyReminders' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'sentReminders' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'failedReminders' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SendMonthlyRemindersMutation, SendMonthlyRemindersMutationVariables>;
 export const PaymentsDocument = {
   kind: 'Document',
   definitions: [
@@ -7119,6 +7275,37 @@ export const MembersDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -7207,6 +7394,37 @@ export const MemberDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -7466,6 +7684,37 @@ export const MemberCreateDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -7657,6 +7906,37 @@ export const MemberUpdateDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -7848,6 +8128,37 @@ export const MemberDeleteDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'payments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'course' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },

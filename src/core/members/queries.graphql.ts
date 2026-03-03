@@ -21,6 +21,18 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
       medicalCertificateExpireAt
       qualification
       excludeFromCommunications
+      payments {
+        id
+        month
+      }
+      attendances {
+        id
+        course {
+          id
+        }
+        from
+        to
+      }
     }
   }
 `;

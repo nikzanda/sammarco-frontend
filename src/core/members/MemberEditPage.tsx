@@ -7,7 +7,13 @@ import { FaBell, FaCalendarCheck, FaMoneyBill, FaTrash } from 'react-icons/fa';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { MemberDeleteDocument, MemberDocument, MemberUpdateDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import { MemberCalendar, MemberForm, MemberMedicalCertificate, MemberPayments } from './components';
+import {
+  EnrollmentForm,
+  MemberCalendar,
+  MemberMedicalCertificate,
+  MemberPayments,
+  MemberPersonalForm,
+} from './components';
 import { EditPageHeader, Updates } from '../../commons';
 import { EmailTable, SendReminderModal } from '../emails/components';
 import { SettingsContext } from '../../contexts';
@@ -48,7 +54,6 @@ const MemberEditPage: React.FC = () => {
     refetchQueries: ['Members', 'Member', 'Payments', 'PaymentPdf', 'PaymentsPdf'],
     onCompleted: () => {
       message.success(t('members.edited'));
-      form.setFieldValue(['medicalCertificate', 'base64'], undefined);
     },
   });
 
@@ -78,10 +83,28 @@ const MemberEditPage: React.FC = () => {
 
   const initialValues = React.useMemo(() => {
     if (member) {
+      const { currentEnrollment } = member;
+
       const result = {
         ...member,
-        courseIds: member.courses.map(({ id: courseId }) => courseId),
-        certificateExpiryDate: member.medicalCertificate?.expireAt,
+        enrollment: currentEnrollment
+          ? {
+              id: currentEnrollment.id,
+              courseIds: currentEnrollment.courses.map(({ id: courseId }) => courseId),
+              shiftIds: currentEnrollment.shiftIds,
+              qualification: currentEnrollment.qualification,
+              socialCardNumber: currentEnrollment.socialCardNumber,
+              asiCardNumber: currentEnrollment.asiCardNumber,
+              csenCardNumber: currentEnrollment.csenCardNumber,
+              registrationRequestDate: currentEnrollment.registrationRequestDate,
+              registrationAcceptanceDate: currentEnrollment.registrationAcceptanceDate,
+              medicalCertificateExpireAt: currentEnrollment.medicalCertificateExpireAt,
+              medicalCertificateType: currentEnrollment.medicalCertificateType,
+              medicalCertificateKey: currentEnrollment.medicalCertificateKey,
+              excludeFromCommunications: currentEnrollment.excludeFromCommunications,
+              consents: currentEnrollment.consents,
+            }
+          : undefined,
       };
       return result;
     }
@@ -97,6 +120,11 @@ const MemberEditPage: React.FC = () => {
       },
     });
   }, [deleteMember, id]);
+
+  const courseIds = React.useMemo(
+    () => member?.currentEnrollment?.courses.map(({ id }) => id) ?? [],
+    [member?.currentEnrollment?.courses]
+  );
 
   const actions = React.useMemo(() => {
     if (!member) {
@@ -124,7 +152,7 @@ const MemberEditPage: React.FC = () => {
         onClick: () => {
           setSendReminderData({
             memberId: member.id,
-            courseIds: member.courses.map(({ id }) => id),
+            courseIds,
           });
         },
       },
@@ -144,14 +172,16 @@ const MemberEditPage: React.FC = () => {
       },
     ];
     return result;
-  }, [deleteLoading, handleDelete, member, modal, t, validEmailSettings]);
+  }, [courseIds, deleteLoading, handleDelete, member, modal, t, validEmailSettings]);
 
   const handleFinish: FormProps['onFinish'] = (values) => {
+    const { enrollment, ...personalFields } = values;
     updateMember({
       variables: {
         input: {
           id: id!,
-          ...values,
+          ...personalFields,
+          ...(enrollment && { enrollment }),
         },
       },
     });
@@ -192,16 +222,20 @@ const MemberEditPage: React.FC = () => {
                     key: 'details',
                     children: (
                       <>
-                        <MemberForm updating />
+                        <MemberPersonalForm />
                         <Updates updates={member} />
                       </>
                     ),
                   },
                   {
-                    label: t('members.tab.medicalCertificate'),
-                    key: 'certificate',
-                    destroyOnHidden: true,
-                    children: <MemberMedicalCertificate member={member} />,
+                    label: t('members.tab.enrollment'),
+                    key: 'enrollment',
+                    children: (
+                      <>
+                        <EnrollmentForm updating />
+                        {member.currentEnrollment && <MemberMedicalCertificate member={member} />}
+                      </>
+                    ),
                   },
                   {
                     label: t('members.tab.payments'),
@@ -226,7 +260,7 @@ const MemberEditPage: React.FC = () => {
           {newPayment && (
             <PaymentCreateModal
               memberId={member.id}
-              courseIds={member.courses.map(({ id }) => id)}
+              courseIds={courseIds}
               onCancel={() => {
                 setNewPayment(false);
               }}
@@ -235,7 +269,7 @@ const MemberEditPage: React.FC = () => {
           {newAttendance && (
             <AttendanceCreateModal
               memberIds={[member.id]}
-              courseIds={member.courses.map(({ id }) => id)}
+              courseIds={courseIds}
               onCancel={() => setNewAttendance(false)}
             />
           )}
