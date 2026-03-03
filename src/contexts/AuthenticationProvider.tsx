@@ -22,8 +22,7 @@ const isAuthenticated = () => {
 };
 
 export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children = undefined }) => {
-  const [loginAction, { loading: mutationLoading, data: mutationData, error: mutationError }] =
-    useMutation(LoginDocument);
+  const [loginAction, { error: mutationError }] = useMutation(LoginDocument);
 
   const client = useApolloClient();
 
@@ -35,18 +34,32 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children =
     skip: !isAuthenticated(),
   });
 
+  const [loginLoading, setLoginLoading] = React.useState(false);
+
   const login = React.useCallback(
     async (username: string, password: string) => {
-      await loginAction({
-        variables: {
-          input: {
-            username,
-            password,
+      setLoginLoading(true);
+      try {
+        const { data } = await loginAction({
+          variables: {
+            input: {
+              username,
+              password,
+            },
           },
-        },
-      });
+        });
+        if (data) {
+          const { token } = data.login;
+          window.localStorage.setItem('token', token);
+          await meRefetch();
+        }
+      } catch {
+        localStorage.removeItem('token');
+      } finally {
+        setLoginLoading(false);
+      }
     },
-    [loginAction]
+    [loginAction, meRefetch]
   );
 
   const logout = React.useCallback(() => {
@@ -57,26 +70,16 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({ children =
 
   useDisplayGraphQLErrors(mutationError);
 
-  React.useEffect(() => {
-    if (!mutationLoading && !mutationError && mutationData) {
-      const { token } = mutationData.login;
-      window.localStorage.setItem('token', token);
-      meRefetch();
-    } else if (mutationError) {
-      localStorage.removeItem('token');
-    }
-  }, [mutationLoading, mutationData, mutationError, meRefetch]);
-
   const value = React.useMemo(
     () => ({
       login,
       logout,
       currentUser: meData?.me,
       loading: meLoading,
-      loginLoading: mutationLoading,
+      loginLoading,
       loginError: mutationError,
     }),
-    [login, logout, meData, meLoading, mutationError, mutationLoading]
+    [login, logout, meData, meLoading, loginLoading, mutationError]
   );
 
   return <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>;
