@@ -359,6 +359,29 @@
       "attachments": "Allegati"
     }
   },
+  "seasonRenewal": {
+    "name": "Rinnovo stagione",
+    "title": "Rinnovo stagione {{toYear}}/{{toYearShort}}",
+    "steps": {
+      "courses": "Corsi",
+      "fees": "Quote",
+      "enrollments": "Iscrizioni",
+      "summary": "Riepilogo"
+    },
+    "table": {
+      "member": "Socio",
+      "courses": "Corsi",
+      "qualification": "Qualifica"
+    },
+    "summary": {
+      "courses": "{{count}} corsi selezionati",
+      "fees": "{{count}} quote selezionate",
+      "enrollments": "{{count}} iscrizioni selezionate"
+    },
+    "confirm": "Conferma rinnovo",
+    "success": "Rinnovo completato: {{courses}} corsi, {{fees}} quote, {{enrollments}} iscrizioni create",
+    "nothingSelected": "Seleziona almeno un elemento da copiare"
+  },
   "settings": {
     "name": "Impostazioni",
     "saved": "Impostazioni aggiornate correttamente",

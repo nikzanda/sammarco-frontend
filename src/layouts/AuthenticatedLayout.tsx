@@ -10,6 +10,7 @@ import {
   FaPaperPlane,
   FaReceipt,
   FaSun,
+  FaSyncAlt,
   FaUserFriends,
 } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
@@ -41,6 +42,9 @@ const CalendarPage = React.lazy(() => import('../core/attendances/CalendarPage')
 
 // Communication
 const CommunicationPage = React.lazy(() => import('../core/communications/CommunicationPage'));
+
+// Season Renewal
+const SeasonRenewalPage = React.lazy(() => import('../core/seasonRenewal/SeasonRenewalPage'));
 
 // Settings
 const SettingsPage = React.lazy(() => import('../settings/SettingsPage'));
@@ -89,6 +93,12 @@ const AuthenticatedLayout: React.FC = () => {
         key: 'communication',
         icon: <Icon component={FaPaperPlane} />,
         onClick: () => navigate('/communication'),
+      },
+      {
+        label: t('seasonRenewal.name'),
+        key: 'season-renewal',
+        icon: <Icon component={FaSyncAlt} />,
+        onClick: () => navigate('/season-renewal'),
       },
     ];
     return result;
@@ -204,6 +214,8 @@ const AuthenticatedLayout: React.FC = () => {
               <Route path="calendar" element={<CalendarPage />} />
 
               <Route path="communication" element={<CommunicationPage />} />
+
+              <Route path="season-renewal" element={<SeasonRenewalPage />} />
 
               <Route path="settings" element={<Outlet />}>
                 <Route index element={<SettingsPage />} />
