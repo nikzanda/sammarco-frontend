@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { Table, TableColumnsType, TableProps, Tag, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { SorterResult } from 'antd/es/table/interface';
@@ -154,7 +155,7 @@ const EmailTable: React.FC<Props> = ({ filters = undefined }) => {
       expandable={{
         expandedRowRender: (email) =>
           /<\/?[a-z][\s\S]*>/i.test(email.body) ? (
-            <div dangerouslySetInnerHTML={{ __html: email.body }} />
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(email.body) }} />
           ) : (
             <p style={{ whiteSpace: 'pre-line' }}>{email.body}</p>
           ),

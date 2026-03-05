@@ -254,7 +254,7 @@
       "fee": "Quota",
       "amount": "Importo",
       "month": "Mese",
-      "years": "Anno",
+      "socialYear": "Anno sociale",
       "date": "Pagato il",
       "reason": "Causale",
       "paymentType": "Tipo pagamento",

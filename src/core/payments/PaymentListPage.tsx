@@ -141,7 +141,7 @@ const PaymentListPage: React.FC = () => {
         return;
       }
 
-      setSendingIds([...sendingIds, paymentId]);
+      setSendingIds((prev) => [...prev, paymentId]);
 
       sendEmail({
         variables: {
@@ -151,10 +151,10 @@ const PaymentListPage: React.FC = () => {
           },
         },
       }).finally(() => {
-        setSendingIds([...sendingIds]);
+        setSendingIds((prev) => prev.filter((id) => id !== paymentId));
       });
     },
-    [message, sendEmail, sendingIds, t]
+    [message, sendEmail, t]
   );
 
   const columns = React.useMemo(() => {
@@ -221,15 +221,15 @@ const PaymentListPage: React.FC = () => {
         title: t('payments.table.details'),
         key: 'details',
         width: 140,
-        render: (_, { month: rawMonth, years }) => {
+        render: (_, { month: rawMonth, socialYear }) => {
           if (rawMonth) {
             const [year, month] = rawMonth.split('-').map((value: string) => parseInt(value, 10));
 
             return capitalize(format(set(Date.now(), { year, month: month - 1 }), 'MMMM yyyy'));
           }
 
-          if (years) {
-            return years.join(' - ');
+          if (socialYear) {
+            return `${socialYear}/${(socialYear + 1) % 100}`;
           }
 
           return undefined;

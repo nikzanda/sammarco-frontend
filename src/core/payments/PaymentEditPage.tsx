@@ -101,7 +101,7 @@ const PaymentEditPage: React.FC = () => {
       <>
         {payment.member.fullName} - {payment.fee.name}
         {payment.month && <> - {format(new Date(payment.month), 'MMMM yyyy')}</>}
-        {payment.years && payment.years.length > 0 && <> - {payment.years.join(' / ')}</>}
+        {payment.socialYear && <> - {`${payment.socialYear}/${(payment.socialYear + 1) % 100}`}</>}
       </>
     );
   }, [payment]);
@@ -271,7 +271,7 @@ const PaymentEditPage: React.FC = () => {
               <span>{t('payments.delete.warning')}</span>
             </Flex>
             <p>
-              <Checkbox checked={checked} onChange={(e) => setChecked(e.target.value)} disabled={disableSendEmail}>
+              <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)} disabled={disableSendEmail}>
                 {t('payments.delete.sendEmail')}
               </Checkbox>
               {disableSendEmail && helpSendEmail}

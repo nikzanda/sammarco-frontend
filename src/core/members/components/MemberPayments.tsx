@@ -120,7 +120,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
         return;
       }
 
-      setSendingIds([...sendingIds, paymentId]);
+      setSendingIds((prev) => [...prev, paymentId]);
 
       sendEmail({
         variables: {
@@ -130,10 +130,10 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
           },
         },
       }).finally(() => {
-        setSendingIds([...sendingIds]);
+        setSendingIds((prev) => prev.filter((id) => id !== paymentId));
       });
     },
-    [message, sendEmail, sendingIds, t]
+    [message, sendEmail, t]
   );
 
   const columns = React.useMemo(() => {
@@ -212,7 +212,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
 
   return (
     <Flex vertical gap="middle">
-      {queryError && <Result status="500" title="500" subTitle="Sorry, something went wrong." />}
+      {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
 
       <Filters
         topFilters={[

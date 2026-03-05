@@ -16,11 +16,9 @@ const CommunicationPage: React.FC = () => {
   const [sendCommunication, { loading: mutationLoading, error: mutationError }] = useMutation(
     SendCommunicationDocument,
     {
-      onCompleted: ({ sendCommunication: { result } }) => {
-        if (result) {
-          message.success(t('emails.sent'));
-          form.resetFields();
-        }
+      onCompleted: () => {
+        message.success(t('emails.sent'));
+        form.resetFields();
       },
     }
   );

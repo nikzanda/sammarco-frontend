@@ -37,21 +37,21 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
   const csvData = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
       return queryData.payments.data.map(
-        ({ counter, member, fee, fee: { course }, amount, date, month, years, type }) => {
+        ({ counter, member, fee, fee: { course }, amount, date, month, socialYear, type }) => {
           let details = '';
           if (month) {
             details = capitalize(format(new Date(month), 'MMMM yyyy'));
           }
 
-          if (years) {
-            details = years.join(' - ');
+          if (socialYear) {
+            details = `${socialYear}/${(socialYear + 1) % 100}`;
           }
 
           return {
             counter,
             member: member.fullName,
             fee: fee.name,
-            course: course.name,
+            course: course?.name ?? '',
             amount: toCurrency(amount),
             date: format(date, 'dd/MM/yyyy'),
             details,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { App, Checkbox, Form, FormProps, Input, InputNumber, Modal, Radio, Spin } from 'antd';
-import { format, set } from 'date-fns';
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import {
@@ -15,7 +15,7 @@ import {
 } from '../../../gql/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-import { dateToYearMonth, getYears } from '../../../utils';
+import { dateToYearMonth, getRealCurrentYears } from '../../../utils';
 import PDF from '../pdfs/receipt-pdf';
 import { FeeSearcher } from '../../fees/components';
 import { SettingsContext } from '../../../contexts';
@@ -29,7 +29,7 @@ interface Props {
 const initialValues = {
   date: Date.now(),
   month: [new Date().getFullYear(), (new Date().getMonth() + 1).toString().padStart(2, '0')].join('-'),
-  years: getYears(),
+  socialYear: getRealCurrentYears()[0],
   type: PaymentTypeEnum.CASH,
   sendEmail: true,
 };
@@ -167,12 +167,12 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                 setSelectedFee(fee);
                 form.setFieldValue('amount', fee.amount);
 
-                const years = getYears();
+                const [yearFrom, yearTo] = getRealCurrentYears();
 
                 let { reason } = fee;
                 paymentReason.current = reason;
                 reason = reason.replaceAll('[MESE]', format(Date.now(), 'MMMM yyyy'));
-                reason = reason.replaceAll('[ANNO]', years.join(' - '));
+                reason = reason.replaceAll('[ANNO]', `${yearFrom} - ${yearTo}`);
                 form.setFieldValue('reason', reason);
               }
             }}
@@ -232,26 +232,23 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
             if (selectedFee.recurrence && [RecurrenceEnum.ANNUAL].includes(selectedFee.recurrence)) {
               return (
                 <Form.Item
-                  label={t('payments.form.years')}
-                  name="years"
+                  label={t('payments.form.socialYear')}
+                  name="socialYear"
                   rules={[{ required: true }]}
-                  getValueProps={(v: [number, number]) => {
+                  getValueProps={(v: number) => {
                     if (v) {
-                      const [yearFrom, yearTo] = v;
-                      const now = Date.now();
-                      return { value: [set(now, { year: yearFrom }), set(now, { year: yearTo })] };
+                      return { value: new Date(v, 0, 1) };
                     }
                     return { value: undefined };
                   }}
-                  getValueFromEvent={(v: [Date, Date]) => {
+                  getValueFromEvent={(v: Date) => {
                     if (v) {
-                      const [dateFrom, dateTo] = v;
-                      return [dateFrom.getFullYear(), dateTo.getFullYear()];
+                      return v.getFullYear();
                     }
                     return null;
                   }}
                 >
-                  <DatePicker.RangePicker picker="year" allowClear={false} style={{ width: '100%' }} />
+                  <DatePicker picker="year" allowClear={false} style={{ width: '100%' }} />
                 </Form.Item>
               );
             }

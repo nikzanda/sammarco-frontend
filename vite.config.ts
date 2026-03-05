@@ -21,13 +21,12 @@ const pdfmakeVfsPlugin = (): Plugin => ({
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const year = process.env.YEAR || mode;
 
   return {
     plugins: [react(), pdfmakeVfsPlugin()],
     base: env.PUBLIC_URL || '/',
     build: {
-      outDir: year !== 'production' ? `build-${year}` : 'dist',
+      outDir: 'build',
     },
     server: {
       port: 3000,
