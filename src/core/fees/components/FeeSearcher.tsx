@@ -1,8 +1,15 @@
 import React from 'react';
 import { Select, SelectProps, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useDebouncedCallback } from 'use-debounce';
 import { useLazyQuery, useQuery } from '@apollo/client/react';
-import { FeeFilter, FeeSearcherDocument, FeeSearcherQuery, FeesSearcherDocument } from '../../../gql/graphql';
+import {
+  FeeFilter,
+  FeeSearcherDocument,
+  FeeSearcherQuery,
+  FeesSearcherDocument,
+  FeesSearcherQuery,
+} from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
 
 interface Props extends Omit<SelectProps, 'onChange'> {
@@ -18,6 +25,7 @@ const FeeSearcher: React.FC<Props> = ({
   onChange = () => {},
   ...selectProps
 }) => {
+  const { t } = useTranslation();
   const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
     useLazyQuery(FeesSearcherDocument);
 
@@ -49,26 +57,24 @@ const FeeSearcher: React.FC<Props> = ({
   }, [feeData, feeError, feeLoading]);
 
   const options = React.useMemo(() => {
-    const result = fees.map((fee) => ({
+    const feeToOption = (fee: FeesSearcherQuery['fees']['data'][number]) => ({
       label: (
         <>
-          {fee.name} {showCourse && <Typography.Text type="secondary">{fee.course.name}</Typography.Text>}
+          {fee.name}{' '}
+          {showCourse && (
+            <Typography.Text type="secondary">{fee.course?.name || t(`fees.type.${fee.type}`)}</Typography.Text>
+          )}
         </>
       ),
       value: fee.id,
-    }));
+    });
+
+    const result = fees.map(feeToOption);
     if (fee && !fees.some(({ id }) => id === fee.id)) {
-      result.unshift({
-        label: (
-          <>
-            {fee.name} {showCourse && <Typography.Text type="secondary">{fee.course.name}</Typography.Text>}
-          </>
-        ),
-        value: fee.id,
-      });
+      result.unshift(feeToOption(fee));
     }
     return result;
-  }, [fee, fees, showCourse]);
+  }, [fee, fees, showCourse, t]);
 
   const handleSearch = useDebouncedCallback((search: string) => {
     feesRefetch({

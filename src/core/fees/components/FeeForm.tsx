@@ -2,7 +2,7 @@ import { Col, Form, Input, InputNumber, Row, Select, Switch } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { CourseSearcher } from '../../courses/components';
-import { FeeDetailFragment, RecurrenceEnum } from '../../../gql/graphql';
+import { FeeDetailFragment, FeeTypeEnum, RecurrenceEnum } from '../../../gql/graphql';
 
 interface Props {
   fee?: FeeDetailFragment;
@@ -10,6 +10,15 @@ interface Props {
 
 const FeeForm: React.FC<Props> = ({ fee = undefined }) => {
   const { t } = useTranslation();
+  const form = Form.useFormInstance();
+
+  const typeOptions = React.useMemo(() => {
+    const result = Object.keys(FeeTypeEnum).map((type) => ({
+      label: t(`fees.type.${type}`),
+      value: type,
+    }));
+    return result;
+  }, [t]);
 
   const recurrenceOptions = React.useMemo(() => {
     const result = Object.keys(RecurrenceEnum).map((recurrence) => ({
@@ -28,10 +37,26 @@ const FeeForm: React.FC<Props> = ({ fee = undefined }) => {
       </Col>
 
       <Col xs={24} md={12} xxl={8}>
-        <Form.Item label={t('fees.form.course')} name="courseId" rules={[{ required: true }]}>
-          <CourseSearcher disabled={!!fee} />
+        <Form.Item label={t('fees.form.type')} name="type" rules={[{ required: true }]}>
+          <Select options={typeOptions} disabled={!!fee} onChange={() => form.resetFields(['courseId'])} />
         </Form.Item>
       </Col>
+
+      <Form.Item noStyle dependencies={['type']}>
+        {({ getFieldValue }) => {
+          const type = getFieldValue('type');
+          if (type !== FeeTypeEnum.COURSE) {
+            return null;
+          }
+          return (
+            <Col xs={24} md={12} xxl={8}>
+              <Form.Item label={t('fees.form.course')} name="courseId" rules={[{ required: true }]}>
+                <CourseSearcher disabled={!!fee} />
+              </Form.Item>
+            </Col>
+          );
+        }}
+      </Form.Item>
 
       <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('fees.form.amount')} name="amount" rules={[{ required: true }]}>

@@ -8,7 +8,14 @@ import Icon from '@ant-design/icons';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import Highlighter from 'react-highlight-words';
 import { useQuery } from '@apollo/client/react';
-import { FeeFilter, FeeListItemFragment, FeesDocument, FeeSortEnum, SortDirectionEnum } from '../../gql/graphql';
+import {
+  FeeFilter,
+  FeeListItemFragment,
+  FeesDocument,
+  FeeSortEnum,
+  FeeTypeEnum,
+  SortDirectionEnum,
+} from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 import { toCurrency } from '../../utils';
@@ -56,6 +63,7 @@ const FeeListPage: React.FC = () => {
 
     const result: FeeFilter = {
       name: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
+      type: filterInfo.type?.length ? (filterInfo.type[0] as FeeTypeEnum) : undefined,
       courseIds: filterInfo.course?.length ? (filterInfo.course as string[]) : undefined,
       sortBy,
       sortDirection,
@@ -107,6 +115,14 @@ const FeeListPage: React.FC = () => {
             highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           />
         ),
+      },
+      {
+        title: t('fees.table.type'),
+        key: 'type',
+        dataIndex: 'type',
+        width: 120,
+        ellipsis: true,
+        render: (type: FeeTypeEnum) => t(`fees.type.${type}`),
       },
       {
         title: t('fees.table.course'),
@@ -174,6 +190,18 @@ const FeeListPage: React.FC = () => {
 
       <Filters
         topFilters={[
+          {
+            key: 'type',
+            type: 'select',
+            props: {
+              placeholder: t('fees.form.type'),
+              size: 'large',
+              options: Object.keys(FeeTypeEnum).map((type) => ({
+                label: t(`fees.type.${type}`),
+                value: type,
+              })),
+            },
+          },
           {
             key: 'course',
             type: 'courses',

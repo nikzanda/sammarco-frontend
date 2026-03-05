@@ -178,12 +178,18 @@
       "confirm": "Sei sicuro di voler eliminare la quota?",
       "description": "Elimina {{name}}"
     },
+    "type": {
+      "MEMBERSHIP": "Associativa",
+      "COURSE": "Corso",
+      "INSURANCE": "Assicurativa"
+    },
     "recurrence": {
       "MONTHLY": "Mensile",
       "ANNUAL": "Annuale"
     },
     "table": {
       "name": "Quota",
+      "type": "Tipo",
       "course": "Corso",
       "amount": "Importo",
       "enabled": "Attivo"
@@ -193,6 +199,7 @@
     },
     "form": {
       "name": "Nome",
+      "type": "Tipo",
       "course": "Corso",
       "amount": "Importo",
       "recurrence": "Ricorrenza",

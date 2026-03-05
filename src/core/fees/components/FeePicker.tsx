@@ -1,5 +1,6 @@
 import React from 'react';
 import { Select, SelectProps, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useDebouncedCallback } from 'use-debounce';
 import { useLazyQuery, useQuery } from '@apollo/client/react';
 import { FeeFilter, FeesSearcherDocument, FeesSearcherQuery } from '../../../gql/graphql';
@@ -19,6 +20,7 @@ const FeePicker: React.FC<Props> = ({
   onChange = () => {},
   ...selectProps
 }) => {
+  const { t } = useTranslation();
   const [fetchFees, { data: feesData, loading: feesLoading, error: feesError, refetch: feesRefetch }] =
     useLazyQuery(FeesSearcherDocument);
 
@@ -52,31 +54,25 @@ const FeePicker: React.FC<Props> = ({
   }, [valuesData, valuesError, valuesLoading]);
 
   const options = React.useMemo(() => {
-    const result = fees.map((fee) => ({
+    const feeToOption = (fee: FeesSearcherQuery['fees']['data'][number]) => ({
       label: (
         <>
-          {fee.name} {showCourse && <Typography.Text type="secondary">{fee.course.name}</Typography.Text>}
+          {fee.name}{' '}
+          {showCourse && (
+            <Typography.Text type="secondary">{fee.course?.name || t(`fees.type.${fee.type}`)}</Typography.Text>
+          )}
         </>
       ),
       value: fee.id,
-    }));
+    });
+
+    const result = fees.map(feeToOption);
     if (values) {
       const feeIds = fees.map(({ id }) => id);
-      result.unshift(
-        ...values
-          .filter(({ id }) => !feeIds.includes(id))
-          .map((fee) => ({
-            label: (
-              <>
-                {fee.name} {showCourse && <Typography.Text type="secondary">{fee.course.name}</Typography.Text>}
-              </>
-            ),
-            value: fee.id,
-          }))
-      );
+      result.unshift(...values.filter(({ id }) => !feeIds.includes(id)).map(feeToOption));
     }
     return result;
-  }, [fees, showCourse, values]);
+  }, [fees, showCourse, t, values]);
 
   const handleSearch = useDebouncedCallback((search: string) => {
     feesRefetch({

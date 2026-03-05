@@ -29,6 +29,7 @@ export const PAYMENT_DETAIL_FRAGMENT = gql`
     fee {
       id
       name
+      type
       amount
       recurrence
       reason

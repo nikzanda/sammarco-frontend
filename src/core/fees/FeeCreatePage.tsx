@@ -42,7 +42,8 @@ const FeeCreatePage: React.FC = () => {
       const { fee } = queryData;
       return {
         name: fee.name,
-        courseId: fee.course.id,
+        type: fee.type,
+        courseId: fee.course?.id,
         amount: fee.amount,
         recurrence: fee.recurrence,
         reason: fee.reason,
