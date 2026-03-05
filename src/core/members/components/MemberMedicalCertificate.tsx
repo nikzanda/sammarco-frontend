@@ -49,7 +49,7 @@ const MemberMedicalCertificate: React.FC<Props> = ({ member }) => {
             }}
             rules={[{ required: true }]}
           >
-            <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+            <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
 

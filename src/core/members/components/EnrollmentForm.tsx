@@ -54,7 +54,7 @@ const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
             return null;
           }}
         >
-          <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
         </Form.Item>
       </Col>
 
@@ -75,7 +75,7 @@ const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
             return null;
           }}
         >
-          <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
         </Form.Item>
       </Col>
 
@@ -154,7 +154,7 @@ const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
             return null;
           }}
         >
-          <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
         </Form.Item>
       </Col>
 

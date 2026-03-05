@@ -94,6 +94,7 @@ const PaymentForm: React.FC<Props> = ({ payment = undefined }) => {
                     picker="month"
                     format="MMMM yyyy"
                     allowClear={false}
+                    needConfirm={false}
                     style={{ width: '100%' }}
                     onChange={(date) => {
                       if (date) {
@@ -135,7 +136,12 @@ const PaymentForm: React.FC<Props> = ({ payment = undefined }) => {
                     return null;
                   }}
                 >
-                  <DatePicker.RangePicker picker="year" allowClear={false} style={{ width: '100%' }} />
+                  <DatePicker.RangePicker
+                    picker="year"
+                    allowClear={false}
+                    needConfirm={false}
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               );
             }
@@ -185,7 +191,7 @@ const PaymentForm: React.FC<Props> = ({ payment = undefined }) => {
             return null;
           }}
         >
-          <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
         </Form.Item>
       </Col>
 

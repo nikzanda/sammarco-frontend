@@ -42,6 +42,7 @@ const PrintPaymentsModal: React.FC<Props> = ({ onCancel }) => {
         value={monthRange}
         picker="month"
         format="MMMM yyyy"
+        needConfirm={false}
         style={{ width: '100%' }}
         onChange={(values) => setMonthRange(values as any)}
         inputReadOnly

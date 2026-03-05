@@ -210,6 +210,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                     picker="month"
                     format="MMMM yyyy"
                     allowClear={false}
+                    needConfirm={false}
                     style={{ width: '100%' }}
                     onChange={(date) => {
                       if (date) {
@@ -248,7 +249,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                     return null;
                   }}
                 >
-                  <DatePicker picker="year" allowClear={false} style={{ width: '100%' }} />
+                  <DatePicker picker="year" allowClear={false} needConfirm={false} style={{ width: '100%' }} />
                 </Form.Item>
               );
             }
@@ -294,7 +295,7 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
             return null;
           }}
         >
-          <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item noStyle dependencies={['feeId']}>

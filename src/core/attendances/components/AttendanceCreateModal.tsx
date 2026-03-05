@@ -164,6 +164,7 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
         >
           <DatePicker
             format="DD/MM/YYYY"
+            needConfirm={false}
             style={{ width: '100%' }}
             disabledDate={(date) => {
               const socialYear = parseInt(REACT_APP_SOCIAL_YEAR!, 10);
@@ -199,7 +200,13 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
             return null;
           }}
         >
-          <DatePicker.RangePicker picker="time" format="HH:mm" showSecond={false} style={{ width: '100%' }} />
+          <DatePicker.RangePicker
+            picker="time"
+            format="HH:mm"
+            showSecond={false}
+            needConfirm={false}
+            style={{ width: '100%' }}
+          />
         </Form.Item>
       </Form>
     </Modal>

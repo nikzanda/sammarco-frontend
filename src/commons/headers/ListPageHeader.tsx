@@ -35,7 +35,7 @@ const ListPageHeader: React.FC<Props> = ({ entity, hideCreateButton = false, act
         )}
         {actions && actions.length > 0 && (
           <>
-            {!hideCreateButton && <Divider type="vertical" />}
+            {!hideCreateButton && <Divider orientation="vertical" />}
             <Dropdown
               arrow
               trigger={['click']}

@@ -167,6 +167,7 @@ const Filters: React.FC<Props> = ({
               value={value as GetProp<typeof DatePicker.RangePicker, 'value'> | null}
               allowEmpty={allowEmpty}
               format={format}
+              needConfirm={false}
               size="large"
               onChange={(values) => {
                 let start: Date | undefined;
@@ -200,6 +201,7 @@ const Filters: React.FC<Props> = ({
               value={value as any}
               size="large"
               format="MMMM yyyy"
+              needConfirm={false}
               placeholder={placeholder}
               style={style}
               onChange={(v) => onChange(v ? [v.getTime()] : null)}

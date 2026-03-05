@@ -85,6 +85,7 @@ const CourseForm: React.FC = () => {
                                 picker="time"
                                 format="HH:mm"
                                 showSecond={false}
+                                needConfirm={false}
                                 style={{ width: '100%' }}
                               />
                             </Form.Item>
