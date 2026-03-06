@@ -10,6 +10,7 @@ import {
   PaymentPdfFragment,
   PaymentsPdfDocument,
   RecurrenceEnum,
+  SettingDocument,
 } from '../../../gql/graphql';
 import i18n from '../../../i18n';
 import { municipalities, signature as signatureUri } from '../../../constants';
@@ -24,8 +25,29 @@ const tableLayout = {
   vLineColor: () => defaultColor,
 };
 
+interface AssociationInfo {
+  name: string;
+  address: string;
+  taxCode: string;
+}
+
+function getAssociationInfo(): AssociationInfo {
+  const data = apolloClient.readQuery({ query: SettingDocument });
+  if (!data) {
+    throw new Error('Settings not loaded');
+  }
+  const { associationName, associationAddress, associationTaxCode } = data.setting;
+  return {
+    name: associationName,
+    address: associationAddress,
+    taxCode: associationTaxCode,
+  };
+}
+
 class PDF {
   payment: PaymentPdfFragment;
+
+  private associationInfo: AssociationInfo;
 
   private static styles: TDocumentDefinitions['styles'] = {
     label: {
@@ -37,8 +59,9 @@ class PDF {
     },
   };
 
-  constructor(payment: PaymentPdfFragment) {
+  constructor(payment: PaymentPdfFragment, associationInfo: AssociationInfo) {
     this.payment = payment;
+    this.associationInfo = associationInfo;
   }
 
   public static async print(paymentId: string, action: 'open' | 'data-url' = 'open'): Promise<string | undefined> {
@@ -53,7 +76,8 @@ class PDF {
       throw new Error(error.message);
     }
 
-    const pdfDef = new PDF(data!.payment).generatePDF();
+    const associationInfo = getAssociationInfo();
+    const pdfDef = new PDF(data!.payment, associationInfo).generatePDF();
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 
     switch (action) {
@@ -125,7 +149,8 @@ class PDF {
       },
     };
 
-    const pdfDef = PDF.generatePDFMultiple([adultPayment, minorPayment]);
+    const associationInfo = getAssociationInfo();
+    const pdfDef = PDF.generatePDFMultiple([adultPayment, minorPayment], associationInfo);
     pdfDef.watermark = 'fac-simile';
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 
@@ -148,7 +173,8 @@ class PDF {
       payments: { data: payments },
     } = data!;
 
-    const pdfDef = PDF.generatePDFMultiple(payments);
+    const associationInfo = getAssociationInfo();
+    const pdfDef = PDF.generatePDFMultiple(payments, associationInfo);
     const pdfGenerated = pdfMake.createPdf(pdfDef);
 
     pdfGenerated.open();
@@ -162,7 +188,10 @@ class PDF {
     };
   }
 
-  private static generatePDFMultiple(payments: PaymentPdfFragment[]): TDocumentDefinitions {
+  private static generatePDFMultiple(
+    payments: PaymentPdfFragment[],
+    associationInfo: AssociationInfo
+  ): TDocumentDefinitions {
     const content = payments.map((payment: PaymentPdfFragment, index) => {
       const result: Content = {
         table: {
@@ -172,7 +201,7 @@ class PDF {
             [
               {
                 border: [false, false, false, false],
-                stack: new PDF(payment).generateContent(),
+                stack: new PDF(payment, associationInfo).generateContent(),
               },
             ],
           ],
@@ -208,11 +237,10 @@ class PDF {
               alignment: 'center',
               bold: true,
               text: [
-                'A.s.d. SCUOLA SAMMARCO\n',
+                `${this.associationInfo.name}\n`,
                 { text: 'Sede legale: ', italics: true, bold: false },
-                'Via Parpaiola, 12/1\n',
-                '35011 CAMPODARSEGO (PD)\n',
-                'C.F. 92258630281',
+                `${this.associationInfo.address}\n`,
+                `C.F. ${this.associationInfo.taxCode}`,
               ],
             },
             {

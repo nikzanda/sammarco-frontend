@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonProps, Col, Divider, Form, GetRef, InputNumber, Row, Select, Space } from 'antd';
+import { Button, ButtonProps, Col, Divider, Form, GetRef, Input, InputNumber, Row, Select, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusOutlined } from '@ant-design/icons';
 import { SettingsContext } from '../../contexts';
@@ -42,6 +42,24 @@ const SettingsForm: React.FC = () => {
 
   return (
     <Row gutter={24}>
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item name="associationName" label={t('settings.form.associationName')} rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+      </Col>
+
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item name="associationAddress" label={t('settings.form.associationAddress')} rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+      </Col>
+
+      <Col xs={24} md={12} xxl={8}>
+        <Form.Item name="associationTaxCode" label={t('settings.form.associationTaxCode')} rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+      </Col>
+
       <Col xs={24} md={12} xxl={8}>
         <Form.Item
           name="attendancesPerMonthToSendReminder"

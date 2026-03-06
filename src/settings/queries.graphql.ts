@@ -12,6 +12,9 @@ export const SETTING_UPDATE_MUTATION = gql`
   mutation SettingUpdate($input: SettingUpdateInput!) {
     settingUpdate(input: $input) {
       setting {
+        associationName
+        associationAddress
+        associationTaxCode
         emailSettings {
           host
           port

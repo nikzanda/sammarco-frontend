@@ -20,6 +20,9 @@ export const ME_QUERY = gql`
 export const SETTING_QUERY = gql`
   query Setting {
     setting {
+      associationName
+      associationAddress
+      associationTaxCode
       emailSettings {
         host
         port
