@@ -1,22 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TableColumnsType, Result, Table, TableProps, Flex, App } from 'antd';
+import { TableColumnsType, Result, Table, TableProps, Flex } from 'antd';
 import { format, set } from 'date-fns';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
-import { useDisplayGraphQLErrors } from '../../../hooks';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useDisplayGraphQLErrors, usePaymentSend } from '../../../hooks';
+import { useQuery } from '@apollo/client/react';
 import {
   MemberDetailFragment,
   PaymentFilter,
   PaymentListItemFragment,
-  PaymentSendReceiptDocument,
   PaymentSortEnum,
   PaymentTypeEnum,
   PaymentsDocument,
   SortDirectionEnum,
 } from '../../../gql/graphql';
-import PDF from '../../payments/pdfs/receipt-pdf';
 import { toCurrency } from '../../../utils';
 import { ActionButtons, Filters } from '../../../commons';
 
@@ -29,9 +27,11 @@ interface Props {
 const MemberPayments: React.FC<Props> = ({ member }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { message } = App.useApp();
 
-  const [sendingIds, setSendingIds] = React.useState<string[]>([]);
+  const { sendingIds, sendError, handlePrint, handleSend } = usePaymentSend({
+    refetchQueries: ['Payments', 'Emails', 'Member'],
+  });
+
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: PAGE_SIZE,
@@ -85,13 +85,6 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     },
   });
 
-  const [sendEmail, { error: sendError }] = useMutation(PaymentSendReceiptDocument, {
-    refetchQueries: ['Payments', 'Emails', 'Member'],
-    onCompleted: () => {
-      message.success(t('payments.sent'));
-    },
-  });
-
   useDisplayGraphQLErrors(queryError, sendError);
 
   const payments = React.useMemo(() => {
@@ -107,34 +100,6 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     }
     return 0;
   }, [queryData, queryError, queryLoading]);
-
-  const handlePrint = (paymentId: string) => {
-    PDF.print(paymentId);
-  };
-
-  const handleSend = React.useCallback(
-    async (paymentId: string) => {
-      const attachmentUri = await PDF.print(paymentId, 'data-url');
-      if (!attachmentUri) {
-        message.error(t('payments.printError'));
-        return;
-      }
-
-      setSendingIds((prev) => [...prev, paymentId]);
-
-      sendEmail({
-        variables: {
-          input: {
-            id: paymentId,
-            attachmentUri,
-          },
-        },
-      }).finally(() => {
-        setSendingIds((prev) => prev.filter((id) => id !== paymentId));
-      });
-    },
-    [message, sendEmail, t]
-  );
 
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
@@ -200,7 +165,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       },
     ];
     return result;
-  }, [handleSend, navigate, sendingIds, t]);
+  }, [handlePrint, handleSend, navigate, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<PaymentListItemFragment>);

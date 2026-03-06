@@ -1,24 +1,23 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorageState from 'use-local-storage-state';
-import { App, Flex, Table, TableColumnsType, TableProps } from 'antd';
+import { Flex, Table, TableColumnsType, TableProps } from 'antd';
 import { format, set } from 'date-fns';
 import { FaFileCsv, FaPrint } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { useNavigate } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useQuery } from '@apollo/client/react';
 import {
   PaymentFilter,
   PaymentListItemFragment,
-  PaymentSendReceiptDocument,
   PaymentSortEnum,
   PaymentTypeEnum,
   PaymentsDocument,
   SortDirectionEnum,
 } from '../../gql/graphql';
-import { useDisplayGraphQLErrors } from '../../hooks';
+import { useDisplayGraphQLErrors, usePaymentSend } from '../../hooks';
 import PDF from './pdfs/receipt-pdf';
 import { capitalize, toCurrency } from '../../utils';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
@@ -30,12 +29,14 @@ const LOCAL_STORAGE_PATH = 'filter/payment/';
 const PaymentListPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { message } = App.useApp();
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
-  const [sendingIds, setSendingIds] = React.useState<string[]>([]);
   const [exportCsv, setExportCsv] = React.useState(false);
   const [printAll, setPrintAll] = React.useState(false);
+
+  const { sendingIds, sendError, handlePrint, handleSend } = usePaymentSend({
+    refetchQueries: ['Payments', 'Payment', 'Emails'],
+  });
 
   const [searchText, setSearchText] = useLocalStorageState<string>(`${LOCAL_STORAGE_PATH}searchText`, {
     defaultValue: '',
@@ -102,13 +103,6 @@ const PaymentListPage: React.FC = () => {
     },
   });
 
-  const [sendEmail, { error: sendError }] = useMutation(PaymentSendReceiptDocument, {
-    refetchQueries: ['Payments', 'Payment', 'Emails'],
-    onCompleted: () => {
-      message.success(t('payments.sent'));
-    },
-  });
-
   useDisplayGraphQLErrors(queryError, sendError);
 
   const payments = React.useMemo(() => {
@@ -125,37 +119,9 @@ const PaymentListPage: React.FC = () => {
     return 0;
   }, [queryData, queryError, queryLoading]);
 
-  const handlePrint = (paymentId: string) => {
-    PDF.print(paymentId);
-  };
-
-  const handlePrintMultiple = () => {
+  const handlePrintMultiple = (): void => {
     PDF.printMultiple({ ids: selectedIds });
   };
-
-  const handleSend = React.useCallback(
-    async (paymentId: string) => {
-      const attachmentUri = await PDF.print(paymentId, 'data-url');
-      if (!attachmentUri) {
-        message.error(t('payments.printError'));
-        return;
-      }
-
-      setSendingIds((prev) => [...prev, paymentId]);
-
-      sendEmail({
-        variables: {
-          input: {
-            id: paymentId,
-            attachmentUri,
-          },
-        },
-      }).finally(() => {
-        setSendingIds((prev) => prev.filter((id) => id !== paymentId));
-      });
-    },
-    [message, sendEmail, t]
-  );
 
   const columns = React.useMemo(() => {
     const result: TableColumnsType<PaymentListItemFragment> = [
@@ -252,7 +218,7 @@ const PaymentListPage: React.FC = () => {
       },
     ];
     return result;
-  }, [handleSend, navigate, searchText, sendingIds, t]);
+  }, [handlePrint, handleSend, navigate, searchText, sendingIds, t]);
 
   const handleTableChange: TableProps<PaymentListItemFragment>['onChange'] = (newPagination, _filters, sorter) => {
     setSortInfo(sorter as SorterResult<PaymentListItemFragment>);
