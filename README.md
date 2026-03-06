@@ -1,46 +1,136 @@
-# Getting Started with Create React App
+# Sammarco Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend SPA for the Sammarco sports association management system.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+- **React 19** with TypeScript (strict mode)
+- **Vite** as build tool
+- **Ant Design 6** for UI components
+- **Apollo Client 4** for GraphQL communication
+- **React Router 7** for routing
+- **i18next** for internationalization (Italian only)
+- **pdfmake** for PDF generation (receipts)
+- **date-fns** for date manipulation
 
-### `yarn start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Node.js >= 18
+- Yarn
+- Backend running on `localhost:4000` (for GraphQL codegen and development)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `yarn test`
+1. Copy the environment file and configure it:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```sh
+   cp .env.example .env
+   ```
 
-### `yarn build`
+2. Install dependencies:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```sh
+   yarn
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Start the development server:
+   ```sh
+   yarn start
+   ```
+   Opens at [http://localhost:5173](http://localhost:5173)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Scripts
 
-### `yarn eject`
+| Command                | Description                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| `yarn start`           | Start Vite dev server                                                                          |
+| `yarn build`           | TypeScript check + production build                                                            |
+| `yarn preview`         | Preview the production build locally                                                           |
+| `yarn lint`            | Run ESLint on `src/`                                                                           |
+| `yarn lint:fix`        | Run ESLint with auto-fix                                                                       |
+| `yarn graphql:codegen` | Generate TypeScript types and hooks from GraphQL schema (requires backend on `localhost:4000`) |
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Environment Variables
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Variable                     | Description                  | Example                                |
+| ---------------------------- | ---------------------------- | -------------------------------------- |
+| `VITE_GRAPHQLURI`            | Backend GraphQL endpoint     | `https://asdsammarco.ddns.net/graphql` |
+| `VITE_RECAPTCHA_V3_SITE_KEY` | Google reCAPTCHA v3 site key |                                        |
+| `VITE_RECAPTCHA_V2_SITE_KEY` | Google reCAPTCHA v2 site key |                                        |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Project Structure
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+src/
+├── commons/          # Shared components (headers, action buttons, filters)
+├── components/       # Generic reusable components
+├── contexts/         # React contexts (auth, theme, settings)
+├── core/             # Feature modules
+│   ├── attendances/  # Attendance management
+│   ├── communications/ # Mass communications
+│   ├── courses/      # Course management
+│   ├── emails/       # Email history
+│   ├── fees/         # Fee management
+│   ├── members/      # Member management
+│   ├── payments/     # Payment management
+│   ├── registration/ # Public registration page
+│   └── seasonRenewal/ # Season renewal wizard
+├── gql/              # Generated GraphQL types
+├── hooks/            # Custom React hooks
+├── locales/          # i18n translations (it-IT)
+├── settings/         # Settings page
+└── utils/            # Pure utility functions
+```
 
-## Learn More
+Each feature module contains:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `*ListPage.tsx`, `*CreatePage.tsx`, `*EditPage.tsx` — page components
+- `queries.graphql.ts` — GraphQL fragments, queries, and mutations
+- `components/` — feature-specific components (Form, Picker, Searcher)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## reCAPTCHA
+
+The public registration page (`/registration/:socialYear`) uses Google reCAPTCHA with a **v3 + v2 fallback** strategy:
+
+1. First attempt uses reCAPTCHA **v3** (invisible, score-based)
+2. If the score is too low (< 0.5), the user is shown a reCAPTCHA **v2** checkbox ("Non sono un robot")
+3. The user completes the challenge and the form is resubmitted with the v2 token
+
+### Setup
+
+1. Go to the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin) and create **two separate sites**:
+   - One with type **reCAPTCHA v3** — copy the **Site Key** and **Secret Key**
+   - One with type **reCAPTCHA v2** ("I'm not a robot" Checkbox) — copy the **Site Key** and **Secret Key**
+
+2. Configure the **frontend** environment variables (`.env`):
+
+   ```
+   VITE_RECAPTCHA_V3_SITE_KEY=<v3 site key>
+   VITE_RECAPTCHA_V2_SITE_KEY=<v2 site key>
+   ```
+
+3. Configure the **backend** environment variables (`.env`):
+   ```
+   RECAPTCHA_V3_SECRET_KEY=<v3 secret key>
+   RECAPTCHA_V2_SECRET_KEY=<v2 secret key>
+   ```
+
+reCAPTCHA is required — both key pairs must be configured.
+
+## GraphQL Codegen
+
+When modifying queries, mutations, or fragments:
+
+1. Update `queries.graphql.ts` in the relevant feature folder
+2. Ensure the backend is running on `localhost:4000`
+3. Run `yarn graphql:codegen`
+4. Use the freshly generated hooks and types in your components
+
+**Never write component code using generated hooks before running codegen.**
+
+## Code Style
+
+- ESLint + Prettier (single quotes, trailing commas ES5, 120 print width, 2-space indent, semicolons)
+- Husky pre-commit hooks with lint-staged
+- Arrow functions for React components
+- Functional components only, no class components

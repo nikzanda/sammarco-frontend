@@ -17,6 +17,9 @@ type Documents = {
   '\n  mutation Login($input: LoginInput!) {\n    login(input: $input) {\n      token\n    }\n  }\n': typeof types.LoginDocument;
   '\n  query Me {\n    me {\n      id\n      username\n    }\n  }\n': typeof types.MeDocument;
   '\n  query Setting {\n    setting {\n      emailSettings {\n        host\n        port\n        secure\n        name\n        email\n      }\n      emailTextList {\n        receipt {\n          subject\n          body\n        }\n        reminder {\n          subject\n          body\n        }\n        medicalCertificateExpiration {\n          subject\n          body\n        }\n      }\n      attendancesPerMonthToSendReminder\n      daysBeforeMedicalCertificateExpiresToSendEmail\n    }\n  }\n': typeof types.SettingDocument;
+  '\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n': typeof types.SendCommunicationDocument;
+  '\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n': typeof types.VerifyEmailSettingsDocument;
+  '\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n': typeof types.SettingUpdateDocument;
   '\n  fragment AttendanceListItem on Attendance {\n    id\n    member {\n      fullName\n    }\n    course {\n      id\n      name\n      color\n    }\n    from\n    to\n  }\n': typeof types.AttendanceListItemFragmentDoc;
   '\n  query Attendances($filter: AttendanceFilter!) {\n    attendances(pageIndex: 0, pageSize: 0, filter: $filter) {\n      data {\n        ...AttendanceListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n': typeof types.AttendancesDocument;
   '\n  query DayAttendances($filter: DayAttendancesFilter!) {\n    dayAttendances(pageIndex: 0, pageSize: 0, filter: $filter) {\n      ids\n      members {\n        fullName\n      }\n      course {\n        id\n        name\n        color\n      }\n      from\n      to\n    }\n  }\n': typeof types.DayAttendancesDocument;
@@ -24,12 +27,6 @@ type Documents = {
   '\n  mutation AttendanceCreateMany($input: AttendanceCreateManyInput!) {\n    attendanceCreateMany(input: $input) {\n      attendances {\n        ...AttendanceListItem\n      }\n    }\n  }\n': typeof types.AttendanceCreateManyDocument;
   '\n  mutation AttendanceDelete($input: AttendanceDeleteInput!) {\n    attendanceDelete(input: $input) {\n      attendance {\n        ...AttendanceListItem\n      }\n    }\n  }\n': typeof types.AttendanceDeleteDocument;
   '\n  mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {\n    attendanceDeleteMany(input: $input) {\n      success\n    }\n  }\n': typeof types.AttendanceDeleteManyDocument;
-  '\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n': typeof types.EmailsDocument;
-  '\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n': typeof types.PaymentSendReminderDocument;
-  '\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n': typeof types.SendMonthlyRemindersDocument;
-  '\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n': typeof types.VerifyEmailSettingsDocument;
-  '\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n': typeof types.SettingUpdateDocument;
-  '\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n': typeof types.SendCommunicationDocument;
   '\n  fragment CourseListItem on Course {\n    id\n    name\n    color\n  }\n': typeof types.CourseListItemFragmentDoc;
   '\n  fragment CourseDetail on Course {\n    ...CourseListItem\n    shifts {\n      id\n      from\n      to\n    }\n    canDelete\n    createdAt\n    updatedAt\n  }\n  \n': typeof types.CourseDetailFragmentDoc;
   '\n  query CoursesSearcher($filter: CourseFilter) {\n    courses(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n      }\n    }\n  }\n': typeof types.CoursesSearcherDocument;
@@ -40,6 +37,26 @@ type Documents = {
   '\n  mutation CourseCreate($input: CourseCreateInput!) {\n    courseCreate(input: $input) {\n      course {\n        ...CourseDetail\n      }\n    }\n  }\n  \n': typeof types.CourseCreateDocument;
   '\n  mutation CourseUpdate($input: CourseUpdateInput!) {\n    courseUpdate(input: $input) {\n      course {\n        ...CourseDetail\n      }\n    }\n  }\n  \n': typeof types.CourseUpdateDocument;
   '\n  mutation CourseDelete($input: CourseDeleteInput!) {\n    courseDelete(input: $input) {\n      course {\n        ...CourseDetail\n      }\n    }\n  }\n  \n': typeof types.CourseDeleteDocument;
+  '\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n': typeof types.EmailsDocument;
+  '\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n': typeof types.PaymentSendReminderDocument;
+  '\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n': typeof types.SendMonthlyRemindersDocument;
+  '\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n': typeof types.FeeListItemFragmentDoc;
+  '\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n': typeof types.FeeDetailFragmentDoc;
+  '\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n': typeof types.FeesSearcherDocument;
+  '\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n': typeof types.FeeSearcherDocument;
+  '\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n': typeof types.FeesDocument;
+  '\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n': typeof types.FeeDocument;
+  '\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n': typeof types.FeeCreateDocument;
+  '\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n': typeof types.FeeUpdateDocument;
+  '\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n': typeof types.FeeDeleteDocument;
+  '\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n': typeof types.EnrollmentListItemFragmentDoc;
+  '\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n': typeof types.EnrollmentDetailFragmentDoc;
+  '\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n': typeof types.EnrollmentsDocument;
+  '\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n': typeof types.EnrollmentDocument;
+  '\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n': typeof types.EnrollmentCreateDocument;
+  '\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n': typeof types.EnrollmentUpdateDocument;
+  '\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n': typeof types.EnrollmentDeleteDocument;
+  '\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n': typeof types.EnrollmentConfirmDocument;
   '\n  fragment MemberListItem on Member {\n    id\n    fullName\n    currentEnrollment {\n      id\n      status\n      courses {\n        id\n        name\n        shifts {\n          id\n          from\n          to\n        }\n      }\n      shiftIds\n      socialCardNumber\n      medicalCertificateExpireAt\n      qualification\n      excludeFromCommunications\n      payments {\n        id\n        month\n      }\n      attendances {\n        id\n        course {\n          id\n        }\n        from\n        to\n      }\n    }\n  }\n': typeof types.MemberListItemFragmentDoc;
   '\n  fragment MemberDetail on Member {\n    ...MemberListItem\n    name\n    surname\n    taxCode\n    address\n    email\n    phone\n    isUnderage\n    parent {\n      name\n      surname\n      taxCode\n      email\n      phone\n    }\n    currentEnrollment {\n      id\n      status\n      courses {\n        id\n        name\n        shifts {\n          id\n          from\n          to\n        }\n      }\n      shiftIds\n      qualification\n      socialCardNumber\n      asiCardNumber\n      csenCardNumber\n      registrationRequestDate\n      registrationAcceptanceDate\n      medicalCertificateExpireAt\n      medicalCertificateType\n      medicalCertificateKey\n      excludeFromCommunications\n      consents {\n        type\n        acceptedAt\n      }\n    }\n    canDelete\n    createdAt\n    updatedAt\n  }\n  \n': typeof types.MemberDetailFragmentDoc;
   '\n  query MembersSearcher($filter: MemberFilter) {\n    members(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        fullName\n        email\n      }\n    }\n  }\n': typeof types.MembersSearcherDocument;
@@ -50,23 +67,6 @@ type Documents = {
   '\n  mutation MemberCreate($input: MemberCreateInput!) {\n    memberCreate(input: $input) {\n      member {\n        ...MemberDetail\n      }\n    }\n  }\n  \n': typeof types.MemberCreateDocument;
   '\n  mutation MemberUpdate($input: MemberUpdateInput!) {\n    memberUpdate(input: $input) {\n      member {\n        ...MemberDetail\n      }\n    }\n  }\n  \n': typeof types.MemberUpdateDocument;
   '\n  mutation MemberDelete($input: MemberDeleteInput!) {\n    memberDelete(input: $input) {\n      member {\n        ...MemberDetail\n      }\n    }\n  }\n  \n': typeof types.MemberDeleteDocument;
-  '\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n': typeof types.EnrollmentListItemFragmentDoc;
-  '\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n': typeof types.EnrollmentDetailFragmentDoc;
-  '\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n': typeof types.EnrollmentsDocument;
-  '\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n': typeof types.EnrollmentDocument;
-  '\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n': typeof types.EnrollmentCreateDocument;
-  '\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n': typeof types.EnrollmentUpdateDocument;
-  '\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n': typeof types.EnrollmentDeleteDocument;
-  '\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n': typeof types.EnrollmentConfirmDocument;
-  '\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n': typeof types.FeeListItemFragmentDoc;
-  '\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n': typeof types.FeeDetailFragmentDoc;
-  '\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n': typeof types.FeesSearcherDocument;
-  '\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n': typeof types.FeeSearcherDocument;
-  '\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n': typeof types.FeesDocument;
-  '\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n': typeof types.FeeDocument;
-  '\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n': typeof types.FeeCreateDocument;
-  '\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n': typeof types.FeeUpdateDocument;
-  '\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n': typeof types.FeeDeleteDocument;
   '\n  fragment PaymentListItem on Payment {\n    id\n    counter\n    member {\n      id\n      fullName\n    }\n    fee {\n      id\n      name\n      course {\n        name\n      }\n    }\n    amount\n    month\n    socialYear\n    type\n    sent\n  }\n': typeof types.PaymentListItemFragmentDoc;
   '\n  fragment PaymentDetail on Payment {\n    ...PaymentListItem\n    fee {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n    date\n    reason\n    canDelete\n    createdAt\n    updatedAt\n  }\n  \n': typeof types.PaymentDetailFragmentDoc;
   '\n  fragment PaymentPdf on Payment {\n    counter\n    date\n    amount\n    reason\n    member {\n      name\n      surname\n      taxCode\n      birthday\n      address\n      parent {\n        name\n        surname\n        taxCode\n      }\n    }\n  }\n': typeof types.PaymentPdfFragmentDoc;
@@ -80,6 +80,7 @@ type Documents = {
   '\n  mutation PaymentUpdateMany($input: PaymentUpdateManyInput!) {\n    paymentUpdateMany(input: $input) {\n      payments {\n        id\n        sent\n      }\n    }\n  }\n  \n': typeof types.PaymentUpdateManyDocument;
   '\n  mutation PaymentSendReceipt($input: PaymentSendReceiptInput!) {\n    paymentSendReceipt(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n': typeof types.PaymentSendReceiptDocument;
   '\n  mutation PaymentDelete($input: PaymentDeleteInput!) {\n    paymentDelete(input: $input) {\n      payment {\n        id\n      }\n      updatedPayments {\n        id\n      }\n    }\n  }\n': typeof types.PaymentDeleteDocument;
+  '\n  mutation RegistrationRequest($input: RegistrationRequestInput!) {\n    registrationRequest(input: $input) {\n      enrollment {\n        id\n      }\n    }\n  }\n': typeof types.RegistrationRequestDocument;
   '\n  mutation CopyCourses($input: CopyCoursesInput!) {\n    copyCourses(input: $input) {\n      createdCount\n    }\n  }\n': typeof types.CopyCoursesDocument;
   '\n  mutation CopyFees($input: CopyFeesInput!) {\n    copyFees(input: $input) {\n      createdCount\n    }\n  }\n': typeof types.CopyFeesDocument;
   '\n  mutation SeasonRenew($input: SeasonRenewInput!) {\n    seasonRenew(input: $input) {\n      createdCount\n    }\n  }\n': typeof types.SeasonRenewDocument;
@@ -90,6 +91,12 @@ const documents: Documents = {
   '\n  query Me {\n    me {\n      id\n      username\n    }\n  }\n': types.MeDocument,
   '\n  query Setting {\n    setting {\n      emailSettings {\n        host\n        port\n        secure\n        name\n        email\n      }\n      emailTextList {\n        receipt {\n          subject\n          body\n        }\n        reminder {\n          subject\n          body\n        }\n        medicalCertificateExpiration {\n          subject\n          body\n        }\n      }\n      attendancesPerMonthToSendReminder\n      daysBeforeMedicalCertificateExpiresToSendEmail\n    }\n  }\n':
     types.SettingDocument,
+  '\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n':
+    types.SendCommunicationDocument,
+  '\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n':
+    types.VerifyEmailSettingsDocument,
+  '\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n':
+    types.SettingUpdateDocument,
   '\n  fragment AttendanceListItem on Attendance {\n    id\n    member {\n      fullName\n    }\n    course {\n      id\n      name\n      color\n    }\n    from\n    to\n  }\n':
     types.AttendanceListItemFragmentDoc,
   '\n  query Attendances($filter: AttendanceFilter!) {\n    attendances(pageIndex: 0, pageSize: 0, filter: $filter) {\n      data {\n        ...AttendanceListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n':
@@ -104,18 +111,6 @@ const documents: Documents = {
     types.AttendanceDeleteDocument,
   '\n  mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {\n    attendanceDeleteMany(input: $input) {\n      success\n    }\n  }\n':
     types.AttendanceDeleteManyDocument,
-  '\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n':
-    types.EmailsDocument,
-  '\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n':
-    types.PaymentSendReminderDocument,
-  '\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n':
-    types.SendMonthlyRemindersDocument,
-  '\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n':
-    types.VerifyEmailSettingsDocument,
-  '\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n':
-    types.SettingUpdateDocument,
-  '\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n':
-    types.SendCommunicationDocument,
   '\n  fragment CourseListItem on Course {\n    id\n    name\n    color\n  }\n': types.CourseListItemFragmentDoc,
   '\n  fragment CourseDetail on Course {\n    ...CourseListItem\n    shifts {\n      id\n      from\n      to\n    }\n    canDelete\n    createdAt\n    updatedAt\n  }\n  \n':
     types.CourseDetailFragmentDoc,
@@ -134,6 +129,45 @@ const documents: Documents = {
     types.CourseUpdateDocument,
   '\n  mutation CourseDelete($input: CourseDeleteInput!) {\n    courseDelete(input: $input) {\n      course {\n        ...CourseDetail\n      }\n    }\n  }\n  \n':
     types.CourseDeleteDocument,
+  '\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n':
+    types.EmailsDocument,
+  '\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n':
+    types.PaymentSendReminderDocument,
+  '\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n':
+    types.SendMonthlyRemindersDocument,
+  '\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n':
+    types.FeeListItemFragmentDoc,
+  '\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n':
+    types.FeeDetailFragmentDoc,
+  '\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n':
+    types.FeesSearcherDocument,
+  '\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n':
+    types.FeeSearcherDocument,
+  '\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n':
+    types.FeesDocument,
+  '\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n': types.FeeDocument,
+  '\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n':
+    types.FeeCreateDocument,
+  '\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n':
+    types.FeeUpdateDocument,
+  '\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n':
+    types.FeeDeleteDocument,
+  '\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n':
+    types.EnrollmentListItemFragmentDoc,
+  '\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n':
+    types.EnrollmentDetailFragmentDoc,
+  '\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n':
+    types.EnrollmentsDocument,
+  '\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n':
+    types.EnrollmentDocument,
+  '\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n':
+    types.EnrollmentCreateDocument,
+  '\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n':
+    types.EnrollmentUpdateDocument,
+  '\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n':
+    types.EnrollmentDeleteDocument,
+  '\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n':
+    types.EnrollmentConfirmDocument,
   '\n  fragment MemberListItem on Member {\n    id\n    fullName\n    currentEnrollment {\n      id\n      status\n      courses {\n        id\n        name\n        shifts {\n          id\n          from\n          to\n        }\n      }\n      shiftIds\n      socialCardNumber\n      medicalCertificateExpireAt\n      qualification\n      excludeFromCommunications\n      payments {\n        id\n        month\n      }\n      attendances {\n        id\n        course {\n          id\n        }\n        from\n        to\n      }\n    }\n  }\n':
     types.MemberListItemFragmentDoc,
   '\n  fragment MemberDetail on Member {\n    ...MemberListItem\n    name\n    surname\n    taxCode\n    address\n    email\n    phone\n    isUnderage\n    parent {\n      name\n      surname\n      taxCode\n      email\n      phone\n    }\n    currentEnrollment {\n      id\n      status\n      courses {\n        id\n        name\n        shifts {\n          id\n          from\n          to\n        }\n      }\n      shiftIds\n      qualification\n      socialCardNumber\n      asiCardNumber\n      csenCardNumber\n      registrationRequestDate\n      registrationAcceptanceDate\n      medicalCertificateExpireAt\n      medicalCertificateType\n      medicalCertificateKey\n      excludeFromCommunications\n      consents {\n        type\n        acceptedAt\n      }\n    }\n    canDelete\n    createdAt\n    updatedAt\n  }\n  \n':
@@ -153,39 +187,6 @@ const documents: Documents = {
     types.MemberUpdateDocument,
   '\n  mutation MemberDelete($input: MemberDeleteInput!) {\n    memberDelete(input: $input) {\n      member {\n        ...MemberDetail\n      }\n    }\n  }\n  \n':
     types.MemberDeleteDocument,
-  '\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n':
-    types.EnrollmentListItemFragmentDoc,
-  '\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n':
-    types.EnrollmentDetailFragmentDoc,
-  '\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n':
-    types.EnrollmentsDocument,
-  '\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n':
-    types.EnrollmentDocument,
-  '\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n':
-    types.EnrollmentCreateDocument,
-  '\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n':
-    types.EnrollmentUpdateDocument,
-  '\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n':
-    types.EnrollmentDeleteDocument,
-  '\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n':
-    types.EnrollmentConfirmDocument,
-  '\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n':
-    types.FeeListItemFragmentDoc,
-  '\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n':
-    types.FeeDetailFragmentDoc,
-  '\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n':
-    types.FeesSearcherDocument,
-  '\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n':
-    types.FeeSearcherDocument,
-  '\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n':
-    types.FeesDocument,
-  '\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n': types.FeeDocument,
-  '\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n':
-    types.FeeCreateDocument,
-  '\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n':
-    types.FeeUpdateDocument,
-  '\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n':
-    types.FeeDeleteDocument,
   '\n  fragment PaymentListItem on Payment {\n    id\n    counter\n    member {\n      id\n      fullName\n    }\n    fee {\n      id\n      name\n      course {\n        name\n      }\n    }\n    amount\n    month\n    socialYear\n    type\n    sent\n  }\n':
     types.PaymentListItemFragmentDoc,
   '\n  fragment PaymentDetail on Payment {\n    ...PaymentListItem\n    fee {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n    date\n    reason\n    canDelete\n    createdAt\n    updatedAt\n  }\n  \n':
@@ -212,6 +213,8 @@ const documents: Documents = {
     types.PaymentSendReceiptDocument,
   '\n  mutation PaymentDelete($input: PaymentDeleteInput!) {\n    paymentDelete(input: $input) {\n      payment {\n        id\n      }\n      updatedPayments {\n        id\n      }\n    }\n  }\n':
     types.PaymentDeleteDocument,
+  '\n  mutation RegistrationRequest($input: RegistrationRequestInput!) {\n    registrationRequest(input: $input) {\n      enrollment {\n        id\n      }\n    }\n  }\n':
+    types.RegistrationRequestDocument,
   '\n  mutation CopyCourses($input: CopyCoursesInput!) {\n    copyCourses(input: $input) {\n      createdCount\n    }\n  }\n':
     types.CopyCoursesDocument,
   '\n  mutation CopyFees($input: CopyFeesInput!) {\n    copyFees(input: $input) {\n      createdCount\n    }\n  }\n':
@@ -256,6 +259,24 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n'
+): (typeof documents)['\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n'
+): (typeof documents)['\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n'
+): (typeof documents)['\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n  fragment AttendanceListItem on Attendance {\n    id\n    member {\n      fullName\n    }\n    course {\n      id\n      name\n      color\n    }\n    from\n    to\n  }\n'
 ): (typeof documents)['\n  fragment AttendanceListItem on Attendance {\n    id\n    member {\n      fullName\n    }\n    course {\n      id\n      name\n      color\n    }\n    from\n    to\n  }\n'];
 /**
@@ -294,42 +315,6 @@ export function graphql(
 export function graphql(
   source: '\n  mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {\n    attendanceDeleteMany(input: $input) {\n      success\n    }\n  }\n'
 ): (typeof documents)['\n  mutation AttendanceDeleteMany($input: AttendanceDeleteManyInput!) {\n    attendanceDeleteMany(input: $input) {\n      success\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n'
-): (typeof documents)['\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n'
-): (typeof documents)['\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n'
-): (typeof documents)['\n  mutation VerifyEmailSettings {\n    verifyEmailSettings {\n      verified\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n'
-): (typeof documents)['\n  mutation SettingUpdate($input: SettingUpdateInput!) {\n    settingUpdate(input: $input) {\n      setting {\n        emailSettings {\n          host\n          port\n          secure\n          name\n          email\n        }\n        emailTextList {\n          receipt {\n            subject\n            body\n          }\n          reminder {\n            subject\n            body\n          }\n          medicalCertificateExpiration {\n            subject\n            body\n          }\n        }\n        attendancesPerMonthToSendReminder\n        daysBeforeMedicalCertificateExpiresToSendEmail\n      }\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n'
-): (typeof documents)['\n  mutation SendCommunication($input: SendCommunicationInput!) {\n    sendCommunication(input: $input) {\n      sentBatches\n      failedBatches\n      totalRecipients\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -394,6 +379,126 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query Emails($pageIndex: Int!, $pageSize: Int!, $filter: EmailFilter) {\n    emails(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        id\n        course {\n          name\n        }\n        type\n        to\n        subject\n        body\n        createdAt\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n'
+): (typeof documents)['\n  mutation PaymentSendReminder($input: PaymentSendReminderInput!) {\n    paymentSendReminder(input: $input) {\n      email {\n        id\n      }\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n'
+): (typeof documents)['\n  mutation SendMonthlyReminders($input: SendMonthlyRemindersInput!) {\n    sendMonthlyReminders(input: $input) {\n      sentReminders\n      failedReminders\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n'
+): (typeof documents)['\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n'
+): (typeof documents)['\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n'
+): (typeof documents)['\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n'
+): (typeof documents)['\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n'
+): (typeof documents)['\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n'
+): (typeof documents)['\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'
+): (typeof documents)['\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n'
+): (typeof documents)['\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n  fragment MemberListItem on Member {\n    id\n    fullName\n    currentEnrollment {\n      id\n      status\n      courses {\n        id\n        name\n        shifts {\n          id\n          from\n          to\n        }\n      }\n      shiftIds\n      socialCardNumber\n      medicalCertificateExpireAt\n      qualification\n      excludeFromCommunications\n      payments {\n        id\n        month\n      }\n      attendances {\n        id\n        course {\n          id\n        }\n        from\n        to\n      }\n    }\n  }\n'
 ): (typeof documents)['\n  fragment MemberListItem on Member {\n    id\n    fullName\n    currentEnrollment {\n      id\n      status\n      courses {\n        id\n        name\n        shifts {\n          id\n          from\n          to\n        }\n      }\n      shiftIds\n      socialCardNumber\n      medicalCertificateExpireAt\n      qualification\n      excludeFromCommunications\n      payments {\n        id\n        month\n      }\n      attendances {\n        id\n        course {\n          id\n        }\n        from\n        to\n      }\n    }\n  }\n'];
 /**
@@ -450,108 +555,6 @@ export function graphql(
 export function graphql(
   source: '\n  mutation MemberDelete($input: MemberDeleteInput!) {\n    memberDelete(input: $input) {\n      member {\n        ...MemberDetail\n      }\n    }\n  }\n  \n'
 ): (typeof documents)['\n  mutation MemberDelete($input: MemberDeleteInput!) {\n    memberDelete(input: $input) {\n      member {\n        ...MemberDetail\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n'
-): (typeof documents)['\n  fragment EnrollmentListItem on Enrollment {\n    id\n    member {\n      id\n      fullName\n    }\n    socialYear\n    status\n    courses {\n      id\n      name\n    }\n    qualification\n    socialCardNumber\n    medicalCertificateExpireAt\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n'
-): (typeof documents)['\n  fragment EnrollmentDetail on Enrollment {\n    ...EnrollmentListItem\n    shiftIds\n    asiCardNumber\n    csenCardNumber\n    registrationRequestDate\n    registrationAcceptanceDate\n    medicalCertificateType\n    medicalCertificateKey\n    consents {\n      type\n      acceptedAt\n    }\n    excludeFromCommunications\n    createdAt\n    updatedAt\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {\n    enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...EnrollmentListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n'
-): (typeof documents)['\n  query Enrollment($id: ID!) {\n    enrollment(id: $id) {\n      ...EnrollmentDetail\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  mutation EnrollmentCreate($input: EnrollmentCreateInput!) {\n    enrollmentCreate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  mutation EnrollmentUpdate($input: EnrollmentUpdateInput!) {\n    enrollmentUpdate(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  mutation EnrollmentDelete($input: EnrollmentDeleteInput!) {\n    enrollmentDelete(input: $input) {\n      enrollment {\n        ...EnrollmentDetail\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n'
-): (typeof documents)['\n  mutation EnrollmentConfirm($input: EnrollmentConfirmInput!) {\n    enrollmentConfirm(input: $input) {\n      modifiedCount\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n'
-): (typeof documents)['\n  fragment FeeListItem on Fee {\n    id\n    name\n    type\n    course {\n      id\n      name\n    }\n    amount\n    enabled\n    socialYear\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n'
-): (typeof documents)['\n  fragment FeeDetail on Fee {\n    ...FeeListItem\n    recurrence\n    reason\n    createdAt\n    updatedAt\n    canDelete\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query FeesSearcher($filter: FeeFilter) {\n    fees(pageIndex: 0, pageSize: 20, filter: $filter) {\n      data {\n        id\n        name\n        type\n        amount\n        recurrence\n        reason\n        course {\n          name\n        }\n      }\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query FeeSearcher($id: ID!) {\n    fee(id: $id) {\n      id\n      name\n      type\n      amount\n      recurrence\n      reason\n      course {\n        name\n      }\n    }\n  }\n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  query Fees($pageIndex: Int!, $pageSize: Int!, $filter: FeeFilter) {\n    fees(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {\n      data {\n        ...FeeListItem\n      }\n      pageInfo {\n        total\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n'
-): (typeof documents)['\n  query Fee($id: ID!) {\n    fee(id: $id) {\n      ...FeeDetail\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  mutation FeeCreate($input: FeeCreateInput!) {\n    feeCreate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  mutation FeeUpdate($input: FeeUpdateInput!) {\n    feeUpdate(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'
-): (typeof documents)['\n  mutation FeeDelete($input: FeeDeleteInput!) {\n    feeDelete(input: $input) {\n      fee {\n        ...FeeDetail\n      }\n    }\n  }\n  \n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -630,6 +633,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation PaymentDelete($input: PaymentDeleteInput!) {\n    paymentDelete(input: $input) {\n      payment {\n        id\n      }\n      updatedPayments {\n        id\n      }\n    }\n  }\n'
 ): (typeof documents)['\n  mutation PaymentDelete($input: PaymentDeleteInput!) {\n    paymentDelete(input: $input) {\n      payment {\n        id\n      }\n      updatedPayments {\n        id\n      }\n    }\n  }\n'];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation RegistrationRequest($input: RegistrationRequestInput!) {\n    registrationRequest(input: $input) {\n      enrollment {\n        id\n      }\n    }\n  }\n'
+): (typeof documents)['\n  mutation RegistrationRequest($input: RegistrationRequestInput!) {\n    registrationRequest(input: $input) {\n      enrollment {\n        id\n      }\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

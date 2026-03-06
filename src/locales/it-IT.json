@@ -582,6 +582,24 @@
     "Email_one": "Email",
     "Email_other": "Email"
   },
+  "registration": {
+    "title": "Iscrizione stagione {{socialYear}}/{{socialYearShort}}",
+    "subtitle": "Compila il modulo per richiedere l'iscrizione",
+    "consents": {
+      "privacy": "Acconsento al trattamento dei dati personali ai sensi del GDPR",
+      "rules": "Dichiaro di aver letto e accettato il regolamento dell'associazione"
+    },
+    "submit": "Invia richiesta di iscrizione",
+    "success": {
+      "title": "Richiesta inviata!",
+      "description": "La tua richiesta di iscrizione è stata inviata. Riceverai conferma dall'associazione."
+    },
+    "errors": {
+      "captchaFailed": "Verifica anti-spam fallita. Riprova.",
+      "rateLimited": "Troppe richieste. Riprova tra un minuto.",
+      "recaptchaChallengeRequired": "Completa la verifica anti-spam per procedere."
+    }
+  },
   "theme": {
     "darkMode": "Modalità scura",
     "lightMode": "Modalità chiara"
