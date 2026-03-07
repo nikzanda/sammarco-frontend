@@ -22,11 +22,13 @@ import PDF from './pdfs/receipt-pdf';
 import { capitalize, toCurrency } from '../../utils';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 import { ExportPaymentsModal, PrintPaymentsModal } from './components';
+import { SocialYearContext } from '../../contexts';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/payment/';
 
 const PaymentListPage: React.FC = () => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -75,6 +77,7 @@ const PaymentListPage: React.FC = () => {
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: PaymentFilter = {
+      socialYear: filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear,
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: filterInfo?.member?.length ? (filterInfo.member as string[]) : undefined,
@@ -89,7 +92,7 @@ const PaymentListPage: React.FC = () => {
       sortDirection,
     };
     return result;
-  }, [filterInfo, sortInfo]);
+  }, [filterInfo, socialYear, sortInfo]);
 
   const {
     data: queryData,
@@ -272,6 +275,10 @@ const PaymentListPage: React.FC = () => {
 
       <Filters
         topFilters={[
+          {
+            key: 'socialYear',
+            type: 'socialYear',
+          },
           {
             key: 'counter',
             type: 'numeric',

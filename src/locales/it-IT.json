@@ -66,7 +66,6 @@
           "false": "Non pagata"
         }
       },
-      "showAllYears": "Mostra tutti i soci",
       "byMonthsNotPaid": "Cerca per mese non pagato",
       "byMedicalCertificateExpiration": {
         "label": "Cerca per scadenza certificato medico",
@@ -547,6 +546,9 @@
     "searchPlaceholder": "Cerca...",
     "search": "Cerca",
     "resetFilter": "Cancella",
+    "filter": {
+      "socialYear": "Anno sociale"
+    },
     "table": {
       "createdAt": "Creato il",
       "pagination": "{{start}}-{{end}} di {{total}}"

@@ -10,6 +10,9 @@ import { DatePicker } from '../../components';
 import { CoursePicker, ShiftPicker } from '../../core/courses/components';
 import { MemberPicker } from '../../core/members/components';
 import { FeePicker } from '../../core/fees/components';
+import { SocialYearContext } from '../../contexts';
+
+const FIRST_SOCIAL_YEAR = 2023;
 
 type FilterInfo = Record<string, FilterValue | null>;
 
@@ -30,6 +33,7 @@ const Filters: React.FC<Props> = ({
   setSearchText,
   onSearch,
 }) => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
   const { token } = theme.useToken();
 
@@ -37,6 +41,17 @@ const Filters: React.FC<Props> = ({
 
   const [filterInfo, setFilterInfo] = React.useState<FilterInfo>(initialFilterInfo || {});
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const socialYearOptions = React.useMemo(() => {
+    const options = [];
+    for (let year = socialYear; year >= FIRST_SOCIAL_YEAR; year--) {
+      options.push({
+        label: `${year}/${(year + 1) % 100}`,
+        value: year,
+      });
+    }
+    return options;
+  }, [socialYear]);
 
   const showBadge = React.useMemo(() => {
     const result =
@@ -265,11 +280,26 @@ const Filters: React.FC<Props> = ({
             />
           );
 
+        case 'socialYear':
+          return (
+            <Select
+              {...filter.props}
+              value={(value as number | undefined) ?? socialYear}
+              placeholder={t('commons.filter.socialYear')}
+              options={socialYearOptions}
+              onChange={(value) => onChange(typeof value === 'number' ? [value] : null)}
+              onClear={() => handleClear(filter.key)}
+              allowClear
+              size="large"
+              style={{ width: '100%' }}
+            />
+          );
+
         default:
           throw new Error('filter not implemented');
       }
     },
-    [filterInfo, handleClear, setFilterInfo, t, token.colorError, token.colorSuccess]
+    [filterInfo, handleClear, setFilterInfo, socialYearOptions, t, token.colorError, token.colorSuccess]
   );
 
   return (

@@ -56,6 +56,11 @@ interface IFeesFilter {
   props?: Omit<FeePickerProps, 'onChange' | 'value'>;
 }
 
+interface ISocialYearFilter {
+  type: 'socialYear';
+  props?: Omit<SelectProps, 'onChange' | 'allowClear' | 'value' | 'onClear' | 'options'>;
+}
+
 export type IFilter = {
   key: string;
 } & (
@@ -69,4 +74,5 @@ export type IFilter = {
   | IMembersFilter
   | IShiftFilter
   | IFeesFilter
+  | ISocialYearFilter
 );

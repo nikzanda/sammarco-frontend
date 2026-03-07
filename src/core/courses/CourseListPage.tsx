@@ -15,11 +15,13 @@ import {
 } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
+import { SocialYearContext } from '../../contexts';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/course/';
 
 const CourseListPage: React.FC = () => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -57,13 +59,14 @@ const CourseListPage: React.FC = () => {
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: CourseFilter = {
+      socialYear: filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear,
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       name: filterInfo.name?.length ? (filterInfo.name[0] as string).trim() : undefined,
       sortBy,
       sortDirection,
     };
     return result;
-  }, [filterInfo, sortInfo]);
+  }, [filterInfo, socialYear, sortInfo]);
 
   const {
     data: queryData,
@@ -136,7 +139,12 @@ const CourseListPage: React.FC = () => {
       <ListPageHeader entity="courses" />
 
       <Filters
-        topFilters={[]}
+        topFilters={[
+          {
+            key: 'socialYear',
+            type: 'socialYear',
+          },
+        ]}
         collapsableFilters={[]}
         initialFilterInfo={filterInfo}
         searchText={searchText}
