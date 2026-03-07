@@ -66,6 +66,7 @@
           "false": "Non pagata"
         }
       },
+      "showAllYears": "Mostra tutti i soci",
       "byMonthsNotPaid": "Cerca per mese non pagato",
       "byMedicalCertificateExpiration": {
         "label": "Cerca per scadenza certificato medico",

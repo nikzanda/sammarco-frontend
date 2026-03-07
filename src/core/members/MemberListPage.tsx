@@ -83,7 +83,10 @@ const MemberListPage: React.FC = () => {
 
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
+    const showAllYears = filterInfo.showAllYears?.[0] === true;
+
     const result: MemberFilter = {
+      socialYear: showAllYears ? undefined : socialYear,
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
@@ -101,7 +104,7 @@ const MemberListPage: React.FC = () => {
       sortDirection,
     };
     return result;
-  }, [filterInfo, sortInfo]);
+  }, [filterInfo, socialYear, sortInfo]);
 
   const {
     data: queryData,
@@ -399,6 +402,13 @@ const MemberListPage: React.FC = () => {
         ]}
         collapsableFilters={[
           {
+            key: 'showAllYears',
+            type: 'switch',
+            props: {
+              placeholder: t('members.filters.showAllYears'),
+            },
+          },
+          {
             key: 'excludeFromCommunications',
             type: 'select',
             props: {
@@ -483,6 +493,9 @@ const MemberListPage: React.FC = () => {
             return t('commons.table.pagination', { start, end, total });
           },
         }}
+        onRow={(record) => ({
+          style: !record.currentEnrollment ? { opacity: 0.5 } : undefined,
+        })}
         rowSelection={{
           selections: [Table.SELECTION_NONE],
           preserveSelectedRowKeys: true,

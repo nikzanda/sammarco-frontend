@@ -129,6 +129,7 @@ const Filters: React.FC<Props> = ({
             <Select
               value={value}
               allowClear
+              size="large"
               placeholder={placeholder}
               options={[
                 {
