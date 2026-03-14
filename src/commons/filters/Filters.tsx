@@ -224,19 +224,22 @@ const Filters: React.FC<Props> = ({
             />
           );
 
-        case 'courses':
+        case 'courses': {
           if (filter.props && filter.props.placeholder) {
             placeholder = filter.props.placeholder as string;
           }
+          const courseSocialYear = filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear;
           return (
             <CoursePicker
               {...filter.props}
               value={value as string[] | undefined}
+              socialYear={courseSocialYear}
               placeholder={placeholder}
               onChange={(value) => onChange(value?.length ? value : null)}
               onClear={() => handleClear(filter.key)}
             />
           );
+        }
 
         case 'members':
           if (filter.props && filter.props.placeholder) {
@@ -252,19 +255,22 @@ const Filters: React.FC<Props> = ({
             />
           );
 
-        case 'shift':
+        case 'shift': {
           if (filter.props && filter.props.placeholder) {
             placeholder = filter.props.placeholder as string;
           }
+          const shiftSocialYear = filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear;
           return (
             <ShiftPicker
               {...filter.props}
               value={value as string[] | undefined}
+              queryFilters={{ socialYear: shiftSocialYear }}
               placeholder={placeholder}
               onChange={(value) => onChange(value?.length ? value : null)}
               onClear={() => handleClear(filter.key)}
             />
           );
+        }
 
         case 'fees':
           if (filter.props && filter.props.placeholder) {
@@ -299,7 +305,7 @@ const Filters: React.FC<Props> = ({
           throw new Error('filter not implemented');
       }
     },
-    [filterInfo, handleClear, setFilterInfo, socialYearOptions, t, token.colorError, token.colorSuccess]
+    [filterInfo, handleClear, setFilterInfo, socialYear, socialYearOptions, t, token.colorError, token.colorSuccess]
   );
 
   return (

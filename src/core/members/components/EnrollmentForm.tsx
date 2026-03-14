@@ -3,7 +3,7 @@ import { Checkbox, Col, Divider, Form, Input, InputNumber, Row, Select } from 'a
 import { useTranslation } from 'react-i18next';
 import { DatePicker } from '../../../components';
 import { CoursePicker, ShiftPicker } from '../../courses/components';
-import { MedicalCertificateTypeEnum, QualificationEnum } from '../../../gql/graphql';
+import { QualificationEnum } from '../../../gql/graphql';
 
 interface Props {
   updating?: boolean;
@@ -132,41 +132,6 @@ const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
               </Form.Item>
             );
           }}
-        </Form.Item>
-      </Col>
-
-      <Divider plain>{t('members.divider.medicalCertificate')}</Divider>
-
-      <Col xs={24} md={12} xxl={8}>
-        <Form.Item
-          label={t('members.form.medicalCertificate.expireAt')}
-          name={['enrollment', 'medicalCertificateExpireAt']}
-          getValueProps={(v: number) => {
-            if (v) {
-              return { value: new Date(v) };
-            }
-            return { value: undefined };
-          }}
-          getValueFromEvent={(v: Date) => {
-            if (v) {
-              return v.getTime();
-            }
-            return null;
-          }}
-        >
-          <DatePicker format="DD/MM/YYYY" needConfirm={false} style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-
-      <Col xs={24} md={12} xxl={8}>
-        <Form.Item label={t('members.form.medicalCertificate.type')} name={['enrollment', 'medicalCertificateType']}>
-          <Select
-            allowClear
-            options={Object.keys(MedicalCertificateTypeEnum).map((type) => ({
-              label: t(`members.medicalCertificateType.${type}`),
-              value: type,
-            }))}
-          />
         </Form.Item>
       </Col>
     </Row>

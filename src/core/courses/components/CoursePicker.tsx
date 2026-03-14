@@ -7,10 +7,16 @@ import { useDisplayGraphQLErrors } from '../../../hooks';
 
 interface Props extends Omit<SelectProps, 'value' | 'onChange' | 'mode'> {
   value?: string[];
+  socialYear?: number;
   onChange?: (value: string[], courses: CoursesSearcherQuery['courses']['data']) => void;
 }
 
-const CoursePicker: React.FC<Props> = ({ value = undefined, onChange = () => {}, ...selectProps }) => {
+const CoursePicker: React.FC<Props> = ({
+  value = undefined,
+  socialYear = undefined,
+  onChange = () => {},
+  ...selectProps
+}) => {
   const [fetchCourses, { data: coursesData, loading: coursesLoading, error: coursesError, refetch: coursesRefetch }] =
     useLazyQuery(CoursesSearcherDocument);
 
@@ -66,6 +72,7 @@ const CoursePicker: React.FC<Props> = ({ value = undefined, onChange = () => {},
     coursesRefetch({
       filter: {
         search,
+        ...(socialYear != null && { socialYear }),
       },
     });
   }, 500);
@@ -80,7 +87,7 @@ const CoursePicker: React.FC<Props> = ({ value = undefined, onChange = () => {},
       {...selectProps}
       value={value}
       mode="multiple"
-      onFocus={() => fetchCourses({ variables: { filter: {} } })}
+      onFocus={() => fetchCourses({ variables: { filter: { ...(socialYear != null && { socialYear }) } } })}
       options={options}
       onChange={handleChange}
       showSearch={{ filterOption: false, onSearch: handleSearch }}
