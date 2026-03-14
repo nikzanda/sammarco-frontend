@@ -113,7 +113,6 @@ const MemberListPage: React.FC = () => {
         key: 'fullName',
         dataIndex: 'fullName',
         sorter: true,
-        defaultSortOrder: 'ascend',
         width: 200,
         ellipsis: true,
         render: (fullName: string) => (

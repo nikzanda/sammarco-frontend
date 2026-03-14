@@ -325,7 +325,6 @@ const EnrollmentListPage: React.FC = () => {
         dataIndex: 'socialCardNumber',
         align: 'center',
         sorter: true,
-        defaultSortOrder: 'descend',
         width: 120,
       },
       {
