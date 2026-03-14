@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  entity: 'members' | 'courses' | 'fees' | 'payments';
+  entity: 'enrollments' | 'members' | 'courses' | 'fees' | 'payments';
   submitButtonProps?: Omit<ButtonProps, 'type' | 'htmlType' | 'form' | 'size' | 'icon'>;
 }
 
