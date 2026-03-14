@@ -100,7 +100,6 @@ const EnrollmentListPage: React.FC = () => {
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: EnrollmentFilter = {
-      socialYear: filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear,
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
@@ -119,7 +118,7 @@ const EnrollmentListPage: React.FC = () => {
       sortDirection,
     };
     return result;
-  }, [filterInfo, socialYear, sortInfo]);
+  }, [filterInfo, sortInfo]);
 
   const {
     data: queryData,
@@ -406,10 +405,6 @@ const EnrollmentListPage: React.FC = () => {
 
       <Filters
         topFilters={[
-          {
-            key: 'socialYear',
-            type: 'socialYear',
-          },
           {
             key: 'courses',
             type: 'courses',

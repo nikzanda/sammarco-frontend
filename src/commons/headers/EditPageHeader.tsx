@@ -36,7 +36,7 @@ const EditPageHeader: React.FC<Props> = ({
         {extra && (
           <>
             {extra}
-            <Divider type="vertical" />
+            <Divider orientation="vertical" />
           </>
         )}
         <Button
@@ -51,7 +51,7 @@ const EditPageHeader: React.FC<Props> = ({
         </Button>
         {actions && (
           <>
-            <Divider type="vertical" />
+            <Divider orientation="vertical" />
             <Dropdown
               arrow
               trigger={['click']}

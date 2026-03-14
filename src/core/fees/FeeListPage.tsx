@@ -19,13 +19,11 @@ import {
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader } from '../../commons';
 import { toCurrency } from '../../utils';
-import { SocialYearContext } from '../../contexts';
 
 const PAGE_SIZE = 20;
 const LOCAL_STORAGE_PATH = 'filter/fee/';
 
 const FeeListPage: React.FC = () => {
-  const { socialYear } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { token } = theme.useToken();
@@ -64,7 +62,6 @@ const FeeListPage: React.FC = () => {
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: FeeFilter = {
-      socialYear: filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear,
       name: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       type: filterInfo.type?.length ? (filterInfo.type[0] as FeeTypeEnum) : undefined,
       courseIds: filterInfo.course?.length ? (filterInfo.course as string[]) : undefined,
@@ -72,7 +69,7 @@ const FeeListPage: React.FC = () => {
       sortDirection,
     };
     return result;
-  }, [filterInfo, socialYear, sortInfo]);
+  }, [filterInfo, sortInfo]);
 
   const {
     data: queryData,
@@ -193,10 +190,6 @@ const FeeListPage: React.FC = () => {
 
       <Filters
         topFilters={[
-          {
-            key: 'socialYear',
-            type: 'socialYear',
-          },
           {
             key: 'type',
             type: 'select',

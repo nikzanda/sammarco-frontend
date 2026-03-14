@@ -26,7 +26,7 @@ interface Props {
 }
 
 const MemberPayments: React.FC<Props> = ({ member }) => {
-  const { socialYear } = React.useContext(SocialYearContext);
+  const { socialYear, isCurrentYear } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -61,7 +61,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
     }
 
     const result: PaymentFilter = {
-      socialYear: filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : socialYear,
+      socialYear: isCurrentYear && filterInfo.socialYear?.length ? (filterInfo.socialYear[0] as number) : undefined,
       counter: filterInfo?.counter?.length ? (filterInfo.counter[0] as number) : undefined,
       memberIds: [member.id],
       feeIds: filterInfo?.fee?.length ? (filterInfo.fee as string[]) : undefined,
@@ -74,7 +74,7 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
       sortDirection,
     };
     return result;
-  }, [filterInfo, member.id, socialYear, sortInfo]);
+  }, [filterInfo, isCurrentYear, member.id, sortInfo]);
 
   const {
     data: queryData,
@@ -184,10 +184,14 @@ const MemberPayments: React.FC<Props> = ({ member }) => {
 
       <Filters
         topFilters={[
-          {
-            key: 'socialYear',
-            type: 'socialYear',
-          },
+          ...(isCurrentYear
+            ? [
+                {
+                  key: 'socialYear',
+                  type: 'socialYear' as const,
+                },
+              ]
+            : []),
           {
             key: 'counter',
             type: 'numeric',
