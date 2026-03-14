@@ -4,36 +4,10 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
   fragment MemberListItem on Member {
     id
     fullName
-    currentEnrollment {
-      id
-      status
-      courses {
-        id
-        name
-        shifts {
-          id
-          from
-          to
-        }
-      }
-      shiftIds
-      socialCardNumber
-      medicalCertificateExpireAt
-      qualification
-      excludeFromCommunications
-      payments {
-        id
-        month
-      }
-      attendances {
-        id
-        course {
-          id
-        }
-        from
-        to
-      }
-    }
+    taxCode
+    email
+    phone
+    createdAt
   }
 `;
 
@@ -42,10 +16,7 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     ...MemberListItem
     name
     surname
-    taxCode
     address
-    email
-    phone
     isUnderage
     parent {
       name
@@ -56,34 +27,13 @@ export const MEMBER_DETAIL_FRAGMENT = gql`
     }
     currentEnrollment {
       id
-      status
       courses {
         id
         name
-        shifts {
-          id
-          from
-          to
-        }
       }
-      shiftIds
-      qualification
-      socialCardNumber
-      asiCardNumber
-      csenCardNumber
-      registrationRequestDate
-      registrationAcceptanceDate
       medicalCertificateExpireAt
-      medicalCertificateType
-      medicalCertificateKey
-      excludeFromCommunications
-      consents {
-        type
-        acceptedAt
-      }
     }
     canDelete
-    createdAt
     updatedAt
   }
   ${MEMBER_LIST_ITEM_FRAGMENT}

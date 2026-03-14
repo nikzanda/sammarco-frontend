@@ -3,28 +3,18 @@ import { App, Card, Flex, Form, FormProps, GetProp, MenuProps, Result, Skeleton,
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import Icon from '@ant-design/icons';
-import { FaBell, FaCalendarCheck, FaMoneyBill, FaTrash } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { MemberDeleteDocument, MemberDocument, MemberUpdateDocument } from '../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../hooks';
-import {
-  EnrollmentForm,
-  MemberCalendar,
-  MemberMedicalCertificate,
-  MemberPayments,
-  MemberPersonalForm,
-} from './components';
+import { MemberCalendar, MemberEnrollments, MemberPayments, MemberPersonalForm } from './components';
 import { EditPageHeader, Updates } from '../../commons';
-import { EmailTable, SendReminderModal } from '../emails/components';
-import { SettingsContext } from '../../contexts';
+import { EmailTable } from '../emails/components';
 import { getURLTab, setURLTab } from '../../utils';
-import { AttendanceCreateModal } from '../attendances/components';
-import { PaymentCreateModal } from '../payments/components';
 
 const DEFAULT_TAB = 'details';
 
 const MemberEditPage: React.FC = () => {
-  const { validEmailSettings } = React.useContext(SettingsContext);
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -32,9 +22,6 @@ const MemberEditPage: React.FC = () => {
   const [form] = Form.useForm();
 
   const [tab, setTab] = React.useState(getURLTab() || DEFAULT_TAB);
-  const [newPayment, setNewPayment] = React.useState(false);
-  const [newAttendance, setNewAttendance] = React.useState(false);
-  const [sendReminderData, setSendReminderData] = React.useState<{ memberId: string; courseIds: string[] }>();
 
   React.useEffect(() => {
     setURLTab(getURLTab() || DEFAULT_TAB);
@@ -51,7 +38,7 @@ const MemberEditPage: React.FC = () => {
   });
 
   const [updateMember, { loading: updateLoading, error: updateError }] = useMutation(MemberUpdateDocument, {
-    refetchQueries: ['Members', 'Member', 'Payments', 'PaymentPdf', 'PaymentsPdf'],
+    refetchQueries: ['Members', 'Member'],
     onCompleted: () => {
       message.success(t('members.edited'));
     },
@@ -83,28 +70,8 @@ const MemberEditPage: React.FC = () => {
 
   const initialValues = React.useMemo(() => {
     if (member) {
-      const { currentEnrollment } = member;
-
       const result = {
         ...member,
-        enrollment: currentEnrollment
-          ? {
-              id: currentEnrollment.id,
-              courseIds: currentEnrollment.courses.map(({ id: courseId }) => courseId),
-              shiftIds: currentEnrollment.shiftIds,
-              qualification: currentEnrollment.qualification,
-              socialCardNumber: currentEnrollment.socialCardNumber,
-              asiCardNumber: currentEnrollment.asiCardNumber,
-              csenCardNumber: currentEnrollment.csenCardNumber,
-              registrationRequestDate: currentEnrollment.registrationRequestDate,
-              registrationAcceptanceDate: currentEnrollment.registrationAcceptanceDate,
-              medicalCertificateExpireAt: currentEnrollment.medicalCertificateExpireAt,
-              medicalCertificateType: currentEnrollment.medicalCertificateType,
-              medicalCertificateKey: currentEnrollment.medicalCertificateKey,
-              excludeFromCommunications: currentEnrollment.excludeFromCommunications,
-              consents: currentEnrollment.consents,
-            }
-          : undefined,
       };
       return result;
     }
@@ -121,41 +88,12 @@ const MemberEditPage: React.FC = () => {
     });
   }, [deleteMember, id]);
 
-  const courseIds = React.useMemo(
-    () => member?.currentEnrollment?.courses.map(({ id }) => id) ?? [],
-    [member?.currentEnrollment?.courses]
-  );
-
   const actions = React.useMemo(() => {
     if (!member) {
       return [];
     }
 
     const result: GetProp<MenuProps, 'items'> = [
-      {
-        key: 'payment',
-        label: t('payments.new'),
-        icon: <Icon component={FaMoneyBill} />,
-        onClick: () => setNewPayment(true),
-      },
-      {
-        key: 'attendance',
-        label: t('attendances.new'),
-        icon: <Icon component={FaCalendarCheck} />,
-        onClick: () => setNewAttendance(true),
-      },
-      {
-        key: 'reminder',
-        label: t('buttons.reminder.label'),
-        disabled: !validEmailSettings,
-        icon: <Icon component={FaBell} />,
-        onClick: () => {
-          setSendReminderData({
-            memberId: member.id,
-            courseIds,
-          });
-        },
-      },
       {
         key: 'delete',
         label: t('buttons.delete.label'),
@@ -172,16 +110,14 @@ const MemberEditPage: React.FC = () => {
       },
     ];
     return result;
-  }, [courseIds, deleteLoading, handleDelete, member, modal, t, validEmailSettings]);
+  }, [deleteLoading, handleDelete, member, modal, t]);
 
   const handleFinish: FormProps['onFinish'] = (values) => {
-    const { enrollment, ...personalFields } = values;
     updateMember({
       variables: {
         input: {
           id: id!,
-          ...personalFields,
-          ...(enrollment && { enrollment }),
+          ...values,
         },
       },
     });
@@ -200,87 +136,56 @@ const MemberEditPage: React.FC = () => {
       {queryLoading && <Skeleton active />}
       {queryError && <Result status="500" title="500" subTitle={t('errors.somethingWentWrong')} />}
       {member && (
-        <>
-          <Card styles={{ body: { paddingTop: 0 } }}>
-            <Form
-              id="form"
-              form={form}
-              initialValues={initialValues}
-              layout="vertical"
-              autoComplete="off"
-              onFinish={handleFinish}
-            >
-              <Tabs
-                activeKey={tab}
-                onChange={(newTab) => {
-                  setURLTab(newTab);
-                  setTab(newTab);
-                }}
-                items={[
-                  {
-                    label: t('members.tab.details'),
-                    key: 'details',
-                    children: (
-                      <>
-                        <MemberPersonalForm />
-                        <Updates updates={member} />
-                      </>
-                    ),
-                  },
-                  {
-                    label: t('members.tab.enrollment'),
-                    key: 'enrollment',
-                    children: (
-                      <>
-                        <EnrollmentForm updating />
-                        {member.currentEnrollment && <MemberMedicalCertificate member={member} />}
-                      </>
-                    ),
-                  },
-                  {
-                    label: t('members.tab.payments'),
-                    key: 'payments',
-                    children: <MemberPayments member={member} />,
-                  },
-                  {
-                    label: t('members.tab.calendar'),
-                    key: 'calendar',
-                    children: <MemberCalendar member={member} />,
-                  },
-                  {
-                    label: t('members.tab.emails'),
-                    key: 'emails',
-                    children: <EmailTable filters={{ memberIds: [id!] }} />,
-                  },
-                ]}
-              />
-            </Form>
-          </Card>
-
-          {newPayment && (
-            <PaymentCreateModal
-              memberId={member.id}
-              courseIds={courseIds}
-              onCancel={() => {
-                setNewPayment(false);
+        <Card styles={{ body: { paddingTop: 0 } }}>
+          <Form
+            id="form"
+            form={form}
+            initialValues={initialValues}
+            layout="vertical"
+            autoComplete="off"
+            onFinish={handleFinish}
+          >
+            <Tabs
+              activeKey={tab}
+              onChange={(newTab) => {
+                setURLTab(newTab);
+                setTab(newTab);
               }}
+              items={[
+                {
+                  label: t('members.tab.details'),
+                  key: 'details',
+                  children: (
+                    <>
+                      <MemberPersonalForm />
+                      <Updates updates={member} />
+                    </>
+                  ),
+                },
+                {
+                  label: t('members.tab.enrollments'),
+                  key: 'enrollments',
+                  children: <MemberEnrollments memberId={id!} />,
+                },
+                {
+                  label: t('members.tab.payments'),
+                  key: 'payments',
+                  children: <MemberPayments member={member} />,
+                },
+                {
+                  label: t('members.tab.calendar'),
+                  key: 'calendar',
+                  children: <MemberCalendar member={member} />,
+                },
+                {
+                  label: t('members.tab.emails'),
+                  key: 'emails',
+                  children: <EmailTable filters={{ memberIds: [id!] }} />,
+                },
+              ]}
             />
-          )}
-          {newAttendance && (
-            <AttendanceCreateModal
-              memberIds={[member.id]}
-              courseIds={courseIds}
-              onCancel={() => setNewAttendance(false)}
-            />
-          )}
-          {sendReminderData && (
-            <SendReminderModal
-              memberId={sendReminderData.memberId}
-              courseIds={sendReminderData.courseIds}
-              onCancel={() => setSendReminderData(undefined)}
-            />
-          )}
-        </>
+          </Form>
+        </Card>
       )}
     </Flex>
   );

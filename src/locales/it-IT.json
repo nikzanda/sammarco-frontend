@@ -43,13 +43,10 @@
     },
     "table": {
       "fullName": "Nome",
-      "courses": "Corsi",
-      "shifts": "Turni",
-      "socialCardNumber": "N° tessera sociale",
-      "expandable": {
-        "paid": "Pagamento",
-        "attendances": "Presenze"
-      }
+      "taxCode": "Codice fiscale",
+      "email": "Email",
+      "phone": "Telefono",
+      "createdAt": "Data creazione"
     },
     "filters": {
       "byExcludeFromCommunications": {
@@ -78,8 +75,8 @@
     },
     "tab": {
       "details": "Dettagli",
+      "enrollments": "Tesseramenti",
       "payments": "Pagamenti",
-      "medicalCertificate": "Certificato medico",
       "calendar": "Calendario",
       "emails": "Email"
     },
@@ -155,6 +152,7 @@
     },
     "table": {
       "fullName": "Socio",
+      "socialYear": "Anno sociale",
       "courses": "Corsi",
       "shifts": "Turni",
       "socialCardNumber": "N° tessera sociale",
