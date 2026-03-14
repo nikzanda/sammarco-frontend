@@ -202,6 +202,10 @@
       "confirm": "Conferma selezionati",
       "sendReminders": "Invia solleciti pagamenti"
     },
+    "tabs": {
+      "confirmed": "Confermati",
+      "pending": "Da confermare"
+    },
     "tab": {
       "details": "Dettagli",
       "medicalCertificate": "Certificato medico",

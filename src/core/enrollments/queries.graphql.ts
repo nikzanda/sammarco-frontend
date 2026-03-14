@@ -59,6 +59,16 @@ export const ENROLLMENT_DETAIL_FRAGMENT = gql`
   ${ENROLLMENT_LIST_ITEM_FRAGMENT}
 `;
 
+export const ENROLLMENTS_PENDING_COUNT_QUERY = gql`
+  query EnrollmentsPendingCount($filter: EnrollmentFilter) {
+    enrollments(pageIndex: 0, pageSize: 1, filter: $filter) {
+      pageInfo {
+        total
+      }
+    }
+  }
+`;
+
 export const ENROLLMENTS_QUERY = gql`
   query Enrollments($pageIndex: Int!, $pageSize: Int!, $filter: EnrollmentFilter) {
     enrollments(pageIndex: $pageIndex, pageSize: $pageSize, filter: $filter) {

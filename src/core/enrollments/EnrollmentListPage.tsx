@@ -1,6 +1,6 @@
 import React from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import { Badge, Flex, Table, TableColumnsType, TableProps, Tooltip, theme } from 'antd';
+import { Badge, Flex, Table, TableColumnsType, TableProps, Tabs, Tooltip, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -23,6 +23,7 @@ import {
   EnrollmentSortEnum,
   EnrollmentStatusEnum,
   EnrollmentsDocument,
+  EnrollmentsPendingCountDocument,
   MedicalCertificateExpirationEnum,
   SortDirectionEnum,
 } from '../../gql/graphql';
@@ -30,7 +31,7 @@ import { PaymentCreateModal } from '../payments/components';
 import { useDisplayGraphQLErrors } from '../../hooks';
 import { ActionButtons, Filters, ListPageHeader, week } from '../../commons';
 import { AttendanceCreateModal } from '../attendances/components';
-import { getMonths } from '../../utils';
+import { getMonths, getURLTab, setURLTab } from '../../utils';
 import { MemberExpandable, SendMonthlyRemindersModal } from '../members/components';
 import { SendReminderModal } from '../emails/components';
 import { SettingsContext, SocialYearContext } from '../../contexts';
@@ -45,6 +46,7 @@ const EnrollmentListPage: React.FC = () => {
   const navigate = useNavigate();
   const { token } = theme.useToken();
 
+  const [tab, setTab] = React.useState<string>(getURLTab() || 'CONFIRMED');
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const [enrollmentInfo, setEnrollmentInfo] = React.useState<{ memberId: string; courseIds: string[] }>();
@@ -85,10 +87,6 @@ const EnrollmentListPage: React.FC = () => {
         sortBy = EnrollmentSortEnum.SOCIAL_CARD_NUMBER;
         break;
 
-      case 'status':
-        sortBy = EnrollmentSortEnum.STATUS;
-        break;
-
       case 'qualification':
         sortBy = EnrollmentSortEnum.QUALIFICATION;
         break;
@@ -103,7 +101,7 @@ const EnrollmentListPage: React.FC = () => {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
       courseIds: filterInfo.courses?.length ? (filterInfo.courses as string[]) : undefined,
       shiftIds: filterInfo.shifts?.length ? (filterInfo.shifts as string[]) : undefined,
-      status: filterInfo.status?.length ? (filterInfo.status[0] as EnrollmentStatusEnum) : undefined,
+      status: tab as EnrollmentStatusEnum,
       excludeFromCommunications: filterInfo.excludeFromCommunications?.length
         ? filterInfo.excludeFromCommunications[0] === 'true'
         : undefined,
@@ -118,7 +116,7 @@ const EnrollmentListPage: React.FC = () => {
       sortDirection,
     };
     return result;
-  }, [filterInfo, sortInfo]);
+  }, [filterInfo, sortInfo, tab]);
 
   const {
     data: queryData,
@@ -132,7 +130,32 @@ const EnrollmentListPage: React.FC = () => {
     },
   });
 
-  useDisplayGraphQLErrors(queryError);
+  const pendingCountFilter = React.useMemo(() => {
+    const result: EnrollmentFilter = {
+      ...queryFilter,
+      status: EnrollmentStatusEnum.PENDING,
+    };
+    return result;
+  }, [queryFilter]);
+
+  const {
+    data: pendingCountData,
+    loading: pendingCountLoading,
+    error: pendingCountError,
+  } = useQuery(EnrollmentsPendingCountDocument, {
+    variables: {
+      filter: pendingCountFilter,
+    },
+  });
+
+  const pendingCount = React.useMemo(() => {
+    if (!pendingCountLoading && !pendingCountError && pendingCountData) {
+      return pendingCountData.enrollments.pageInfo.total;
+    }
+    return 0;
+  }, [pendingCountData, pendingCountError, pendingCountLoading]);
+
+  useDisplayGraphQLErrors(queryError, pendingCountError);
 
   const enrollments = React.useMemo(() => {
     if (!queryLoading && !queryError && queryData) {
@@ -306,20 +329,6 @@ const EnrollmentListPage: React.FC = () => {
         width: 120,
       },
       {
-        title: t('enrollments.table.status'),
-        key: 'status',
-        dataIndex: 'status',
-        align: 'center',
-        sorter: true,
-        width: 120,
-        render: (status: EnrollmentStatusEnum) => (
-          <Badge
-            status={status === EnrollmentStatusEnum.CONFIRMED ? 'success' : 'warning'}
-            text={t(`enrollments.status.${status}`)}
-          />
-        ),
-      },
-      {
         key: 'actions',
         align: 'right',
         fixed: 'right',
@@ -421,18 +430,6 @@ const EnrollmentListPage: React.FC = () => {
               placeholder: t('members.form.shifts'),
             },
           },
-          {
-            key: 'status',
-            type: 'select',
-            props: {
-              size: 'large',
-              placeholder: t('enrollments.filters.byStatus'),
-              options: Object.values(EnrollmentStatusEnum).map((value) => ({
-                label: t(`enrollments.status.${value}`),
-                value,
-              })),
-            },
-          },
         ]}
         collapsableFilters={[
           {
@@ -498,6 +495,30 @@ const EnrollmentListPage: React.FC = () => {
           setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
           setFilterInfo(newFilterInfo);
         }}
+      />
+
+      <Tabs
+        activeKey={tab}
+        onChange={(activeKey) => {
+          setTab(activeKey);
+          setURLTab(activeKey);
+          setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
+          setSelectedIds([]);
+        }}
+        items={[
+          {
+            key: 'CONFIRMED',
+            label: t('enrollments.tabs.confirmed'),
+          },
+          {
+            key: 'PENDING',
+            label: (
+              <Badge count={pendingCount} offset={[16, 0]} size="small">
+                {t('enrollments.tabs.pending')}
+              </Badge>
+            ),
+          },
+        ]}
       />
 
       {selectedIds.length > 0 && <span>{t('commons.selected', { selected: selectedIds.length, total })}</span>}
