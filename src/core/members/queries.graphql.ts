@@ -8,6 +8,9 @@ export const MEMBER_LIST_ITEM_FRAGMENT = gql`
     email
     phone
     createdAt
+    currentEnrollment {
+      status
+    }
   }
 `;
 

@@ -5710,6 +5710,18 @@
             "deprecationReason": null
           },
           {
+            "name": "enrollmentStatus",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "EnrollmentStatusEnum",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "sortBy",
             "description": null,
             "type": {

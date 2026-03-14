@@ -9,6 +9,7 @@ import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { useQuery } from '@apollo/client/react';
 import {
+  EnrollmentStatusEnum,
   MemberFilter,
   MemberListItemFragment,
   MembersDocument,
@@ -72,6 +73,9 @@ const MemberListPage: React.FC = () => {
 
     const result: MemberFilter = {
       search: filterInfo.search?.length ? (filterInfo.search[0] as string).trim() : undefined,
+      enrollmentStatus: filterInfo.enrollmentStatus?.length
+        ? (filterInfo.enrollmentStatus[0] as EnrollmentStatusEnum)
+        : undefined,
       sortBy,
       sortDirection,
     };
@@ -179,7 +183,20 @@ const MemberListPage: React.FC = () => {
       />
 
       <Filters
-        topFilters={[]}
+        topFilters={[
+          {
+            key: 'enrollmentStatus',
+            type: 'select',
+            props: {
+              size: 'large',
+              placeholder: t('members.filters.byEnrollmentStatus'),
+              options: [
+                { label: t('enrollments.status.CONFIRMED'), value: EnrollmentStatusEnum.CONFIRMED },
+                { label: t('enrollments.status.PENDING'), value: EnrollmentStatusEnum.PENDING },
+              ],
+            },
+          },
+        ]}
         collapsableFilters={[]}
         initialFilterInfo={filterInfo}
         searchText={searchText}
@@ -197,6 +214,12 @@ const MemberListPage: React.FC = () => {
         loading={queryLoading}
         size="small"
         onChange={handleTableChange}
+        onRow={(record) => ({
+          style:
+            !record.currentEnrollment || record.currentEnrollment.status !== EnrollmentStatusEnum.CONFIRMED
+              ? { opacity: 0.5 }
+              : undefined,
+        })}
         pagination={{
           total,
           pageSize: pagination.pageSize,
