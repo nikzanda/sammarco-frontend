@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { FaFileCsv } from 'react-icons/fa';
 import Icon from '@ant-design/icons';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { format } from 'date-fns';
 import Highlighter from 'react-highlight-words';
 import { useQuery } from '@apollo/client/react';
 import {
@@ -66,7 +65,7 @@ const MemberListPage: React.FC = () => {
         break;
 
       default:
-        sortBy = MemberSortEnum.NAME;
+        sortBy = MemberSortEnum.CREATED_AT;
     }
 
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
@@ -145,14 +144,6 @@ const MemberListPage: React.FC = () => {
         key: 'phone',
         dataIndex: 'phone',
         width: 150,
-      },
-      {
-        title: t('members.table.createdAt'),
-        key: 'createdAt',
-        dataIndex: 'createdAt',
-        sorter: true,
-        width: 120,
-        render: (createdAt: number) => format(createdAt, 'dd/MM/yyyy'),
       },
       {
         key: 'actions',

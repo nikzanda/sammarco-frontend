@@ -57,6 +57,7 @@ const MemberCalendar: React.FC<Props> = ({ member }) => {
 
     const result: AttendanceFilter = {
       memberIds: [member.id],
+      socialYear: null,
       from,
       to,
     };

@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps } from 'antd';
+import { Button, Dropdown, DropdownProps, Layout, Menu, MenuProps, Select, Watermark } from 'antd';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -16,8 +16,9 @@ import {
 } from 'react-icons/fa';
 import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
-import { AuthenticationContext, SettingsProvider, ThemeContext } from '../contexts';
+import { AuthenticationContext, SettingsProvider, SocialYearContext, ThemeContext } from '../contexts';
 import { LoadingPage, NotFoundPage } from '../views';
+import { FIRST_SOCIAL_YEAR, getCurrentSocialYear } from '../utils';
 
 // Enrollments
 const EnrollmentListPage = React.lazy(() => import('../core/enrollments/EnrollmentListPage'));
@@ -58,9 +59,22 @@ const SettingsPage = React.lazy(() => import('../settings/SettingsPage'));
 const AuthenticatedLayout: React.FC = () => {
   const { logout } = React.useContext(AuthenticationContext);
   const { isDarkMode, toggleTheme } = React.useContext(ThemeContext);
+  const { socialYear, isCurrentYear, changeSocialYear } = React.useContext(SocialYearContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+
+  const socialYearOptions = React.useMemo(() => {
+    const currentYear = getCurrentSocialYear();
+    const options = [];
+    for (let year = currentYear; year >= FIRST_SOCIAL_YEAR; year--) {
+      options.push({
+        label: `${year}/${(year + 1) % 100}`,
+        value: year,
+      });
+    }
+    return options;
+  }, []);
 
   const menuItems = React.useMemo(() => {
     const result: MenuProps['items'] = [
@@ -186,6 +200,14 @@ const AuthenticatedLayout: React.FC = () => {
           items={menuItems}
           style={{ flex: 1, minWidth: 0 }}
         />
+        <Select
+          value={socialYear}
+          options={socialYearOptions}
+          onChange={changeSocialYear}
+          variant="borderless"
+          style={{ color: 'rgba(255, 255, 255, 0.85)', flexShrink: 0, minWidth: 90 }}
+          popupMatchSelectWidth={false}
+        />
         <Dropdown menu={dropdownMenu} placement="bottomRight" trigger={['click']}>
           <Button
             shape="circle"
@@ -197,54 +219,56 @@ const AuthenticatedLayout: React.FC = () => {
         </Dropdown>
       </Layout.Header>
       <Layout.Content style={{ padding: 16, overflowY: 'auto' }}>
-        <SettingsProvider>
-          <Suspense fallback={<LoadingPage />}>
-            <Routes>
-              <Route path="enrollments" element={<Outlet />}>
-                <Route index element={<EnrollmentListPage />} />
-                <Route path="new" element={<EnrollmentCreatePage />} />
-                <Route path=":id" element={<EnrollmentEditPage />} />
-              </Route>
+        <Watermark content={isCurrentYear ? undefined : `${socialYear}/${(socialYear + 1) % 100}`}>
+          <SettingsProvider>
+            <Suspense fallback={<LoadingPage />}>
+              <Routes>
+                <Route path="enrollments" element={<Outlet />}>
+                  <Route index element={<EnrollmentListPage />} />
+                  <Route path="new" element={<EnrollmentCreatePage />} />
+                  <Route path=":id" element={<EnrollmentEditPage />} />
+                </Route>
 
-              <Route path="members" element={<Outlet />}>
-                <Route index element={<MemberListPage />} />
-                <Route path="new" element={<MemberCreatePage />} />
-                <Route path=":id" element={<MemberEditPage />} />
-              </Route>
+                <Route path="members" element={<Outlet />}>
+                  <Route index element={<MemberListPage />} />
+                  <Route path="new" element={<MemberCreatePage />} />
+                  <Route path=":id" element={<MemberEditPage />} />
+                </Route>
 
-              <Route path="courses" element={<Outlet />}>
-                <Route index element={<CourseListPage />} />
-                <Route path="new" element={<CourseCreatePage />} />
-                <Route path=":id" element={<CourseEditPage />} />
-              </Route>
+                <Route path="courses" element={<Outlet />}>
+                  <Route index element={<CourseListPage />} />
+                  <Route path="new" element={<CourseCreatePage />} />
+                  <Route path=":id" element={<CourseEditPage />} />
+                </Route>
 
-              <Route path="fees" element={<Outlet />}>
-                <Route index element={<FeeListPage />} />
-                <Route path="new" element={<FeeCreatePage />} />
-                <Route path=":id" element={<FeeEditPage />} />
-              </Route>
+                <Route path="fees" element={<Outlet />}>
+                  <Route index element={<FeeListPage />} />
+                  <Route path="new" element={<FeeCreatePage />} />
+                  <Route path=":id" element={<FeeEditPage />} />
+                </Route>
 
-              <Route path="payments" element={<Outlet />}>
-                <Route index element={<PaymentListPage />} />
-                <Route path=":id" element={<PaymentEditPage />} />
-              </Route>
+                <Route path="payments" element={<Outlet />}>
+                  <Route index element={<PaymentListPage />} />
+                  <Route path=":id" element={<PaymentEditPage />} />
+                </Route>
 
-              <Route path="calendar" element={<CalendarPage />} />
+                <Route path="calendar" element={<CalendarPage />} />
 
-              <Route path="communication" element={<CommunicationPage />} />
+                <Route path="communication" element={<CommunicationPage />} />
 
-              <Route path="season-renewal" element={<SeasonRenewalPage />} />
+                <Route path="season-renewal" element={<SeasonRenewalPage />} />
 
-              <Route path="settings" element={<Outlet />}>
-                <Route index element={<SettingsPage />} />
-              </Route>
+                <Route path="settings" element={<Outlet />}>
+                  <Route index element={<SettingsPage />} />
+                </Route>
 
-              <Route path="/" element={<Navigate to="/enrollments" replace />} />
+                <Route path="/" element={<Navigate to="/enrollments" replace />} />
 
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-        </SettingsProvider>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Suspense>
+          </SettingsProvider>
+        </Watermark>
       </Layout.Content>
     </Layout>
   );

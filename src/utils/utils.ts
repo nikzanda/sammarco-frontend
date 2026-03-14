@@ -2,6 +2,8 @@ import { UploadFile } from 'antd';
 import { format } from 'date-fns';
 import { EmailAttachmentInput } from '../gql/graphql';
 
+export const FIRST_SOCIAL_YEAR = 2023;
+
 export const toCurrency = (
   amount: number,
   { minimumFractionDigits = 2, maximumFractionDigits = 2 }: Intl.NumberFormatOptions = {},
@@ -24,13 +26,10 @@ export const dateToYearMonth = (date: Date | number) => {
   return result;
 };
 
-export const getRealCurrentYears = (): [number, number] => {
+export const getCurrentSocialYear = (): number => {
   const today = new Date();
-  const currentYear = today.getFullYear();
-  if (today.getMonth() < 8) {
-    return [currentYear - 1, currentYear];
-  }
-  return [currentYear, currentYear + 1];
+  const result = today.getMonth() < 8 ? today.getFullYear() - 1 : today.getFullYear();
+  return result;
 };
 
 export const getMonths = (

@@ -11,8 +11,7 @@ import { CoursePicker, ShiftPicker } from '../../core/courses/components';
 import { MemberPicker } from '../../core/members/components';
 import { FeePicker } from '../../core/fees/components';
 import { SocialYearContext } from '../../contexts';
-
-const FIRST_SOCIAL_YEAR = 2023;
+import { FIRST_SOCIAL_YEAR } from '../../utils';
 
 type FilterInfo = Record<string, FilterValue | null>;
 

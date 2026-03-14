@@ -41,6 +41,7 @@ const EmailTable: React.FC<Props> = ({ filters = undefined }) => {
     const sortDirection = sortInfo.order === 'ascend' ? SortDirectionEnum.ASC : SortDirectionEnum.DESC;
 
     const result: EmailFilter = {
+      socialYear: null,
       sortBy,
       sortDirection,
       ...(filters && filters),

@@ -7,8 +7,7 @@ import { DatePicker } from '../../../components';
 import { useMutation } from '@apollo/client/react';
 import { AttendanceCreateManyDocument, ShiftsQuery } from '../../../gql/graphql';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-
-const REACT_APP_SOCIAL_YEAR = import.meta.env.VITE_SOCIAL_YEAR;
+import { SocialYearContext } from '../../../contexts';
 
 interface Props {
   memberIds: string[];
@@ -17,6 +16,7 @@ interface Props {
 }
 
 const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel }) => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { message } = App.useApp();
@@ -167,7 +167,6 @@ const AttendanceCreateModal: React.FC<Props> = ({ memberIds, courseIds, onCancel
             needConfirm={false}
             style={{ width: '100%' }}
             disabledDate={(date) => {
-              const socialYear = parseInt(REACT_APP_SOCIAL_YEAR!, 10);
               if (isBefore(date, new Date(socialYear, 8, 1)) || isAfter(date, new Date(socialYear + 1, 8, 0))) {
                 return true;
               }

@@ -24,6 +24,7 @@ const MemberEnrollments: React.FC<Props> = ({ memberId }) => {
       pageSize: 100,
       filter: {
         memberIds: [memberId],
+        socialYear: null,
       },
     },
   });

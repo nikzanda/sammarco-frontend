@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { DatePicker } from '../../../components';
 import { CoursePicker, ShiftPicker } from '../../courses/components';
 import { QualificationEnum } from '../../../gql/graphql';
+import { SocialYearContext } from '../../../contexts';
 
 interface Props {
   updating?: boolean;
 }
 
 const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { t } = useTranslation();
   const form = Form.useFormInstance();
 
@@ -117,7 +119,7 @@ const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
 
       <Col xs={24} md={12} xxl={8}>
         <Form.Item label={t('members.form.courses')} name={['enrollment', 'courseIds']}>
-          <CoursePicker />
+          <CoursePicker socialYear={socialYear} />
         </Form.Item>
       </Col>
 
@@ -128,7 +130,7 @@ const EnrollmentForm: React.FC<Props> = ({ updating = false }) => {
 
             return (
               <Form.Item label={t('members.form.shifts')} name={['enrollment', 'shiftIds']}>
-                <ShiftPicker multiple queryFilters={{ courseIds }} disabled={!courseIds} />
+                <ShiftPicker multiple queryFilters={{ courseIds, socialYear }} disabled={!courseIds} />
               </Form.Item>
             );
           }}

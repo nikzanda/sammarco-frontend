@@ -51,9 +51,27 @@ const errorLink = new ErrorLink(({ error }) => {
   }
 });
 
+let currentSocialYear: number | undefined;
+
+export const setSocialYear = (year: number): void => {
+  currentSocialYear = year;
+};
+
+const socialYearLink = new ApolloLink((operation, forward) => {
+  if (currentSocialYear != null) {
+    operation.setContext(({ headers = {} }: { headers?: Record<string, string> }) => ({
+      headers: {
+        ...headers,
+        'x-social-year': String(currentSocialYear),
+      },
+    }));
+  }
+  return forward(operation);
+});
+
 const httpLink = new HttpLink({ uri: import.meta.env.VITE_GRAPHQLURI });
 
-const httpCompositeLink = ApolloLink.from([cleanTypeName, errorLink, authLink, httpLink]);
+const httpCompositeLink = ApolloLink.from([cleanTypeName, errorLink, authLink, socialYearLink, httpLink]);
 
 const apolloClient = new ApolloClient({
   link: httpCompositeLink,

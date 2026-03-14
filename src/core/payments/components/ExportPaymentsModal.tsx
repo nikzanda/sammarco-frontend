@@ -73,6 +73,7 @@ const ExportPaymentsModal: React.FC<Props> = ({ onCancel }) => {
     getPayments({
       variables: {
         filter: {
+          socialYear: null,
           dateFrom: startOfDay(set(dateFrom, { date: 1 })).getTime(),
           dateTo: endOfDay(lastDayOfMonth(dateTo)).getTime(),
           sortBy: PaymentSortEnum.COUNTER,

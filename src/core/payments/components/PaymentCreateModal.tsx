@@ -15,10 +15,10 @@ import {
 } from '../../../gql/graphql';
 import { DatePicker } from '../../../components';
 import { useDisplayGraphQLErrors } from '../../../hooks';
-import { dateToYearMonth, getRealCurrentYears } from '../../../utils';
+import { dateToYearMonth } from '../../../utils';
 import PDF from '../pdfs/receipt-pdf';
 import { FeeSearcher } from '../../fees/components';
-import { SettingsContext } from '../../../contexts';
+import { SettingsContext, SocialYearContext } from '../../../contexts';
 
 interface Props {
   memberId: string;
@@ -26,15 +26,8 @@ interface Props {
   onCancel: () => void;
 }
 
-const initialValues = {
-  date: Date.now(),
-  month: [new Date().getFullYear(), (new Date().getMonth() + 1).toString().padStart(2, '0')].join('-'),
-  socialYear: getRealCurrentYears()[0],
-  type: PaymentTypeEnum.CASH,
-  sendEmail: true,
-};
-
 const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) => {
+  const { socialYear } = React.useContext(SocialYearContext);
   const { validEmailSettings } = React.useContext(SettingsContext);
   const [form] = Form.useForm();
   const { t } = useTranslation();
@@ -55,6 +48,17 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
       });
     }
   }, [getMember, memberId]);
+
+  const initialValues = React.useMemo(() => {
+    const result = {
+      date: Date.now(),
+      month: [new Date().getFullYear(), (new Date().getMonth() + 1).toString().padStart(2, '0')].join('-'),
+      socialYear,
+      type: PaymentTypeEnum.CASH,
+      sendEmail: true,
+    };
+    return result;
+  }, [socialYear]);
 
   const member = React.useMemo(() => {
     if (!memberLoading && !memberError && memberData) {
@@ -167,12 +171,10 @@ const PaymentCreateModal: React.FC<Props> = ({ memberId, courseIds, onCancel }) 
                 setSelectedFee(fee);
                 form.setFieldValue('amount', fee.amount);
 
-                const [yearFrom, yearTo] = getRealCurrentYears();
-
                 let { reason } = fee;
                 paymentReason.current = reason;
                 reason = reason.replaceAll('[MESE]', format(Date.now(), 'MMMM yyyy'));
-                reason = reason.replaceAll('[ANNO]', `${yearFrom} - ${yearTo}`);
+                reason = reason.replaceAll('[ANNO]', `${socialYear} - ${socialYear + 1}`);
                 form.setFieldValue('reason', reason);
               }
             }}
