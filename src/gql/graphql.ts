@@ -373,11 +373,17 @@ export type EnrollmentDeletePayload = {
 
 export type EnrollmentFilter = {
   ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  search?: InputMaybe<Scalars['String']['input']>;
   socialYear?: InputMaybe<Scalars['Int']['input']>;
-  status?: InputMaybe<EnrollmentStatusEnum>;
+  memberIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  status?: InputMaybe<EnrollmentStatusEnum>;
   qualification?: InputMaybe<QualificationEnum>;
+  excludeFromCommunications?: InputMaybe<Scalars['Boolean']['input']>;
+  medicalCertificateExpiration?: InputMaybe<Array<MedicalCertificateExpirationEnum>>;
+  unpaidRegistration?: InputMaybe<Scalars['Boolean']['input']>;
+  monthsNotPaid?: InputMaybe<Array<Scalars['Float']['input']>>;
   sortBy?: InputMaybe<EnrollmentSortEnum>;
   sortDirection?: InputMaybe<SortDirectionEnum>;
 };
@@ -391,6 +397,9 @@ export type EnrollmentPagination = {
 export enum EnrollmentSortEnum {
   SOCIAL_YEAR = 'SOCIAL_YEAR',
   STATUS = 'STATUS',
+  SOCIAL_CARD_NUMBER = 'SOCIAL_CARD_NUMBER',
+  MEMBER_NAME = 'MEMBER_NAME',
+  QUALIFICATION = 'QUALIFICATION',
   REGISTRATION_REQUEST_DATE = 'REGISTRATION_REQUEST_DATE',
   REGISTRATION_ACCEPTANCE_DATE = 'REGISTRATION_ACCEPTANCE_DATE',
   CREATED_AT = 'CREATED_AT',
@@ -611,13 +620,6 @@ export type MemberFilter = {
   surname?: InputMaybe<Scalars['String']['input']>;
   taxCode?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
-  socialYear?: InputMaybe<Scalars['Int']['input']>;
-  courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  shiftIds?: InputMaybe<Array<Scalars['ID']['input']>>;
-  excludeFromCommunications?: InputMaybe<Scalars['Boolean']['input']>;
-  unpaidRegistration?: InputMaybe<Scalars['Boolean']['input']>;
-  monthsNotPaid?: InputMaybe<Array<Scalars['Float']['input']>>;
-  medicalCertificateExpiration?: InputMaybe<Array<MedicalCertificateExpirationEnum>>;
   sortBy?: InputMaybe<MemberSortEnum>;
   sortDirection?: InputMaybe<SortDirectionEnum>;
 };
@@ -632,9 +634,6 @@ export enum MemberSortEnum {
   NAME = 'NAME',
   SURNAME = 'SURNAME',
   TAX_CODE = 'TAX_CODE',
-  SOCIAL_CARD_NUMBER = 'SOCIAL_CARD_NUMBER',
-  REGISTRATION_REQUEST_DATE = 'REGISTRATION_REQUEST_DATE',
-  REGISTRATION_ACCEPTANCE_DATE = 'REGISTRATION_ACCEPTANCE_DATE',
   CREATED_AT = 'CREATED_AT',
 }
 
@@ -1236,6 +1235,7 @@ export type ShiftDetail = {
 export type ShiftFilter = {
   ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   courseIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  socialYear?: InputMaybe<Scalars['Int']['input']>;
   weekDay?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -1263,41 +1263,17 @@ export type VerifyEmailSettingsPayload = {
   verified?: Maybe<Scalars['Boolean']['output']>;
 };
 
-export type LoginMutationVariables = Exact<{
-  input: LoginInput;
+export type SendCommunicationMutationVariables = Exact<{
+  input: SendCommunicationInput;
 }>;
 
-export type LoginMutation = { __typename?: 'Mutation'; login: { __typename?: 'LoginPayload'; token: string } };
-
-export type MeQueryVariables = Exact<{ [key: string]: never }>;
-
-export type MeQuery = { __typename?: 'Query'; me: { __typename?: 'User'; id: string; username: string } };
-
-export type SettingQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SettingQuery = {
-  __typename?: 'Query';
-  setting: {
-    __typename?: 'Setting';
-    associationName: string;
-    associationAddress: string;
-    associationTaxCode: string;
-    attendancesPerMonthToSendReminder: number;
-    daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>;
-    emailSettings: {
-      __typename?: 'EmailSettings';
-      host: string;
-      port: number;
-      secure: boolean;
-      name?: string | null;
-      email?: string | null;
-    };
-    emailTextList: {
-      __typename?: 'EmailTextList';
-      receipt: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
-      reminder: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
-      medicalCertificateExpiration: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
-    };
+export type SendCommunicationMutation = {
+  __typename?: 'Mutation';
+  sendCommunication: {
+    __typename?: 'SendCommunicationPayload';
+    sentBatches: number;
+    failedBatches: number;
+    totalRecipients: number;
   };
 };
 
@@ -1339,6 +1315,111 @@ export type SettingUpdateMutation = {
       };
     };
   };
+};
+
+export type AttendanceListItemFragment = {
+  __typename?: 'Attendance';
+  id: string;
+  from: number;
+  to: number;
+  member: { __typename?: 'Member'; fullName: string };
+  course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
+};
+
+export type AttendancesQueryVariables = Exact<{
+  filter: AttendanceFilter;
+}>;
+
+export type AttendancesQuery = {
+  __typename?: 'Query';
+  attendances: {
+    __typename?: 'AttendancePagination';
+    data: Array<{
+      __typename?: 'Attendance';
+      id: string;
+      from: number;
+      to: number;
+      member: { __typename?: 'Member'; fullName: string };
+      course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; total: number };
+  };
+};
+
+export type DayAttendancesQueryVariables = Exact<{
+  filter: DayAttendancesFilter;
+}>;
+
+export type DayAttendancesQuery = {
+  __typename?: 'Query';
+  dayAttendances: Array<{
+    __typename?: 'DayAttendances';
+    ids: Array<string>;
+    from: number;
+    to: number;
+    members: Array<{ __typename?: 'Member'; fullName: string }>;
+    course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
+  }>;
+};
+
+export type DayExpireMedicalCertificatesQueryVariables = Exact<{
+  filter: DayExpireMedicalCertificatesFilter;
+}>;
+
+export type DayExpireMedicalCertificatesQuery = {
+  __typename?: 'Query';
+  dayExpireMedicalCertificates: Array<{
+    __typename?: 'DayExpireMedicalCertificates';
+    expireAt: number;
+    members: Array<{ __typename?: 'Member'; fullName: string }>;
+  }>;
+};
+
+export type AttendanceCreateManyMutationVariables = Exact<{
+  input: AttendanceCreateManyInput;
+}>;
+
+export type AttendanceCreateManyMutation = {
+  __typename?: 'Mutation';
+  attendanceCreateMany: {
+    __typename?: 'AttendanceCreateManyPayload';
+    attendances: Array<{
+      __typename?: 'Attendance';
+      id: string;
+      from: number;
+      to: number;
+      member: { __typename?: 'Member'; fullName: string };
+      course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
+    }>;
+  };
+};
+
+export type AttendanceDeleteMutationVariables = Exact<{
+  input: AttendanceDeleteInput;
+}>;
+
+export type AttendanceDeleteMutation = {
+  __typename?: 'Mutation';
+  attendanceDelete: {
+    __typename?: 'AttendanceDeletePayload';
+    attendance: {
+      __typename?: 'Attendance';
+      id: string;
+      from: number;
+      to: number;
+      member: { __typename?: 'Member'; fullName: string };
+      course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
+    };
+  };
+};
+
+export type AttendanceDeleteManyMutationVariables = Exact<{
+  input: AttendanceDeleteManyInput;
+}>;
+
+export type AttendanceDeleteManyMutation = {
+  __typename?: 'Mutation';
+  attendanceDeleteMany: { __typename?: 'AttendanceDeleteManyPayload'; success?: boolean | null };
 };
 
 export type CourseListItemFragment = { __typename?: 'Course'; id: string; name: string; color?: string | null };
@@ -1481,20 +1562,6 @@ export type CourseDeleteMutation = {
   };
 };
 
-export type SendCommunicationMutationVariables = Exact<{
-  input: SendCommunicationInput;
-}>;
-
-export type SendCommunicationMutation = {
-  __typename?: 'Mutation';
-  sendCommunication: {
-    __typename?: 'SendCommunicationPayload';
-    sentBatches: number;
-    failedBatches: number;
-    totalRecipients: number;
-  };
-};
-
 export type EmailsQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
   pageSize: Scalars['Int']['input'];
@@ -1537,121 +1604,31 @@ export type SendMonthlyRemindersMutation = {
   sendMonthlyReminders: { __typename?: 'SendMonthlyRemindersPayload'; sentReminders: number; failedReminders: number };
 };
 
-export type AttendanceListItemFragment = {
-  __typename?: 'Attendance';
-  id: string;
-  from: number;
-  to: number;
-  member: { __typename?: 'Member'; fullName: string };
-  course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
-};
-
-export type AttendancesQueryVariables = Exact<{
-  filter: AttendanceFilter;
-}>;
-
-export type AttendancesQuery = {
-  __typename?: 'Query';
-  attendances: {
-    __typename?: 'AttendancePagination';
-    data: Array<{
-      __typename?: 'Attendance';
-      id: string;
-      from: number;
-      to: number;
-      member: { __typename?: 'Member'; fullName: string };
-      course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; total: number };
-  };
-};
-
-export type DayAttendancesQueryVariables = Exact<{
-  filter: DayAttendancesFilter;
-}>;
-
-export type DayAttendancesQuery = {
-  __typename?: 'Query';
-  dayAttendances: Array<{
-    __typename?: 'DayAttendances';
-    ids: Array<string>;
-    from: number;
-    to: number;
-    members: Array<{ __typename?: 'Member'; fullName: string }>;
-    course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
-  }>;
-};
-
-export type DayExpireMedicalCertificatesQueryVariables = Exact<{
-  filter: DayExpireMedicalCertificatesFilter;
-}>;
-
-export type DayExpireMedicalCertificatesQuery = {
-  __typename?: 'Query';
-  dayExpireMedicalCertificates: Array<{
-    __typename?: 'DayExpireMedicalCertificates';
-    expireAt: number;
-    members: Array<{ __typename?: 'Member'; fullName: string }>;
-  }>;
-};
-
-export type AttendanceCreateManyMutationVariables = Exact<{
-  input: AttendanceCreateManyInput;
-}>;
-
-export type AttendanceCreateManyMutation = {
-  __typename?: 'Mutation';
-  attendanceCreateMany: {
-    __typename?: 'AttendanceCreateManyPayload';
-    attendances: Array<{
-      __typename?: 'Attendance';
-      id: string;
-      from: number;
-      to: number;
-      member: { __typename?: 'Member'; fullName: string };
-      course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
-    }>;
-  };
-};
-
-export type AttendanceDeleteMutationVariables = Exact<{
-  input: AttendanceDeleteInput;
-}>;
-
-export type AttendanceDeleteMutation = {
-  __typename?: 'Mutation';
-  attendanceDelete: {
-    __typename?: 'AttendanceDeletePayload';
-    attendance: {
-      __typename?: 'Attendance';
-      id: string;
-      from: number;
-      to: number;
-      member: { __typename?: 'Member'; fullName: string };
-      course: { __typename?: 'Course'; id: string; name: string; color?: string | null };
-    };
-  };
-};
-
-export type AttendanceDeleteManyMutationVariables = Exact<{
-  input: AttendanceDeleteManyInput;
-}>;
-
-export type AttendanceDeleteManyMutation = {
-  __typename?: 'Mutation';
-  attendanceDeleteMany: { __typename?: 'AttendanceDeleteManyPayload'; success?: boolean | null };
-};
-
 export type EnrollmentListItemFragment = {
   __typename?: 'Enrollment';
   id: string;
   socialYear: number;
   status: EnrollmentStatusEnum;
+  shiftIds: Array<string>;
   qualification: QualificationEnum;
   socialCardNumber?: number | null;
   medicalCertificateExpireAt?: number | null;
+  excludeFromCommunications: boolean;
   member: { __typename?: 'Member'; id: string; fullName: string };
-  courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+  courses: Array<{
+    __typename?: 'Course';
+    id: string;
+    name: string;
+    shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+  }>;
+  payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+  attendances: Array<{
+    __typename?: 'Attendance';
+    id: string;
+    from: number;
+    to: number;
+    course: { __typename?: 'Course'; id: string };
+  }>;
 };
 
 export type EnrollmentDetailFragment = {
@@ -1674,7 +1651,20 @@ export type EnrollmentDetailFragment = {
   medicalCertificateExpireAt?: number | null;
   consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
   member: { __typename?: 'Member'; id: string; fullName: string };
-  courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+  courses: Array<{
+    __typename?: 'Course';
+    id: string;
+    name: string;
+    shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+  }>;
+  payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+  attendances: Array<{
+    __typename?: 'Attendance';
+    id: string;
+    from: number;
+    to: number;
+    course: { __typename?: 'Course'; id: string };
+  }>;
 };
 
 export type EnrollmentsQueryVariables = Exact<{
@@ -1692,11 +1682,26 @@ export type EnrollmentsQuery = {
       id: string;
       socialYear: number;
       status: EnrollmentStatusEnum;
+      shiftIds: Array<string>;
       qualification: QualificationEnum;
       socialCardNumber?: number | null;
       medicalCertificateExpireAt?: number | null;
+      excludeFromCommunications: boolean;
       member: { __typename?: 'Member'; id: string; fullName: string };
-      courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+      courses: Array<{
+        __typename?: 'Course';
+        id: string;
+        name: string;
+        shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+      }>;
+      payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+      attendances: Array<{
+        __typename?: 'Attendance';
+        id: string;
+        from: number;
+        to: number;
+        course: { __typename?: 'Course'; id: string };
+      }>;
     }>;
     pageInfo: { __typename?: 'PageInfo'; total: number };
   };
@@ -1728,7 +1733,20 @@ export type EnrollmentQuery = {
     medicalCertificateExpireAt?: number | null;
     consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
     member: { __typename?: 'Member'; id: string; fullName: string };
-    courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+    courses: Array<{
+      __typename?: 'Course';
+      id: string;
+      name: string;
+      shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+    }>;
+    payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+    attendances: Array<{
+      __typename?: 'Attendance';
+      id: string;
+      from: number;
+      to: number;
+      course: { __typename?: 'Course'; id: string };
+    }>;
   };
 };
 
@@ -1760,7 +1778,20 @@ export type EnrollmentCreateMutation = {
       medicalCertificateExpireAt?: number | null;
       consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
       member: { __typename?: 'Member'; id: string; fullName: string };
-      courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+      courses: Array<{
+        __typename?: 'Course';
+        id: string;
+        name: string;
+        shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+      }>;
+      payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+      attendances: Array<{
+        __typename?: 'Attendance';
+        id: string;
+        from: number;
+        to: number;
+        course: { __typename?: 'Course'; id: string };
+      }>;
     };
   };
 };
@@ -1793,7 +1824,20 @@ export type EnrollmentUpdateMutation = {
       medicalCertificateExpireAt?: number | null;
       consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
       member: { __typename?: 'Member'; id: string; fullName: string };
-      courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+      courses: Array<{
+        __typename?: 'Course';
+        id: string;
+        name: string;
+        shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+      }>;
+      payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+      attendances: Array<{
+        __typename?: 'Attendance';
+        id: string;
+        from: number;
+        to: number;
+        course: { __typename?: 'Course'; id: string };
+      }>;
     };
   };
 };
@@ -1826,7 +1870,20 @@ export type EnrollmentDeleteMutation = {
       medicalCertificateExpireAt?: number | null;
       consents: Array<{ __typename?: 'Consent'; type: string; acceptedAt: number }>;
       member: { __typename?: 'Member'; id: string; fullName: string };
-      courses: Array<{ __typename?: 'Course'; id: string; name: string }>;
+      courses: Array<{
+        __typename?: 'Course';
+        id: string;
+        name: string;
+        shifts: Array<Array<{ __typename?: 'Shift'; id: string; from: Array<number>; to: Array<number> }>>;
+      }>;
+      payments: Array<{ __typename?: 'Payment'; id: string; month?: string | null }>;
+      attendances: Array<{
+        __typename?: 'Attendance';
+        id: string;
+        from: number;
+        to: number;
+        course: { __typename?: 'Course'; id: string };
+      }>;
     };
   };
 };
@@ -1838,6 +1895,56 @@ export type EnrollmentConfirmMutationVariables = Exact<{
 export type EnrollmentConfirmMutation = {
   __typename?: 'Mutation';
   enrollmentConfirm: { __typename?: 'EnrollmentConfirmPayload'; modifiedCount: number };
+};
+
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
+}>;
+
+export type LoginMutation = { __typename?: 'Mutation'; login: { __typename?: 'LoginPayload'; token: string } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MeQuery = { __typename?: 'Query'; me: { __typename?: 'User'; id: string; username: string } };
+
+export type SettingQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SettingQuery = {
+  __typename?: 'Query';
+  setting: {
+    __typename?: 'Setting';
+    associationName: string;
+    associationAddress: string;
+    associationTaxCode: string;
+    attendancesPerMonthToSendReminder: number;
+    daysBeforeMedicalCertificateExpiresToSendEmail: Array<number>;
+    emailSettings: {
+      __typename?: 'EmailSettings';
+      host: string;
+      port: number;
+      secure: boolean;
+      name?: string | null;
+      email?: string | null;
+    };
+    emailTextList: {
+      __typename?: 'EmailTextList';
+      receipt: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
+      reminder: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
+      medicalCertificateExpiration: { __typename?: 'EmailText'; subject?: string | null; body?: string | null };
+    };
+  };
+};
+
+export type RegistrationRequestMutationVariables = Exact<{
+  input: RegistrationRequestInput;
+}>;
+
+export type RegistrationRequestMutation = {
+  __typename?: 'Mutation';
+  registrationRequest: {
+    __typename?: 'RegistrationRequestPayload';
+    enrollment: { __typename?: 'Enrollment'; id: string };
+  };
 };
 
 export type FeeListItemFragment = {
@@ -2789,18 +2896,44 @@ export type SeasonRenewMutation = {
   seasonRenew: { __typename?: 'SeasonRenewPayload'; createdCount: number };
 };
 
-export type RegistrationRequestMutationVariables = Exact<{
-  input: RegistrationRequestInput;
-}>;
-
-export type RegistrationRequestMutation = {
-  __typename?: 'Mutation';
-  registrationRequest: {
-    __typename?: 'RegistrationRequestPayload';
-    enrollment: { __typename?: 'Enrollment'; id: string };
-  };
-};
-
+export const AttendanceListItemFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AttendanceListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'member' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'course' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AttendanceListItemFragment, unknown>;
 export const CourseListItemFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2863,44 +2996,6 @@ export const CourseDetailFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CourseDetailFragment, unknown>;
-export const AttendanceListItemFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AttendanceListItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'member' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'course' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AttendanceListItemFragment, unknown>;
 export const EnrollmentListItemFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2933,12 +3028,57 @@ export const EnrollmentListItemFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3008,12 +3148,57 @@ export const EnrollmentDetailFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3552,18 +3737,21 @@ export const PaymentPdfFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<PaymentPdfFragment, unknown>;
-export const LoginDocument = {
+export const SendCommunicationDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'Login' },
+      name: { kind: 'Name', value: 'SendCommunication' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'LoginInput' } } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SendCommunicationInput' } },
+          },
         },
       ],
       selectionSet: {
@@ -3571,7 +3759,7 @@ export const LoginDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'login' },
+            name: { kind: 'Name', value: 'sendCommunication' },
             arguments: [
               {
                 kind: 'Argument',
@@ -3581,32 +3769,10 @@ export const LoginDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'token' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
-export const MeDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'Me' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'me' },
-            selectionSet: {
-              kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'sentBatches' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'failedBatches' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'totalRecipients' } },
               ],
             },
           },
@@ -3614,92 +3780,7 @@ export const MeDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
-export const SettingDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'Setting' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'setting' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'associationName' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'associationAddress' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'associationTaxCode' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'emailSettings' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'host' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'port' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'secure' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'emailTextList' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'receipt' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'reminder' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'medicalCertificateExpiration' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'body' } },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                { kind: 'Field', name: { kind: 'Name', value: 'attendancesPerMonthToSendReminder' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'daysBeforeMedicalCertificateExpiresToSendEmail' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SettingQuery, SettingQueryVariables>;
+} as unknown as DocumentNode<SendCommunicationMutation, SendCommunicationMutationVariables>;
 export const VerifyEmailSettingsDocument = {
   kind: 'Document',
   definitions: [
@@ -3837,6 +3918,417 @@ export const SettingUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<SettingUpdateMutation, SettingUpdateMutationVariables>;
+export const AttendancesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Attendances' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceFilter' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'pageIndex' }, value: { kind: 'IntValue', value: '0' } },
+              { kind: 'Argument', name: { kind: 'Name', value: 'pageSize' }, value: { kind: 'IntValue', value: '0' } },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'AttendanceListItem' } }],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'total' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AttendanceListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'member' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'course' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AttendancesQuery, AttendancesQueryVariables>;
+export const DayAttendancesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'DayAttendances' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DayAttendancesFilter' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'dayAttendances' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'pageIndex' }, value: { kind: 'IntValue', value: '0' } },
+              { kind: 'Argument', name: { kind: 'Name', value: 'pageSize' }, value: { kind: 'IntValue', value: '0' } },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'ids' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DayAttendancesQuery, DayAttendancesQueryVariables>;
+export const DayExpireMedicalCertificatesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'DayExpireMedicalCertificates' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DayExpireMedicalCertificatesFilter' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'dayExpireMedicalCertificates' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'pageIndex' }, value: { kind: 'IntValue', value: '0' } },
+              { kind: 'Argument', name: { kind: 'Name', value: 'pageSize' }, value: { kind: 'IntValue', value: '0' } },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'expireAt' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>;
+export const AttendanceCreateManyDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AttendanceCreateMany' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceCreateManyInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendanceCreateMany' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendances' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'AttendanceListItem' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AttendanceListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'member' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'course' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
+export const AttendanceDeleteDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AttendanceDelete' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceDeleteInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendanceDelete' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'attendance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'AttendanceListItem' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AttendanceListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'member' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'course' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
+export const AttendanceDeleteManyDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AttendanceDeleteMany' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceDeleteManyInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendanceDeleteMany' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'success' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>;
 export const CoursesSearcherDocument = {
   kind: 'Document',
   definitions: [
@@ -4408,50 +4900,6 @@ export const CourseDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<CourseDeleteMutation, CourseDeleteMutationVariables>;
-export const SendCommunicationDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'SendCommunication' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SendCommunicationInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'sendCommunication' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'sentBatches' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'failedBatches' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'totalRecipients' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SendCommunicationMutation, SendCommunicationMutationVariables>;
 export const EmailsDocument = {
   kind: 'Document',
   definitions: [
@@ -4633,417 +5081,6 @@ export const SendMonthlyRemindersDocument = {
     },
   ],
 } as unknown as DocumentNode<SendMonthlyRemindersMutation, SendMonthlyRemindersMutationVariables>;
-export const AttendancesDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'Attendances' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceFilter' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'attendances' },
-            arguments: [
-              { kind: 'Argument', name: { kind: 'Name', value: 'pageIndex' }, value: { kind: 'IntValue', value: '0' } },
-              { kind: 'Argument', name: { kind: 'Name', value: 'pageSize' }, value: { kind: 'IntValue', value: '0' } },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'filter' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'data' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'AttendanceListItem' } }],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'pageInfo' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'total' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AttendanceListItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'member' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'course' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AttendancesQuery, AttendancesQueryVariables>;
-export const DayAttendancesDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'DayAttendances' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DayAttendancesFilter' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'dayAttendances' },
-            arguments: [
-              { kind: 'Argument', name: { kind: 'Name', value: 'pageIndex' }, value: { kind: 'IntValue', value: '0' } },
-              { kind: 'Argument', name: { kind: 'Name', value: 'pageSize' }, value: { kind: 'IntValue', value: '0' } },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'filter' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'ids' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'course' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'color' } },
-                    ],
-                  },
-                },
-                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<DayAttendancesQuery, DayAttendancesQueryVariables>;
-export const DayExpireMedicalCertificatesDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'DayExpireMedicalCertificates' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DayExpireMedicalCertificatesFilter' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'dayExpireMedicalCertificates' },
-            arguments: [
-              { kind: 'Argument', name: { kind: 'Name', value: 'pageIndex' }, value: { kind: 'IntValue', value: '0' } },
-              { kind: 'Argument', name: { kind: 'Name', value: 'pageSize' }, value: { kind: 'IntValue', value: '0' } },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'filter' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'expireAt' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<DayExpireMedicalCertificatesQuery, DayExpireMedicalCertificatesQueryVariables>;
-export const AttendanceCreateManyDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'AttendanceCreateMany' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceCreateManyInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'attendanceCreateMany' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'attendances' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'AttendanceListItem' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AttendanceListItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'member' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'course' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AttendanceCreateManyMutation, AttendanceCreateManyMutationVariables>;
-export const AttendanceDeleteDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'AttendanceDelete' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceDeleteInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'attendanceDelete' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'attendance' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'AttendanceListItem' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AttendanceListItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Attendance' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'member' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'fullName' } }],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'course' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'from' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'to' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AttendanceDeleteMutation, AttendanceDeleteMutationVariables>;
-export const AttendanceDeleteManyDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'AttendanceDeleteMany' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AttendanceDeleteManyInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'attendanceDeleteMany' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'success' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AttendanceDeleteManyMutation, AttendanceDeleteManyMutationVariables>;
 export const EnrollmentsDocument = {
   kind: 'Document',
   definitions: [
@@ -5145,12 +5182,57 @@ export const EnrollmentsDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -5220,12 +5302,57 @@ export const EnrollmentDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -5339,12 +5466,57 @@ export const EnrollmentCreateDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -5458,12 +5630,57 @@ export const EnrollmentUpdateDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -5577,12 +5794,57 @@ export const EnrollmentDeleteDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shifts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
               ],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'shiftIds' } },
           { kind: 'Field', name: { kind: 'Name', value: 'qualification' } },
           { kind: 'Field', name: { kind: 'Name', value: 'socialCardNumber' } },
           { kind: 'Field', name: { kind: 'Name', value: 'medicalCertificateExpireAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'excludeFromCommunications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'payments' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'attendances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'course' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -5660,6 +5922,203 @@ export const EnrollmentConfirmDocument = {
     },
   ],
 } as unknown as DocumentNode<EnrollmentConfirmMutation, EnrollmentConfirmMutationVariables>;
+export const LoginDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'Login' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'LoginInput' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'login' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'token' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export const MeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Me' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'me' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
+export const SettingDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Setting' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'setting' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'associationName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'associationAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'associationTaxCode' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'emailSettings' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'host' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'port' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'secure' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'emailTextList' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'receipt' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'reminder' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medicalCertificateExpiration' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'body' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'attendancesPerMonthToSendReminder' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'daysBeforeMedicalCertificateExpiresToSendEmail' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SettingQuery, SettingQueryVariables>;
+export const RegistrationRequestDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RegistrationRequest' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'RegistrationRequestInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'registrationRequest' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'enrollment' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RegistrationRequestMutation, RegistrationRequestMutationVariables>;
 export const FeesSearcherDocument = {
   kind: 'Document',
   definitions: [
@@ -8445,52 +8904,3 @@ export const SeasonRenewDocument = {
     },
   ],
 } as unknown as DocumentNode<SeasonRenewMutation, SeasonRenewMutationVariables>;
-export const RegistrationRequestDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'RegistrationRequest' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'RegistrationRequestInput' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'registrationRequest' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'enrollment' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<RegistrationRequestMutation, RegistrationRequestMutationVariables>;

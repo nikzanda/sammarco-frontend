@@ -12,10 +12,29 @@ export const ENROLLMENT_LIST_ITEM_FRAGMENT = gql`
     courses {
       id
       name
+      shifts {
+        id
+        from
+        to
+      }
     }
+    shiftIds
     qualification
     socialCardNumber
     medicalCertificateExpireAt
+    excludeFromCommunications
+    payments {
+      id
+      month
+    }
+    attendances {
+      id
+      course {
+        id
+      }
+      from
+      to
+    }
   }
 `;
 

@@ -6,7 +6,7 @@ import { FaPlus } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  entity: 'members' | 'courses' | 'fees' | 'payments';
+  entity: 'enrollments' | 'members' | 'courses' | 'fees' | 'payments';
   hideCreateButton?: boolean;
   actions?: GetProp<MenuProps, 'items'>;
 }

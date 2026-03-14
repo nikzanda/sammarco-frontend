@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   FaCalendarAlt,
   FaCog,
+  FaIdCard,
   FaMoon,
   FaMoneyBill,
   FaPaperPlane,
@@ -17,6 +18,11 @@ import { GiKimono } from 'react-icons/gi';
 import Icon, { LogoutOutlined } from '@ant-design/icons';
 import { AuthenticationContext, SettingsProvider, ThemeContext } from '../contexts';
 import { LoadingPage, NotFoundPage } from '../views';
+
+// Enrollments
+const EnrollmentListPage = React.lazy(() => import('../core/enrollments/EnrollmentListPage'));
+const EnrollmentCreatePage = React.lazy(() => import('../core/enrollments/EnrollmentCreatePage'));
+const EnrollmentEditPage = React.lazy(() => import('../core/enrollments/EnrollmentEditPage'));
 
 // Members
 const MemberCreatePage = React.lazy(() => import('../core/members/MemberCreatePage'));
@@ -58,6 +64,12 @@ const AuthenticatedLayout: React.FC = () => {
 
   const menuItems = React.useMemo(() => {
     const result: MenuProps['items'] = [
+      {
+        label: t('enrollments.name'),
+        key: 'enrollments',
+        icon: <Icon component={FaIdCard} />,
+        onClick: () => navigate('/enrollments'),
+      },
       {
         label: t('members.name'),
         key: 'members',
@@ -188,6 +200,12 @@ const AuthenticatedLayout: React.FC = () => {
         <SettingsProvider>
           <Suspense fallback={<LoadingPage />}>
             <Routes>
+              <Route path="enrollments" element={<Outlet />}>
+                <Route index element={<EnrollmentListPage />} />
+                <Route path="new" element={<EnrollmentCreatePage />} />
+                <Route path=":id" element={<EnrollmentEditPage />} />
+              </Route>
+
               <Route path="members" element={<Outlet />}>
                 <Route index element={<MemberListPage />} />
                 <Route path="new" element={<MemberCreatePage />} />
@@ -221,7 +239,7 @@ const AuthenticatedLayout: React.FC = () => {
                 <Route index element={<SettingsPage />} />
               </Route>
 
-              <Route path="/" element={<Navigate to="/members" replace />} />
+              <Route path="/" element={<Navigate to="/enrollments" replace />} />
 
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

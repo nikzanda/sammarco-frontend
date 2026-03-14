@@ -139,6 +139,79 @@
       "sendReminders": "Invia solleciti pagamenti"
     }
   },
+  "enrollments": {
+    "name": "Tesseramenti",
+    "new": "Nuovo tesseramento",
+    "created": "Nuovo tesseramento creato",
+    "edited": "Tesseramento aggiornato",
+    "deleted": "Tesseramento eliminato",
+    "delete": {
+      "confirm": "Sei sicuro di voler eliminare il tesseramento?",
+      "description": "Elimina tesseramento"
+    },
+    "status": {
+      "PENDING": "Da confermare",
+      "CONFIRMED": "Confermato"
+    },
+    "table": {
+      "fullName": "Socio",
+      "courses": "Corsi",
+      "shifts": "Turni",
+      "socialCardNumber": "N° tessera sociale",
+      "status": "Stato",
+      "qualification": "Qualifica",
+      "expandable": {
+        "paid": "Pagamento",
+        "attendances": "Presenze"
+      }
+    },
+    "filters": {
+      "byExcludeFromCommunications": {
+        "label": "Cerca per esclusione dalle comunicazioni",
+        "options": {
+          "true": "Esclusi",
+          "false": "Non esclusi"
+        }
+      },
+      "byUnpaidRegistration": {
+        "label": "Cerca per iscrizione pagata / non pagata",
+        "options": {
+          "true": "Pagata",
+          "false": "Non pagata"
+        }
+      },
+      "byMonthsNotPaid": "Cerca per mese non pagato",
+      "byMedicalCertificateExpiration": {
+        "label": "Cerca per scadenza certificato medico",
+        "options": {
+          "EXPIRED": "Scaduto",
+          "IS_EXPIRING": "In scadenza",
+          "NOT_ENTERED": "Non inserito"
+        }
+      },
+      "byStatus": "Cerca per stato"
+    },
+    "alerts": {
+      "currentEnrollmentNotPaid": "Iscrizione non pagata.",
+      "monthsNotPaid": "Mensilità non pagate.",
+      "medicalCertificate": {
+        "empty": "Data di scadenza del certificato medico non inserita.",
+        "expiring": "Il certificato medico scadrà tra {{days}} giorni.",
+        "expired": "Certificato medico scaduto."
+      }
+    },
+    "actions": {
+      "confirm": "Conferma selezionati",
+      "sendReminders": "Invia solleciti pagamenti"
+    },
+    "tab": {
+      "details": "Dettagli",
+      "medicalCertificate": "Certificato medico",
+      "payments": "Pagamenti",
+      "calendar": "Calendario",
+      "emails": "Email"
+    }
+  },
   "courses": {
     "name": "Corsi",
     "new": "Nuovo corso",
